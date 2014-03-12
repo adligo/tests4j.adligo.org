@@ -1,5 +1,7 @@
 package org.adligo.jtests.base.shared.results;
 
+import org.adligo.jtests.base.shared.common.IsEmpty;
+
 public class ExhibitResultMutant implements I_ExhibitResult {
 	public static final String EXHIBIT_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME = "ExhibitResultMutant requires a non empty exhibitName";
 	private String exhibitName = "";
@@ -16,9 +18,8 @@ public class ExhibitResultMutant implements I_ExhibitResult {
 	
 	public ExhibitResultMutant(I_ExhibitResult p) {
 		exhibitName = p.getExhibitName();
-		if (exhibitName == null || exhibitName.trim().length() == 0) {
-			throw new IllegalArgumentException(EXHIBIT_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME);
-		}
+		IsEmpty.isEmpty(exhibitName,
+				EXHIBIT_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME);
 		assertionCount = p.getAssertionCount();
 		uniqueAsserts = p.getUniqueAsserts();
 		passed = p.isPassed();

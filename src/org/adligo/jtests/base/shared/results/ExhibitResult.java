@@ -1,6 +1,6 @@
 package org.adligo.jtests.base.shared.results;
 
-public class ExhibitResult {
+public class ExhibitResult implements I_ExhibitResult {
 	private ExhibitResultMutant mutant;
 	
 	public ExhibitResult(I_ExhibitResult p) {
