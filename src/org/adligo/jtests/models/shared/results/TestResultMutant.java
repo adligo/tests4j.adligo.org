@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.adligo.jtests.models.shared.common.IsEmpty;
 import org.adligo.jtests.models.shared.common.TestType;
+import org.adligo.jtests.models.shared.coverage.I_ClassCoverage;
+import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 
 public class TestResultMutant implements I_TestResult {
+	public static final String COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS = "Coverage is not currently supported by JTests";
 	public static final String TEST_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_CLASS_NAME = 
 				"TestResultMutant's with a ClassTest type require a testedClassName";
 	public static final String TEST_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_PACKAGE_NAME = 
@@ -29,6 +32,7 @@ public class TestResultMutant implements I_TestResult {
 	private String beforeTestOutput;
 	private String afterTestOutput;
 	private FailureMutant failure;
+	private Boolean passed = null;
 	
 	public TestResultMutant() {}
 	
@@ -58,7 +62,9 @@ public class TestResultMutant implements I_TestResult {
 						TEST_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_USE_CASE_NAME);
 		}
 		
-		exhibitResults.addAll(p.getExhibitResults());
+		List<I_ExhibitResult> results = p.getExhibitResults();
+		setExhibitResults(results);
+		
 		ignored = p.isIgnored();
 		beforeTestOutput = p.getBeforeTestOutput();
 		afterTestOutput = p.getAfterTestOutput();
@@ -103,8 +109,10 @@ public class TestResultMutant implements I_TestResult {
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getExhibitResults()
 	 */
 	@Override
-	public List<ExhibitResultMutant> getExhibitResults() {
-		return exhibitResults;
+	public List<I_ExhibitResult> getExhibitResults() {
+		List<I_ExhibitResult> toRet = new ArrayList<I_ExhibitResult>();
+		toRet.addAll(exhibitResults);
+		return toRet;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#isIgnored()
@@ -143,9 +151,13 @@ public class TestResultMutant implements I_TestResult {
 	public void setTestType(TestType testType) {
 		this.testType = testType;
 	}
-	public void setExhibitResults(List<ExhibitResultMutant> exhibitResults) {
-		this.exhibitResults = exhibitResults;
+	public void setExhibitResults(List<I_ExhibitResult> p) {
+		exhibitResults.clear();
+		for (I_ExhibitResult result: p) {
+			exhibitResults.add(new ExhibitResultMutant(result));
+		}
 	}
+	
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
 	}
@@ -177,6 +189,36 @@ public class TestResultMutant implements I_TestResult {
 
 	public void setFailure(FailureMutant failure) {
 		this.failure = failure;
+	}
+
+	@Override
+	public I_PackageCoverage getPackageCoverage() {
+		throw new IllegalStateException(COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS);
+	}
+
+	@Override
+	public I_ClassCoverage getClassCoverage() {
+		throw new IllegalStateException(COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS);
+	}
+
+	public void setPassed(boolean passed) {
+		this.passed = passed;
+	}
+
+	@Override
+	public boolean isPassed() {
+		if (!passed) {
+			return false;
+		}
+		if (exhibitResults.size() == 0) {
+			return false;
+		}
+		for (I_ExhibitResult result: exhibitResults) {
+			if (!result.isPassed()) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 }

@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.adligo.jtests.models.shared.common.TestType;
+import org.adligo.jtests.models.shared.coverage.I_ClassCoverage;
+import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 
-public class TestResult {
+public class TestResult implements I_TestResult {
 	private TestResultMutant mutant;
 	
 	public TestResult(I_TestResult p) {
@@ -40,7 +42,7 @@ public class TestResult {
 
 	public List<I_ExhibitResult> getExhibitResults() {
 		List<I_ExhibitResult> toRet = new ArrayList<I_ExhibitResult>();
-		for (ExhibitResultMutant mut: mutant.getExhibitResults()) {
+		for (I_ExhibitResult mut: mutant.getExhibitResults()) {
 			toRet.add(new ExhibitResult(mut));
 		}
 		return Collections.unmodifiableList(toRet);
@@ -56,6 +58,22 @@ public class TestResult {
 
 	public String getAfterTestOutput() {
 		return mutant.getAfterTestOutput();
+	}
+
+	public I_Failure getFailure() {
+		return mutant.getFailure();
+	}
+
+	public I_PackageCoverage getPackageCoverage() {
+		return mutant.getPackageCoverage();
+	}
+
+	public I_ClassCoverage getClassCoverage() {
+		return mutant.getClassCoverage();
+	}
+
+	public boolean isPassed() {
+		return mutant.isPassed();
 	}
 	
 }
