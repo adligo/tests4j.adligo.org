@@ -2,11 +2,11 @@ package org.adligo.jtests.models.shared.results;
 
 import org.adligo.jtests.models.shared.common.I_Immutable;
 
-public class Failure implements I_Failure, I_Immutable {
-	private FailureMutant mutant;
+public class TestFailure implements I_TestFailure, I_Immutable {
+	private TestFailureMutant mutant;
 	
-	public Failure(I_Failure p) {
-		mutant = new FailureMutant(p);
+	public TestFailure(I_TestFailure p) {
+		mutant = new TestFailureMutant(p);
 	}
 
 	public String getMessage() {
@@ -31,6 +31,6 @@ public class Failure implements I_Failure, I_Immutable {
 	
 	@Override
 	public String toString() {
-		return mutant.toString(Failure.class);
+		return mutant.toString(TestFailure.class);
 	}
 }

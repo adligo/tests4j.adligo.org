@@ -22,7 +22,7 @@ public class TestResultMutant implements I_TestResult {
 	private String testName;
 	private String testedClassName;
 	private String testedPackageName;
-	private String testedUseCaseName;
+	
 	private TestType testType;
 	private List<ExhibitResultMutant> exhibitResults = 
 			new ArrayList<ExhibitResultMutant> ();
@@ -31,7 +31,7 @@ public class TestResultMutant implements I_TestResult {
 	//skip classCoverage because there is no ClassCoverageMutant yet
 	private String beforeTestOutput;
 	private String afterTestOutput;
-	private FailureMutant failure;
+	private TestFailureMutant failure;
 	private Boolean passed = null;
 	
 	public TestResultMutant() {}
@@ -57,9 +57,6 @@ public class TestResultMutant implements I_TestResult {
 						TEST_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_PACKAGE_NAME);
 				break;
 			default:
-				testedUseCaseName = p.getTestedUseCaseName();
-				IsEmpty.isEmpty(testedPackageName,
-						TEST_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_USE_CASE_NAME);
 		}
 		
 		List<I_ExhibitResult> results = p.getExhibitResults();
@@ -68,7 +65,10 @@ public class TestResultMutant implements I_TestResult {
 		ignored = p.isIgnored();
 		beforeTestOutput = p.getBeforeTestOutput();
 		afterTestOutput = p.getAfterTestOutput();
-		failure = new FailureMutant(p.getFailure());
+		I_TestFailure pFailure = p.getFailure();
+		if (pFailure != null) {
+			failure = new TestFailureMutant(p.getFailure());
+		}
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestName()
@@ -91,13 +91,7 @@ public class TestResultMutant implements I_TestResult {
 	public String getTestedPackageName() {
 		return testedPackageName;
 	}
-	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestedUseCaseName()
-	 */
-	@Override
-	public String getTestedUseCaseName() {
-		return testedUseCaseName;
-	}
+
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestType()
 	 */
@@ -144,10 +138,6 @@ public class TestResultMutant implements I_TestResult {
 	public void setTestedPackageName(String testedPackageName) {
 		this.testedPackageName = testedPackageName;
 	}
-	public void setTestedUseCaseName(String testedUseCaseName) {
-		this.testedUseCaseName = testedUseCaseName;
-	}
-	
 	public void setTestType(TestType testType) {
 		this.testType = testType;
 	}
@@ -157,7 +147,9 @@ public class TestResultMutant implements I_TestResult {
 			exhibitResults.add(new ExhibitResultMutant(result));
 		}
 	}
-	
+	public void addExhibitResult(I_ExhibitResult p) {
+		exhibitResults.add(new ExhibitResultMutant(p));
+	}
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
 	}
@@ -176,18 +168,18 @@ public class TestResultMutant implements I_TestResult {
 	String toString(Class<?> c) {
 		return c.getSimpleName() + " [testName=" + testName + ", testedClassName="
 				+ testedClassName + ", testedPackageName=" + testedPackageName
-				+ ", testedUseCaseName=" + testedUseCaseName + ", testType="
+				+ ", testType="
 				+ testType + ", exhibitResults=" + exhibitResults
 				+ ", ignored=" + ignored + ", beforeTestOutput="
 				+ beforeTestOutput + ", afterTestOutput=" + afterTestOutput
 				+ "]";
 	}
 
-	public I_Failure getFailure() {
+	public I_TestFailure getFailure() {
 		return failure;
 	}
 
-	public void setFailure(FailureMutant failure) {
+	public void setFailure(TestFailureMutant failure) {
 		this.failure = failure;
 	}
 
@@ -207,7 +199,8 @@ public class TestResultMutant implements I_TestResult {
 
 	@Override
 	public boolean isPassed() {
-		if (!passed) {
+		//passed my be null
+		if (Boolean.FALSE.equals(passed)) {
 			return false;
 		}
 		if (exhibitResults.size() == 0) {
@@ -219,6 +212,20 @@ public class TestResultMutant implements I_TestResult {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public int getExhibitCount() {
+		return exhibitResults.size();
+	}
+
+	@Override
+	public int getAssertionCount() {
+		int toRet = 0;
+		for (I_ExhibitResult result: exhibitResults) {
+			toRet += result.getAssertionCount();
+		}
+		return toRet;
 	}
 	
 }

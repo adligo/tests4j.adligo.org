@@ -1,6 +1,6 @@
 package org.adligo.jtests.models.shared.results;
 
-public class FailureMutant implements I_Failure {
+public class TestFailureMutant implements I_TestFailure {
 	public static final String FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_MESSAGES = "FailureMutant does NOT allow null messages.";
 	public static final String FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_EXPECTED = "FailureMutant does NOT allow null expected.";
 	public static final String FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_ACTUAL = "FailureMutant does NOT allow null actual.";
@@ -11,9 +11,9 @@ public class FailureMutant implements I_Failure {
 	private Throwable locationFailed;
 	private Throwable exception;
 	
-	public FailureMutant() {}
+	public TestFailureMutant() {}
 	
-	public FailureMutant(I_Failure p) {
+	public TestFailureMutant(I_TestFailure p) {
 		message = p.getMessage();
 		if (message == null || message.trim().length() == 0) {
 			throw new IllegalArgumentException(
@@ -92,7 +92,7 @@ public class FailureMutant implements I_Failure {
 
 	@Override
 	public String toString() {
-		return toString(FailureMutant.class);
+		return toString(TestFailureMutant.class);
 	}
 	
 	String toString(Class<?> c) {

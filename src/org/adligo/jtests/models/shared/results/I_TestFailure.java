@@ -1,6 +1,6 @@
 package org.adligo.jtests.models.shared.results;
 
-public interface I_Failure {
+public interface I_TestFailure {
 
 	public abstract String getMessage();
 

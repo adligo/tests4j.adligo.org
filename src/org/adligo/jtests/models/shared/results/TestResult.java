@@ -32,10 +32,6 @@ public class TestResult implements I_TestResult {
 		return mutant.getTestedPackageName();
 	}
 
-	public String getTestedUseCaseName() {
-		return mutant.getTestedUseCaseName();
-	}
-
 	public TestType getTestType() {
 		return mutant.getTestType();
 	}
@@ -60,7 +56,7 @@ public class TestResult implements I_TestResult {
 		return mutant.getAfterTestOutput();
 	}
 
-	public I_Failure getFailure() {
+	public I_TestFailure getFailure() {
 		return mutant.getFailure();
 	}
 
@@ -74,6 +70,16 @@ public class TestResult implements I_TestResult {
 
 	public boolean isPassed() {
 		return mutant.isPassed();
+	}
+
+	@Override
+	public int getExhibitCount() {
+		return mutant.getExhibitCount();
+	}
+
+	@Override
+	public int getAssertionCount() {
+		return mutant.getAssertionCount();
 	}
 	
 }

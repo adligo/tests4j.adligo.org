@@ -27,8 +27,12 @@ public class ExhibitResult implements I_ExhibitResult {
 		return mutant.isIgnored();
 	}
 
-	public FailureMutant getFailure() {
-		return mutant.getFailure();
+	public I_TestFailure getFailure() {
+		I_TestFailure toRetOrNull = mutant.getFailure();
+		if (toRetOrNull == null) {
+			return null;
+		}
+		return new TestFailure(toRetOrNull);
 	}
 
 	public String getBeforeOutput() {

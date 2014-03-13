@@ -14,8 +14,6 @@ public interface I_TestResult {
 
 	public abstract String getTestedPackageName();
 
-	public abstract String getTestedUseCaseName();
-
 	public abstract TestType getTestType();
 
 	public abstract List<I_ExhibitResult> getExhibitResults();
@@ -29,6 +27,8 @@ public interface I_TestResult {
 	public I_PackageCoverage getPackageCoverage();
 	public I_ClassCoverage getClassCoverage();
 	
-	public I_Failure getFailure();
+	public I_TestFailure getFailure();
 	public boolean isPassed();
+	public int getExhibitCount();
+	public int getAssertionCount();
 }

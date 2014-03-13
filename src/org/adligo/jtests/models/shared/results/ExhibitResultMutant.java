@@ -1,15 +1,18 @@
 package org.adligo.jtests.models.shared.results;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.adligo.jtests.models.shared.common.IsEmpty;
 
 public class ExhibitResultMutant implements I_ExhibitResult {
 	public static final String EXHIBIT_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME = "ExhibitResultMutant requires a non empty exhibitName";
 	private String exhibitName = "";
 	private int assertionCount = 0;
-	private int uniqueAsserts = 0;
+	private Set<Integer> uniqueAsserts = new HashSet<Integer>();
 	private boolean passed = false;
 	private boolean ignored = false;
-	private FailureMutant failure;
+	private TestFailureMutant failure;
 	private String beforeOutput;
 	private String output;
 	private String afterOutput;
@@ -21,10 +24,18 @@ public class ExhibitResultMutant implements I_ExhibitResult {
 		IsEmpty.isEmpty(exhibitName,
 				EXHIBIT_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME);
 		assertionCount = p.getAssertionCount();
-		uniqueAsserts = p.getUniqueAsserts();
+		try {
+			uniqueAsserts.clear();
+			uniqueAsserts.addAll(((ExhibitResultMutant) p).uniqueAsserts);
+		} catch (ClassCastException x) {
+			//do nothing this is a instance of for GWT
+		}
 		passed = p.isPassed();
 		ignored = p.isIgnored();
-		failure = p.getFailure();
+		I_TestFailure pFailure = p.getFailure();
+		if (pFailure != null) {
+			failure = new TestFailureMutant(pFailure);
+		}
 		beforeOutput = p.getBeforeOutput();
 		output = p.getOutput();
 		afterOutput = p.getAfterOutput();
@@ -44,12 +55,16 @@ public class ExhibitResultMutant implements I_ExhibitResult {
 	public int getAssertionCount() {
 		return assertionCount;
 	}
+	
+	public void incrementAssertionCount() {
+		assertionCount++;
+	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getUniqueAsserts()
 	 */
 	@Override
 	public int getUniqueAsserts() {
-		return uniqueAsserts;
+		return uniqueAsserts.size();
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#isPassed()
@@ -69,7 +84,7 @@ public class ExhibitResultMutant implements I_ExhibitResult {
 	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getFailure()
 	 */
 	@Override
-	public FailureMutant getFailure() {
+	public TestFailureMutant getFailure() {
 		return failure;
 	}
 	/* (non-Javadoc)
@@ -99,17 +114,18 @@ public class ExhibitResultMutant implements I_ExhibitResult {
 	public void setAssertionCount(int assertionCount) {
 		this.assertionCount = assertionCount;
 	}
-	public void setUniqueAsserts(int uniqueAsserts) {
-		this.uniqueAsserts = uniqueAsserts;
+	public void addUniqueAsserts(int p) {
+		uniqueAsserts.add(p);
 	}
+	
 	public void setPassed(boolean passed) {
 		this.passed = passed;
 	}
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
 	}
-	public void setFailure(FailureMutant failure) {
-		this.failure = failure;
+	public void setFailure(I_TestFailure p) {
+		this.failure = new TestFailureMutant(p);
 	}
 	public void setBeforeOutput(String beforeOutput) {
 		this.beforeOutput = beforeOutput;

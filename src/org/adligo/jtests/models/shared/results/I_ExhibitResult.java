@@ -12,7 +12,7 @@ public interface I_ExhibitResult {
 
 	public abstract boolean isIgnored();
 
-	public abstract FailureMutant getFailure();
+	public abstract I_TestFailure getFailure();
 
 	public abstract String getBeforeOutput();
 

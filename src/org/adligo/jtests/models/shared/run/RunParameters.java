@@ -3,24 +3,28 @@ package org.adligo.jtests.models.shared.run;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.jtests.base.shared.asserts.I_AbstractTest;
+import org.adligo.jtests.base.shared.I_AbstractTest;
 
 
 public class RunParameters {
-	private List<Class<I_AbstractTest>> tests = new ArrayList<Class<I_AbstractTest>>();
+	private List<Class<? extends I_AbstractTest>> tests = 
+				new ArrayList<Class<? extends I_AbstractTest>>();
 	/**
 	 * this would only be false if running a single
 	 * ClassTest instance
 	 */
 	private boolean packageScope = true;
 	private boolean failFast = true;
-	public List<Class<I_AbstractTest>> getTests() {
+	private boolean silent = false;
+	private I_AllTestsDoneListener allTestsDoneListener;
+	
+	public List<Class<? extends I_AbstractTest>> getTests() {
 		return tests;
 	}
 	public boolean isPackageScope() {
 		return packageScope;
 	}
-	public void setTests(List<Class<I_AbstractTest>> p) {
+	public void setTests(List<Class<? extends I_AbstractTest>> p) {
 		tests.clear();
 		tests.addAll(p);
 	}
@@ -33,5 +37,17 @@ public class RunParameters {
 	}
 	public void setFailFast(boolean failFast) {
 		this.failFast = failFast;
+	}
+	public boolean isSilent() {
+		return silent;
+	}
+	public void setSilent(boolean silent) {
+		this.silent = silent;
+	}
+	public I_AllTestsDoneListener getAllTestsDoneListener() {
+		return allTestsDoneListener;
+	}
+	public void setAllTestsDoneListener(I_AllTestsDoneListener runDoneListener) {
+		this.allTestsDoneListener = runDoneListener;
 	}
 }

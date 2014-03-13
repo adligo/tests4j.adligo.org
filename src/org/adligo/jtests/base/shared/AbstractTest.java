@@ -1,16 +1,17 @@
 package org.adligo.jtests.base.shared;
 
-import static org.adligo.jtests.base.shared.asserts.AssertCommandType.*;
+import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertFalse;
+import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertNotNull;
+import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertNull;
+import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertTrue;
 
 import org.adligo.jtests.base.shared.asserts.AssertionFailureLocation;
 import org.adligo.jtests.base.shared.asserts.BooleanAssertCommand;
-import org.adligo.jtests.base.shared.asserts.I_AbstractTest;
 import org.adligo.jtests.base.shared.asserts.I_AssertCommand;
 import org.adligo.jtests.base.shared.asserts.I_Asserts;
 import org.adligo.jtests.models.shared.common.IsEmpty;
-import org.adligo.jtests.models.shared.common.TestType;
-import org.adligo.jtests.models.shared.results.Failure;
-import org.adligo.jtests.models.shared.results.FailureMutant;
+import org.adligo.jtests.models.shared.results.TestFailure;
+import org.adligo.jtests.models.shared.results.TestFailureMutant;
 import org.adligo.jtests.models.shared.run.I_AssertListener;
 
 public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
@@ -20,37 +21,27 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	public static final String THE_VALUE_SHOULD_BE_FALSE = "The value should be false.";
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
-	private static I_AssertListener listener;
+	private I_AssertListener listener;
 
-	public static void setListener(I_AssertListener p) {
-		Exception x = new Exception();
-		x.fillInStackTrace();
-		StackTraceElement[] elements = x.getStackTrace();
-		if (elements != null) {
-			if (elements.length >= 2) {
-				StackTraceElement callingClass = elements[1];
-				if (!"org.adligo.jtests.run.JTestsRunner".equals(
-						callingClass.getClassName()) &&
-					!"org.adligo.jtests.run.client.JTestsGwtRunner".equals(
-							callingClass.getClassName())) {
-					throw new IllegalStateException(
-							ASSERT_LISTENER_MAY_ONLY_BE_SET_BY);
-				}
-			}
-		}
+	/**
+	 * TODO
+	 * note I would like to hide this method somehow....
+	 * @param p
+	 */
+	public void setListener(I_AssertListener p) {
 		listener = p;
 	}
 	
-	private void evaluate(I_AssertCommand cmd) {
+	protected synchronized void evaluate(I_AssertCommand cmd) {
 		if (cmd.evaluate()) {
 			listener.assertCompleted(cmd);
 		} else {
-			FailureMutant fm = new FailureMutant();
+			TestFailureMutant fm = new TestFailureMutant();
 			fm.setMessage(cmd.getFailureMessage());
 			fm.setLocationFailed(new AssertionFailureLocation());
 			fm.setExpected(cmd.getExpected());
 			fm.setActual(cmd.getActual());
-			listener.assertFailed(new Failure(fm));
+			listener.assertFailed(new TestFailure(fm));
 		}
 	}
 	
@@ -110,8 +101,6 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 		}
 	}
 
-	@Override
-	public abstract TestType getType();
 
 	@Override
 	public void beforeExhibits() {
