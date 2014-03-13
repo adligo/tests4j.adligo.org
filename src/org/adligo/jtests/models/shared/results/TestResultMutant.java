@@ -67,7 +67,7 @@ public class TestResultMutant implements I_TestResult {
 		afterTestOutput = p.getAfterTestOutput();
 		I_TestFailure pFailure = p.getFailure();
 		if (pFailure != null) {
-			failure = new TestFailureMutant(p.getFailure());
+			failure = new TestFailureMutant(pFailure);
 		}
 	}
 	/* (non-Javadoc)

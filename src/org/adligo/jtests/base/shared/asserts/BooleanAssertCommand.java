@@ -11,6 +11,7 @@ public class BooleanAssertCommand implements I_AssertCommand {
 	private String failureMessage;
 	private AssertCommandType type;
 	private Object assertion;
+	private I_AssertData emptyAssertData = new EmptyAssertData();
 	
 	public BooleanAssertCommand(AssertCommandType pType,
 			String pFailureMessage, Object pAssertion) {
@@ -98,24 +99,7 @@ public class BooleanAssertCommand implements I_AssertCommand {
 	}
 
 	@Override
-	public Object getExpected() {
-		switch (type) {
-			case AssertTrue:
-				return Boolean.TRUE;
-			case AssertFalse:
-				return Boolean.FALSE;
-			default:
-				return type;
-		}
-	}
-
-	@Override
-	public Object getActual() {
-		return assertion;
-	}
-
-	@Override
-	public Map<String, ?> getAdditionalData() {
-		return Collections.EMPTY_MAP;
+	public I_AssertData getData() {
+		return emptyAssertData;
 	}
 }

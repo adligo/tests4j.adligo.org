@@ -1,5 +1,6 @@
 package org.adligo.jtests.models.shared.results;
 
+import org.adligo.jtests.base.shared.asserts.I_AssertData;
 import org.adligo.jtests.models.shared.common.I_Immutable;
 
 public class TestFailure implements I_TestFailure, I_Immutable {
@@ -13,13 +14,10 @@ public class TestFailure implements I_TestFailure, I_Immutable {
 		return mutant.getMessage();
 	}
 
-	public Object getExpected() {
-		return mutant.getExpected();
+	public I_AssertData getData() {
+		return mutant.getData();
 	}
 
-	public Object getActual() {
-		return mutant.getActual();
-	}
 
 	public Throwable getLocationFailed() {
 		return mutant.getLocationFailed();

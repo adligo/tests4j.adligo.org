@@ -1,13 +1,13 @@
 package org.adligo.jtests.models.shared.results;
 
+import org.adligo.jtests.base.shared.asserts.I_AssertData;
+
 public class TestFailureMutant implements I_TestFailure {
-	public static final String FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_MESSAGES = "FailureMutant does NOT allow null messages.";
-	public static final String FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_EXPECTED = "FailureMutant does NOT allow null expected.";
-	public static final String FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_ACTUAL = "FailureMutant does NOT allow null actual.";
-	public static final String FAILURE_MUTANT_REQUIRES_EITHER_A_LOCATION_FAILED_OR_A_EXCEPTION = "FailureMutant requires either a locationFailed or a exception.";
+	public static final String TEST_FAILURE_MUTANT_REQURIES_ASSERTION_DATA = "TestFailureMutant requries assertion data.";
+	public static final String FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_MESSAGES = "TestFailureMutant does NOT allow null messages.";
+	public static final String FAILURE_MUTANT_REQUIRES_EITHER_A_LOCATION_FAILED_OR_A_EXCEPTION = "TestFailureMutant requires either a locationFailed or a exception.";
 	private String message;
-	private Object expected;
-	private Object actual;
+	private I_AssertData data;
 	private Throwable locationFailed;
 	private Throwable exception;
 	
@@ -19,16 +19,6 @@ public class TestFailureMutant implements I_TestFailure {
 			throw new IllegalArgumentException(
 					FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_MESSAGES);
 		}
-		expected = p.getExpected();
-		if (expected == null) {
-			throw new IllegalArgumentException(
-					FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_EXPECTED);
-		}
-		actual = p.getActual();
-		if (actual == null) {
-			throw new IllegalArgumentException(
-					FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_ACTUAL);
-		}
 		locationFailed = p.getLocationFailed();
 		exception = p.getException();
 		if (locationFailed == null && exception == null) {
@@ -37,6 +27,14 @@ public class TestFailureMutant implements I_TestFailure {
 						FAILURE_MUTANT_REQUIRES_EITHER_A_LOCATION_FAILED_OR_A_EXCEPTION);
 			}
 		}
+		data = p.getData();
+		/*
+		if (data == null) {
+			
+			throw new IllegalArgumentException(
+					TEST_FAILURE_MUTANT_REQURIES_ASSERTION_DATA, locationFailed);
+		}
+		*/
 	}
 	
  	/* (non-Javadoc)
@@ -45,20 +43,6 @@ public class TestFailureMutant implements I_TestFailure {
 	@Override
 	public String getMessage() {
 		return message;
-	}
-	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_Failure#getExpected()
-	 */
-	@Override
-	public Object getExpected() {
-		return expected;
-	}
-	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_Failure#getActual()
-	 */
-	@Override
-	public Object getActual() {
-		return actual;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_Failure#getLocationFailed()
@@ -77,12 +61,6 @@ public class TestFailureMutant implements I_TestFailure {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public void setExpected(Object expected) {
-		this.expected = expected;
-	}
-	public void setActual(Object actual) {
-		this.actual = actual;
-	}
 	public void setLocationFailed(Throwable locationFailed) {
 		this.locationFailed = locationFailed;
 	}
@@ -96,8 +74,16 @@ public class TestFailureMutant implements I_TestFailure {
 	}
 	
 	String toString(Class<?> c) {
-		return  c.getSimpleName() + " [message=" + message + ", expected=" + expected
-				+ ", actual=" + actual + ", locationFailed=" + locationFailed
+		return  c.getSimpleName() + " [message=" + message + ", data=" + data
+				+ ", locationFailed=" + locationFailed
 				+ ", exception=" + exception + "]";
+	}
+
+	public I_AssertData getData() {
+		return data;
+	}
+
+	public void setData(I_AssertData data) {
+		this.data = data;
 	}
 }

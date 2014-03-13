@@ -10,6 +10,7 @@ public enum AssertCommandType {
 	AssertThrown, AssertNotThrown;
 	
 	public static Set<AssertCommandType> BOOLEAN_TYPES = getBooleanTypes();
+	public static Set<AssertCommandType> COMPARISON_TYPES = getCompairisonTypes();
 	
 	private static Set<AssertCommandType> getBooleanTypes() {
 		Set<AssertCommandType> toRet = new HashSet<AssertCommandType>();
@@ -17,6 +18,15 @@ public enum AssertCommandType {
 		toRet.add(AssertFalse);
 		toRet.add(AssertNull);
 		toRet.add(AssertNotNull);
+		return Collections.unmodifiableSet(toRet);
+	}
+	
+	private static Set<AssertCommandType> getCompairisonTypes() {
+		Set<AssertCommandType> toRet = new HashSet<AssertCommandType>();
+		toRet.add(AssertEquals);
+		toRet.add(AssertNotEquals);
+		toRet.add(AssertSame);
+		toRet.add(AssertNotSame);
 		return Collections.unmodifiableSet(toRet);
 	}
 }

@@ -3,6 +3,7 @@ package org.adligo.jtests.run;
 import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -31,8 +32,6 @@ import org.adligo.jtests.models.shared.run.I_TestCompleteListener;
 public class JTestInternalRunner implements I_AssertListener, Runnable {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = "Unexpected exception thrown from ";
 	public static final String J_TEST_INTERNAL_RUNNER_REQUIRES_A_TEST_COMLETED_LISTENER = "JTestInternalRunner requires a test comleted listener";
-	public static final String THROWN_EXCEPTION = "Thrown Exception.";
-	public static final String NO_THROWN_EXCEPTION = "No Thrown Exception.";
 	public static final String REFERS_TO_A_NULL_J_TEST_TYPE_TYPE = " refers to a null @JTestType type.";
 	public static final String IS_MISSING_A_J_TEST_TYPE_ANNOTATION = " is missing a @JTestType annotation.";
 	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
@@ -101,13 +100,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 	
 	@Override
 	public void run() {
-		Thread.currentThread().setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-			
-			@Override
-			public void uncaughtException(Thread t, Throwable e) {
-				e.printStackTrace(originalErr);
-			}
-		});
+		Thread.currentThread().setUncaughtExceptionHandler(JTestUncaughtExceptionHandler.HANDLER);
 		for (Class<? extends I_AbstractTest> clazz: tests) {
 			beforeTest = null;
 			afterTest = null;
@@ -284,10 +277,20 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 				method.invoke(test, new Object[] {});
 				exhibitResultMutant.setPassed(true);
 				
-			} catch (AssertionFailureException a) {
-				exhibitResultMutant.setPassed(false);
-			} catch (Exception e) {
-				unexpected = e;
+			} catch (InvocationTargetException e) {
+				Throwable cause = e.getCause();
+				if (cause != null) {
+					try {
+						@SuppressWarnings("unused")
+						AssertionFailureException thrownByThis = 
+								(AssertionFailureException) cause;
+						exhibitResultMutant.setPassed(false);
+					} catch (ClassCastException x) {
+						unexpected = e;
+					}
+				}
+			} catch (Exception x) {
+				unexpected = x;
 			}
 			exhibitResultMutant.setOutput(blos.toString());
 			test.afterExhibits();
@@ -296,8 +299,6 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 				TestFailureMutant failure = new TestFailureMutant();
 				failure.setException(unexpected);
 				failure.setMessage(UNEXPECTED_EXCEPTION_WAS_THROWN);
-				failure.setExpected(true);
-				failure.setActual(false);
 				exhibitResultMutant.setFailure(failure);
 			}
 			testResultMutant.addExhibitResult(exhibitResultMutant);
@@ -319,6 +320,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 		} catch (Exception x) {
 			failTestOnException(
 					CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TEST_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR, x);
+			return false;
 		} 
 		return true;
 	}
@@ -346,8 +348,6 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 		TestFailureMutant failure = new TestFailureMutant();
 		failure.setMessage(message);
 		failure.setException(p);
-		failure.setExpected(NO_THROWN_EXCEPTION);
-		failure.setActual(THROWN_EXCEPTION);
 		testResultMutant.setFailure(failure);
 		testResultMutant.setTestType(TestType.UnknownTestType);
 	}

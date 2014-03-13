@@ -1,12 +1,19 @@
 package org.adligo.jtests.base.shared;
 
+import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertEquals;
 import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertFalse;
+import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertNotEquals;
 import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertNotNull;
+import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertNotSame;
 import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertNull;
+import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertSame;
 import static org.adligo.jtests.base.shared.asserts.AssertCommandType.AssertTrue;
 
+import org.adligo.jtests.base.shared.asserts.AssertCommandType;
 import org.adligo.jtests.base.shared.asserts.AssertionFailureLocation;
 import org.adligo.jtests.base.shared.asserts.BooleanAssertCommand;
+import org.adligo.jtests.base.shared.asserts.ComparisonAssertCommand;
+import org.adligo.jtests.base.shared.asserts.ComparisonAssertCommandMutant;
 import org.adligo.jtests.base.shared.asserts.I_AssertCommand;
 import org.adligo.jtests.base.shared.asserts.I_Asserts;
 import org.adligo.jtests.models.shared.common.IsEmpty;
@@ -15,6 +22,10 @@ import org.adligo.jtests.models.shared.results.TestFailureMutant;
 import org.adligo.jtests.models.shared.run.I_AssertListener;
 
 public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
+	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_THE_SAME = "The Two Objects should Not be the same.";
+	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_EQUAL = "The two objects should Not be Equal.";
+	public static final String THE_TWO_OBJECTS_SHOULD_BE_THE_SAME = "The two objects should be the same.";
+	public static final String THESE_OBJECT_SHOULD_EQUALS = "These object should equals.";
 	public static final String THE_VALUE_SHOULD_NOT_BE_NULL = "The value should not be null.";
 	public static final String THE_VALUE_SHOULD_BE_NULL = "The value should be null.";
 	public static final String THE_VALUE_SHOULD_BE_TRUE = "The value should be true.";
@@ -39,8 +50,7 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 			TestFailureMutant fm = new TestFailureMutant();
 			fm.setMessage(cmd.getFailureMessage());
 			fm.setLocationFailed(new AssertionFailureLocation());
-			fm.setExpected(cmd.getExpected());
-			fm.setActual(cmd.getActual());
+			fm.setData(cmd.getData());
 			listener.assertFailed(new TestFailure(fm));
 		}
 	}
@@ -110,6 +120,55 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	@Override
 	public void afterExhibits() {
 		//do nothing, allow overrides
+	}
+
+	@Override
+	public void assertEquals(Object p, Object a) {
+		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
+	}
+
+	@Override
+	public void assertEquals(String message, Object p, Object a) {
+		assertCompairison(AssertEquals, message, p, a);
+	}
+
+	private void assertCompairison(AssertCommandType type,  String message, Object p, Object a) {
+		ComparisonAssertCommandMutant cmdMut = new ComparisonAssertCommandMutant();
+		cmdMut.setFailureMessage(message);
+		cmdMut.setExpected(p);
+		cmdMut.setActual(a);
+		cmdMut.setType(type);
+		evaluate(new ComparisonAssertCommand(cmdMut));
+	}
+
+	@Override
+	public void assertNotEquals(Object p, Object a) {
+		assertNotEquals(THE_TWO_OBJECTS_SHOULD_NOT_BE_EQUAL,p, a);
+	}
+
+	@Override
+	public void assertNotEquals(String message, Object p, Object a) {
+		assertCompairison(AssertNotEquals, message, p, a);
+	}
+
+	@Override
+	public void assertSame(Object p, Object a) {
+		assertSame(THE_TWO_OBJECTS_SHOULD_BE_THE_SAME, p,  a);
+	}
+
+	@Override
+	public void assertSame(String message, Object p, Object a) {
+		assertCompairison(AssertSame, message, p, a);
+	}
+
+	@Override
+	public void assertNotSame(Object p, Object a) {
+		assertSame(THE_TWO_OBJECTS_SHOULD_NOT_BE_THE_SAME, p,  a);
+	}
+
+	@Override
+	public void assertNotSame(String message, Object p, Object a) {
+		assertCompairison(AssertNotSame, message, p, a);
 	}
 	
 	
