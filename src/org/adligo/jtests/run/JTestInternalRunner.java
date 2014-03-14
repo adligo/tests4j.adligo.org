@@ -30,16 +30,22 @@ import org.adligo.jtests.models.shared.system.I_AssertListener;
 import org.adligo.jtests.models.shared.system.I_TestRunListener;
 
 public class JTestInternalRunner implements I_AssertListener, Runnable {
-	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = "Unexpected exception thrown from ";
+	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
+				"Unexpected exception thrown from ";
 	public static final String J_TEST_INTERNAL_RUNNER_REQUIRES_A_TEST_COMLETED_LISTENER = "JTestInternalRunner requires a test comleted listener";
 	public static final String REFERS_TO_A_NULL_J_TEST_TYPE_TYPE = " refers to a null @JTestType type.";
 	public static final String IS_MISSING_A_J_TEST_TYPE_ANNOTATION = " is missing a @JTestType annotation.";
 	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
-	public static final String TEST_CLASSES_MUST_HAVE_AT_LEAST_ONE_METHOD_ANNOTATED_WITH_EXHIBIT = "Test Classes must have at least one method annotated with @Exhibit.";
-	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_STATIC = "Methods Annotated with @Exhibit must NOT be static.";
-	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_ABSTRACT = "Methods Annotated with @Exhibit must NOT be abstract.";
-	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_BE_PUBLIC = "Methods Annotated with @Exhibit must be public.";
-	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_TAKE_ANY_PARAMETERS = "Methods Annotated with @Exhibit must not take any parameters";
+	public static final String TEST_CLASSES_MUST_HAVE_AT_LEAST_ONE_METHOD_ANNOTATED_WITH_EXHIBIT = 
+				"Test Classes must have at least one method annotated with @Exhibit.";
+	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_STATIC = 
+				"Methods Annotated with @Exhibit must NOT be static.";
+	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_ABSTRACT = 
+				"Methods Annotated with @Exhibit must NOT be abstract.";
+	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_BE_PUBLIC = 
+				"Methods Annotated with @Exhibit must be public.";
+	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_TAKE_ANY_PARAMETERS = 
+				"Methods Annotated with @Exhibit must not take any parameters";
 	private static final String METHODS_ANNOTATED_WITH_AFTER_TEST_MUST_NOT_TAKE_ANY_PARAMETERS = 
 				"Methods Annotated with @AfterTest must not take any parameters.";
 	public static final String METHODS_ANNOTATED_WITH_AFTER_TEST_MUST_BE_STATIC = 
@@ -47,7 +53,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 	public static final String METHODS_ANNOTATED_WITH_BEFORE_TEST_MUST_NOT_TAKE_ANY_PARAMETERS = 
 				"Methods Annotated with @BeforeTest must not take any parameters.";
 	public static final String METHODS_ANNOTATED_WITH_BEFORE_TEST_MUST_BE_STATIC = 
-				"Methods annotated with BeforeTest must be static.";
+				"Methods Annotated with @BeforeTest must be static.";
 	public static final String PACKAGE_TESTS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION = 
 				"PackageTests must be annotated with a PackageTestScope annotation.";
 	public static final String WAS_NOT_ANNOTATED_CORRECTLY = " was not annotated correctly.";

@@ -11,6 +11,11 @@ import org.adligo.jtests.models.shared.asserts.line_text.StartEndDiffPair;
 public class LineTextComparisonReport {
 
 	public static void display(PrintStream out, PrintStream err, LineTextCompareResult result) {
+		out.println("Expected;");
+		out.println(result.getExample());
+		out.println("Actual;");
+		out.println(result.getActual());
+		
 		List<LineDiff> lineDiffs = result.getLineDiffs();
 		if (lineDiffs.size() >= 1) {
 			for (LineDiff line: lineDiffs) {
@@ -24,12 +29,7 @@ public class LineTextComparisonReport {
 				out.println("but was;");
 				print(out, err, actual, pair.getActual());
 			}
-		} else {
-			out.println("Expected;");
-			out.println(result.getExample());
-			out.println("Actual;");
-			out.println(result.getActual());
-		}
+		} 
 	}
 	
 	private static void print(PrintStream out, PrintStream err, String content, StartEndDiff diff) {
