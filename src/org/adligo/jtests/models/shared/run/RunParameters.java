@@ -3,7 +3,7 @@ package org.adligo.jtests.models.shared.run;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.jtests.base.shared.I_AbstractTest;
+import org.adligo.jtests.models.shared.I_AbstractTest;
 
 
 public class RunParameters {
@@ -16,7 +16,6 @@ public class RunParameters {
 	private boolean packageScope = true;
 	private boolean failFast = true;
 	private boolean silent = false;
-	private I_AllTestsDoneListener allTestsDoneListener;
 	
 	public List<Class<? extends I_AbstractTest>> getTests() {
 		return tests;
@@ -43,11 +42,5 @@ public class RunParameters {
 	}
 	public void setSilent(boolean silent) {
 		this.silent = silent;
-	}
-	public I_AllTestsDoneListener getAllTestsDoneListener() {
-		return allTestsDoneListener;
-	}
-	public void setAllTestsDoneListener(I_AllTestsDoneListener runDoneListener) {
-		this.allTestsDoneListener = runDoneListener;
 	}
 }

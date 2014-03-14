@@ -1,17 +1,13 @@
 package org.adligo.jtests.run;
 
-import org.adligo.jtests.base.shared.AbstractTest;
-import org.adligo.jtests.base.shared.I_AbstractTest;
+import org.adligo.jtests.models.shared.I_AbstractTest;
 import org.adligo.jtests.models.shared.results.I_TestResult;
-import org.adligo.jtests.models.shared.run.I_AllTestsDoneListener;
-import org.adligo.jtests.models.shared.run.I_TestCompleteListener;
+import org.adligo.jtests.models.shared.results.I_TestRunResult;
 import org.adligo.jtests.models.shared.run.I_TestResultsProcessor;
+import org.adligo.jtests.models.shared.run.I_TestRunListener;
 import org.adligo.jtests.models.shared.run.RunParameters;
 
-public class JTests implements I_TestCompleteListener, I_AllTestsDoneListener {
-	public static final String J_TESTS_REQUIRES_A_I_TEST_RESULTS_PROCESSOR = "JTests requires a I_TestResultsProcessor.";
-
-	private I_TestResultsProcessor testResultProcessor;
+public class JTests implements I_TestRunListener {private I_TestResultsProcessor testResultProcessor;
 	
 	RunParameters params;
 	/*
@@ -19,24 +15,22 @@ public class JTests implements I_TestCompleteListener, I_AllTestsDoneListener {
 		
 	}
 	*/
-	public static Thread run(RunParameters pParams, I_TestResultsProcessor pProcessor) {
+	
+	public static Thread run(RunParameters pParams, I_TestRunListener pProcessor) {
 		JTests jt = new JTests();
 		return jt.runInternal(pParams, pProcessor);
 	}
 	
+	public static Thread run(RunParameters pParams) {
+		JTests jt = new JTests();
+		return jt.runInternal(pParams, jt);
+	}
+	
 	private JTests() {}
 	
-	public Thread runInternal(final RunParameters pParams, I_TestResultsProcessor pProcessor) {
-		testResultProcessor = pProcessor;
-		if (testResultProcessor == null) {
-			throw new IllegalArgumentException(J_TESTS_REQUIRES_A_I_TEST_RESULTS_PROCESSOR);
-		}
-		I_AllTestsDoneListener whenDone =  pParams.getAllTestsDoneListener();
-		if (whenDone == null) {
-			whenDone = this;
-		}
+	private Thread runInternal(final RunParameters pParams, I_TestRunListener pListener) {
 		JTestInternalRunner runner = new JTestInternalRunner(
-				pParams.getTests(),whenDone, this);
+				pParams.getTests(),pListener);
 		
 		runner.setSilent(pParams.isSilent());
 		
@@ -53,7 +47,8 @@ public class JTests implements I_TestCompleteListener, I_AllTestsDoneListener {
 	}
 
 	@Override
-	public void whenFinished() {
+	public void onRunCompleted(I_TestRunResult result) {
+		testResultProcessor.process(result);
 		System.exit(0);
 	}
 	

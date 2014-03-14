@@ -1,7 +1,6 @@
 package org.adligo.jtests.run;
 
 import java.io.PrintStream;
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,25 +8,26 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.jtests.base.shared.AfterTest;
-import org.adligo.jtests.base.shared.BeforeTest;
-import org.adligo.jtests.base.shared.ClassTestScope;
-import org.adligo.jtests.base.shared.Exhibit;
-import org.adligo.jtests.base.shared.I_AbstractTest;
-import org.adligo.jtests.base.shared.JTestType;
-import org.adligo.jtests.base.shared.PackageTestScope;
-import org.adligo.jtests.base.shared.asserts.I_AssertCommand;
+import org.adligo.jtests.models.shared.AfterTest;
+import org.adligo.jtests.models.shared.BeforeTest;
+import org.adligo.jtests.models.shared.ClassTestScope;
+import org.adligo.jtests.models.shared.Exhibit;
+import org.adligo.jtests.models.shared.I_AbstractTest;
+import org.adligo.jtests.models.shared.JTestType;
+import org.adligo.jtests.models.shared.PackageTestScope;
+import org.adligo.jtests.models.shared.asserts.I_AssertCommand;
 import org.adligo.jtests.models.shared.common.TestType;
 import org.adligo.jtests.models.shared.results.ExhibitResultMutant;
 import org.adligo.jtests.models.shared.results.I_TestFailure;
 import org.adligo.jtests.models.shared.results.TestFailureMutant;
 import org.adligo.jtests.models.shared.results.TestResult;
 import org.adligo.jtests.models.shared.results.TestResultMutant;
+import org.adligo.jtests.models.shared.results.TestRunResult;
+import org.adligo.jtests.models.shared.results.TestRunResultMutant;
 import org.adligo.jtests.models.shared.run.AssertionFailureException;
 import org.adligo.jtests.models.shared.run.ByteListOutputStream;
-import org.adligo.jtests.models.shared.run.I_AllTestsDoneListener;
 import org.adligo.jtests.models.shared.run.I_AssertListener;
-import org.adligo.jtests.models.shared.run.I_TestCompleteListener;
+import org.adligo.jtests.models.shared.run.I_TestRunListener;
 
 public class JTestInternalRunner implements I_AssertListener, Runnable {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = "Unexpected exception thrown from ";
@@ -60,23 +60,24 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 	private List<Class<? extends I_AbstractTest>> tests = new ArrayList<Class<? extends I_AbstractTest>>();
 	private Class<? extends I_AbstractTest> testClass;
 	private I_AbstractTest test;
-	private I_TestCompleteListener listener;
+	private I_TestRunListener listener;
 	private boolean silent = false;
 	private ByteListOutputStream blos = new ByteListOutputStream(64);
 	private PrintStream originalOut;
 	private PrintStream originalErr;
 	private PrintStream captureOut;
 	private PrintStream captureErr;
-	private I_AllTestsDoneListener runDoneListener;
 	private Method beforeTest;
 	private Method afterTest;
 	private TestResultMutant testResultMutant;
 	private ExhibitResultMutant exhibitResultMutant;
 	private List<Method> exhibitMethods;
+	private TestRunResultMutant testRun = new TestRunResultMutant();
 	
 	public JTestInternalRunner(List<Class<? extends I_AbstractTest>> pTests, 
-			I_AllTestsDoneListener pRunDoneListener, I_TestCompleteListener pTestCompletedLister) {
+			I_TestRunListener pTestCompletedLister) {
 		
+		testRun.setStartTime(System.currentTimeMillis());
 		tests.addAll(pTests);
 		originalOut = System.out;
 		originalErr = System.err;
@@ -87,13 +88,8 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 		captureErr = new PrintStream(blos);
 		System.setErr(captureErr);
 		
-		runDoneListener = pRunDoneListener;
-		if (runDoneListener == null) {
-			throw new IllegalArgumentException(J_TEST_INTERNAL_RUNNER_REQUIRES_A_I_RUN_DONE_LISTENER);
-		}
-		
 		listener = pTestCompletedLister;
-		if (runDoneListener == null) {
+		if (listener == null) {
 			throw new IllegalArgumentException(J_TEST_INTERNAL_RUNNER_REQUIRES_A_TEST_COMLETED_LISTENER);
 		}
 	}
@@ -122,7 +118,10 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 		}
 		System.setOut(originalOut);
 		System.setErr(originalErr);
-		runDoneListener.whenFinished();
+		long end = System.currentTimeMillis();
+		long duration = end - testRun.getStartTime();
+		testRun.setRunTime(duration);
+		listener.onRunCompleted(new TestRunResult(testRun));
 	}
 
 	private void runAfterTest() {
@@ -338,7 +337,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 
 
 
-	public I_TestCompleteListener getTestCompletedListener() {
+	public I_TestRunListener getTestCompletedListener() {
 		return listener;
 	}
 

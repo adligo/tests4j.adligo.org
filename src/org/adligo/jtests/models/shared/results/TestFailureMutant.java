@@ -1,13 +1,13 @@
 package org.adligo.jtests.models.shared.results;
 
-import org.adligo.jtests.base.shared.asserts.I_AssertData;
+import org.adligo.jtests.models.shared.asserts.I_AssertionData;
 
 public class TestFailureMutant implements I_TestFailure {
 	public static final String TEST_FAILURE_MUTANT_REQURIES_ASSERTION_DATA = "TestFailureMutant requries assertion data.";
 	public static final String FAILURE_MUTANT_DOES_NOT_ALLOW_NULL_MESSAGES = "TestFailureMutant does NOT allow null messages.";
 	public static final String FAILURE_MUTANT_REQUIRES_EITHER_A_LOCATION_FAILED_OR_A_EXCEPTION = "TestFailureMutant requires either a locationFailed or a exception.";
 	private String message;
-	private I_AssertData data;
+	private I_AssertionData data;
 	private Throwable locationFailed;
 	private Throwable exception;
 	
@@ -79,11 +79,11 @@ public class TestFailureMutant implements I_TestFailure {
 				+ ", exception=" + exception + "]";
 	}
 
-	public I_AssertData getData() {
+	public I_AssertionData getData() {
 		return data;
 	}
 
-	public void setData(I_AssertData data) {
+	public void setData(I_AssertionData data) {
 		this.data = data;
 	}
 }
