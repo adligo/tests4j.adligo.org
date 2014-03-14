@@ -15,7 +15,6 @@ public class LineTextCompare  {
 		LineText exampleLT = new LineText(exStripped);
 		LineText actualLT = new LineText(exActual);
 		
-		
 		List<LineDiff> toRet = new ArrayList<LineDiff>();
 		for (int i = 0; i < exampleLT.getLines(); i++) {
 			String exampleLine = exampleLT.getLine(i);

@@ -185,13 +185,13 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 			if (bt != null) {
 				if (!Modifier.isStatic(method.getModifiers())) {
 					failTestOnException(METHODS_ANNOTATED_WITH_BEFORE_TEST_MUST_BE_STATIC, 
-							new IllegalArgumentException(testClass + WAS_NOT_ANNOTATED_CORRECTLY));
+							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
 					return false;
 				}
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
 					failTestOnException(METHODS_ANNOTATED_WITH_BEFORE_TEST_MUST_NOT_TAKE_ANY_PARAMETERS, 
-							new IllegalArgumentException(testClass + WAS_NOT_ANNOTATED_CORRECTLY));
+							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
 					return false;
 				}
 				beforeTest = method;
@@ -200,13 +200,13 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 			if (at != null) {
 				if (!Modifier.isStatic(method.getModifiers())) {
 					failTestOnException(METHODS_ANNOTATED_WITH_AFTER_TEST_MUST_BE_STATIC, 
-							new IllegalArgumentException(testClass + WAS_NOT_ANNOTATED_CORRECTLY));
+							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
 					return false;
 				}
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
 					failTestOnException(METHODS_ANNOTATED_WITH_AFTER_TEST_MUST_NOT_TAKE_ANY_PARAMETERS, 
-							new IllegalArgumentException(testClass + WAS_NOT_ANNOTATED_CORRECTLY));
+							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
 					return false;
 				}
 				afterTest = method;
@@ -216,17 +216,17 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
 					failTestOnException(METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_TAKE_ANY_PARAMETERS, 
-							new IllegalArgumentException(testClass + "." + method.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
+							new IllegalArgumentException(testClass.getName() + "." + method.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
 					return false;
 				}
 				if (Modifier.isAbstract(method.getModifiers())) {
 					failTestOnException(METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_ABSTRACT, 
-							new IllegalArgumentException(testClass + "." + method.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
+							new IllegalArgumentException(testClass.getName() + "." + method.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
 					return false;
 				}
 				if (Modifier.isStatic(method.getModifiers())) {
 					failTestOnException(METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_STATIC, 
-							new IllegalArgumentException(testClass + "." + method.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
+							new IllegalArgumentException(testClass.getName() + "." + method.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
 					return false;
 				}
 				exhibitMethods.add(method);
@@ -234,7 +234,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 		}
 		if (exhibitMethods.size() == 0) {
 			failTestOnException(TEST_CLASSES_MUST_HAVE_AT_LEAST_ONE_METHOD_ANNOTATED_WITH_EXHIBIT, 
-					new IllegalArgumentException(testClass + WAS_NOT_ANNOTATED_CORRECTLY));
+					new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
 			return false;
 		}
 		return true;
@@ -253,7 +253,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 			}
 		}
 		if (jtype == null) {
-			failTestOnException(THE_TEST + testClass + IS_MISSING_A_J_TEST_TYPE_ANNOTATION, 
+			failTestOnException(THE_TEST + testClass.getName() + IS_MISSING_A_J_TEST_TYPE_ANNOTATION, 
 					new IllegalArgumentException());
 		}
 		TestType type = jtype.getType();
