@@ -1,6 +1,6 @@
 package org.adligo.jtests.models.shared.asserts;
 
-import org.adligo.jtests.models.shared.asserts.line_text.LineTextCompairResult;
+import org.adligo.jtests.models.shared.asserts.line_text.LineTextCompareResult;
 
 public interface I_ComparisonAssertCommand extends I_AssertCommand {
 
@@ -11,5 +11,5 @@ public interface I_ComparisonAssertCommand extends I_AssertCommand {
 	public abstract Object getExpected();
 
 	public abstract Object getActual();
-	public LineTextCompairResult getLineTextCompairResult();
+	public LineTextCompareResult getLineTextCompairResult();
 }

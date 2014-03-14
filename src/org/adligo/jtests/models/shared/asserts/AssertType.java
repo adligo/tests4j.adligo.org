@@ -28,11 +28,11 @@ public enum AssertType implements I_AssertType{
 	AssertTrue(0), AssertFalse(1), AssertNull(2), AssertNotNull(3),
 	AssertEquals(4), AssertNotEquals(5), AssertSame(6), AssertNotSame(7),
 	AssertThrown(8), AssertNotThrown(9), AssertThrownUniform(9), 
-	AssertUniform(11), AssertNotUniform(12);
+	AssertUniform(10), AssertNotUniform(11);
 	
 	public static Set<AssertType> BOOLEAN_TYPES = getBooleanTypes();
 	public static Set<AssertType> IDENTICAL_TYPES = getIdenticalTypes();
-	public static Set<AssertType> THROWABLE_TYPES = getThrowableTypes();
+	public static Set<AssertType> THROWN_TYPES = getThrownTypes();
 	public static Set<AssertType> UNIFORM_TYPES = getUniformTypes();
 	
 	private static Set<AssertType> getBooleanTypes() {
@@ -53,10 +53,10 @@ public enum AssertType implements I_AssertType{
 		return Collections.unmodifiableSet(toRet);
 	}
 	
-	private static Set<AssertType> getThrowableTypes() {
+	private static Set<AssertType> getThrownTypes() {
 		Set<AssertType> toRet = new HashSet<AssertType>();
 		toRet.add(AssertThrown);
-		toRet.add(AssertNotThrown);
+		toRet.add(AssertThrownUniform);
 		return Collections.unmodifiableSet(toRet);
 	}
 	

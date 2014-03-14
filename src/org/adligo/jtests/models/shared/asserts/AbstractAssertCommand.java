@@ -9,7 +9,7 @@ public abstract class AbstractAssertCommand implements I_AssertCommand {
 	private String failureMessage;
 	private I_AssertType type;
 	
-	public AbstractAssertCommand(I_AssertType pType, String pFailureMessage) {
+	AbstractAssertCommand(I_AssertType pType, String pFailureMessage) {
 		type = pType;
 		if (type == null) {
 			throw new IllegalArgumentException(
@@ -24,8 +24,6 @@ public abstract class AbstractAssertCommand implements I_AssertCommand {
 	public I_AssertType getType() {
 		return type;
 	}
-
-	public abstract boolean evaluate();
 
 	@Override
 	public int hashCode() {

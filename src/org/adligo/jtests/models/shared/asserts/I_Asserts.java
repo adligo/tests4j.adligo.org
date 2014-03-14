@@ -19,4 +19,15 @@ public interface I_Asserts {
 	public void assertSame(String message, Object p, Object a);	
 	public void assertNotSame(Object p, Object a);
 	public void assertNotSame(String message, Object p, Object a);	
+	
+	public void assertThrown(ThrownableAssertionData p, I_Thrower thrower);
+	public void assertThrown(String message, ThrownableAssertionData p, I_Thrower thrower);	
+	public void assertThrownUniform(ThrownableAssertionData p, I_Thrower thrower);
+	public void assertThrownUniform(String message, ThrownableAssertionData p, I_Thrower thrower);	
+	
+	public void assertUniform(Object p, Object a);
+	public void assertUniform(String message, Object p, Object a);	
+	public void assertNotUniform(Object p, Object a);
+	public void assertNotUniform(String message, Object p, Object a);	
+	
 }

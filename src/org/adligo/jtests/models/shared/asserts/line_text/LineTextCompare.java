@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 
-public class LineTextCompair  {
+public class LineTextCompare  {
 	
-	public static LineTextCompairResult equals(String example, String actual) {
+	public static LineTextCompareResult equals(String example, String actual) {
 		String exStripped  = replaceAllLineSeperatorsWithUnix(example);
 		String exActual  = replaceAllLineSeperatorsWithUnix(actual);
 		
@@ -51,7 +51,8 @@ public class LineTextCompair  {
 				}
 				StartEndDiff exampleDiff = new StartEndDiff(startDiff, exampleLine.length() - fromEndDiff);
 				StartEndDiff actualDiff = new StartEndDiff(startDiff, actualLine.length() - fromEndDiff);
-				toRet.add(new LineDiff(i, new StartEndDiffPair(exampleDiff, actualDiff)));
+				toRet.add(new LineDiff(exampleLine, actualLine,
+						i, new StartEndDiffPair(exampleDiff, actualDiff)));
 			}
 		}
 		boolean passed = true;
@@ -61,7 +62,7 @@ public class LineTextCompair  {
 		if (exampleLT.getLines() != actualLT.getLines()) {
 			passed = false;
 		}
-		return new LineTextCompairResult(passed, 
+		return new LineTextCompareResult(example, actual, passed, 
 				exampleLT.getLines(), actualLT.getLines(), toRet);
 	}
 

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 
 
-public class BooleanAssertCommand extends AbstractAssertCommand implements I_AssertCommand {
+public class BooleanAssertCommand extends AbstractAssertCommand implements I_BasicAssertCommand {
 	public static final String VALUE = "value";
 	public static final String BOOLEAN_ASSERT_COMMAND_REQUIRES_A_BOOLEAN_TYPE = "BooleanAssertCommand requires a boolean type.";
 	private Object value;

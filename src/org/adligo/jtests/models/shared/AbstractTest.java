@@ -4,25 +4,33 @@ import static org.adligo.jtests.models.shared.asserts.AssertType.AssertEquals;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertFalse;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNotEquals;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNotNull;
-import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNotSame;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNull;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertSame;
+import static org.adligo.jtests.models.shared.asserts.AssertType.AssertThrown;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertTrue;
+import static org.adligo.jtests.models.shared.asserts.AssertType.AssertUniform;
+import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNotUniform;
 
-import org.adligo.jtests.models.shared.asserts.AssertType;
 import org.adligo.jtests.models.shared.asserts.AssertionFailureLocation;
 import org.adligo.jtests.models.shared.asserts.BooleanAssertCommand;
 import org.adligo.jtests.models.shared.asserts.CompareAssertionData;
-import org.adligo.jtests.models.shared.asserts.IdenticalAssertCommand;
-import org.adligo.jtests.models.shared.asserts.IdenticalAssertCommand;
-import org.adligo.jtests.models.shared.asserts.I_AssertCommand;
 import org.adligo.jtests.models.shared.asserts.I_Asserts;
+import org.adligo.jtests.models.shared.asserts.I_BasicAssertCommand;
+import org.adligo.jtests.models.shared.asserts.I_Thrower;
+import org.adligo.jtests.models.shared.asserts.I_ThrownAssertCommand;
+import org.adligo.jtests.models.shared.asserts.IdenticalAssertCommand;
+import org.adligo.jtests.models.shared.asserts.ThrownAssertCommand;
+import org.adligo.jtests.models.shared.asserts.ThrownableAssertionData;
+import org.adligo.jtests.models.shared.asserts.UniformAssertCommand;
 import org.adligo.jtests.models.shared.common.IsEmpty;
 import org.adligo.jtests.models.shared.results.TestFailure;
 import org.adligo.jtests.models.shared.results.TestFailureMutant;
 import org.adligo.jtests.models.shared.run.I_AssertListener;
 
 public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
+	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM = "The two objects should not be uniform.";
+	public static final String THE_TWO_OBJECTS_SHOULD_BE_UNIFORM = "The two objects should be uniform.";
+	public static final String A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN = "A instance of the Throwable Class should have been thrown.";
 	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_THE_SAME = "The Two Objects should Not be the same.";
 	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_EQUAL = "The two objects should Not be Equal.";
 	public static final String THE_TWO_OBJECTS_SHOULD_BE_THE_SAME = "The two objects should be the same.";
@@ -47,8 +55,20 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	/**
 	 * @param cmd
 	 */
-	public synchronized void evaluate(I_AssertCommand cmd) {
+	public synchronized void evaluate(I_BasicAssertCommand cmd) {
 		if (cmd.evaluate()) {
+			listener.assertCompleted(cmd);
+		} else {
+			TestFailureMutant fm = new TestFailureMutant();
+			fm.setMessage(cmd.getFailureMessage());
+			fm.setLocationFailed(new AssertionFailureLocation());
+			fm.setData(cmd);
+			listener.assertFailed(new TestFailure(fm));
+		}
+	}
+	
+	public synchronized void evaluate(I_ThrownAssertCommand cmd, I_Thrower p) {
+		if (cmd.evaluate(p)) {
 			listener.assertCompleted(cmd);
 		} else {
 			TestFailureMutant fm = new TestFailureMutant();
@@ -175,5 +195,44 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 				new CompareAssertionData(p, a)));
 	}
 	
+	@Override
+	public void assertThrown(ThrownableAssertionData pData, I_Thrower pThrower) {
+		assertThrown(A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN, pData, pThrower);
+	}
+
+	@Override
+	public void assertThrown(String pMessage, ThrownableAssertionData pData, I_Thrower pThrower) {
+		evaluate(new ThrownAssertCommand(
+				AssertThrown, pMessage, pData), pThrower);
+	}
 	
+	@Override
+	public void assertThrownUniform(ThrownableAssertionData pData, I_Thrower pThrower) {
+		assertThrownUniform(A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN, pData, pThrower);
+	}
+
+	@Override
+	public void assertThrownUniform(String pMessage, ThrownableAssertionData pData, I_Thrower pThrower) {
+		evaluate(new ThrownAssertCommand(
+				AssertThrown, pMessage, pData), pThrower);
+	}
+	
+	public void assertUniform(Object p, Object a) {
+		assertUniform(THE_TWO_OBJECTS_SHOULD_BE_UNIFORM, p, a);
+	}
+	public void assertUniform(String message, Object p, Object a) {
+		evaluate(new UniformAssertCommand(
+				AssertUniform, message, 
+				new CompareAssertionData(p, a)));
+	}
+	
+	public void assertNotUniform(Object p, Object a) {
+		assertNotUniform(THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM, p, a);
+	}
+	
+	public void assertNotUniform(String message, Object p, Object a) {
+		evaluate(new UniformAssertCommand(
+				AssertNotUniform, message, 
+				new CompareAssertionData(p, a)));
+	}
 }

@@ -1,6 +1,7 @@
 package org.adligo.jtests.run;
 
 import org.adligo.jtests.models.shared.I_AbstractTest;
+import org.adligo.jtests.models.shared.common.LineSeperator;
 import org.adligo.jtests.models.shared.results.I_TestResult;
 import org.adligo.jtests.models.shared.results.I_TestRunResult;
 import org.adligo.jtests.models.shared.run.I_TestResultsProcessor;
@@ -17,11 +18,13 @@ public class JTests implements I_TestRunListener {private I_TestResultsProcessor
 	*/
 	
 	public static Thread run(RunParameters pParams, I_TestRunListener pProcessor) {
+		LineSeperator.setLineSeperator(System.lineSeparator());
 		JTests jt = new JTests();
 		return jt.runInternal(pParams, pProcessor);
 	}
 	
 	public static Thread run(RunParameters pParams) {
+		LineSeperator.setLineSeperator(System.lineSeparator());
 		JTests jt = new JTests();
 		return jt.runInternal(pParams, jt);
 	}

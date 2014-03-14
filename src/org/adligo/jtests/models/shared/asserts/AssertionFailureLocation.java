@@ -1,5 +1,7 @@
 package org.adligo.jtests.models.shared.asserts;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,8 +12,11 @@ import java.util.Set;
 import org.adligo.jtests.models.shared.AbstractTest;
 
 public class AssertionFailureLocation extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Set<String> NON_LOCATION_STACK_CLASSES = getNonLocationStackClasses();
-	private StackTraceElement[] stackTrace;
 	
 	public AssertionFailureLocation() {
 		Exception stack = new Exception();
@@ -23,7 +28,8 @@ public class AssertionFailureLocation extends Exception {
 				forStack.add(e);
 			}
 		}
-		stackTrace = forStack.toArray(new StackTraceElement[forStack.size()]);
+		StackTraceElement [] stackTrace = forStack.toArray(new StackTraceElement[forStack.size()]);
+		super.setStackTrace(stackTrace);
 	}
 	
 	private static Set<String> getNonLocationStackClasses() {
@@ -34,9 +40,5 @@ public class AssertionFailureLocation extends Exception {
 		return Collections.unmodifiableSet(toRet);
 	}
 	
-	@Override
-	public StackTraceElement[] getStackTrace() {
-		return Arrays.copyOf(stackTrace, stackTrace.length, 
-				StackTraceElement[].class);
-	}
+
 }

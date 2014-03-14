@@ -8,4 +8,12 @@ public class StartEndDiff {
 		start = pStart;
 		end = pEnd;
 	}
+
+	public int getStart() {
+		return start;
+	}
+
+	public int getEnd() {
+		return end;
+	}
 }
