@@ -219,11 +219,6 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 							new IllegalArgumentException(testClass + "." + method.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
 					return false;
 				}
-				if (!Modifier.isPublic(method.getModifiers())) {
-					failTestOnException(METHODS_ANNOTATED_WITH_EXHIBIT_MUST_BE_PUBLIC, 
-							new IllegalArgumentException(testClass + "." + method.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
-					return false;
-				}
 				if (Modifier.isAbstract(method.getModifiers())) {
 					failTestOnException(METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_ABSTRACT, 
 							new IllegalArgumentException(testClass + "." + method.getName() + WAS_NOT_ANNOTATED_CORRECTLY));
