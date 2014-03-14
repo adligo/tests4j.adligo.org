@@ -4,9 +4,9 @@ import org.adligo.jtests.models.shared.I_AbstractTest;
 import org.adligo.jtests.models.shared.common.LineSeperator;
 import org.adligo.jtests.models.shared.results.I_TestResult;
 import org.adligo.jtests.models.shared.results.I_TestRunResult;
-import org.adligo.jtests.models.shared.run.I_TestResultsProcessor;
-import org.adligo.jtests.models.shared.run.I_TestRunListener;
-import org.adligo.jtests.models.shared.run.RunParameters;
+import org.adligo.jtests.models.shared.system.I_TestResultsProcessor;
+import org.adligo.jtests.models.shared.system.I_TestRunListener;
+import org.adligo.jtests.models.shared.system.RunParameters;
 
 public class JTests implements I_TestRunListener {private I_TestResultsProcessor testResultProcessor;
 	

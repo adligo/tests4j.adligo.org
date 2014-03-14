@@ -1,4 +1,4 @@
-package org.adligo.jtests.models.shared.run;
+package org.adligo.jtests.models.shared.system;
 
 /**
  * this is used to notify 

@@ -1,4 +1,4 @@
-package org.adligo.jtests.models.shared.run;
+package org.adligo.jtests.models.shared.system;
 
 import org.adligo.jtests.models.shared.asserts.I_AssertCommand;
 import org.adligo.jtests.models.shared.results.I_TestFailure;

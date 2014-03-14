@@ -25,7 +25,7 @@ import org.adligo.jtests.models.shared.asserts.UniformAssertCommand;
 import org.adligo.jtests.models.shared.common.IsEmpty;
 import org.adligo.jtests.models.shared.results.TestFailure;
 import org.adligo.jtests.models.shared.results.TestFailureMutant;
-import org.adligo.jtests.models.shared.run.I_AssertListener;
+import org.adligo.jtests.models.shared.system.I_AssertListener;
 
 public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM = "The two objects should not be uniform.";

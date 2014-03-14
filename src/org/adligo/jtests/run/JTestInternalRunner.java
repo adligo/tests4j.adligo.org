@@ -24,10 +24,10 @@ import org.adligo.jtests.models.shared.results.TestResult;
 import org.adligo.jtests.models.shared.results.TestResultMutant;
 import org.adligo.jtests.models.shared.results.TestRunResult;
 import org.adligo.jtests.models.shared.results.TestRunResultMutant;
-import org.adligo.jtests.models.shared.run.AssertionFailureException;
-import org.adligo.jtests.models.shared.run.ByteListOutputStream;
-import org.adligo.jtests.models.shared.run.I_AssertListener;
-import org.adligo.jtests.models.shared.run.I_TestRunListener;
+import org.adligo.jtests.models.shared.system.AssertionFailureException;
+import org.adligo.jtests.models.shared.system.ByteListOutputStream;
+import org.adligo.jtests.models.shared.system.I_AssertListener;
+import org.adligo.jtests.models.shared.system.I_TestRunListener;
 
 public class JTestInternalRunner implements I_AssertListener, Runnable {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = "Unexpected exception thrown from ";
