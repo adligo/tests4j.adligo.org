@@ -11,8 +11,10 @@ import static org.adligo.jtests.models.shared.asserts.AssertType.AssertThrown;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertTrue;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertUniform;
 
+import org.adligo.jtests.models.shared.asserts.AssertType;
 import org.adligo.jtests.models.shared.asserts.AssertionFailureLocation;
 import org.adligo.jtests.models.shared.asserts.BooleanAssertCommand;
+import org.adligo.jtests.models.shared.asserts.ByteAssertCommand;
 import org.adligo.jtests.models.shared.asserts.CompareAssertionData;
 import org.adligo.jtests.models.shared.asserts.I_Asserts;
 import org.adligo.jtests.models.shared.asserts.I_BasicAssertCommand;
@@ -30,6 +32,10 @@ import org.adligo.jtests.models.shared.results.TestFailureMutant;
 import org.adligo.jtests.models.shared.system.I_AssertListener;
 
 public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
+	public static final String THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE = "The first Byte should NOT be less than the second Byte.";
+	public static final String NOT_GREATER_THAN_BYTE = "The first byte should NOT be greater than the last byte";
+	public static final String THE_EXPECTED_BYTE_SHOULD_BE_LESS_THAN_THE_ACTUAL_BYTE = "The first Byte should be less than the second byte";
+	private static final String GREATER_THAN_BYTE = "The first Byte should be greater than the second Byte.";
 	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM = "The two objects should not be uniform.";
 	public static final String THE_TWO_OBJECTS_SHOULD_BE_UNIFORM = "The two objects should be uniform.";
 	public static final String A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN = "A instance of the Throwable Class should have been thrown.";
@@ -82,6 +88,71 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	}
 	
 	@Override
+	public void assertEquals(Object p, Object a) {
+		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
+	}
+
+	@Override
+	public void assertEquals(String message, Object p, Object a) {
+		evaluate(new IdenticalAssertCommand(
+				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
+				new CompareAssertionData<Object>(p, a)));
+	}
+	
+	
+	@Override
+	public void assertEquals(Byte p, Byte a) {
+		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
+	}
+
+	@Override
+	public void assertEquals(String message, Byte p, Byte a) {
+		evaluate(new ByteAssertCommand(
+				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
+				new CompareAssertionData<Byte>(p, a)));
+	}
+	
+	
+	@Override
+	public void assertEquals(Throwable p, Throwable a) {
+		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
+	}
+
+	@Override
+	public void assertEquals(String message, Throwable p, Throwable a) {
+		evaluate(new ThrowableAssertCommand(
+				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
+				new CompareAssertionData<Throwable>(p, a)));
+	}
+	
+
+
+	@Override
+	public void assertGreaterThan(Byte p, Byte a) {
+		assertGreaterThan(GREATER_THAN_BYTE, p, a);
+	}
+
+	@Override
+	public void assertGreaterThan(String message, Byte p, Byte a) {
+		evaluate(new ByteAssertCommand(
+				AssertType.AssertGreaterThan, message, 
+				new CompareAssertionData<Byte>(p, a)));
+	}
+	
+	@Override
+	public void assertLessThan(Byte p, Byte a) {
+		assertLessThan(THE_EXPECTED_BYTE_SHOULD_BE_LESS_THAN_THE_ACTUAL_BYTE, p, a);
+	}
+
+	@Override
+	public void assertLessThan(String message, Byte p, Byte a) {
+		evaluate(new ByteAssertCommand(
+				AssertType.AssertLessThan, message, 
+				new CompareAssertionData<Byte>(p, a)));
+	}
+	
+	
+	@Override
 	public void assertTrue(boolean p) {
 		assertTrue(THE_VALUE_SHOULD_BE_TRUE, p);
 	}
@@ -109,6 +180,30 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 		}
 	}
 
+	@Override
+	public void assertNotGreaterThan(Byte p, Byte a) {
+		assertNotGreaterThan(NOT_GREATER_THAN_BYTE, p, a);
+	}
+
+	@Override
+	public void assertNotGreaterThan(String message, Byte p, Byte a) {
+		evaluate(new ByteAssertCommand(
+				AssertType.AssertNotGreaterThan, message, 
+				new CompareAssertionData<Byte>(p, a)));
+	}
+	
+	@Override
+	public void assertNotLessThan(Byte p, Byte a) {
+		assertNotLessThan(THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE, p, a);
+	}
+
+	@Override
+	public void assertNotLessThan(String message, Byte p, Byte a) {
+		evaluate(new ByteAssertCommand(
+				AssertType.AssertNotLessThan, message, 
+				new CompareAssertionData<Byte>(p, a)));
+	}
+	
 	@Override
 	public void assertNull(Object p) {
 		assertNull(THE_VALUE_SHOULD_BE_NULL, p);
@@ -148,30 +243,7 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 		//do nothing, allow overrides
 	}
 
-	@Override
-	public void assertEquals(Object p, Object a) {
-		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
-	}
-
-	@Override
-	public void assertEquals(String message, Object p, Object a) {
-		evaluate(new IdenticalAssertCommand(
-				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
-				new CompareAssertionData<Object>(p, a)));
-	}
-	@Override
-	public void assertEquals(Throwable p, Throwable a) {
-		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
-	}
-
-	@Override
-	public void assertEquals(String message, Throwable p, Throwable a) {
-		evaluate(new ThrowableAssertCommand(
-				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
-				new CompareAssertionData<Throwable>(p, a)));
-	}
 	
-
 	@Override
 	public void assertNotEquals(Object p, Object a) {
 		assertNotEquals(THE_TWO_OBJECTS_SHOULD_NOT_BE_EQUAL,p, a);
@@ -184,6 +256,18 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 				new CompareAssertionData<Object>(p, a)));
 	}
 
+	@Override
+	public void assertNotEquals(Byte p, Byte a) {
+		assertNotEquals(THE_TWO_OBJECTS_SHOULD_NOT_BE_EQUAL,p, a);
+	}
+
+	@Override
+	public void assertNotEquals(String message, Byte p, Byte a) {
+		evaluate(new ByteAssertCommand(
+				AssertNotEquals, message, 
+				new CompareAssertionData<Byte>(p, a)));
+	}
+	
 	@Override
 	public void assertSame(Object p, Object a) {
 		assertSame(THE_TWO_OBJECTS_SHOULD_BE_THE_SAME, p,  a);
