@@ -4,10 +4,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.jtests.models.shared.asserts.line_text.LineTextCompare;
 import org.adligo.jtests.models.shared.asserts.line_text.LineTextCompareResult;
 
-public class UniformAssertCommand extends AbstractAssertCommand implements I_CompareAssertCommand {
+public abstract class UniformAssertCommand extends AbstractAssertCommand 
+	implements I_CompareAssertCommand {
+	
 	public static final String THE_CLASSES_DID_NOT_MATCH = "The Classes did not match.";
 	public static final String THE_THROWABLE_CLASSES_DID_NOT_MATCH = "The Throwable classes did not match.";
 	public static final String BOTH_EXPECTED_AND_ACTUAL_WERE_NULL = "Both expected and actual were null.";
@@ -15,12 +16,12 @@ public class UniformAssertCommand extends AbstractAssertCommand implements I_Com
 	public static final String NULL_DATA = "UniformAssertCommand requires non null CompareAssertionData.";
 	public static final String BAD_TYPE = 
 			"UniformAssertCommand requires it's type to be one of AssertType.UNIFORM_TYPES";
-	private CompareAssertionData data;
-	private AssertType type;
-	private LineTextCompareResult lineTextResult;
-	private String failureSubMessage;
+	protected CompareAssertionData<?> data;
+	protected AssertType type;
+	protected LineTextCompareResult lineTextResult;
+	protected String failureSubMessage;
 	
-	public UniformAssertCommand(I_AssertType pType, String failureMessage, CompareAssertionData pData) {
+	public UniformAssertCommand(I_AssertType pType, String failureMessage, CompareAssertionData<?> pData) {
 		super(pType, failureMessage);
 		if (!AssertType.UNIFORM_TYPES.contains(pType)) {
 			throw new IllegalArgumentException(BAD_TYPE);
@@ -65,60 +66,5 @@ public class UniformAssertCommand extends AbstractAssertCommand implements I_Com
 		return data.getActual();
 	}
 
-	@Override
-	public boolean evaluate() {
-		Object expected = data.getExpected();
-		Object actual = data.getActual();
-		
-		switch (type) {
-			case AssertUniform:
-				return assertUniform(expected, actual);
-			case AssertNotUniform:
-				return !assertUniform(expected, actual);
-		}
-		return false;
-	}
-
-	private boolean assertUniform(Object expected, Object actual) {
-		if(expected == null) {
-			   if (actual == null) {
-				   failureSubMessage = BOTH_EXPECTED_AND_ACTUAL_WERE_NULL;
-				   return true;
-			   }
-		   } else {
-			   Throwable exampleThrow = null;
-			   try {
-				   //note this try catch is for GWT which doesn't have instanceof exc
-				   exampleThrow = (Throwable) expected;
-				   Throwable actualThrow = (Throwable) actual;
-				   if (!exampleThrow.getClass().equals(actualThrow.getClass())) {
-					   failureSubMessage = THE_THROWABLE_CLASSES_DID_NOT_MATCH;
-					   return false;
-				   }
-				   lineTextResult =  LineTextCompare.equals(exampleThrow.getMessage(), 
-						   actualThrow.getMessage());
-				   if (lineTextResult.isMatched()) {
-					   return true;
-				   } 
-			   } catch (ClassCastException x) {
-				   if (exampleThrow != null) {
-					   return false;
-				   }
-				   if (String.class.equals(expected.getClass())) {
-					   if (String.class.equals(actual.getClass())) {
-						   lineTextResult =  LineTextCompare.equals((String) expected, 
-								   (String)  actual);
-						   if (lineTextResult.isMatched()) {
-							   return true;
-						   } 
-					   } else {
-						   failureSubMessage = THE_CLASSES_DID_NOT_MATCH;
-						   return false;
-					   }
-				   }
-				   return expected.equals(actual);
-			   }
-		   }
-		return false;
-	}
+	
 }

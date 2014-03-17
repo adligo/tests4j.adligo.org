@@ -4,25 +4,60 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.adligo.jtests.models.shared.common.ClassUtils;
 import org.adligo.jtests.models.shared.common.I_Immutable;
 
-public class CompareAssertionData implements I_Immutable, I_AssertionData {
+public class CompareAssertionData<T> implements I_Immutable, I_AssertionData {
+	public static final String THE_ACTUAL_VALUE_MUST_BE_A = "The Actual value must be a ";
+	public static final String THE_EXPECTED_VALUE_MUST_BE_A = "The expected value must be a ";
+	public static final String NULL_VALUE_NOT_ALLOWED_HERE = "Null value not allowed here.";
+	public static final String COMPARE_ASSERTION_DATA_REQUIRES_A_BASE_CLASS_IF_USING_THIS_CONSTRUCTOR = "CompareAssertionData requires a baseClass if using this constructor.";
 	public static final String EXPECTED = "expected";
 	public static final String ACTUAL = "actual";
-	private Object expected;
-	private Object actual;
+	private T expected;
+	private T actual;
 	
-	public CompareAssertionData(Object pExpected, Object pActual) {
+	public CompareAssertionData(T pExpected, T pActual) {
 		expected = pExpected;
 		actual = pActual;
 	}
 
-	public Object getExpected() {
+	
+	public T getExpected() {
 		return expected;
 	}
 
-	public Object getActual() {
+	public T getActual() {
 		return actual;
+	}
+
+
+
+	@Override
+	public Set<String> getKeys() {
+		Set<String> toRet = new HashSet<String>();
+		toRet.add(EXPECTED);
+		toRet.add(ACTUAL);
+		return Collections.unmodifiableSet(toRet);
+	}
+
+	@Override
+	public Object getData(String key) {
+		if (EXPECTED.equals(key)) {
+			return expected;
+		} else if (ACTUAL.equals(key)) {
+			return actual;
+		}
+		return null;
+	}
+
+	public T getTypedData(String key) {
+		if (EXPECTED.equals(key)) {
+			return expected;
+		} else if (ACTUAL.equals(key)) {
+			return actual;
+		}
+		return null;
 	}
 
 	@Override
@@ -61,23 +96,5 @@ public class CompareAssertionData implements I_Immutable, I_AssertionData {
 	public String toString() {
 		return "CompareAssertionData [expected=" + expected + ", actual="
 				+ actual + "]";
-	}
-
-	@Override
-	public Set<String> getKeys() {
-		Set<String> toRet = new HashSet<String>();
-		toRet.add(EXPECTED);
-		toRet.add(ACTUAL);
-		return Collections.unmodifiableSet(toRet);
-	}
-
-	@Override
-	public Object getData(String key) {
-		if (EXPECTED.equals(key)) {
-			return expected;
-		} else if (ACTUAL.equals(key)) {
-			return actual;
-		}
-		return null;
 	}
 }

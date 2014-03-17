@@ -14,7 +14,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	private static final String BAD_TYPE = "ThrowableAssertionCommand requires a type in AssertType.THROWN_TYPES.";
 	private static final String CAUGHT = "caught";
 	
-	private ThrownableAssertionData data;
+	private ThrownAssertionData data;
 	private AssertType type;
 	private Throwable caught;
 	private LineTextCompareResult lineTextResult;
@@ -27,7 +27,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	}
 	
 	public ThrownAssertCommand(I_AssertType pType, 
-			String pFailureMessage, ThrownableAssertionData pData) {
+			String pFailureMessage, ThrownAssertionData pData) {
 		super(pType, pFailureMessage);
 		if (!AssertType.THROWN_TYPES.contains(pType)) {
 			throw new IllegalArgumentException(BAD_TYPE);
@@ -62,9 +62,9 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	public boolean evaluate(I_Thrower thrower) {
 		Class<? extends Throwable> throwableClazz = 
 				(Class<? extends Throwable>) 
-				data.getData(ThrownableAssertionData.THROWABLE_CLASS);
+				data.getData(ThrownAssertionData.THROWABLE_CLASS);
 		String expected_message = 
-				(String) data.getData(ThrownableAssertionData.EXPECTED_MESSAGE);
+				(String) data.getData(ThrownAssertionData.EXPECTED_MESSAGE);
 		
 		switch (type) {
 			case AssertThrown:
@@ -106,7 +106,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 					return false;
 				}
 				lineTextResult =
-						LineTextCompare.equals(expected_message, caught.getMessage());
+						LineTextCompare.compare(expected_message, caught.getMessage());
 				if (lineTextResult.isMatched()) {
 					return true;
 				}

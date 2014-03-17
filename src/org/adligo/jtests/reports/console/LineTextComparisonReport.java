@@ -22,26 +22,19 @@ public class LineTextComparisonReport {
 				String example = line.getExample();
 				String actual = line.getActual();
 				int linenumber = line.getLineNumber();
-				out.println("Line Number " + linenumber + " should be;");
+				out.println("Line Number " + linenumber + " have be;");
 				StartEndDiffPair pair = line.getStartEndDiffs();
 				
-				print(out, err, example, pair.getExample());
-				out.println("but was;");
-				print(out, err, actual, pair.getActual());
+				print(out, example, pair.getExample());
+				out.println("but had;");
+				print(out, actual, pair.getActual());
 			}
 		} 
 	}
 	
-	private static void print(PrintStream out, PrintStream err, String content, StartEndDiff diff) {
-		String beforeDiff = content.substring(0, diff.getStart());
-		print(out, beforeDiff);
+	private static void print(PrintStream out, String content, StartEndDiff diff) {
 		String inDiff = content.substring(diff.getStart(), diff.getEnd());
-		print(err, inDiff);
-		String afterDiff = content.substring(diff.getEnd(), content.length());
-		print(out, afterDiff);
+		out.println(inDiff);
 	}
 	
-	private synchronized static void print(PrintStream out, String content) {
-		out.print(content);
-	}
 }

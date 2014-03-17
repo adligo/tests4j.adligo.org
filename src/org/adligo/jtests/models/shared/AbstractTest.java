@@ -4,12 +4,12 @@ import static org.adligo.jtests.models.shared.asserts.AssertType.AssertEquals;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertFalse;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNotEquals;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNotNull;
+import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNotUniform;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNull;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertSame;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertThrown;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertTrue;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertUniform;
-import static org.adligo.jtests.models.shared.asserts.AssertType.AssertNotUniform;
 
 import org.adligo.jtests.models.shared.asserts.AssertionFailureLocation;
 import org.adligo.jtests.models.shared.asserts.BooleanAssertCommand;
@@ -19,9 +19,11 @@ import org.adligo.jtests.models.shared.asserts.I_BasicAssertCommand;
 import org.adligo.jtests.models.shared.asserts.I_Thrower;
 import org.adligo.jtests.models.shared.asserts.I_ThrownAssertCommand;
 import org.adligo.jtests.models.shared.asserts.IdenticalAssertCommand;
+import org.adligo.jtests.models.shared.asserts.StringUniformAssertCommand;
+import org.adligo.jtests.models.shared.asserts.ThrowableAssertCommand;
+import org.adligo.jtests.models.shared.asserts.ThrowableUniformAssertCommand;
 import org.adligo.jtests.models.shared.asserts.ThrownAssertCommand;
-import org.adligo.jtests.models.shared.asserts.ThrownableAssertionData;
-import org.adligo.jtests.models.shared.asserts.UniformAssertCommand;
+import org.adligo.jtests.models.shared.asserts.ThrownAssertionData;
 import org.adligo.jtests.models.shared.common.IsEmpty;
 import org.adligo.jtests.models.shared.results.TestFailure;
 import org.adligo.jtests.models.shared.results.TestFailureMutant;
@@ -155,9 +157,20 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	public void assertEquals(String message, Object p, Object a) {
 		evaluate(new IdenticalAssertCommand(
 				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
-				new CompareAssertionData(p, a)));
+				new CompareAssertionData<Object>(p, a)));
+	}
+	@Override
+	public void assertEquals(Throwable p, Throwable a) {
+		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
 	}
 
+	@Override
+	public void assertEquals(String message, Throwable p, Throwable a) {
+		evaluate(new ThrowableAssertCommand(
+				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
+				new CompareAssertionData<Throwable>(p, a)));
+	}
+	
 
 	@Override
 	public void assertNotEquals(Object p, Object a) {
@@ -168,7 +181,7 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	public void assertNotEquals(String message, Object p, Object a) {
 		evaluate(new IdenticalAssertCommand(
 				AssertNotEquals, message, 
-				new CompareAssertionData(p, a)));
+				new CompareAssertionData<Object>(p, a)));
 	}
 
 	@Override
@@ -180,9 +193,33 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	public void assertSame(String message, Object p, Object a) {
 		evaluate(new IdenticalAssertCommand(
 				AssertSame, message, 
-				new CompareAssertionData(p, a)));
+				new CompareAssertionData<Object>(p, a)));
 	}
 
+	@Override
+	public void assertNotUniform(String p, String a) {
+		assertNotUniform(THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM, p, a);
+	}
+	
+	@Override
+	public void assertNotUniform(String message, String p, String a) {
+		evaluate(new StringUniformAssertCommand(
+				AssertNotUniform, message, 
+				new CompareAssertionData<String>(p, a)));
+	}
+	
+	@Override
+	public void assertNotUniform(Throwable p, Throwable a) {
+		assertNotUniform(THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM, p, a);
+	}
+	
+	@Override
+	public void assertNotUniform(String message, Throwable p, Throwable a) {
+		evaluate(new ThrowableUniformAssertCommand(
+				AssertNotUniform, message, 
+				new CompareAssertionData<Throwable>(p, a)));
+	}
+				
 	@Override
 	public void assertNotSame(Object p, Object a) {
 		assertSame(THE_TWO_OBJECTS_SHOULD_NOT_BE_THE_SAME, p,  a);
@@ -192,47 +229,46 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	public void assertNotSame(String message, Object p, Object a) {
 		evaluate(new IdenticalAssertCommand(
 				AssertSame, message, 
-				new CompareAssertionData(p, a)));
+				new CompareAssertionData<Object>(p, a)));
 	}
 	
 	@Override
-	public void assertThrown(ThrownableAssertionData pData, I_Thrower pThrower) {
+	public void assertThrown(ThrownAssertionData pData, I_Thrower pThrower) {
 		assertThrown(A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN, pData, pThrower);
 	}
 
 	@Override
-	public void assertThrown(String pMessage, ThrownableAssertionData pData, I_Thrower pThrower) {
+	public void assertThrown(String pMessage, ThrownAssertionData pData, I_Thrower pThrower) {
 		evaluate(new ThrownAssertCommand(
 				AssertThrown, pMessage, pData), pThrower);
 	}
 	
 	@Override
-	public void assertThrownUniform(ThrownableAssertionData pData, I_Thrower pThrower) {
+	public void assertThrownUniform(ThrownAssertionData pData, I_Thrower pThrower) {
 		assertThrownUniform(A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN, pData, pThrower);
 	}
 
 	@Override
-	public void assertThrownUniform(String pMessage, ThrownableAssertionData pData, I_Thrower pThrower) {
+	public void assertThrownUniform(String pMessage, ThrownAssertionData pData, I_Thrower pThrower) {
 		evaluate(new ThrownAssertCommand(
 				AssertThrown, pMessage, pData), pThrower);
 	}
 	
-	public void assertUniform(Object p, Object a) {
+	public void assertUniform(String p, String a) {
 		assertUniform(THE_TWO_OBJECTS_SHOULD_BE_UNIFORM, p, a);
 	}
-	public void assertUniform(String message, Object p, Object a) {
-		evaluate(new UniformAssertCommand(
+	public void assertUniform(String message, String p, String a) {
+		evaluate(new StringUniformAssertCommand(
 				AssertUniform, message, 
-				new CompareAssertionData(p, a)));
+				new CompareAssertionData<String>(p, a)));
 	}
 	
-	public void assertNotUniform(Object p, Object a) {
-		assertNotUniform(THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM, p, a);
+	public void assertUniform(Throwable p, Throwable a) {
+		assertUniform(THE_TWO_OBJECTS_SHOULD_BE_UNIFORM, p, a);
 	}
-	
-	public void assertNotUniform(String message, Object p, Object a) {
-		evaluate(new UniformAssertCommand(
-				AssertNotUniform, message, 
-				new CompareAssertionData(p, a)));
+	public void assertUniform(String message, Throwable p, Throwable a) {
+		evaluate(new ThrowableUniformAssertCommand(
+				AssertUniform, message, 
+				new CompareAssertionData<Throwable>(p, a)));
 	}
 }
