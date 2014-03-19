@@ -22,7 +22,7 @@ public class LineTextComparisonReport {
 				String example = line.getExample();
 				String actual = line.getActual();
 				int linenumber = line.getLineNumber();
-				out.println("Line Number " + linenumber + " have be;");
+				out.println("Line Number " + linenumber + " should have;");
 				StartEndDiffPair pair = line.getStartEndDiffs();
 				
 				print(out, example, pair.getExample());

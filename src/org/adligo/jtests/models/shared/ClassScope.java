@@ -5,10 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.adligo.jtests.models.shared.common.TestType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface JTestType {
-	TestType getType();
+public @interface ClassScope {
+	Class<?> testedClass();
 }

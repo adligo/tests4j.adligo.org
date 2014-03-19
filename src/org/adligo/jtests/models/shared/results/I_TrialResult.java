@@ -2,21 +2,21 @@ package org.adligo.jtests.models.shared.results;
 
 import java.util.List;
 
-import org.adligo.jtests.models.shared.common.TestType;
+import org.adligo.jtests.models.shared.common.TrialType;
 import org.adligo.jtests.models.shared.coverage.I_ClassCoverage;
 import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 
 public interface I_TrialResult {
 
-	public abstract String getTestName();
+	public abstract String getName();
 
 	public abstract String getTestedClassName();
 
 	public abstract String getTestedPackageName();
 
-	public abstract TestType getTestType();
+	public abstract TrialType getType();
 
-	public abstract List<I_TestResult> getExhibitResults();
+	public abstract List<I_TestResult> getResults();
 
 	public abstract boolean isIgnored();
 

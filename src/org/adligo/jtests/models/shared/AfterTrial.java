@@ -5,9 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
+/**
+ * annotate a static method in your test class to run
+ * after the test is completed
+ * @author scott
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface PackageTestScope {
-	String testedPackageName();
+@Target(ElementType.METHOD)
+public @interface AfterTrial {
+	
 }

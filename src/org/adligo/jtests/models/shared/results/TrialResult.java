@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.adligo.jtests.models.shared.common.TestType;
+import org.adligo.jtests.models.shared.common.TrialType;
 import org.adligo.jtests.models.shared.coverage.I_ClassCoverage;
 import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 
@@ -20,8 +20,8 @@ public class TrialResult implements I_TrialResult {
 		return mutant.toString(TrialResult.class);
 	}
 
-	public String getTestName() {
-		return mutant.getTestName();
+	public String getName() {
+		return mutant.getName();
 	}
 
 	public String getTestedClassName() {
@@ -32,13 +32,13 @@ public class TrialResult implements I_TrialResult {
 		return mutant.getTestedPackageName();
 	}
 
-	public TestType getTestType() {
-		return mutant.getTestType();
+	public TrialType getType() {
+		return mutant.getType();
 	}
 
-	public List<I_TestResult> getExhibitResults() {
+	public List<I_TestResult> getResults() {
 		List<I_TestResult> toRet = new ArrayList<I_TestResult>();
-		for (I_TestResult mut: mutant.getExhibitResults()) {
+		for (I_TestResult mut: mutant.getResults()) {
 			toRet.add(new TestResult(mut));
 		}
 		return Collections.unmodifiableList(toRet);

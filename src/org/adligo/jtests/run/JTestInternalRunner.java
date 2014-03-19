@@ -8,24 +8,24 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.jtests.models.shared.AfterTest;
-import org.adligo.jtests.models.shared.BeforeTest;
-import org.adligo.jtests.models.shared.ClassTestScope;
-import org.adligo.jtests.models.shared.Exhibit;
-import org.adligo.jtests.models.shared.I_AbstractTest;
-import org.adligo.jtests.models.shared.JTestType;
-import org.adligo.jtests.models.shared.PackageTestScope;
+import org.adligo.jtests.models.shared.AfterTrial;
+import org.adligo.jtests.models.shared.BeforeTrial;
+import org.adligo.jtests.models.shared.ClassScope;
+import org.adligo.jtests.models.shared.I_AbstractTrial;
+import org.adligo.jtests.models.shared.JTrialType;
+import org.adligo.jtests.models.shared.PackageScope;
+import org.adligo.jtests.models.shared.Test;
 import org.adligo.jtests.models.shared.asserts.I_AssertCommand;
 import org.adligo.jtests.models.shared.common.IsEmpty;
-import org.adligo.jtests.models.shared.common.TestType;
-import org.adligo.jtests.models.shared.results.TestResultMutant;
+import org.adligo.jtests.models.shared.common.TrialType;
 import org.adligo.jtests.models.shared.results.I_TestFailure;
 import org.adligo.jtests.models.shared.results.TestFailureMutant;
-import org.adligo.jtests.models.shared.results.TrialResult;
-import org.adligo.jtests.models.shared.results.TrialResultMutant;
+import org.adligo.jtests.models.shared.results.TestResultMutant;
 import org.adligo.jtests.models.shared.results.TestRunResult;
 import org.adligo.jtests.models.shared.results.TestRunResultMutant;
 import org.adligo.jtests.models.shared.results.TrialFailure;
+import org.adligo.jtests.models.shared.results.TrialResult;
+import org.adligo.jtests.models.shared.results.TrialResultMutant;
 import org.adligo.jtests.models.shared.system.AssertionFailureException;
 import org.adligo.jtests.models.shared.system.ByteListOutputStream;
 import org.adligo.jtests.models.shared.system.I_AssertListener;
@@ -35,39 +35,39 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 				"Unexpected exception thrown from ";
 	public static final String J_TEST_INTERNAL_RUNNER_REQUIRES_A_TEST_COMLETED_LISTENER = "JTestInternalRunner requires a test comleted listener";
-	public static final String REFERS_TO_A_NULL_J_TEST_TYPE_TYPE = " refers to a null @JTestType type.";
+	public static final String REFERS_TO_A_NULL_J_TEST_TYPE_TYPE = " refers to a null TestType type.";
 	public static final String IS_MISSING_A_J_TEST_TYPE_ANNOTATION = " is missing a @JTestType annotation.";
 	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
-	public static final String TEST_CLASSES_MUST_HAVE_AT_LEAST_ONE_METHOD_ANNOTATED_WITH_EXHIBIT = 
-				"Test Classes must have at least one method annotated with @Exhibit.";
-	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_STATIC = 
-				"Methods Annotated with @Exhibit must NOT be static.";
-	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_ABSTRACT = 
-				"Methods Annotated with @Exhibit must NOT be abstract.";
-	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_BE_PUBLIC = 
-				"Methods Annotated with @Exhibit must be public.";
-	public static final String METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_TAKE_ANY_PARAMETERS = 
-				"Methods Annotated with @Exhibit must not take any parameters";
-	private static final String METHODS_ANNOTATED_WITH_AFTER_TEST_MUST_NOT_TAKE_ANY_PARAMETERS = 
-				"Methods Annotated with @AfterTest must not take any parameters.";
-	public static final String METHODS_ANNOTATED_WITH_AFTER_TEST_MUST_BE_STATIC = 
-			"Methods Annotated with @AfterTest must be static.";
-	public static final String METHODS_ANNOTATED_WITH_BEFORE_TEST_MUST_NOT_TAKE_ANY_PARAMETERS = 
-				"Methods Annotated with @BeforeTest must not take any parameters.";
-	public static final String METHODS_ANNOTATED_WITH_BEFORE_TEST_MUST_BE_STATIC = 
-				"Methods Annotated with @BeforeTest must be static.";
-	public static final String PACKAGE_TESTS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION = 
-				"PackageTests must be annotated with a PackageTestScope annotation.";
+	public static final String TRIAL_NO_TEST = 
+				"Trial Classes must have at least one method annotated with @Test.";
+	public static final String TEST_NOT_STATIC = 
+				"Methods Annotated with @Test must NOT be static.";
+	public static final String TEST_IS_ABSTRACT = 
+				"Methods Annotated with @Test must NOT be abstract.";
+	public static final String TEST_NOT_PUBLIC = 
+				"Methods Annotated with @Test must be public.";
+	public static final String TEST_HAS_PARAMS = 
+				"Methods Annotated with @Test must not take any parameters";
+	private static final String AFTER_TRIAL_HAS_PARAMS = 
+				"Methods Annotated with @AfterTrial must not take any parameters.";
+	public static final String AFTER_TRIAL_NOT_STATIC = 
+			"Methods Annotated with @AfterTrial must be static.";
+	public static final String BEFORE_TRIAL_HAS_PARAMS = 
+				"Methods Annotated with @BeforeTrial must not take any parameters.";
+	public static final String BEFORE_TRIAL_NOT_STATIC = 
+				"Methods Annotated with @BeforeTrial must be static.";
+	public static final String PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION = 
+				"PackageTrials must be annotated with a PackageScope annotation.";
 	public static final String WAS_NOT_ANNOTATED_CORRECTLY = " was not annotated correctly.";
-	public static final String CLASS_TESTS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE = "ClassTests must be annotated with ClassTestScope.";
+	public static final String CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE = "ClassTrials must be annotated with ClassScope.";
 	public static final String IS_MISSING_A_TEST_TYPE = " is missing a TestType.";
 	public static final String THE_TEST = "The test ";
 	public static final String J_TEST_INTERNAL_RUNNER_REQUIRES_A_I_RUN_DONE_LISTENER = "JTestInternalRunner requires a I_RunDoneListener.";
 	public static final String SIMPLE_RUNNER_REQUIRES_A_I_TEST_RESULTS_PROCESSOR = "SimpleRunner requires a I_TestResultsProcessor.";
-	public static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TEST_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = "Classes which implement I_AbstractTest must have a zero argument constructor.";
-	private List<Class<? extends I_AbstractTest>> tests = new ArrayList<Class<? extends I_AbstractTest>>();
-	private Class<? extends I_AbstractTest> testClass;
-	private I_AbstractTest test;
+	public static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = "Classes which implement I_AbstractTrial must have a zero argument constructor.";
+	private List<Class<? extends I_AbstractTrial>> tests = new ArrayList<Class<? extends I_AbstractTrial>>();
+	private Class<? extends I_AbstractTrial> testClass;
+	private I_AbstractTrial test;
 	private I_TestRunListener listener;
 	private boolean silent = false;
 	private ByteListOutputStream blos = new ByteListOutputStream(64);
@@ -82,7 +82,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 	private List<Method> exhibitMethods;
 	private TestRunResultMutant testRun = new TestRunResultMutant();
 	
-	public JTestInternalRunner(List<Class<? extends I_AbstractTest>> pTests, 
+	public JTestInternalRunner(List<Class<? extends I_AbstractTrial>> pTests, 
 			I_TestRunListener pTestCompletedLister) {
 		
 		testRun.setStartTime(System.currentTimeMillis());
@@ -105,7 +105,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 	@Override
 	public void run() {
 		Thread.currentThread().setUncaughtExceptionHandler(JTestUncaughtExceptionHandler.HANDLER);
-		for (Class<? extends I_AbstractTest> clazz: tests) {
+		for (Class<? extends I_AbstractTrial> clazz: tests) {
 			beforeTest = null;
 			afterTest = null;
 			test = null;
@@ -158,20 +158,20 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 
 	private boolean checkTestClass() {
 		
-		TestType type = getType();
-		testResultMutant.setTestType(type);
+		TrialType type = getType();
+		testResultMutant.setType(type);
 		switch(type) {
-			case ClassTest:
-					ClassTestScope scope = testClass.getAnnotation(ClassTestScope.class);
+			case ClassTrial:
+					ClassScope scope = testClass.getAnnotation(ClassScope.class);
 					if (scope == null) {
-						failTestOnException(CLASS_TESTS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE, 
+						failTestOnException(CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE, 
 								new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),
 								type);
 						return false;
 					} else {
 						Class<?> clazz = scope.testedClass();
 						if (clazz == null) {
-							failTestOnException(CLASS_TESTS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE, 
+							failTestOnException(CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE, 
 									new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),
 									type);
 							return false;
@@ -179,17 +179,17 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 						testResultMutant.setTestedClassName(clazz.getName());
 					}
 				break;
-			case PackageTest:
-				PackageTestScope pkgScope = testClass.getAnnotation(PackageTestScope.class);
+			case PackageTrial:
+				PackageScope pkgScope = testClass.getAnnotation(PackageScope.class);
 				if (pkgScope == null) {
-					failTestOnException(PACKAGE_TESTS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION, 
+					failTestOnException(PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION, 
 							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),
 							type);
 					return false;
 				}
 				String testedPackageName = pkgScope.testedPackageName();
 				if (IsEmpty.isEmpty(testedPackageName)) {
-					failTestOnException(PACKAGE_TESTS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION, 
+					failTestOnException(PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION, 
 							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),
 							type);
 					return false;
@@ -204,57 +204,57 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 		exhibitMethods = new ArrayList<Method>();
 		Method [] methods = testClass.getMethods();
 		for (Method method: methods) {
-			BeforeTest bt = method.getAnnotation(BeforeTest.class);
+			BeforeTrial bt = method.getAnnotation(BeforeTrial.class);
 			if (bt != null) {
 				if (!Modifier.isStatic(method.getModifiers())) {
-					failTestOnException(METHODS_ANNOTATED_WITH_BEFORE_TEST_MUST_BE_STATIC, 
+					failTestOnException(BEFORE_TRIAL_NOT_STATIC, 
 							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),
 							type);
 					return false;
 				}
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
-					failTestOnException(METHODS_ANNOTATED_WITH_BEFORE_TEST_MUST_NOT_TAKE_ANY_PARAMETERS, 
+					failTestOnException(BEFORE_TRIAL_HAS_PARAMS, 
 							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),
 							type);
 					return false;
 				}
 				beforeTest = method;
 			}
-			AfterTest at = method.getAnnotation(AfterTest.class);
+			AfterTrial at = method.getAnnotation(AfterTrial.class);
 			if (at != null) {
 				if (!Modifier.isStatic(method.getModifiers())) {
-					failTestOnException(METHODS_ANNOTATED_WITH_AFTER_TEST_MUST_BE_STATIC, 
+					failTestOnException(AFTER_TRIAL_NOT_STATIC, 
 							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),
 							type);
 					return false;
 				}
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
-					failTestOnException(METHODS_ANNOTATED_WITH_AFTER_TEST_MUST_NOT_TAKE_ANY_PARAMETERS, 
+					failTestOnException(AFTER_TRIAL_HAS_PARAMS, 
 							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),
 							type);
 					return false;
 				}
 				afterTest = method;
 			}
-			Exhibit exhibit = method.getAnnotation(Exhibit.class);
+			Test exhibit = method.getAnnotation(Test.class);
 			if (exhibit != null) {
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
-					failTestOnException(METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_TAKE_ANY_PARAMETERS, 
+					failTestOnException(TEST_HAS_PARAMS, 
 							new IllegalArgumentException(testClass.getName() + "." + method.getName() + 
 									WAS_NOT_ANNOTATED_CORRECTLY), type);
 					return false;
 				}
 				if (Modifier.isAbstract(method.getModifiers())) {
-					failTestOnException(METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_ABSTRACT, 
+					failTestOnException(TEST_IS_ABSTRACT, 
 							new IllegalArgumentException(testClass.getName() + "." + method.getName() + 
 									WAS_NOT_ANNOTATED_CORRECTLY), type);
 					return false;
 				}
 				if (Modifier.isStatic(method.getModifiers())) {
-					failTestOnException(METHODS_ANNOTATED_WITH_EXHIBIT_MUST_NOT_BE_STATIC, 
+					failTestOnException(TEST_NOT_STATIC, 
 							new IllegalArgumentException(testClass.getName() + "." + method.getName() + 
 									WAS_NOT_ANNOTATED_CORRECTLY), type);
 					return false;
@@ -263,7 +263,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 			}
 		}
 		if (exhibitMethods.size() == 0) {
-			failTestOnException(TEST_CLASSES_MUST_HAVE_AT_LEAST_ONE_METHOD_ANNOTATED_WITH_EXHIBIT, 
+			failTestOnException(TRIAL_NO_TEST, 
 					new IllegalArgumentException(testClass.getName() + 
 							WAS_NOT_ANNOTATED_CORRECTLY), type);
 			return false;
@@ -271,12 +271,12 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 		return true;
 	}
 
-	private TestType getType() {
-		JTestType jtype = testClass.getAnnotation(JTestType.class);
+	private TrialType getType() {
+		JTrialType jtype = testClass.getAnnotation(JTrialType.class);
 		if (jtype == null)  {
 			Class<?> checking = testClass.getSuperclass();
 			while (!Object.class.equals(checking)) {
-				jtype = checking.getAnnotation(JTestType.class);
+				jtype = checking.getAnnotation(JTrialType.class);
 				if (jtype != null) {
 					break;
 				}
@@ -288,7 +288,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 					IS_MISSING_A_J_TEST_TYPE_ANNOTATION, 
 					new IllegalArgumentException(), null);
 		}
-		TestType type = jtype.getType();
+		TrialType type = jtype.getType();
 		return type;
 	}
 
@@ -299,7 +299,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 	private void runExhibits() {
 		for (Method method: exhibitMethods) {
 			exhibitResultMutant = new TestResultMutant();
-			test.beforeExhibits();
+			test.beforeTests();
 			exhibitResultMutant.setBeforeOutput(blos.toString());
 			
 			Exception unexpected = null;
@@ -325,7 +325,7 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 				unexpected = x;
 			}
 			exhibitResultMutant.setOutput(blos.toString());
-			test.afterExhibits();
+			test.afterTests();
 			exhibitResultMutant.setAfterOutput(blos.toString());
 			if (unexpected != null) {
 				TestFailureMutant failure = new TestFailureMutant();
@@ -333,25 +333,25 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 				failure.setMessage(UNEXPECTED_EXCEPTION_WAS_THROWN);
 				exhibitResultMutant.setFailure(failure);
 			}
-			testResultMutant.addExhibitResult(exhibitResultMutant);
+			testResultMutant.addResult(exhibitResultMutant);
 			exhibitResultMutant = null;
 		}
 	}
 	
-	private boolean startTest(Class<? extends I_AbstractTest> p) {
+	private boolean startTest(Class<? extends I_AbstractTrial> p) {
 		testClass = p;
 		try {
 			if (!silent) {
 				originalOut.println("");
 				originalOut.println("Creating Test Instance for " + testClass);
 			}
-			Constructor<? extends I_AbstractTest> constructor =
+			Constructor<? extends I_AbstractTrial> constructor =
 					testClass.getConstructor(new Class[] {});
 			test = constructor.newInstance();
 			test.setListener(this);
 		} catch (Exception x) {
 			failTestOnException(
-					CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TEST_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR, 
+					CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR, 
 					x, null);
 			return false;
 		} 
@@ -376,12 +376,12 @@ public class JTestInternalRunner implements I_AssertListener, Runnable {
 	}
 
 
-	private void failTestOnException(String message, Throwable p, TestType type) {
+	private void failTestOnException(String message, Throwable p, TrialType type) {
 		testResultMutant.setPassed(false);
 		TrialFailure failure = new TrialFailure(message, p);
 		testResultMutant.setFailure(failure);
 		if (type != null) {
-			testResultMutant.setTestType(type);
+			testResultMutant.setType(type);
 		}
 	}
 	

@@ -29,7 +29,7 @@ import org.adligo.jtests.models.shared.results.TestFailure;
 import org.adligo.jtests.models.shared.results.TestFailureMutant;
 import org.adligo.jtests.models.shared.system.I_AssertListener;
 
-public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
+public abstract class AbstractTrial implements I_AbstractTrial, I_Asserts {
 	public static final String THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE = "The first Byte should NOT be less than the second Byte.";
 	public static final String NOT_GREATER_THAN_BYTE = "The first byte should NOT be greater than the last byte";
 	public static final String THE_EXPECTED_BYTE_SHOULD_BE_LESS_THAN_THE_ACTUAL_BYTE = "The first Byte should be less than the second byte";
@@ -168,12 +168,12 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 
 
 	@Override
-	public void beforeExhibits() {
+	public void beforeTests() {
 		//do nothing, allow overrides
 	}
 
 	@Override
-	public void afterExhibits() {
+	public void afterTests() {
 		//do nothing, allow overrides
 	}
 

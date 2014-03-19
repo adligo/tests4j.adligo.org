@@ -4,27 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adligo.jtests.models.shared.common.IsEmpty;
-import org.adligo.jtests.models.shared.common.TestType;
+import org.adligo.jtests.models.shared.common.TrialType;
 import org.adligo.jtests.models.shared.coverage.I_ClassCoverage;
 import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 
 public class TrialResultMutant implements I_TrialResult {
 	public static final String COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS = "Coverage is not currently supported by JTests";
-	public static final String TEST_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_CLASS_NAME = 
-				"TestResultMutant's with a ClassTest type require a testedClassName";
-	public static final String TEST_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_PACKAGE_NAME = 
-				"TestResultMutant's with a ClassTest type require a testedUseCaseName";
-	public static final String TEST_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_USE_CASE_NAME = 
-				"TestResultMutant's with a ClassTest type require a testedPackageName";
+	public static final String TRIAL_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_CLASS_NAME = 
+				"TrialResultMutant's with a ClassTest type require a testedClassName";
+	public static final String TRIAL_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_PACKAGE_NAME = 
+				"TrialResultMutant's with a ClassTest type require a testedUseCaseName";
+	public static final String TRIAL_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_USE_CASE_NAME = 
+				"TrialResultMutant's with a ClassTest type require a testedPackageName";
 	
-	public static final String TEST_RESULT_MUTANT_REQUIRES_A_NON_NULL_TYPE = "TestResultMutant requires a non null type.";
-	public static final String TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TEST_NAME = "TestResultMutant requires a non empty testName.";
+	public static final String TRIAL_RESULT_MUTANT_REQUIRES_A_NON_NULL_TYPE = 
+			"TrialResultMutant requires a non null type.";
+	public static final String TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TEST_NAME = 
+			"TrialResultMutant requires a non empty testName.";
 	private String testName;
 	private String testedClassName;
 	private String testedPackageName;
 	
-	private TestType testType;
-	private List<TestResultMutant> exhibitResults = 
+	private TrialType testType;
+	private List<TestResultMutant> results = 
 			new ArrayList<TestResultMutant> ();
 	private boolean ignored;
 	//skip packageCoverage because there is no PackageCoverageMutant yet
@@ -37,26 +39,26 @@ public class TrialResultMutant implements I_TrialResult {
 	public TrialResultMutant() {}
 	
 	public TrialResultMutant(I_TrialResult p) {
-		testName = p.getTestName();
+		testName = p.getName();
 		IsEmpty.isEmpty(testName,
-				TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TEST_NAME);
-		testType = p.getTestType();
+				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TEST_NAME);
+		testType = p.getType();
 		if (testType == null) {
 			throw new IllegalArgumentException(
-					TEST_RESULT_MUTANT_REQUIRES_A_NON_NULL_TYPE);
+				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_NULL_TYPE);
 		}
 		switch(testType) {
-			case ClassTest:
+			case ClassTrial:
 				testedClassName = p.getTestedClassName();
 				break;
-			case PackageTest:
+			case PackageTrial:
 				testedPackageName = p.getTestedPackageName();
 				break;
 			default:
 		}
 		
-		List<I_TestResult> results = p.getExhibitResults();
-		setExhibitResults(results);
+		List<I_TestResult> results = p.getResults();
+		setResults(results);
 		
 		ignored = p.isIgnored();
 		beforeTestOutput = p.getBeforeTestOutput();
@@ -70,7 +72,7 @@ public class TrialResultMutant implements I_TrialResult {
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestName()
 	 */
 	@Override
-	public String getTestName() {
+	public String getName() {
 		return testName;
 	}
 	/* (non-Javadoc)
@@ -89,19 +91,19 @@ public class TrialResultMutant implements I_TrialResult {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestType()
+	 * @see org.adligo.jtests.base.shared.results.I_TrialResult#getTrialType()
 	 */
 	@Override
-	public TestType getTestType() {
+	public TrialType getType() {
 		return testType;
 	}
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getExhibitResults()
+	 * @see org.adligo.jtests.base.shared.results.I_TrialResult#getResults()
 	 */
 	@Override
-	public List<I_TestResult> getExhibitResults() {
+	public List<I_TestResult> getResults() {
 		List<I_TestResult> toRet = new ArrayList<I_TestResult>();
-		toRet.addAll(exhibitResults);
+		toRet.addAll(results);
 		return toRet;
 	}
 	/* (non-Javadoc)
@@ -134,17 +136,17 @@ public class TrialResultMutant implements I_TrialResult {
 	public void setTestedPackageName(String testedPackageName) {
 		this.testedPackageName = testedPackageName;
 	}
-	public void setTestType(TestType p) {
+	public void setType(TrialType p) {
 		this.testType = p;
 	}
-	public void setExhibitResults(List<I_TestResult> p) {
-		exhibitResults.clear();
+	public void setResults(List<I_TestResult> p) {
+		results.clear();
 		for (I_TestResult result: p) {
-			exhibitResults.add(new TestResultMutant(result));
+			results.add(new TestResultMutant(result));
 		}
 	}
-	public void addExhibitResult(I_TestResult p) {
-		exhibitResults.add(new TestResultMutant(p));
+	public void addResult(I_TestResult p) {
+		results.add(new TestResultMutant(p));
 	}
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
@@ -165,7 +167,7 @@ public class TrialResultMutant implements I_TrialResult {
 		return c.getSimpleName() + " [testName=" + testName + ", testedClassName="
 				+ testedClassName + ", testedPackageName=" + testedPackageName
 				+ ", testType="
-				+ testType + ", exhibitResults=" + exhibitResults
+				+ testType + ", exhibitResults=" + results
 				+ ", ignored=" + ignored + ", beforeTestOutput="
 				+ beforeTestOutput + ", afterTestOutput=" + afterTestOutput
 				+ "]";
@@ -199,10 +201,10 @@ public class TrialResultMutant implements I_TrialResult {
 		if (Boolean.FALSE.equals(passed)) {
 			return false;
 		}
-		if (exhibitResults.size() == 0) {
+		if (results.size() == 0) {
 			return false;
 		}
-		for (I_TestResult result: exhibitResults) {
+		for (I_TestResult result: results) {
 			if (!result.isPassed()) {
 				return false;
 			}
@@ -212,13 +214,13 @@ public class TrialResultMutant implements I_TrialResult {
 
 	@Override
 	public int getExhibitCount() {
-		return exhibitResults.size();
+		return results.size();
 	}
 
 	@Override
 	public int getAssertionCount() {
 		int toRet = 0;
-		for (I_TestResult result: exhibitResults) {
+		for (I_TestResult result: results) {
 			toRet += result.getAssertionCount();
 		}
 		return toRet;

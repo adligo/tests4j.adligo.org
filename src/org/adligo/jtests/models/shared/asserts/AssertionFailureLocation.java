@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.jtests.models.shared.AbstractTest;
+import org.adligo.jtests.models.shared.AbstractTrial;
 
 public class AssertionFailureLocation extends Exception {
 	/**
@@ -36,7 +36,7 @@ public class AssertionFailureLocation extends Exception {
 		Set<String> toRet = new HashSet<String>();
 		
 		toRet.add(AssertionFailureLocation.class.getName());
-		toRet.add(AbstractTest.class.getName());
+		toRet.add(AbstractTrial.class.getName());
 		return Collections.unmodifiableSet(toRet);
 	}
 	

@@ -6,13 +6,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * annotate a static method in your test class to run
- * before the instance is created
+ * this marks a method as a runnable exibit 
+ * (like a junit @Test annotation)
  * @author scott
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface BeforeTest {
-	
+public @interface Test {
+
 }
