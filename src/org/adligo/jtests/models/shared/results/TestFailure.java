@@ -29,6 +29,6 @@ public class TestFailure implements I_TestFailure, I_Immutable {
 	
 	@Override
 	public String toString() {
-		return mutant.toString(TestFailure.class);
+		return mutant.toString(TrialFailure.class);
 	}
 }
