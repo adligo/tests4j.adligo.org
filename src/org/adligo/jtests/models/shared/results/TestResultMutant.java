@@ -8,7 +8,7 @@ import org.adligo.jtests.models.shared.common.IsEmpty;
 public class TestResultMutant implements I_TestResult {
 	public static final String TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME = 
 			"TestResultMutant requires a non empty exhibitName";
-	private String exhibitName = "";
+	private String name = "";
 	private int assertionCount = 0;
 	private Set<Integer> uniqueAsserts = new HashSet<Integer>();
 	private boolean passed = false;
@@ -21,8 +21,8 @@ public class TestResultMutant implements I_TestResult {
 	public TestResultMutant() {}
 	
 	public TestResultMutant(I_TestResult p) {
-		exhibitName = p.getExhibitName();
-		IsEmpty.isEmpty(exhibitName,
+		name = p.getExhibitName();
+		IsEmpty.isEmpty(name,
 				TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME);
 		assertionCount = p.getAssertionCount();
 		try {
@@ -47,7 +47,7 @@ public class TestResultMutant implements I_TestResult {
 	 */
 	@Override
 	public String getExhibitName() {
-		return exhibitName;
+		return name;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getAssertionCount()
@@ -109,8 +109,8 @@ public class TestResultMutant implements I_TestResult {
 	public String getAfterOutput() {
 		return afterOutput;
 	}
-	public void setExhibitName(String exhibitName) {
-		this.exhibitName = exhibitName;
+	public void setName(String p) {
+		this.name = p;
 	}
 	public void setAssertionCount(int assertionCount) {
 		this.assertionCount = assertionCount;

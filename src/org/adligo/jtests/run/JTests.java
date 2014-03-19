@@ -32,7 +32,7 @@ public class JTests implements I_TestRunListener {private I_TestResultsProcessor
 	private JTests() {}
 	
 	private Thread runInternal(final RunParameters pParams, I_TestRunListener pListener) {
-		JTestInternalRunner runner = new JTestInternalRunner(
+		JTrialInternalRunner runner = new JTrialInternalRunner(
 				pParams.getTests(),pListener);
 		
 		runner.setSilent(pParams.isSilent());
