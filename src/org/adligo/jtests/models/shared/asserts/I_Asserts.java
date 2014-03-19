@@ -3,20 +3,9 @@ package org.adligo.jtests.models.shared.asserts;
 public interface I_Asserts {
 	public void assertEquals(Object p, Object a);
 	public void assertEquals(String message, Object p, Object a);	
-	public void assertEquals(Byte p, Byte a);
-	public void assertEquals(String message, Byte p, Byte a);	
-	
-	
 	public void assertEquals(Throwable p, Throwable a);
 	public void assertEquals(String message, Throwable p, Throwable a);	
 
-	public void assertGreaterThan(Byte p, Byte a);
-	public void assertGreaterThan(String message, Byte p, Byte a);
-	
-	
-	public void assertLessThan(Byte p, Byte a);
-	public void assertLessThan(String message, Byte p, Byte a);
-		
 	public void assertFalse(boolean p);
 	public void assertFalse(String message, boolean p);	
 	
@@ -28,15 +17,7 @@ public interface I_Asserts {
 
 	public void assertNotEquals(Object p, Object a);
 	public void assertNotEquals(String message, Object p, Object a);
-	public void assertNotEquals(Byte p, Byte a);
-	public void assertNotEquals(String message, Byte p, Byte a);	
-
-	public void assertNotGreaterThan(Byte p, Byte a);
-	public void assertNotGreaterThan(String message, Byte p, Byte a);
 	
-	public void assertNotLessThan(Byte p, Byte a);
-	public void assertNotLessThan(String message, Byte p, Byte a);
-		
 	public void assertNotSame(Object p, Object a);
 	public void assertNotSame(String message, Object p, Object a);	
 

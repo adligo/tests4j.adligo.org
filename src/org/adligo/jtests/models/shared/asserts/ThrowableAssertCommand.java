@@ -1,17 +1,16 @@
 package org.adligo.jtests.models.shared.asserts;
 
-import java.util.Set;
 
 
 public class ThrowableAssertCommand extends AbstractCompareAssertCommand implements I_CompareAssertCommand {
 	private static final String BAD_TYPE = 
-			"NumberAssertCommand requires it's type to be one of AssertType.NUMBER_TYPES";
+			"NumberAssertCommand requires it's type to be one of AssertType.IDENTICAL_TYPES";
 	private CompareAssertionData<Throwable> data;
 	private AssertType type;
 	
 	public ThrowableAssertCommand(AssertType pType, String failureMessage, CompareAssertionData<Throwable> pData) {
 		super(pType, failureMessage, pData);
-		if (!AssertType.NUMBER_TYPES.contains(pType)) {
+		if (!AssertType.IDENTICAL_TYPES.contains(pType)) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
 		type = (AssertType) pType;

@@ -11,10 +11,8 @@ import static org.adligo.jtests.models.shared.asserts.AssertType.AssertThrown;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertTrue;
 import static org.adligo.jtests.models.shared.asserts.AssertType.AssertUniform;
 
-import org.adligo.jtests.models.shared.asserts.AssertType;
 import org.adligo.jtests.models.shared.asserts.AssertionFailureLocation;
 import org.adligo.jtests.models.shared.asserts.BooleanAssertCommand;
-import org.adligo.jtests.models.shared.asserts.ByteAssertCommand;
 import org.adligo.jtests.models.shared.asserts.CompareAssertionData;
 import org.adligo.jtests.models.shared.asserts.I_Asserts;
 import org.adligo.jtests.models.shared.asserts.I_BasicAssertCommand;
@@ -101,19 +99,6 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 	
 	
 	@Override
-	public void assertEquals(Byte p, Byte a) {
-		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
-	}
-
-	@Override
-	public void assertEquals(String message, Byte p, Byte a) {
-		evaluate(new ByteAssertCommand(
-				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
-				new CompareAssertionData<Byte>(p, a)));
-	}
-	
-	
-	@Override
 	public void assertEquals(Throwable p, Throwable a) {
 		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
 	}
@@ -124,33 +109,6 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
 				new CompareAssertionData<Throwable>(p, a)));
 	}
-	
-
-
-	@Override
-	public void assertGreaterThan(Byte p, Byte a) {
-		assertGreaterThan(GREATER_THAN_BYTE, p, a);
-	}
-
-	@Override
-	public void assertGreaterThan(String message, Byte p, Byte a) {
-		evaluate(new ByteAssertCommand(
-				AssertType.AssertGreaterThan, message, 
-				new CompareAssertionData<Byte>(p, a)));
-	}
-	
-	@Override
-	public void assertLessThan(Byte p, Byte a) {
-		assertLessThan(THE_EXPECTED_BYTE_SHOULD_BE_LESS_THAN_THE_ACTUAL_BYTE, p, a);
-	}
-
-	@Override
-	public void assertLessThan(String message, Byte p, Byte a) {
-		evaluate(new ByteAssertCommand(
-				AssertType.AssertLessThan, message, 
-				new CompareAssertionData<Byte>(p, a)));
-	}
-	
 	
 	@Override
 	public void assertTrue(boolean p) {
@@ -178,30 +136,6 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 		} else {
 			evaluate(new BooleanAssertCommand(AssertFalse, message, p));
 		}
-	}
-
-	@Override
-	public void assertNotGreaterThan(Byte p, Byte a) {
-		assertNotGreaterThan(NOT_GREATER_THAN_BYTE, p, a);
-	}
-
-	@Override
-	public void assertNotGreaterThan(String message, Byte p, Byte a) {
-		evaluate(new ByteAssertCommand(
-				AssertType.AssertNotGreaterThan, message, 
-				new CompareAssertionData<Byte>(p, a)));
-	}
-	
-	@Override
-	public void assertNotLessThan(Byte p, Byte a) {
-		assertNotLessThan(THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE, p, a);
-	}
-
-	@Override
-	public void assertNotLessThan(String message, Byte p, Byte a) {
-		evaluate(new ByteAssertCommand(
-				AssertType.AssertNotLessThan, message, 
-				new CompareAssertionData<Byte>(p, a)));
 	}
 	
 	@Override
@@ -254,18 +188,6 @@ public abstract class AbstractTest implements I_AbstractTest, I_Asserts {
 		evaluate(new IdenticalAssertCommand(
 				AssertNotEquals, message, 
 				new CompareAssertionData<Object>(p, a)));
-	}
-
-	@Override
-	public void assertNotEquals(Byte p, Byte a) {
-		assertNotEquals(THE_TWO_OBJECTS_SHOULD_NOT_BE_EQUAL,p, a);
-	}
-
-	@Override
-	public void assertNotEquals(String message, Byte p, Byte a) {
-		evaluate(new ByteAssertCommand(
-				AssertNotEquals, message, 
-				new CompareAssertionData<Byte>(p, a)));
 	}
 	
 	@Override
