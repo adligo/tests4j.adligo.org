@@ -7,11 +7,11 @@ import org.adligo.jtests.models.shared.common.TrialType;
 import org.adligo.jtests.models.shared.coverage.I_ClassCoverage;
 import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 
-public class TestRunResult implements I_TestRunResult {
-	private TestRunResultMutant mutant;
+public class TrialRunResult implements I_TrialRunResult {
+	private TrialRunResultMutant mutant;
 	
-	public TestRunResult(I_TestRunResult result) {
-		mutant = new TestRunResultMutant(result);
+	public TrialRunResult(I_TrialRunResult result) {
+		mutant = new TrialRunResultMutant(result);
 	}
 
 	public long getStartTime() {

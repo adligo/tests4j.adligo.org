@@ -24,14 +24,14 @@ public class ByteListOutputStream  extends OutputStream {
 	
 	@Override
 	public synchronized void write(int b) throws IOException {
-		if (currentChunk > chunckSize) {
+		if (currentChunk >= chunckSize) {
 			bytes.add(currentArray);
 			currentArray = new byte[chunckSize];
 			currentChunk = 0;
-			currentArray[currentChunk] = (byte) b;
+			currentArray[currentChunk++] = (byte) b;
 		} else {
-			currentArray[currentChunk] = (byte) b;
-			currentChunk++;
+			
+			currentArray[currentChunk++] = (byte) b;
 		}
 		
 	}
@@ -47,10 +47,10 @@ public class ByteListOutputStream  extends OutputStream {
 		int counter = 0;
 		for (byte[] bs: bytes) {
 			for (int i = 0; i < bs.length; i++) {
-				all[counter] = bs[i];
-				counter++;
+				all[counter++] = bs[i];
 			}
 		}
+		
 		for (int i = 0; i < currentChunk; i++) {
 			all[counter] = currentArray[i];
 			counter++;

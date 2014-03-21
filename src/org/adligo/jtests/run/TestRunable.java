@@ -14,17 +14,18 @@ import org.adligo.jtests.models.shared.system.I_TestFinishedListener;
 
 import com.sun.swing.internal.plaf.synth.resources.synth;
 
-public class JTestsInternalRunner implements Runnable, I_AssertListener {
+public class TestRunable implements Runnable, I_AssertListener {
 
 	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
 	
 	private Method testMethod;
-	private TestResultMutant testResultMutant = new TestResultMutant();
+	private TestResultMutant testResultMutant;
 	private I_AbstractTrial trial;
 	private I_TestFinishedListener listener;
 	
 	@Override
 	public void run() {
+		testResultMutant = new TestResultMutant();
 		Throwable unexpected = null;
 		try {
 			testResultMutant.setName(testMethod.getName());
@@ -72,14 +73,16 @@ public class JTestsInternalRunner implements Runnable, I_AssertListener {
 	}
 	
 	public synchronized void assertCompleted(I_AssertCommand cmd) {
-		testResultMutant.incrementAssertionCount();
-		testResultMutant.addUniqueAsserts(cmd.hashCode());
+		testResultMutant.incrementAssertionCount(cmd.hashCode());
 	}
 
 	public synchronized void assertFailed(I_TestFailure failure) {
 		testResultMutant.setFailure(failure);
 		listener.testFinished(new TestResult(testResultMutant));
-		Thread.currentThread().interrupt();
+	}
+
+	public TestResult getTestResultMutant() {
+		return new TestResult(testResultMutant);
 	}
 
 }

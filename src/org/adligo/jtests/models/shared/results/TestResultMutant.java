@@ -25,12 +25,8 @@ public class TestResultMutant implements I_TestResult {
 		IsEmpty.isEmpty(name,
 				TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME);
 		assertionCount = p.getAssertionCount();
-		try {
-			uniqueAsserts.clear();
-			uniqueAsserts.addAll(((TestResultMutant) p).uniqueAsserts);
-		} catch (ClassCastException x) {
-			//do nothing this is a instance of for GWT
-		}
+		uniqueAsserts.addAll(p.getUniqueAsserts());
+		
 		passed = p.isPassed();
 		ignored = p.isIgnored();
 		I_TestFailure pFailure = p.getFailure();
@@ -43,67 +39,76 @@ public class TestResultMutant implements I_TestResult {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getExhibitName()
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getExhibitName()
 	 */
 	@Override
 	public String getExhibitName() {
 		return name;
 	}
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getAssertionCount()
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getAssertionCount()
 	 */
 	@Override
 	public int getAssertionCount() {
 		return assertionCount;
 	}
 	
-	public void incrementAssertionCount() {
+	public void incrementAssertionCount(int assertionHash) {
 		assertionCount++;
+		uniqueAsserts.add(assertionHash);
 	}
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getUniqueAsserts()
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getUniqueAsserts()
 	 */
 	@Override
-	public int getUniqueAsserts() {
+	public Set<Integer> getUniqueAsserts() {
+		return uniqueAsserts;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getUniqueAsserts()
+	 */
+	@Override
+	public int getUniqueAssertionCount() {
 		return uniqueAsserts.size();
 	}
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#isPassed()
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#isPassed()
 	 */
 	@Override
 	public boolean isPassed() {
 		return passed;
 	}
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#isIgnored()
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#isIgnored()
 	 */
 	@Override
 	public boolean isIgnored() {
 		return ignored;
 	}
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getFailure()
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getFailure()
 	 */
 	@Override
 	public TestFailureMutant getFailure() {
 		return failure;
 	}
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getBeforeOutput()
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getBeforeOutput()
 	 */
 	@Override
 	public String getBeforeOutput() {
 		return beforeOutput;
 	}
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getOutput()
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getOutput()
 	 */
 	@Override
 	public String getOutput() {
 		return output;
 	}
 	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_ExhibitResult#getAfterOutput()
+	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getAfterOutput()
 	 */
 	@Override
 	public String getAfterOutput() {
@@ -115,10 +120,7 @@ public class TestResultMutant implements I_TestResult {
 	public void setAssertionCount(int assertionCount) {
 		this.assertionCount = assertionCount;
 	}
-	public void addUniqueAsserts(int p) {
-		uniqueAsserts.add(p);
-	}
-	
+
 	public void setPassed(boolean passed) {
 		this.passed = passed;
 	}

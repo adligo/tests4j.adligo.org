@@ -1,13 +1,17 @@
 package org.adligo.jtests.models.shared.results;
 
+import java.util.Set;
+
 public interface I_TestResult {
 
 	public abstract String getExhibitName();
 
 	public abstract int getAssertionCount();
 
-	public abstract int getUniqueAsserts();
+	public abstract int getUniqueAssertionCount();
 
+	public Set<Integer> getUniqueAsserts();
+	
 	public abstract boolean isPassed();
 
 	public abstract boolean isIgnored();

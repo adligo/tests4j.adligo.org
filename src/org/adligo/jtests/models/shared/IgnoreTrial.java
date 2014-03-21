@@ -12,11 +12,6 @@ import java.lang.annotation.Target;
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Test {
-	/**
-	 * in seconds defaults to 1 second
-	 * @return
-	 */
-	long timout() default 1000;
+@Target(ElementType.TYPE)
+public @interface IgnoreTrial {
 }

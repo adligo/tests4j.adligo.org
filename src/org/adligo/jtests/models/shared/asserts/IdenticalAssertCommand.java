@@ -58,4 +58,32 @@ public class IdenticalAssertCommand extends AbstractCompareAssertCommand impleme
 		
 		return false;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		IdenticalAssertCommand other = (IdenticalAssertCommand) obj;
+		if (data == null) {
+			if (other.data != null)
+				return false;
+		} else if (!data.equals(other.data))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
 }

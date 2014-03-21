@@ -73,13 +73,17 @@ public class TrialResult implements I_TrialResult {
 	}
 
 	@Override
-	public int getExhibitCount() {
-		return mutant.getExhibitCount();
+	public int getTestCount() {
+		return mutant.getTestCount();
 	}
 
 	@Override
 	public int getAssertionCount() {
 		return mutant.getAssertionCount();
+	}
+
+	public int getUniqueAssertionCount() {
+		return mutant.getUniqueAssertionCount();
 	}
 	
 }

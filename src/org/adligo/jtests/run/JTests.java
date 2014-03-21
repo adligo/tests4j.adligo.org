@@ -3,7 +3,7 @@ package org.adligo.jtests.run;
 import org.adligo.jtests.models.shared.I_AbstractTrial;
 import org.adligo.jtests.models.shared.common.LineSeperator;
 import org.adligo.jtests.models.shared.results.I_TrialResult;
-import org.adligo.jtests.models.shared.results.I_TestRunResult;
+import org.adligo.jtests.models.shared.results.I_TrialRunResult;
 import org.adligo.jtests.models.shared.system.I_TestResultsProcessor;
 import org.adligo.jtests.models.shared.system.I_TestRunListener;
 import org.adligo.jtests.models.shared.system.RunParameters;
@@ -17,30 +17,26 @@ public class JTests implements I_TestRunListener {private I_TestResultsProcessor
 	}
 	*/
 	
-	public static Thread run(RunParameters pParams, I_TestRunListener pProcessor) {
+	public static void run(RunParameters pParams, I_TestRunListener pProcessor) {
 		LineSeperator.setLineSeperator(System.lineSeparator());
 		JTests jt = new JTests();
-		return jt.runInternal(pParams, pProcessor);
+		jt.runInternal(pParams, pProcessor);
 	}
 	
-	public static Thread run(RunParameters pParams) {
+	public static void run(RunParameters pParams) {
 		LineSeperator.setLineSeperator(System.lineSeparator());
 		JTests jt = new JTests();
-		return jt.runInternal(pParams, jt);
+		jt.runInternal(pParams, jt);
 	}
 	
 	private JTests() {}
 	
-	private Thread runInternal(final RunParameters pParams, I_TestRunListener pListener) {
-		JTrialInternalRunner runner = new JTrialInternalRunner(
-				pParams.getTests(),pListener);
+	private void runInternal(final RunParameters pParams, I_TestRunListener pListener) {
+		TrialProcessor runner = new TrialProcessor(
+				pParams.getTrials(),pListener);
 		
 		runner.setSilent(pParams.isSilent());
-		
-		Thread t = new Thread(runner);
-		
-		t.start();
-		return t;
+		runner.run();
 	}
 
 	@Override
@@ -50,7 +46,7 @@ public class JTests implements I_TestRunListener {private I_TestResultsProcessor
 	}
 
 	@Override
-	public void onRunCompleted(I_TestRunResult result) {
+	public void onRunCompleted(I_TrialRunResult result) {
 		testResultProcessor.process(result);
 		System.exit(0);
 	}

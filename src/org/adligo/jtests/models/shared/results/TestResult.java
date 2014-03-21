@@ -1,5 +1,8 @@
 package org.adligo.jtests.models.shared.results;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class TestResult implements I_TestResult {
 	private TestResultMutant mutant;
 	
@@ -15,9 +18,6 @@ public class TestResult implements I_TestResult {
 		return mutant.getAssertionCount();
 	}
 
-	public int getUniqueAsserts() {
-		return mutant.getUniqueAsserts();
-	}
 
 	public boolean isPassed() {
 		return mutant.isPassed();
@@ -45,5 +45,13 @@ public class TestResult implements I_TestResult {
 
 	public String getAfterOutput() {
 		return mutant.getAfterOutput();
+	}
+
+	public Set<Integer> getUniqueAsserts() {
+		return Collections.unmodifiableSet(mutant.getUniqueAsserts());
+	}
+
+	public int getUniqueAssertionCount() {
+		return mutant.getUniqueAssertionCount();
 	}
 }

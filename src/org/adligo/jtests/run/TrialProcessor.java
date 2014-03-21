@@ -7,32 +7,35 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.adligo.jtests.models.shared.AfterTrial;
 import org.adligo.jtests.models.shared.BeforeTrial;
 import org.adligo.jtests.models.shared.ClassScope;
 import org.adligo.jtests.models.shared.I_AbstractTrial;
+import org.adligo.jtests.models.shared.IgnoreTest;
+import org.adligo.jtests.models.shared.IgnoreTrial;
 import org.adligo.jtests.models.shared.JTrialType;
 import org.adligo.jtests.models.shared.PackageScope;
 import org.adligo.jtests.models.shared.Test;
-import org.adligo.jtests.models.shared.asserts.I_AssertCommand;
 import org.adligo.jtests.models.shared.common.IsEmpty;
 import org.adligo.jtests.models.shared.common.TrialType;
-import org.adligo.jtests.models.shared.results.I_TestFailure;
+import org.adligo.jtests.models.shared.results.TestFailure;
+import org.adligo.jtests.models.shared.results.TestFailureMutant;
 import org.adligo.jtests.models.shared.results.TestResult;
 import org.adligo.jtests.models.shared.results.TestResultMutant;
-import org.adligo.jtests.models.shared.results.TestRunResult;
-import org.adligo.jtests.models.shared.results.TestRunResultMutant;
+import org.adligo.jtests.models.shared.results.TrialRunResult;
+import org.adligo.jtests.models.shared.results.TrialRunResultMutant;
 import org.adligo.jtests.models.shared.results.TrialFailure;
 import org.adligo.jtests.models.shared.results.TrialResult;
 import org.adligo.jtests.models.shared.results.TrialResultMutant;
 import org.adligo.jtests.models.shared.system.ByteListOutputStream;
-import org.adligo.jtests.models.shared.system.I_AssertListener;
 import org.adligo.jtests.models.shared.system.I_TestFinishedListener;
 import org.adligo.jtests.models.shared.system.I_TestRunListener;
 
-public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
+public class TrialProcessor implements Runnable, I_TestFinishedListener {
+	public static final String THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_OR_ZERO_TIMEOUT = "The test method may not have a negative or zero timeout.";
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 				"Unexpected exception thrown from ";
 	public static final String J_TEST_INTERNAL_RUNNER_REQUIRES_A_TEST_COMLETED_LISTENER = "JTestInternalRunner requires a test comleted listener";
@@ -78,16 +81,18 @@ public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
 	private PrintStream captureErr;
 	private Method beforeTrial;
 	private Method afterTrial;
-	private ArrayBlockingQueue<Method> testMethods;
+	private List<TestMethod> testMethods;
 	
 	private TrialResultMutant trialResultMutant;
-	private TestResult testResult;
-	private TestRunResultMutant testRun = new TestRunResultMutant();
-	private JTestsInternalRunner testsRunner = new JTestsInternalRunner();
-	private Thread testRunnerThread = new Thread(testsRunner);
+	private TrialRunResultMutant testRun = new TrialRunResultMutant();
+	private TestRunable testsRunner = new TestRunable();
+	private ExecutorService testRunService;
+	private Thread trialProcessorThread;
 	
-	public JTrialInternalRunner(List<Class<? extends I_AbstractTrial>> pTests, 
+	public TrialProcessor(List<Class<? extends I_AbstractTrial>> pTests, 
 			I_TestRunListener pTestCompletedLister) {
+		
+		trialProcessorThread = Thread.currentThread();
 		
 		testRun.setStartTime(System.currentTimeMillis());
 		tests.addAll(pTests);
@@ -108,7 +113,8 @@ public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
 	
 	@Override
 	public void run() {
-		Thread.currentThread().setUncaughtExceptionHandler(JTestUncaughtExceptionHandler.HANDLER);
+		
+		
 		for (Class<? extends I_AbstractTrial> clazz: tests) {
 			runTrial(clazz);
 			
@@ -118,7 +124,7 @@ public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
 		long end = System.currentTimeMillis();
 		long duration = end - testRun.getStartTime();
 		testRun.setRunTime(duration);
-		listener.onRunCompleted(new TestRunResult(testRun));
+		listener.onRunCompleted(new TrialRunResult(testRun));
 	}
 
 	private void runTrial(final Class<? extends I_AbstractTrial> clazz) {
@@ -133,7 +139,7 @@ public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
 		if (checkTestClass()) {
 			
 			runBeforeTrial();
-			if (startTest(testClass)) {
+			if (startTrial(testClass)) {
 				runTests();
 				runAfterTrial();
 			} 
@@ -174,29 +180,50 @@ public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
 	private void runTests() {
 		testsRunner.setListener(this);
 		testsRunner.setTrial(trial);
-		Iterator<Method> methods = testMethods.iterator();
+		Iterator<TestMethod> methods = testMethods.iterator();
+		
+		
 		while (methods.hasNext()) {
-			testsRunner.setTestMethod(methods.next());
-			testResult = null;
+			testRunService = Executors.newSingleThreadExecutor();
 			
-			try {
-				testRunnerThread.start();
-				while(testResult == null) {
-					Thread.sleep(1);
+			TestMethod tm = methods.next();
+			Method method = tm.getMethod();
+			
+			if (tm.isIgnore()) {
+				TestResultMutant trm = new TestResultMutant();
+				trm.setName(method.getName());
+				trm.setIgnored(true);
+				trialResultMutant.addResult(trm);
+			} else {
+				
+				testsRunner.setTestMethod(method);
+				testRunService.execute(testsRunner);
+				
+				try {
+					Thread.sleep(tm.getTimeoutMillis());
+					testRunService.shutdownNow();
+					TestResultMutant trm = new TestResultMutant(
+							testsRunner.getTestResultMutant());
+					TestFailureMutant tfm = new TestFailureMutant();
+					String message = "Test Timedout at " + tm.getTimeoutMillis() + " milliseconds.";
+					tfm.setMessage(message);
+					tfm.setException(new IllegalStateException(message));
+					trm.setFailure(new TestFailure(tfm));
+					trialResultMutant.addResult(new TestResult(trm));
+				} catch (InterruptedException x) {
+					testRunService.shutdownNow();
 				}
-			} catch (InterruptedException x) {
-				x.printStackTrace(originalOut);
 			}
 		}
 		
 	}
 	
-	private boolean startTest(Class<? extends I_AbstractTrial> p) {
+	private boolean startTrial(Class<? extends I_AbstractTrial> p) {
 		testClass = p;
 		try {
 			if (!silent) {
 				originalOut.println("");
-				originalOut.println("Creating Test Instance for " + testClass);
+				originalOut.println("Creating Trial Instance for " + testClass);
 			}
 			Constructor<? extends I_AbstractTrial> constructor =
 					testClass.getConstructor(new Class[] {});
@@ -284,8 +311,15 @@ public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
 			default:
 				//do nothing, functional tests don't require annotations
 		}
+		IgnoreTrial ignored = testClass.getAnnotation(IgnoreTrial.class);
+		if (ignored != null) {
+			trialResultMutant.setIgnored(true);
+			listener.onTestCompleted(testClass, null, 
+					new TrialResult(trialResultMutant));
+			return false;
+		}
 		Method [] methods = testClass.getMethods();
-		List<Method> testMethodsLocal = new ArrayList<Method>();
+		testMethods = new ArrayList<TestMethod>();
 		for (Method method: methods) {
 			BeforeTrial bt = method.getAnnotation(BeforeTrial.class);
 			if (bt != null) {
@@ -321,8 +355,8 @@ public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
 				}
 				afterTrial = method;
 			}
-			Test exhibit = method.getAnnotation(Test.class);
-			if (exhibit != null) {
+			Test test = method.getAnnotation(Test.class);
+			if (test != null) {
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
 					failTestOnException(TEST_HAS_PARAMS, 
@@ -342,17 +376,22 @@ public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
 									WAS_NOT_ANNOTATED_CORRECTLY), type);
 					return false;
 				}
-				testMethodsLocal.add(method);
+				long timeout = test.timout();
+				if (timeout <= 0) {
+					failTestOnException(THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_OR_ZERO_TIMEOUT, 
+							new IllegalArgumentException(testClass.getName() + "." + method.getName() + 
+									WAS_NOT_ANNOTATED_CORRECTLY), type);
+				}
+				IgnoreTest it = method.getAnnotation(IgnoreTest.class);
+				testMethods.add(new TestMethod(method, timeout, it != null));
 			}
 		}
-		if (testMethodsLocal.size() == 0) {
+		if (testMethods.size() == 0) {
 			failTestOnException(TRIAL_NO_TEST, 
 					new IllegalArgumentException(testClass.getName() + 
 							WAS_NOT_ANNOTATED_CORRECTLY), type);
 			return false;
 		}
-		testMethods = new ArrayBlockingQueue<Method>(testMethodsLocal.size());
-		
 		return true;
 	}
 
@@ -378,9 +417,11 @@ public class JTrialInternalRunner implements Runnable, I_TestFinishedListener {
 	}
 
 	@Override
-	public void testFinished(TestResult p) {
+	public synchronized void testFinished(TestResult p) {
 		TestResultMutant forOut = new TestResultMutant(p);
 		forOut.setOutput(blos.toString());
-		testResult = new TestResult(forOut);
+		trialResultMutant.addResult(new TestResult(forOut));
+		testRunService.shutdownNow();
+		trialProcessorThread.interrupt();
 	}
 }

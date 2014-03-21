@@ -2,13 +2,13 @@ package org.adligo.jtests.models.shared.results;
 
 import java.math.BigDecimal;
 
-public class TestRunResultMutant implements I_TestRunResult {
+public class TrialRunResultMutant implements I_TrialRunResult {
 	private long startTime;
 	private long runTime;
 	
-	public TestRunResultMutant() {}
+	public TrialRunResultMutant() {}
 	
-	public TestRunResultMutant(I_TestRunResult results) {
+	public TrialRunResultMutant(I_TrialRunResult results) {
 		startTime = results.getStartTime();
 		runTime = results.getRunTime();
 	}

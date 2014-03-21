@@ -29,6 +29,7 @@ public interface I_TrialResult {
 	
 	public I_TrialFailure getFailure();
 	public boolean isPassed();
-	public int getExhibitCount();
+	public int getTestCount();
 	public int getAssertionCount();
+	public int getUniqueAssertionCount();
 }

@@ -205,15 +205,17 @@ public class TrialResultMutant implements I_TrialResult {
 			return false;
 		}
 		for (I_TestResult result: results) {
-			if (!result.isPassed()) {
-				return false;
+			if (!result.isIgnored()) {
+				if (!result.isPassed()) {
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 
 	@Override
-	public int getExhibitCount() {
+	public int getTestCount() {
 		return results.size();
 	}
 
@@ -221,9 +223,17 @@ public class TrialResultMutant implements I_TrialResult {
 	public int getAssertionCount() {
 		int toRet = 0;
 		for (I_TestResult result: results) {
-			toRet += result.getAssertionCount();
+			toRet = toRet + result.getAssertionCount();
 		}
 		return toRet;
 	}
 	
+	@Override
+	public int getUniqueAssertionCount() {
+		int toRet = 0;
+		for (I_TestResult result: results) {
+			toRet = toRet + result.getUniqueAssertionCount();
+		}
+		return toRet;
+	}
 }
