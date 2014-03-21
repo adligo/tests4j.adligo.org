@@ -15,8 +15,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface Test {
 	/**
-	 * in seconds defaults to 1 second
+	 * in seconds defaults to 5 minute's for debugging
 	 * @return
 	 */
-	long timout() default 1000;
+	long timout() default 300000;
 }

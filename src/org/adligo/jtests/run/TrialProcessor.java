@@ -89,15 +89,14 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 	private TrialRunResultMutant testRun = new TrialRunResultMutant();
 	private TestRunable testsRunner = new TestRunable();
 	private ExecutorService testRunService;
-	private Thread initalThread;
 	private ArrayBlockingQueue<Boolean> blocking = new ArrayBlockingQueue<Boolean>(1);
 	
 	public TrialProcessor(List<Class<? extends I_AbstractTrial>> pTests, 
 			I_TestRunListener pTestCompletedLister) {
 		
+		testsRunner.setListener(this);
 		testRunService = Executors.newSingleThreadExecutor();
-		initalThread = Thread.currentThread();
-
+		
 		testRun.setStartTime(System.currentTimeMillis());
 		tests.addAll(pTests);
 		originalOut = System.out;
@@ -144,6 +143,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 			
 			runBeforeTrial();
 			if (startTrial(testClass)) {
+				testsRunner.setTrial(trial);
 				runTests();
 				runAfterTrial();
 			} 
@@ -182,44 +182,48 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 	 * @return all suceeded
 	 */
 	private void runTests() {
-		testsRunner.setListener(this);
-		testsRunner.setTrial(trial);
 		Iterator<TestMethod> methods = testMethods.iterator();
 		
 		
 		while (methods.hasNext()) {
-			blocking.clear();
-			TestMethod tm = methods.next();
-			Method method = tm.getMethod();
 			
-			if (tm.isIgnore()) {
-				TestResultMutant trm = new TestResultMutant();
-				trm.setName(method.getName());
-				trm.setIgnored(true);
-				trialResultMutant.addResult(trm);
-			} else {
-				
-				testsRunner.setTestMethod(method);
-				testRunService.execute(testsRunner);
-				
-				try {
-					Boolean result = blocking.poll(tm.getTimeoutMillis(), TimeUnit.MILLISECONDS);
-					if (result == null) {
-						TestResultMutant trm = new TestResultMutant(
-								testsRunner.getTestResultMutant());
-						TestFailureMutant tfm = new TestFailureMutant();
-						String message = "Test Timedout at " + tm.getTimeoutMillis() + " milliseconds.";
-						tfm.setMessage(message);
-						tfm.setException(new IllegalStateException(message));
-						trm.setFailure(new TestFailure(tfm));
-						trialResultMutant.addResult(new TestResult(trm));
-					}
-				} catch (InterruptedException x) {
-					//do nothing
-				}
-			}
+			TestMethod tm = methods.next();
+			
+			runTest(tm);
 		}
 		
+	}
+
+	private void runTest(TestMethod tm) {
+		Method method = tm.getMethod();
+		blocking.clear();
+		if (tm.isIgnore()) {
+			TestResultMutant trm = new TestResultMutant();
+			trm.setName(method.getName());
+			trm.setIgnored(true);
+			trialResultMutant.addResult(trm);
+		} else {
+			trial.beforeTests();
+			testsRunner.setTestMethod(method);
+			testRunService.execute(testsRunner);
+			
+			try {
+				Boolean result = blocking.poll(tm.getTimeoutMillis(), TimeUnit.MILLISECONDS);
+				if (result == null) {
+					TestResultMutant trm = new TestResultMutant(
+							testsRunner.getTestResultMutant());
+					TestFailureMutant tfm = new TestFailureMutant();
+					String message = "Test Timedout at " + tm.getTimeoutMillis() + " milliseconds.";
+					tfm.setMessage(message);
+					tfm.setException(new IllegalStateException(message));
+					trm.setFailure(new TestFailure(tfm));
+					trialResultMutant.addResult(new TestResult(trm));
+				}
+			} catch (InterruptedException x) {
+				//do nothing
+			}
+			trial.afterTests();
+		}
 	}
 	
 	private boolean startTrial(Class<? extends I_AbstractTrial> p) {
