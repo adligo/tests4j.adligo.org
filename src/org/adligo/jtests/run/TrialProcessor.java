@@ -7,8 +7,10 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.adligo.jtests.models.shared.AfterTrial;
 import org.adligo.jtests.models.shared.BeforeTrial;
@@ -87,13 +89,14 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 	private TrialRunResultMutant testRun = new TrialRunResultMutant();
 	private TestRunable testsRunner = new TestRunable();
 	private ExecutorService testRunService;
-	private Thread trialProcessorThread;
+	private Thread initalThread;
 	
 	public TrialProcessor(List<Class<? extends I_AbstractTrial>> pTests, 
 			I_TestRunListener pTestCompletedLister) {
 		
-		trialProcessorThread = Thread.currentThread();
-		
+		testRunService = Executors.newSingleThreadExecutor();
+		initalThread = Thread.currentThread();
+
 		testRun.setStartTime(System.currentTimeMillis());
 		tests.addAll(pTests);
 		originalOut = System.out;
@@ -184,7 +187,6 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 		
 		
 		while (methods.hasNext()) {
-			testRunService = Executors.newSingleThreadExecutor();
 			
 			TestMethod tm = methods.next();
 			Method method = tm.getMethod();
@@ -201,6 +203,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 				
 				try {
 					Thread.sleep(tm.getTimeoutMillis());
+					Thread.sleep(tm.getTimeoutMillis());
 					testRunService.shutdownNow();
 					TestResultMutant trm = new TestResultMutant(
 							testsRunner.getTestResultMutant());
@@ -211,7 +214,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 					trm.setFailure(new TestFailure(tfm));
 					trialResultMutant.addResult(new TestResult(trm));
 				} catch (InterruptedException x) {
-					testRunService.shutdownNow();
+					//do nothing
 				}
 			}
 		}
@@ -421,7 +424,6 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 		TestResultMutant forOut = new TestResultMutant(p);
 		forOut.setOutput(blos.toString());
 		trialResultMutant.addResult(new TestResult(forOut));
-		testRunService.shutdownNow();
-		trialProcessorThread.interrupt();
+		initalThread.interrupt();
 	}
 }

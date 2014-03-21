@@ -28,11 +28,8 @@ public class ByteListOutputStream  extends OutputStream {
 			bytes.add(currentArray);
 			currentArray = new byte[chunckSize];
 			currentChunk = 0;
-			currentArray[currentChunk++] = (byte) b;
-		} else {
-			
-			currentArray[currentChunk++] = (byte) b;
-		}
+		} 
+		currentArray[currentChunk++] = (byte) b;
 		
 	}
 
