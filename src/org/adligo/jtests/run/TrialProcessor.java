@@ -90,6 +90,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 	private TestRunable testsRunner = new TestRunable();
 	private ExecutorService testRunService;
 	private Thread initalThread;
+	private ArrayBlockingQueue<Boolean> blocking = new ArrayBlockingQueue<Boolean>(1);
 	
 	public TrialProcessor(List<Class<? extends I_AbstractTrial>> pTests, 
 			I_TestRunListener pTestCompletedLister) {
@@ -187,7 +188,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 		
 		
 		while (methods.hasNext()) {
-			
+			blocking.clear();
 			TestMethod tm = methods.next();
 			Method method = tm.getMethod();
 			
@@ -202,17 +203,17 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 				testRunService.execute(testsRunner);
 				
 				try {
-					Thread.sleep(tm.getTimeoutMillis());
-					Thread.sleep(tm.getTimeoutMillis());
-					testRunService.shutdownNow();
-					TestResultMutant trm = new TestResultMutant(
-							testsRunner.getTestResultMutant());
-					TestFailureMutant tfm = new TestFailureMutant();
-					String message = "Test Timedout at " + tm.getTimeoutMillis() + " milliseconds.";
-					tfm.setMessage(message);
-					tfm.setException(new IllegalStateException(message));
-					trm.setFailure(new TestFailure(tfm));
-					trialResultMutant.addResult(new TestResult(trm));
+					Boolean result = blocking.poll(tm.getTimeoutMillis(), TimeUnit.MILLISECONDS);
+					if (result == null) {
+						TestResultMutant trm = new TestResultMutant(
+								testsRunner.getTestResultMutant());
+						TestFailureMutant tfm = new TestFailureMutant();
+						String message = "Test Timedout at " + tm.getTimeoutMillis() + " milliseconds.";
+						tfm.setMessage(message);
+						tfm.setException(new IllegalStateException(message));
+						trm.setFailure(new TestFailure(tfm));
+						trialResultMutant.addResult(new TestResult(trm));
+					}
 				} catch (InterruptedException x) {
 					//do nothing
 				}
@@ -424,6 +425,11 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 		TestResultMutant forOut = new TestResultMutant(p);
 		forOut.setOutput(blos.toString());
 		trialResultMutant.addResult(new TestResult(forOut));
-		initalThread.interrupt();
+		try {
+			blocking.put(true);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
