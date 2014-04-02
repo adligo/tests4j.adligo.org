@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+targetNamespace="http://jtests.adligo.org/TrialResult" 
+xmlns:tns="http://jtests.adligo.org/TrialResult" 
+xmlns:coverage="http://jtests.adligo.org/Coverage"
+elementFormDefault="qualified">
+	<import schemaLocation="Coverage.xsd" 
+			namespace="http://jtests.adligo.org/Coverage">
+		</import>
+	
+    <complexType name="TestResultType">
+    <sequence>
+    		<element name="output" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    		<element name="failure_location" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="assertions" type="int"></attribute>
+    	<attribute name="passed" type="boolean"></attribute>
+    	<attribute name="duration" type="double"></attribute>
+    </complexType>
+
+    <complexType name="TrialResultType">
+    	<sequence>
+    		<element name="package_coverage"
+    			type="coverage:PackageCoverageType">
+    		</element>
+    		<element name="before_trial_output" type="string"
+    			minOccurs="0" maxOccurs="1">
+    		</element>
+    		<element name="tests" type="tns:TestResultType"></element>
+    		<element name="after_trial_output" type="string"
+    			minOccurs="0" maxOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="passed" type="string"></attribute>
+    	<attribute name="tests" type="int"></attribute>
+    	<attribute name="assertions" type="int"></attribute>
+    	<attribute name="duration" type="double"></attribute>
+    </complexType>
+</schema>

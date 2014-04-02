@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://jtests.adligo.org/Coverage" xmlns:tns="http://jtests.adligo.org/Coverage" elementFormDefault="qualified">
+
+
+    <complexType name="InstructionCoverageType">
+    	<sequence>
+    		<element name="source" type="tns:SourceInstructionCoverageType"></element>
+    	</sequence>
+    	<attribute name="covered" type="boolean"></attribute>
+    </complexType>
+
+
+
+    <complexType name="PackageCoverageType">
+    	<sequence>
+    		<element name="classes" type="tns:ClassCoverageType"></element>
+    		<element name="packages" type="tns:PackageCoverageType"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="instructions" type="int"></attribute>
+    	<attribute name="covered_instructions" type="int"></attribute>
+    </complexType>
+
+    <complexType name="ClassCoverageType">
+    	<sequence>
+    		<element name="lines" type="tns:LineCoverageType"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="source_file_name" type="string"></attribute>
+    	<attribute name="instructions" type="int"></attribute>
+    	<attribute name="covered_instructions" type="int"></attribute>
+    </complexType>
+
+    <complexType name="LineCoverageType">
+    	<sequence>
+    		<element name="instructions" type="tns:InstructionCoverageType"></element>
+    	</sequence>
+    	<attribute name="number" type="int"></attribute>
+    </complexType>
+    
+    <complexType name="SourceInstructionCoverageType">
+    	<attribute name="start" type="int"></attribute>
+    	<attribute name="end" type="int"></attribute>
+    </complexType>
+</schema>

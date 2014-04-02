@@ -297,7 +297,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 						trialResultMutant.setTestedClassName(clazz.getName());
 					}
 				break;
-			case PackageTrial:
+			case API_Trial:
 				PackageScope pkgScope = testClass.getAnnotation(PackageScope.class);
 				if (pkgScope == null) {
 					failTestOnException(PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION, 
@@ -305,7 +305,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 							type);
 					return false;
 				}
-				String testedPackageName = pkgScope.testedPackageName();
+				String testedPackageName = pkgScope.packageName();
 				if (IsEmpty.isEmpty(testedPackageName)) {
 					failTestOnException(PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION, 
 							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),

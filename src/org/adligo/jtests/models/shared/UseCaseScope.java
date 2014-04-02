@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface PackageScope {
-	String packageName();
+public @interface UseCaseScope {
+	String system();
+	String nown();
+	String verb();
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+targetNamespace="http://jtests.adligo.org/RunResult" 
+xmlns:tns="http://jtests.adligo.org/RunResult" 
+xmlns:coverage="http://jtests.adligo.org/Coverage" 
+xmlns:tr="http://jtests.adligo.org/TrialResult" 
+elementFormDefault="qualified">
+
+	<import schemaLocation="TrialResult.xsd" 
+		namespace="http://jtests.adligo.org/TrialResult">
+	</import>
+	<import schemaLocation="Coverage.xsd" 
+		namespace="http://jtests.adligo.org/Coverage">
+	</import>
+	
+    <complexType name="SystemResultsType">
+    	<sequence>
+    		<element name="use_case_trials" type="tr:TrialResultType"></element>
+    	</sequence>
+    	<attribute name="system_name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="PackageResultsType">
+    	<sequence>
+    		<element name="packages" type="tns:PackageResultsType"></element>
+    		<element name="classes" type="tns:ClassResultsType"></element>
+    		<element name="api_trials" type="tr:TrialResultType"></element>
+    		<element name="coverage" type="coverage:PackageCoverageType"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+
+
+
+
+    <complexType name="ClassResultsType">
+    	<sequence>
+    		<element name="class_trials" type="tr:TrialResultType"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="RunResultsType">
+    	<sequence>
+    		<element name="systems" type="tns:SystemResultsType"></element>
+    		<element name="packages" type="tns:PackageResultsType"></element>
+    	</sequence>
+    	<attribute name="date" type="dateTime"></attribute>
+    </complexType>
+
+    <element name="results" type="tns:RunResultsType"></element>
+</schema>
