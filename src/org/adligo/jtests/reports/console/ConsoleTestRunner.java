@@ -12,12 +12,12 @@ import org.adligo.jtests.models.shared.results.I_TestResult;
 import org.adligo.jtests.models.shared.results.I_TrialFailure;
 import org.adligo.jtests.models.shared.results.I_TrialResult;
 import org.adligo.jtests.models.shared.results.I_TrialRunResult;
-import org.adligo.jtests.models.shared.system.I_TestRunListener;
+import org.adligo.jtests.models.shared.system.I_TrialRunListener;
 import org.adligo.jtests.models.shared.system.RunParameters;
 import org.adligo.jtests.run.I_JTests;
 import org.adligo.jtests.run.JTests;
 
-public class ConsoleTestRunner implements I_TestRunListener {
+public class ConsoleTestRunner implements I_TrialRunListener {
 	private PrintStream originalOut = System.out;
 	private PrintStream originalErr = System.err;
 	private int allTests;
@@ -177,5 +177,8 @@ public class ConsoleTestRunner implements I_TestRunListener {
 	public void setCheckMinimums(boolean checkMinimums) {
 		this.checkMinimums = checkMinimums;
 	}
+
+	
+
 
 }

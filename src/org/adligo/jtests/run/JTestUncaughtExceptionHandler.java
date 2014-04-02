@@ -7,7 +7,7 @@ public class JTestUncaughtExceptionHandler implements UncaughtExceptionHandler {
 	public static final PrintStream OUT = System.out;
 	public static final JTestUncaughtExceptionHandler HANDLER = new JTestUncaughtExceptionHandler();
 	
-	private JTestUncaughtExceptionHandler() {}
+	JTestUncaughtExceptionHandler() {}
 	
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {

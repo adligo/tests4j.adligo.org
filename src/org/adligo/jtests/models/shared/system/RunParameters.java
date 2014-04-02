@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adligo.jtests.models.shared.I_AbstractTrial;
-import org.adligo.jtests.models.shared.coverage.I_CoverageRecorder;
 
 
 public class RunParameters {

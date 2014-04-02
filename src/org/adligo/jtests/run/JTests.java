@@ -4,29 +4,36 @@ import java.util.List;
 
 import org.adligo.jtests.models.shared.I_AbstractTrial;
 import org.adligo.jtests.models.shared.common.LineSeperator;
-import org.adligo.jtests.models.shared.coverage.I_CoverageRecorder;
 import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 import org.adligo.jtests.models.shared.results.I_TrialResult;
 import org.adligo.jtests.models.shared.results.I_TrialRunResult;
 import org.adligo.jtests.models.shared.results.TrialRunResult;
 import org.adligo.jtests.models.shared.results.TrialRunResultMutant;
-import org.adligo.jtests.models.shared.system.I_TestResultsProcessor;
-import org.adligo.jtests.models.shared.system.I_TestRunListener;
+import org.adligo.jtests.models.shared.system.I_CoverageRecorder;
+import org.adligo.jtests.models.shared.system.I_TrialResultsProcessor;
+import org.adligo.jtests.models.shared.system.I_TrialRunListener;
 import org.adligo.jtests.models.shared.system.RunParameters;
 
-public class JTests implements I_TestRunListener, I_JTests {private I_TestResultsProcessor testResultProcessor;
+public class JTests implements I_TrialRunListener, I_JTests {
+	public static final String NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED = "Null I_TestRunListener not allowed.";
+	private I_TrialRunListener trialRunListener;
 	
 	private I_CoverageRecorder recorder;
 	
-	public JTests() {}
+	public JTests() {
+		Thread.setDefaultUncaughtExceptionHandler(new JTestUncaughtExceptionHandler());
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.run.I_JTests#run(org.adligo.jtests.models.shared.system.RunParameters, org.adligo.jtests.models.shared.system.I_TestRunListener)
 	 */
 	@Override
-	public void run(RunParameters pParams, I_TestRunListener pProcessor) {
+	public void run(RunParameters pParams, I_TrialRunListener pListener) {
 		LineSeperator.setLineSeperator(System.lineSeparator());
-		runInternal(pParams, pProcessor);
+		if (pListener == null) {
+			throw new IllegalArgumentException(NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED);
+		}
+		runInternal(pParams, pListener);
 	}
 	
 	/* (non-Javadoc)
@@ -38,13 +45,14 @@ public class JTests implements I_TestRunListener, I_JTests {private I_TestResult
 		runInternal(pParams, this);
 	}
 	
-	private void runInternal(final RunParameters pParams, I_TestRunListener pListener) {
+	private void runInternal(final RunParameters pParams, I_TrialRunListener pListener) {
+		recorder =  pParams.getCoverageRecorder();
 		TrialProcessor runner = new TrialProcessor(
-				pParams.getTrials(),pListener);
-		
+				pParams.getTrials(),this, recorder);
+		trialRunListener = pListener;
 		
 		runner.setSilent(pParams.isSilent());
-		recorder =  pParams.getCoverageRecorder();
+		
 		if (recorder != null) {
 			recorder.startRecording();
 		}
@@ -54,7 +62,9 @@ public class JTests implements I_TestRunListener, I_JTests {private I_TestResult
 	@Override
 	public void onTestCompleted(Class<? extends I_AbstractTrial> testClass,
 			I_AbstractTrial test, I_TrialResult result) {
-		testResultProcessor.process(result);
+		if (trialRunListener != null) {
+			trialRunListener.onTestCompleted(testClass, test, result);
+		}
 	}
 
 	@Override
@@ -65,8 +75,11 @@ public class JTests implements I_TestRunListener, I_JTests {private I_TestResult
 			trrm.setCoverage(allCoverage);
 			result = new TrialRunResult(trrm);
 		}
-		testResultProcessor.process(result);
-		System.exit(0);
+		if (trialRunListener != null) {
+			trialRunListener.onRunCompleted(result);
+		} else {
+			System.exit(0);
+		}
 	}
 	
 

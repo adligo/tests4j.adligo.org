@@ -1,6 +1,9 @@
-package org.adligo.jtests.models.shared.coverage;
+package org.adligo.jtests.models.shared.system;
 
 import java.util.List;
+
+import org.adligo.jtests.models.shared.I_AbstractTrial;
+import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 
 public interface I_CoverageRecorder {
 	/**
@@ -22,4 +25,6 @@ public interface I_CoverageRecorder {
 	 * @return
 	 */
 	public List<I_PackageCoverage> getCoverage();
+	
+	public Class<? extends I_AbstractTrial> getDelegateClass(String name);
 }

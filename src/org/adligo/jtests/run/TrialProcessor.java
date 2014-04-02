@@ -27,14 +27,15 @@ import org.adligo.jtests.models.shared.results.TestFailure;
 import org.adligo.jtests.models.shared.results.TestFailureMutant;
 import org.adligo.jtests.models.shared.results.TestResult;
 import org.adligo.jtests.models.shared.results.TestResultMutant;
-import org.adligo.jtests.models.shared.results.TrialRunResult;
-import org.adligo.jtests.models.shared.results.TrialRunResultMutant;
 import org.adligo.jtests.models.shared.results.TrialFailure;
 import org.adligo.jtests.models.shared.results.TrialResult;
 import org.adligo.jtests.models.shared.results.TrialResultMutant;
+import org.adligo.jtests.models.shared.results.TrialRunResult;
+import org.adligo.jtests.models.shared.results.TrialRunResultMutant;
 import org.adligo.jtests.models.shared.system.ByteListOutputStream;
+import org.adligo.jtests.models.shared.system.I_CoverageRecorder;
 import org.adligo.jtests.models.shared.system.I_TestFinishedListener;
-import org.adligo.jtests.models.shared.system.I_TestRunListener;
+import org.adligo.jtests.models.shared.system.I_TrialRunListener;
 
 public class TrialProcessor implements Runnable, I_TestFinishedListener {
 	public static final String THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_OR_ZERO_TIMEOUT = "The test method may not have a negative or zero timeout.";
@@ -42,7 +43,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 				"Unexpected exception thrown from ";
 	public static final String J_TEST_INTERNAL_RUNNER_REQUIRES_A_TEST_COMLETED_LISTENER = "JTestInternalRunner requires a test comleted listener";
 	public static final String REFERS_TO_A_NULL_J_TEST_TYPE_TYPE = " refers to a null TestType type.";
-	public static final String IS_MISSING_A_J_TEST_TYPE_ANNOTATION = " is missing a @JTestType annotation.";
+	public static final String IS_MISSING_A_JTRIAL_TYPE_ANNOTATION = " is missing a @JTrialType annotation.";
 	public static final String CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE = "ClassTrials must be annotated with ClassScope.";
 	public static final String IS_MISSING_A_TRIAL_TYPE = " is missing a TrialType.";
 	public static final String THE_TRIAL = "The trail ";
@@ -74,7 +75,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 	private List<Class<? extends I_AbstractTrial>> tests = new ArrayList<Class<? extends I_AbstractTrial>>();
 	private Class<? extends I_AbstractTrial> testClass;
 	private I_AbstractTrial trial;
-	private I_TestRunListener listener;
+	private I_TrialRunListener listener;
 	private boolean silent = false;
 	private ByteListOutputStream blos = new ByteListOutputStream(64);
 	private PrintStream originalOut;
@@ -90,10 +91,12 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 	private TestRunable testsRunner = new TestRunable();
 	private ExecutorService testRunService;
 	private ArrayBlockingQueue<Boolean> blocking = new ArrayBlockingQueue<Boolean>(1);
+	private I_CoverageRecorder recorder;
 	
 	public TrialProcessor(List<Class<? extends I_AbstractTrial>> pTests, 
-			I_TestRunListener pTestCompletedLister) {
+			I_TrialRunListener pTestCompletedLister, I_CoverageRecorder pRecorder) {
 		
+		recorder = pRecorder;
 		testsRunner.setListener(this);
 		testRunService = Executors.newSingleThreadExecutor();
 		
@@ -228,6 +231,9 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 	
 	private boolean startTrial(Class<? extends I_AbstractTrial> p) {
 		testClass = p;
+		if (recorder != null) {
+			//testClass = recorder.getDelegateClass(p.getName());
+		}
 		try {
 			if (!silent) {
 				originalOut.println("");
@@ -251,7 +257,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 
 
 
-	public I_TestRunListener getTestCompletedListener() {
+	public I_TrialRunListener getTestCompletedListener() {
 		return listener;
 	}
 
@@ -277,6 +283,10 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 	private boolean checkTestClass() {
 		
 		TrialType type = getType();
+		if (type == null) {
+			trialResultMutant.setType(TrialType.UnknownTrialType);
+			return false;
+		}
 		trialResultMutant.setType(type);
 		switch(type) {
 			case ClassTrial:
@@ -417,8 +427,9 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 		}
 		if (jtype == null) {
 			failTestOnException(THE_TRIAL + testClass.getName() + 
-					IS_MISSING_A_J_TEST_TYPE_ANNOTATION, 
+					IS_MISSING_A_JTRIAL_TYPE_ANNOTATION, 
 					new IllegalArgumentException(), null);
+			return null;
 		}
 		TrialType type = jtype.getType();
 		return type;
