@@ -1,6 +1,7 @@
 package org.adligo.jtests.models.shared.results;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import org.adligo.jtests.models.shared.common.TrialType;
@@ -25,6 +26,10 @@ public class TrialRunResult implements I_TrialRunResult {
 	@Override
 	public BigDecimal getRunTimeSecs() {
 		return mutant.getRunTimeSecs();
+	}
+
+	public List<I_PackageCoverage> getCoverage() {
+		return Collections.unmodifiableList(mutant.getCoverage());
 	}
 
 }

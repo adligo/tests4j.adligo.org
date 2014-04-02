@@ -1,16 +1,22 @@
 package org.adligo.jtests.models.shared.results;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 
 public class TrialRunResultMutant implements I_TrialRunResult {
 	private long startTime;
 	private long runTime;
+	private List<I_PackageCoverage> coverage = new ArrayList<I_PackageCoverage>();
 	
 	public TrialRunResultMutant() {}
 	
 	public TrialRunResultMutant(I_TrialRunResult results) {
 		startTime = results.getStartTime();
 		runTime = results.getRunTime();
+		coverage.addAll(results.getCoverage());
 	}
 
 	public long getStartTime() {
@@ -33,5 +39,13 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		BigDecimal rt = new BigDecimal(runTime);
 		rt = rt.divide(new BigDecimal(1000));
 		return rt;
+	}
+
+	public List<I_PackageCoverage> getCoverage() {
+		return coverage;
+	}
+
+	public void setCoverage(List<I_PackageCoverage> coverage) {
+		this.coverage = coverage;
 	}
 }

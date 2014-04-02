@@ -1,8 +1,6 @@
 package org.adligo.jtests.reports.console;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -16,6 +14,7 @@ import org.adligo.jtests.models.shared.results.I_TrialResult;
 import org.adligo.jtests.models.shared.results.I_TrialRunResult;
 import org.adligo.jtests.models.shared.system.I_TestRunListener;
 import org.adligo.jtests.models.shared.system.RunParameters;
+import org.adligo.jtests.run.I_JTests;
 import org.adligo.jtests.run.JTests;
 
 public class ConsoleTestRunner implements I_TestRunListener {
@@ -31,32 +30,27 @@ public class ConsoleTestRunner implements I_TestRunListener {
 	private int minUniqueAssertions = 0;
 	private boolean checkMinimums = false;
 	
-	public static void run(I_RunList runLists, boolean pCheckMinimums) {
-		run(Collections.singletonList(runLists), pCheckMinimums);
+	public static void run(RunParameters params) {
+		run(params, new JTests());
 	}
 	
-	public static void run(List<I_RunList> runLists, boolean pCheckMinimums) {
+	public static void run(RunParameters params, I_JTests apiInstance) {
 		ConsoleTestRunner ctr = new ConsoleTestRunner();
-		ctr.runInternal(runLists, pCheckMinimums);
+		ctr.runInternal(params,apiInstance);
 	}
 	
-	private void runInternal(List<I_RunList> runLists, boolean pCheckMinimums) {
+	private void runInternal(RunParameters params, I_JTests apiInstance) {
 		try {
-			checkMinimums = pCheckMinimums;
-			List<Class<? extends I_AbstractTrial>> all = new ArrayList<Class<? extends I_AbstractTrial>>();
-			for (I_RunList rl: runLists) {
-				all.addAll(rl.getTrials());
-				minTests = minTests + rl.getMinTests();
-				minAsserts = minAsserts + rl.getMinAssertions();
-				minUniqueAssertions = minUniqueAssertions + rl.getMinUniqueAssertions();
-			}
-			RunParameters params = new RunParameters();
-			params.setTrials(all);
-			allTests = all.size();
+			checkMinimums = params.isCheckMins();
+			minTests = params.getMinTests();
+			minAsserts = params.getMinAsserts();
+			minUniqueAssertions = params.getMinUniqueAssertions();
+			
+			allTests = params.getTrials().size();
 			
 			
 			System.out.println("Running all tests ");
-			JTests.run(params, this);
+			apiInstance.run(params, this);
 		} catch (Exception x) {
 			x.printStackTrace(originalErr);
 		}
