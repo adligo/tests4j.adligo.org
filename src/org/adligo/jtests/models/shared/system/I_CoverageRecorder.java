@@ -2,14 +2,19 @@ package org.adligo.jtests.models.shared.system;
 
 import java.util.List;
 
-import org.adligo.jtests.models.shared.I_AbstractTrial;
 import org.adligo.jtests.models.shared.coverage.I_PackageCoverage;
 
 public interface I_CoverageRecorder {
 	/**
 	 * this start recording the coverage
+	 * for the larger group of trials
 	 */
 	public void startRecording();
+	
+	/**
+	 * this start recording for a specific trial
+	 */
+	public void startTrialRecording();
 	/**
 	 * this stops recording coverage and returns the
 	 * coverage for the specific package
@@ -25,6 +30,4 @@ public interface I_CoverageRecorder {
 	 * @return
 	 */
 	public List<I_PackageCoverage> getCoverage();
-	
-	public Class<? extends I_AbstractTrial> getDelegateClass(String name);
 }

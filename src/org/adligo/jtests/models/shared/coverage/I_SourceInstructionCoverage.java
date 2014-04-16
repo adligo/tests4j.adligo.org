@@ -9,6 +9,14 @@ package org.adligo.jtests.models.shared.coverage;
  *
  */
 public interface I_SourceInstructionCoverage {
-	public int getSourceStartInstruction();
-	public int getSourceEndInstruction();
+	/**
+	 * the character where the instruction starts
+	 * @return
+	 */
+	public int getStart();
+	/**
+	 * the character where the instruction ends
+	 * @return
+	 */
+	public int getEnd();
 }

@@ -12,7 +12,7 @@ import org.adligo.jtests.models.shared.results.TrialRunResultMutant;
 import org.adligo.jtests.models.shared.system.I_CoverageRecorder;
 import org.adligo.jtests.models.shared.system.I_TrialResultsProcessor;
 import org.adligo.jtests.models.shared.system.I_TrialRunListener;
-import org.adligo.jtests.models.shared.system.RunParameters;
+import org.adligo.jtests.models.shared.system.JTestParameters;
 
 public class JTests implements I_TrialRunListener, I_JTests {
 	public static final String NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED = "Null I_TestRunListener not allowed.";
@@ -28,7 +28,7 @@ public class JTests implements I_TrialRunListener, I_JTests {
 	 * @see org.adligo.jtests.run.I_JTests#run(org.adligo.jtests.models.shared.system.RunParameters, org.adligo.jtests.models.shared.system.I_TestRunListener)
 	 */
 	@Override
-	public void run(RunParameters pParams, I_TrialRunListener pListener) {
+	public void run(JTestParameters pParams, I_TrialRunListener pListener) {
 		LineSeperator.setLineSeperator(System.lineSeparator());
 		if (pListener == null) {
 			throw new IllegalArgumentException(NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED);
@@ -40,12 +40,12 @@ public class JTests implements I_TrialRunListener, I_JTests {
 	 * @see org.adligo.jtests.run.I_JTests#run(org.adligo.jtests.models.shared.system.RunParameters)
 	 */
 	@Override
-	public void run(RunParameters pParams) {
+	public void run(JTestParameters pParams) {
 		LineSeperator.setLineSeperator(System.lineSeparator());
 		runInternal(pParams, this);
 	}
 	
-	private void runInternal(final RunParameters pParams, I_TrialRunListener pListener) {
+	private void runInternal(final JTestParameters pParams, I_TrialRunListener pListener) {
 		recorder =  pParams.getCoverageRecorder();
 		TrialProcessor runner = new TrialProcessor(
 				pParams.getTrials(),this, recorder);

@@ -6,7 +6,7 @@ import java.util.List;
 import org.adligo.jtests.models.shared.I_AbstractTrial;
 
 
-public class RunParameters {
+public class JTestParameters {
 	private List<Class<? extends I_AbstractTrial>> trials = 
 				new ArrayList<Class<? extends I_AbstractTrial>>();
 	/**

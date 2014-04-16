@@ -19,3 +19,16 @@ public class PackageCoverageMutant implements I_PackageCoverage {
 		this.coverage = coverage;
 	}
 }
+class Foo {
+
+	public Foo() {
+		new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				
+			}
+		};
+	}
+}

@@ -13,7 +13,7 @@ import org.adligo.jtests.models.shared.results.I_TrialFailure;
 import org.adligo.jtests.models.shared.results.I_TrialResult;
 import org.adligo.jtests.models.shared.results.I_TrialRunResult;
 import org.adligo.jtests.models.shared.system.I_TrialRunListener;
-import org.adligo.jtests.models.shared.system.RunParameters;
+import org.adligo.jtests.models.shared.system.JTestParameters;
 import org.adligo.jtests.run.I_JTests;
 import org.adligo.jtests.run.JTests;
 
@@ -30,16 +30,16 @@ public class ConsoleTestRunner implements I_TrialRunListener {
 	private int minUniqueAssertions = 0;
 	private boolean checkMinimums = false;
 	
-	public static void run(RunParameters params) {
+	public static void run(JTestParameters params) {
 		run(params, new JTests());
 	}
 	
-	public static void run(RunParameters params, I_JTests apiInstance) {
+	public static void run(JTestParameters params, I_JTests apiInstance) {
 		ConsoleTestRunner ctr = new ConsoleTestRunner();
 		ctr.runInternal(params,apiInstance);
 	}
 	
-	private void runInternal(RunParameters params, I_JTests apiInstance) {
+	private void runInternal(JTestParameters params, I_JTests apiInstance) {
 		try {
 			checkMinimums = params.isCheckMins();
 			minTests = params.getMinTests();
