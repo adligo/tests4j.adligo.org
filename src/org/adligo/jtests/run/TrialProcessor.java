@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.adligo.jtests.models.shared.AfterTrial;
 import org.adligo.jtests.models.shared.BeforeTrial;
-import org.adligo.jtests.models.shared.ClassScope;
+import org.adligo.jtests.models.shared.SourceFileScope;
 import org.adligo.jtests.models.shared.I_AbstractTrial;
 import org.adligo.jtests.models.shared.IgnoreTest;
 import org.adligo.jtests.models.shared.IgnoreTrial;
@@ -290,7 +290,7 @@ public class TrialProcessor implements Runnable, I_TestFinishedListener {
 		trialResultMutant.setType(type);
 		switch(type) {
 			case ClassTrial:
-					ClassScope scope = testClass.getAnnotation(ClassScope.class);
+					SourceFileScope scope = testClass.getAnnotation(SourceFileScope.class);
 					if (scope == null) {
 						failTestOnException(CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE, 
 								new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY),
