@@ -13,9 +13,9 @@ import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
-import org.adligo.tests4j.models.shared.system.JTestParameters;
-import org.adligo.tests4j.run.I_JTests;
-import org.adligo.tests4j.run.JTests;
+import org.adligo.tests4j.models.shared.system.Tests4J_Params;
+import org.adligo.tests4j.run.I_Tests4J;
+import org.adligo.tests4j.run.Tests4J;
 
 public class ConsoleTestRunner implements I_TrialRunListener {
 	private PrintStream originalOut = System.out;
@@ -30,16 +30,16 @@ public class ConsoleTestRunner implements I_TrialRunListener {
 	private int minUniqueAssertions = 0;
 	private boolean checkMinimums = false;
 	
-	public static void run(JTestParameters params) {
-		run(params, new JTests());
+	public static void run(Tests4J_Params params) {
+		run(params, new Tests4J());
 	}
 	
-	public static void run(JTestParameters params, I_JTests apiInstance) {
+	public static void run(Tests4J_Params params, I_Tests4J apiInstance) {
 		ConsoleTestRunner ctr = new ConsoleTestRunner();
 		ctr.runInternal(params,apiInstance);
 	}
 	
-	private void runInternal(JTestParameters params, I_JTests apiInstance) {
+	private void runInternal(Tests4J_Params params, I_Tests4J apiInstance) {
 		try {
 			checkMinimums = params.isCheckMins();
 			minTests = params.getMinTests();

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_ClassCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 
@@ -32,7 +32,7 @@ public class TrialResult implements I_TrialResult {
 		return mutant.getTestedPackageName();
 	}
 
-	public TrialType getType() {
+	public TrialTypeEnum getType() {
 		return mutant.getType();
 	}
 

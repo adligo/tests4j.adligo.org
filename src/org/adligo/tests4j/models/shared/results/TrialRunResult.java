@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_ClassCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 

@@ -1,8 +1,8 @@
 package org.adligo.tests4j.models.shared;
 
-import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 
-@JTrialType(getType = TrialType.UseCaseTrial)
+@TrialType(type = TrialTypeEnum.UseCaseTrial)
 public class UseCaseTrial extends AbstractTrial {
 
 }

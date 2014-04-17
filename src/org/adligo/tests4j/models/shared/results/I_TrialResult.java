@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.results;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_ClassCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 
@@ -14,7 +14,7 @@ public interface I_TrialResult {
 
 	public abstract String getTestedPackageName();
 
-	public abstract TrialType getType();
+	public abstract TrialTypeEnum getType();
 
 	public abstract List<I_TestResult> getResults();
 

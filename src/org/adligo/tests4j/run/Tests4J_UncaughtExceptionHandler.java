@@ -3,11 +3,11 @@ package org.adligo.tests4j.run;
 import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 
-public class JTestUncaughtExceptionHandler implements UncaughtExceptionHandler {
+public class Tests4J_UncaughtExceptionHandler implements UncaughtExceptionHandler {
 	public static final PrintStream OUT = System.out;
-	public static final JTestUncaughtExceptionHandler HANDLER = new JTestUncaughtExceptionHandler();
+	public static final Tests4J_UncaughtExceptionHandler HANDLER = new Tests4J_UncaughtExceptionHandler();
 	
-	JTestUncaughtExceptionHandler() {}
+	Tests4J_UncaughtExceptionHandler() {}
 	
 	@Override
 	public void uncaughtException(Thread t, Throwable e) {

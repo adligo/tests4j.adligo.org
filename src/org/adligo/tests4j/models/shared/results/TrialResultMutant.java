@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.IsEmpty;
-import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_ClassCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 
@@ -25,7 +25,7 @@ public class TrialResultMutant implements I_TrialResult {
 	private String testedClassName;
 	private String testedPackageName;
 	
-	private TrialType testType;
+	private TrialTypeEnum testType;
 	private List<TestResultMutant> results = 
 			new ArrayList<TestResultMutant> ();
 	private boolean ignored;
@@ -48,7 +48,7 @@ public class TrialResultMutant implements I_TrialResult {
 				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_NULL_TYPE);
 		}
 		switch(testType) {
-			case ClassTrial:
+			case SourceFileTrial:
 				testedClassName = p.getTestedClassName();
 				break;
 			case API_Trial:
@@ -94,7 +94,7 @@ public class TrialResultMutant implements I_TrialResult {
 	 * @see org.adligo.jtests.base.shared.results.I_TrialResult#getTrialType()
 	 */
 	@Override
-	public TrialType getType() {
+	public TrialTypeEnum getType() {
 		return testType;
 	}
 	/* (non-Javadoc)
@@ -136,7 +136,7 @@ public class TrialResultMutant implements I_TrialResult {
 	public void setTestedPackageName(String testedPackageName) {
 		this.testedPackageName = testedPackageName;
 	}
-	public void setType(TrialType p) {
+	public void setType(TrialTypeEnum p) {
 		this.testType = p;
 	}
 	public void setResults(List<I_TestResult> p) {

@@ -6,7 +6,7 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 
 
-public class JTestParameters {
+public class Tests4J_Params {
 	private List<Class<? extends I_AbstractTrial>> trials = 
 				new ArrayList<Class<? extends I_AbstractTrial>>();
 	/**
@@ -15,12 +15,13 @@ public class JTestParameters {
 	 */
 	private boolean packageScope = true;
 	private boolean failFast = true;
-	private boolean silent = false;
+	private I_Tests4J_Logger logger = new ConsoleLogger(true);
 	private I_CoverageRecorder coverageRecorder;
 	private boolean checkMins = false;
 	private int minTests = 0;
 	private int minAsserts = 0;
 	private int minUniqueAssertions = 0;
+	private int threadPoolSize = 4;
 	
 	public List<Class<? extends I_AbstractTrial>> getTrials() {
 		return trials;
@@ -42,12 +43,7 @@ public class JTestParameters {
 	public void setFailFast(boolean failFast) {
 		this.failFast = failFast;
 	}
-	public boolean isSilent() {
-		return silent;
-	}
-	public void setSilent(boolean silent) {
-		this.silent = silent;
-	}
+	
 	public I_CoverageRecorder getCoverageRecorder() {
 		return coverageRecorder;
 	}
@@ -84,5 +80,17 @@ public class JTestParameters {
 		minTests = minTests + p.getMinTests();
 		minAsserts = minAsserts + p.getMinAsserts();
 		minUniqueAssertions = minUniqueAssertions + p.getMinUniqueAssertions();
+	}
+	public int getThreadPoolSize() {
+		return threadPoolSize;
+	}
+	public void setThreadPoolSize(int threadPoolSize) {
+		this.threadPoolSize = threadPoolSize;
+	}
+	public I_Tests4J_Logger getLogger() {
+		return logger;
+	}
+	public void setLogger(I_Tests4J_Logger logger) {
+		this.logger = logger;
 	}
 }

@@ -12,7 +12,7 @@ public class LineSeperator {
 	
 	public static void setLineSeperator(String p) {
 		new MethodBlocker(LineSeperator.class, "setLineSeperator", 
-				Collections.singletonList("org.adligo.tests4j.run.JTests"));
+				Collections.singletonList("org.adligo.tests4j.run.Tests4J"));
 		lineSeperator = p;
 	}
 	
