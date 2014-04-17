@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="jaxb_and_jar" name="xml_schemas">
+<project basedir="." default="jar" name="xml_schemas">
 	<import file="${user.home}/conf/adligo/builds/jse-build.xml"/>
-	
-	<target name="jaxb" depends="setup_jse_build">
-		 <exec executable="${user_xjc.sh}">
-		    <arg value="${build_xml_schema_path}"/>
-		    <arg value="-d"/>
-		 	 <arg value="${basedir}/src"/>
-		  </exec>
-	</target>
-	<target name="jaxb_and_jar" depends="jaxb, jar" />
-	<!-- alias for backward compatibility -->
-	<target name="jaxb-and-jar" depends="jaxb_and_jar" />
 </project>
