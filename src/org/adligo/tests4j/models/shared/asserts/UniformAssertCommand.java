@@ -16,12 +16,12 @@ public abstract class UniformAssertCommand extends AbstractAssertCommand
 	public static final String NULL_DATA = "UniformAssertCommand requires non null CompareAssertionData.";
 	public static final String BAD_TYPE = 
 			"UniformAssertCommand requires it's type to be one of AssertType.UNIFORM_TYPES";
-	protected CompareAssertionData<?> data;
+	protected I_CompareAssertionData<?> data;
 	protected AssertType type;
 	protected LineTextCompareResult lineTextResult;
 	protected String failureSubMessage;
 	
-	public UniformAssertCommand(I_AssertType pType, String failureMessage, CompareAssertionData<?> pData) {
+	public UniformAssertCommand(I_AssertType pType, String failureMessage, I_CompareAssertionData<?> pData) {
 		super(pType, failureMessage);
 		if (!AssertType.UNIFORM_TYPES.contains(pType)) {
 			throw new IllegalArgumentException(BAD_TYPE);

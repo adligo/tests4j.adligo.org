@@ -104,7 +104,7 @@ public class Tests4J {
 
 
 	private static void logInternal(String p) {
-		//System.out.println("Tests4J; " + p);
+		System.out.println("Tests4J; " + p);
 	}
 	
 	

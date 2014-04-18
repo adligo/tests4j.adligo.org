@@ -7,7 +7,7 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.common.ClassUtils;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 
-public class CompareAssertionData<T> implements I_Immutable, I_AssertionData {
+public class CompareAssertionData<T> implements I_Immutable, I_CompareAssertionData<T> {
 	public static final String THE_ACTUAL_VALUE_MUST_BE_A = "The Actual value must be a ";
 	public static final String THE_EXPECTED_VALUE_MUST_BE_A = "The expected value must be a ";
 	public static final String NULL_VALUE_NOT_ALLOWED_HERE = "Null value not allowed here.";

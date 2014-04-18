@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.results.TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
@@ -16,7 +17,10 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialResult;
 import org.adligo.tests4j.models.shared.results.TrialResultMutant;
+import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
+import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 
 public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
@@ -38,7 +42,6 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 		testsRunner = new TestRunable();
 		testsRunner.setListener(this);
 		testRunService = Executors.newSingleThreadExecutor();
-		
 	}
 
 	@Override
@@ -46,7 +49,7 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 		try {
 			Class<? extends I_AbstractTrial> trialClazz = memory.pollTrial();
 			while (trialClazz != null) {
-			
+				
 				addTrialDescription(trialClazz);
 				trialClazz = memory.pollTrial();
 			}
@@ -65,7 +68,18 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 	}
 
 	private void addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
-		TrialDescription desc = new TrialDescription(trialClazz);
+		I_CoveragePlugin plugin = memory.getPlugin();
+		I_CoverageRecorder trialCoverageRecorder = null;
+		if (plugin != null) {
+			String name = trialClazz.getName();
+			/*
+			trialCoverageRecorder = plugin.createRecorder(name);
+			memory.addRecorder(name, trialCoverageRecorder);
+			trialCoverageRecorder.startRecording();
+			*/
+		}
+		
+		TrialDescription desc = new TrialDescription(trialClazz, memory.getLog());
 		memory.add(desc);
 		if (!desc.isIgnored()) {
 			if (!desc.isTrialCanRun()) {
@@ -81,6 +95,9 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 				memory.add(new TrialResult(trm));
 			}
 		}
+		if (trialCoverageRecorder != null) {
+			trialCoverageRecorder.stopRecording();
+		}
 	}
 	
 	private void failTestOnException(String message, Throwable p, TrialTypeEnum type) {
@@ -92,7 +109,13 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 		}
 	}
 	private void runTrial() {
-		notifier.startingTrial(trialDescription.getTrialName());
+		String trialName = trialDescription.getTrialName();
+		notifier.startingTrial(trialName);
+		I_CoverageRecorder trialCoverageRecorder = memory.getRecorder(trialName);
+		if (trialCoverageRecorder != null) {
+			trialCoverageRecorder.startRecording();
+		}
+		
 		trial = trialDescription.getTrial();
 		trial.setListener(testsRunner);
 		
@@ -103,6 +126,11 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 		testsRunner.setTrial(trial);
 		runTests();
 		runAfterTrial();
+		if (trialCoverageRecorder != null) {
+			List<I_PackageCoverage> coverage = trialCoverageRecorder.getCoverage();
+			//TODO
+			//trialResultMutant.setCoverage(coverage);
+		}
 		TrialResult result = new TrialResult(trialResultMutant); 
 		notifier.trialDone(result);
 		trialResultMutant = null;
@@ -130,6 +158,7 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 		List<TestMethod> methods = trialDescription.getTestMethods();
 		
 		for(TestMethod tm: methods) {
+			
 			runTest(tm);
 		}
 		
@@ -138,6 +167,8 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 	private void runTest(TestMethod tm) {
 		Method method = tm.getMethod();
 		blocking.clear();
+		
+		
 		if (tm.isIgnore()) {
 			TestResultMutant trm = new TestResultMutant();
 			trm.setName(method.getName());
@@ -145,6 +176,17 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 			trialResultMutant.addResult(trm);
 		} else {
 			notifier.startingTest(trialDescription.getTrialName() + "." + method.getName());
+			
+			I_CoveragePlugin plugin = memory.getPlugin();
+			I_CoverageRecorder testCoverageRecorder = null;
+			if (plugin != null) {
+				String name = trialDescription.getTrialName() + 
+						"." + tm.getMethod().getName();
+				testCoverageRecorder = plugin.createRecorder(name);
+				memory.addRecorder(name, testCoverageRecorder);
+				testCoverageRecorder.startRecording();
+			}
+			
 			
 			trial.beforeTests();
 			testsRunner.setTestMethod(method);
@@ -160,6 +202,11 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 					tfm.setMessage(message);
 					tfm.setException(new IllegalStateException(message));
 					trm.setFailure(new TestFailure(tfm));
+					if (testCoverageRecorder != null) {
+						List<I_PackageCoverage> coverage = testCoverageRecorder.getCoverage();
+						//TODO
+						//trm.setCoverage(coverage);
+					}
 					trialResultMutant.addResult(new TestResult(trm));
 				}
 			} catch (InterruptedException x) {

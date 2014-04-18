@@ -19,7 +19,10 @@ public interface I_CoverageRecorder {
 	 * this start recording for the context of the current recorder
 	 */
 	public void startRecording();
-	
+	/**
+	 * this stop recording for the context of the current recorder
+	 */
+	public void stopRecording();
 
 
 	/**

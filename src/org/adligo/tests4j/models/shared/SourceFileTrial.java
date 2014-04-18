@@ -4,6 +4,5 @@ import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 
 @TrialType(type = TrialTypeEnum.SourceFileTrial)
 public class SourceFileTrial extends AbstractTrial {
-
-
+	
 }

@@ -30,7 +30,6 @@ public class NotificationManager {
 	private I_TrialRunListener listener;
 	private TextReporter reporter;
 	private TrialRunResultMutant runResult = new TrialRunResultMutant();
-	private I_CoverageRecorder allCoverageRecorder;
 	private int trialsDone = 0;
 	
 	public NotificationManager(Tests4J_Memory pMem, I_Tests4J_Logger pLog, I_TrialRunListener pListener) {
@@ -45,7 +44,7 @@ public class NotificationManager {
 	public void startRecordingRunCoverage() {
 		I_CoveragePlugin plugin = memory.getPlugin();
 		if (plugin != null) {
-			allCoverageRecorder = plugin.createRecorder(I_CoverageRecorder.TRIAL_RUN);
+			I_CoverageRecorder allCoverageRecorder = plugin.createRecorder(I_CoverageRecorder.TRIAL_RUN);
 			memory.addRecorder(I_CoverageRecorder.TRIAL_RUN, allCoverageRecorder);
 			allCoverageRecorder.startRecording();
 		}
@@ -69,7 +68,8 @@ public class NotificationManager {
 			logPrivate("DescribingTrials is Done.");
 		}
 		doneDescribeingTrials.set(true);
-		if (memory.getFailureResultsSize() >= 1) {
+		int classDefFailures = memory.getFailureResultsSize();
+		if (classDefFailures >= 1) {
 			I_TrialResult result = memory.pollFailureResults();
 			while (result != null) {
 				trialDoneInternal(result);
@@ -120,6 +120,7 @@ public class NotificationManager {
 			if (log.isEnabled()) {
 				logPrivate("DoneRunningTrials.");
 			}
+			I_CoverageRecorder allCoverageRecorder = memory.getRecorder(I_CoverageRecorder.TRIAL_RUN);
 			if (allCoverageRecorder != null) {
 				List<I_PackageCoverage> packageCoverage = allCoverageRecorder.getCoverage();
 				runResult.setCoverage(packageCoverage);

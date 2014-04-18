@@ -14,7 +14,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	private static final String BAD_TYPE = "ThrowableAssertionCommand requires a type in AssertType.THROWN_TYPES.";
 	private static final String CAUGHT = "caught";
 	
-	private ThrownAssertionData data;
+	private I_AssertionData data;
 	private AssertType type;
 	private Throwable caught;
 	private LineTextCompareResult lineTextResult;
@@ -27,7 +27,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	}
 	
 	public ThrownAssertCommand(I_AssertType pType, 
-			String pFailureMessage, ThrownAssertionData pData) {
+			String pFailureMessage, I_AssertionData pData) {
 		super(pType, pFailureMessage);
 		if (!AssertType.THROWN_TYPES.contains(pType)) {
 			throw new IllegalArgumentException(BAD_TYPE);

@@ -17,6 +17,7 @@ import org.adligo.tests4j.models.shared.Test;
 import org.adligo.tests4j.models.shared.TrialType;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 
 public class TrialDescription {
 	public static final String THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_OR_ZERO_TIMEOUT = 
@@ -66,9 +67,11 @@ public class TrialDescription {
 	private Exception resultException;
 	private boolean ignored;
 	private long duration;
+	private I_Tests4J_Logger log;
 	
-	public TrialDescription(Class<? extends I_AbstractTrial> pTrial) {
+	public TrialDescription(Class<? extends I_AbstractTrial> pTrial, I_Tests4J_Logger pLog) {
 		long start = System.currentTimeMillis();
+		log = pLog;
 		
 		trialClass = pTrial;
 		trialCanRun = checkTestClass();
@@ -231,6 +234,14 @@ public class TrialDescription {
 		} catch (Exception x) {
 			resultFailureMessage = CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR; 
 			resultException	= x;
+			if (log.isEnabled()) {
+				x.printStackTrace(log.getOutput());
+				Throwable cause = x.getCause();
+				while (cause != null) {
+					cause.printStackTrace(log.getOutput());
+					cause = cause.getCause();
+				}
+			}
 			return false;
 		}
 		return true;

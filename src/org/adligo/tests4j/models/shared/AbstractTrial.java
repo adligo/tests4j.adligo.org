@@ -14,6 +14,7 @@ import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertUniform;
 import org.adligo.tests4j.models.shared.asserts.AssertionFailureLocation;
 import org.adligo.tests4j.models.shared.asserts.BooleanAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.CompareAssertionData;
+import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_Asserts;
 import org.adligo.tests4j.models.shared.asserts.I_BasicAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.I_Thrower;
@@ -239,23 +240,23 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Asserts {
 	}
 	
 	@Override
-	public void assertThrown(ThrownAssertionData pData, I_Thrower pThrower) {
+	public void assertThrown(I_AssertionData pData, I_Thrower pThrower) {
 		assertThrown(A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN, pData, pThrower);
 	}
 
 	@Override
-	public void assertThrown(String pMessage, ThrownAssertionData pData, I_Thrower pThrower) {
+	public void assertThrown(String pMessage, I_AssertionData pData, I_Thrower pThrower) {
 		evaluate(new ThrownAssertCommand(
 				AssertThrown, pMessage, pData), pThrower);
 	}
 	
 	@Override
-	public void assertThrownUniform(ThrownAssertionData pData, I_Thrower pThrower) {
+	public void assertThrownUniform(I_AssertionData pData, I_Thrower pThrower) {
 		assertThrownUniform(A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN, pData, pThrower);
 	}
 
 	@Override
-	public void assertThrownUniform(String pMessage, ThrownAssertionData pData, I_Thrower pThrower) {
+	public void assertThrownUniform(String pMessage, I_AssertionData pData, I_Thrower pThrower) {
 		evaluate(new ThrownAssertCommand(
 				AssertThrown, pMessage, pData), pThrower);
 	}

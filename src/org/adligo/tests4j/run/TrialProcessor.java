@@ -25,7 +25,7 @@ public class TrialProcessor {
 		
 		I_CoveragePlugin plugin = params.getCoveragePlugin();
 		if (plugin != null) {
-			plugin.instrumentClasses(params);
+			params.setTrials(plugin.instrumentClasses(params));
 		}
 		
 		if (params.getLog() == null) {

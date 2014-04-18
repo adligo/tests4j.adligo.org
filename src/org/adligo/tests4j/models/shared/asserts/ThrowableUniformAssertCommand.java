@@ -3,10 +3,10 @@ package org.adligo.tests4j.models.shared.asserts;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompare;
 
 public class ThrowableUniformAssertCommand extends UniformAssertCommand {
-	private CompareAssertionData<Throwable> data;
+	private I_CompareAssertionData<Throwable> data;
 	
 	public ThrowableUniformAssertCommand(I_AssertType pType, String failureMessage,
-			CompareAssertionData<Throwable> pData) {
+			I_CompareAssertionData<Throwable> pData) {
 		super(pType, failureMessage, pData);
 		data = pData;
 	}

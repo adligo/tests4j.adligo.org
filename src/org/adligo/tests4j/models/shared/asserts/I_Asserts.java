@@ -34,10 +34,10 @@ public interface I_Asserts {
 
 
 	
-	public void assertThrown(ThrownAssertionData p, I_Thrower thrower);
-	public void assertThrown(String message, ThrownAssertionData p, I_Thrower thrower);	
-	public void assertThrownUniform(ThrownAssertionData p, I_Thrower thrower);
-	public void assertThrownUniform(String message, ThrownAssertionData p, I_Thrower thrower);	
+	public void assertThrown(I_AssertionData p, I_Thrower thrower);
+	public void assertThrown(String message, I_AssertionData p, I_Thrower thrower);	
+	public void assertThrownUniform(I_AssertionData p, I_Thrower thrower);
+	public void assertThrownUniform(String message, I_AssertionData p, I_Thrower thrower);	
 	
 	public void assertUniform(String p, String a);
 	public void assertUniform(String message, String p, String a);	

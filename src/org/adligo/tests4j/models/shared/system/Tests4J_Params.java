@@ -22,7 +22,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private int minTests = 0;
 	private int minAsserts = 0;
 	private int minUniqueAssertions = 0;
-	private int threadPoolSize = 4;
+	private int threadPoolSize = 32;
 	/**
 	 * this flaggs a jvm exit
 	 */
@@ -89,6 +89,9 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		*/
 	}
 	public int getThreadPoolSize() {
+		if (trials.size() < threadPoolSize) {
+			return trials.size();
+		}
 		return threadPoolSize;
 	}
 	public void setThreadPoolSize(int threadPoolSize) {

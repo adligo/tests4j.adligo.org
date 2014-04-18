@@ -13,6 +13,7 @@ import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 
 public class Tests4J_Memory {
@@ -27,6 +28,7 @@ public class Tests4J_Memory {
 	private ExecutorService runService;
 	private Map<String, I_CoverageRecorder> recorders = new ConcurrentHashMap<String, I_CoverageRecorder>();
 	private ThreadLocalOutputStream out = new ThreadLocalOutputStream();
+	private I_Tests4J_Logger log;
 	
 	public Tests4J_Memory(Tests4J_Params params) {
 		trialClasses.addAll(params.getTrials());
@@ -37,7 +39,7 @@ public class Tests4J_Memory {
 		System.setErr(new PrintStream(out));
 		int threads = params.getThreadPoolSize();
 		runService = Executors.newFixedThreadPool(threads);
-		
+		log = params.getLog();
 	}
 	
 	public Class<? extends I_AbstractTrial> pollTrial() {
@@ -119,5 +121,9 @@ public class Tests4J_Memory {
 		}
 		
 		return toRet;
+	}
+
+	public I_Tests4J_Logger getLog() {
+		return log;
 	}
 }
