@@ -31,8 +31,8 @@ public class TrialProcessor {
 		ExecutorService runService = memory.getRunService();
 		int threads = params.getThreadPoolSize();
 		
-		//for (int i = 0; i < threads; i++) {
+		for (int i = 0; i < threads; i++) {
 			runService.execute(new TrialInstanceProcessor(memory, notifier));
-		//}
+		}
 	}
 }

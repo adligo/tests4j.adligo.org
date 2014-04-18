@@ -113,7 +113,9 @@ public class NotificationManager {
 			}
 			long end = System.currentTimeMillis();
 			runResult.setRunTime(end - runResult.getStartTime());
-			
+			if (log.isEnabled()) {
+				logPrivate("Run duration was " + (runResult.getRunTime() / 1000) + " seconds");
+			}
 			ExecutorService runService =  memory.getRunService();
 			runService.shutdownNow();
 			if (memory.isSystemExit()) {
