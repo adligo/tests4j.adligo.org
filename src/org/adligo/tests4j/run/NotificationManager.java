@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -24,14 +25,12 @@ import com.sun.swing.internal.plaf.synth.resources.synth;
  */
 public class NotificationManager {
 	private AtomicBoolean doneDescribeingTrials = new AtomicBoolean(false);
-	private long start = System.currentTimeMillis();
 	private Tests4J_Memory memory;
 	private I_Tests4J_Logger log;
 	private I_TrialRunListener listener;
 	private TextReporter reporter;
 	private TrialRunResultMutant runResult = new TrialRunResultMutant();
 	private I_CoverageRecorder allCoverageRecorder;
-	private int trialClassDeffinitionFailures = 0;
 	private int trialsDone = 0;
 	
 	public NotificationManager(Tests4J_Memory pMem, I_Tests4J_Logger pLog, I_TrialRunListener pListener) {
@@ -39,6 +38,8 @@ public class NotificationManager {
 		log = pLog;
 		listener = pListener;
 		reporter = new TextReporter(log);
+		long start = System.currentTimeMillis();
+		runResult.setStartTime(start);
 	}
 	
 	public void startRecordingRunCoverage() {
@@ -71,7 +72,7 @@ public class NotificationManager {
 		if (memory.getFailureResultsSize() >= 1) {
 			I_TrialResult result = memory.pollFailureResults();
 			while (result != null) {
-				trialDone(result);
+				trialDoneInternal(result);
 				result = memory.pollFailureResults();
 			}
 		}
@@ -91,13 +92,25 @@ public class NotificationManager {
 	}
 	
 	public synchronized void trialDone(I_TrialResult result) {
+		trialDoneInternal(result);
+		trialsDone++;
+	}
+	
+	public void trialDoneInternal(I_TrialResult result) {
 		if (log.isEnabled()) {
 			reporter.printTestCompleted(result);
 		}
 		if (listener != null) {
 			listener.onTrialCompleted(result);
 		}
-		trialsDone++;
+		runResult.addAsserts(result.getAssertionCount());
+		runResult.addUniqueAsserts(result.getUniqueAssertionCount());
+		runResult.addTests(result.getTestCount());
+		runResult.addTestFailures(result.getTestFailureCount());
+		if (!result.isPassed()) {
+			runResult.addTrialFailures(1);
+		}
+		runResult.addTrials(1);
 	}
 	
 	public synchronized void checkDoneRunningTrials() {
@@ -111,10 +124,10 @@ public class NotificationManager {
 				List<I_PackageCoverage> packageCoverage = allCoverageRecorder.getCoverage();
 				runResult.setCoverage(packageCoverage);
 			}
-			long end = System.currentTimeMillis();
-			runResult.setRunTime(end - runResult.getStartTime());
 			if (log.isEnabled()) {
-				logPrivate("Run duration was " + (runResult.getRunTime() / 1000) + " seconds");
+				long end = System.currentTimeMillis();
+				runResult.setRunTime(end - runResult.getStartTime());
+				reporter.onRunCompleted(new TrialRunResult(runResult));
 			}
 			ExecutorService runService =  memory.getRunService();
 			runService.shutdownNow();

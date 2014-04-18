@@ -32,4 +32,36 @@ public class TrialRunResult implements I_TrialRunResult {
 		return Collections.unmodifiableList(mutant.getCoverage());
 	}
 
+	public int getTrials() {
+		return mutant.getTrials();
+	}
+
+	public long getTests() {
+		return mutant.getTests();
+	}
+
+	public long getAsserts() {
+		return mutant.getAsserts();
+	}
+
+	public long getTestFailures() {
+		return mutant.getTestFailures();
+	}
+
+	public int getTrialFailures() {
+		return mutant.getTrialFailures();
+	}
+
+	public long getUniqueAsserts() {
+		return mutant.getUniqueAsserts();
+	}
+
+	public int getPassingTrials() {
+		return mutant.getPassingTrials();
+	}
+
+	public long getPassingTests() {
+		return mutant.getPassingTests();
+	}
+
 }

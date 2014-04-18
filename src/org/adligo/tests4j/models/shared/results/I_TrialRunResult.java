@@ -10,4 +10,12 @@ public interface I_TrialRunResult {
 	public long getRunTime();
 	public BigDecimal getRunTimeSecs();
 	public List<I_PackageCoverage> getCoverage();
+	public int getTrials();
+	public int getTrialFailures();
+	public long getTests();
+	public long getTestFailures();
+	public long getAsserts();
+	public long getUniqueAsserts();
+	public int getPassingTrials();
+	public long getPassingTests();
 }

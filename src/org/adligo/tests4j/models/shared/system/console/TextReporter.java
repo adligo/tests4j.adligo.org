@@ -9,6 +9,7 @@ import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 
 public class TextReporter {
@@ -16,6 +17,20 @@ public class TextReporter {
 	
 	public TextReporter(I_Tests4J_Logger p) {
 		log = p;
+	}
+	
+	public void onRunCompleted(I_TrialRunResult result) {
+		log.log("Tests completed in " + result.getRunTimeSecs() + " secs");
+		
+		if (result.getTestFailures() == 0) {
+			log.log("All " + result.getTrials() + " trials passed sucessfully!");
+			log.log("Tests: " + result.getTests());
+		} else {
+			log.log("Only " + result.getTrialFailures() + "/" + result.getTrials() + " trials passed failed!");
+			log.log("Tests: " + result.getPassingTests() + "/" + result.getTests());
+		}
+		log.log("Assertions: " + result.getUniqueAsserts() + "/" + result.getAsserts());
+		
 	}
 	
 	public void printTestCompleted( I_TrialResult result) {

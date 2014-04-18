@@ -85,5 +85,9 @@ public class TrialResult implements I_TrialResult {
 	public int getUniqueAssertionCount() {
 		return mutant.getUniqueAssertionCount();
 	}
+
+	public int getTestFailureCount() {
+		return mutant.getTestFailureCount();
+	}
 	
 }

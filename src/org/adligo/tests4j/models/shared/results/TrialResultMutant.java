@@ -220,6 +220,17 @@ public class TrialResultMutant implements I_TrialResult {
 	}
 
 	@Override
+	public int getTestFailureCount() {
+		int toRet = 0;
+		for (I_TestResult tr: results) {
+			if (!tr.isPassed()) {
+				toRet++;
+			}
+		}
+		return toRet;
+	}
+	
+	@Override
 	public int getAssertionCount() {
 		int toRet = 0;
 		for (I_TestResult result: results) {

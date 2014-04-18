@@ -30,6 +30,7 @@ public interface I_TrialResult {
 	public I_TrialFailure getFailure();
 	public boolean isPassed();
 	public int getTestCount();
+	public int getTestFailureCount();
 	public int getAssertionCount();
 	public int getUniqueAssertionCount();
 }
