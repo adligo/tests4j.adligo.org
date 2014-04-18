@@ -7,7 +7,7 @@ import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.system.console.ConsoleLogger;
 
 
-public class Tests4J_Params {
+public class Tests4J_Params implements I_Tests4J_Params {
 	private List<Class<? extends I_AbstractTrial>> trials = 
 				new ArrayList<Class<? extends I_AbstractTrial>>();
 	/**
@@ -16,7 +16,7 @@ public class Tests4J_Params {
 	 */
 	private boolean packageScope = true;
 	private boolean failFast = true;
-	private I_Tests4J_Logger logger = new ConsoleLogger(true);
+	private I_Tests4J_Logger log = new ConsoleLogger(true);
 	private I_CoveragePlugin coveragePlugin;
 	private boolean checkMins = false;
 	private int minTests = 0;
@@ -82,9 +82,11 @@ public class Tests4J_Params {
 	
 	public void addTrials(I_TrialList p) {
 		trials.addAll(p.getTrials());
+		/*
 		minTests = minTests + p.getMinTests();
 		minAsserts = minAsserts + p.getMinAsserts();
 		minUniqueAssertions = minUniqueAssertions + p.getMinUniqueAssertions();
+		*/
 	}
 	public int getThreadPoolSize() {
 		return threadPoolSize;
@@ -92,11 +94,11 @@ public class Tests4J_Params {
 	public void setThreadPoolSize(int threadPoolSize) {
 		this.threadPoolSize = threadPoolSize;
 	}
-	public I_Tests4J_Logger getLogger() {
-		return logger;
+	public I_Tests4J_Logger getLog() {
+		return log;
 	}
-	public void setLogger(I_Tests4J_Logger logger) {
-		this.logger = logger;
+	public void setLog(I_Tests4J_Logger logger) {
+		this.log = logger;
 	}
 	public boolean isExitAfterLastNotification() {
 		return exitAfterLastNotification;

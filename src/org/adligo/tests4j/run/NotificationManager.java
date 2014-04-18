@@ -45,7 +45,7 @@ public class NotificationManager {
 	public void startRecordingRunCoverage() {
 		I_CoveragePlugin plugin = memory.getPlugin();
 		if (plugin != null) {
-			I_CoverageRecorder allCoverageRecorder = plugin.createRecorder(I_CoverageRecorder.TRIAL_RUN);
+			allCoverageRecorder = plugin.createRecorder(I_CoverageRecorder.TRIAL_RUN);
 			memory.addRecorder(I_CoverageRecorder.TRIAL_RUN, allCoverageRecorder);
 			allCoverageRecorder.startRecording();
 		}
@@ -124,11 +124,18 @@ public class NotificationManager {
 				List<I_PackageCoverage> packageCoverage = allCoverageRecorder.getCoverage();
 				runResult.setCoverage(packageCoverage);
 			}
-			if (log.isEnabled()) {
-				long end = System.currentTimeMillis();
-				runResult.setRunTime(end - runResult.getStartTime());
-				reporter.onRunCompleted(new TrialRunResult(runResult));
+			
+			long end = System.currentTimeMillis();
+			runResult.setRunTime(end - runResult.getStartTime());
+			
+			TrialRunResult endResult = new TrialRunResult(runResult);
+			if (listener != null) {
+				listener.onRunCompleted(endResult);
 			}
+			if (log.isEnabled()) {
+				reporter.onRunCompleted(endResult);
+			}
+			
 			ExecutorService runService =  memory.getRunService();
 			runService.shutdownNow();
 			if (memory.isSystemExit()) {

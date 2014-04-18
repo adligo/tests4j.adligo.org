@@ -23,11 +23,18 @@ public class TrialProcessor {
 	
 	public TrialProcessor(Tests4J_Params params, I_TrialRunListener processor) {
 		
-		if (params.getLogger() == null) {
-			params.setLogger(new ConsoleLogger(true));
+		I_CoveragePlugin plugin = params.getCoveragePlugin();
+		if (plugin != null) {
+			plugin.instrumentClasses(params);
+		}
+		
+		if (params.getLog() == null) {
+			params.setLog(new ConsoleLogger(true));
 		} 
 		memory = new Tests4J_Memory(params);
-		notifier = new NotificationManager(memory, params.getLogger(), processor);
+		notifier = new NotificationManager(memory, params.getLog(), processor);
+		notifier.startRecordingRunCoverage();
+		
 		ExecutorService runService = memory.getRunService();
 		int threads = params.getThreadPoolSize();
 		
