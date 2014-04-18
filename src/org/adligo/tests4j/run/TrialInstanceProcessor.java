@@ -182,9 +182,11 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 			if (plugin != null) {
 				String name = trialDescription.getTrialName() + 
 						"." + tm.getMethod().getName();
+				/*
 				testCoverageRecorder = plugin.createRecorder(name);
 				memory.addRecorder(name, testCoverageRecorder);
 				testCoverageRecorder.startRecording();
+				*/
 			}
 			
 			
