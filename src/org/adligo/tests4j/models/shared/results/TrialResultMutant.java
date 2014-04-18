@@ -19,10 +19,10 @@ public class TrialResultMutant implements I_TrialResult {
 	
 	public static final String TRIAL_RESULT_MUTANT_REQUIRES_A_NON_NULL_TYPE = 
 			"TrialResultMutant requires a non null type.";
-	public static final String TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TEST_NAME = 
-			"TrialResultMutant requires a non empty testName.";
-	private String testName;
-	private String testedClassName;
+	public static final String TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME = 
+			"TrialResultMutant requires a non empty trialName.";
+	private String trialName;
+	private String testedSourceFileName;
 	private String testedPackageName;
 	
 	private TrialTypeEnum testType;
@@ -39,9 +39,9 @@ public class TrialResultMutant implements I_TrialResult {
 	public TrialResultMutant() {}
 	
 	public TrialResultMutant(I_TrialResult p) {
-		testName = p.getName();
-		IsEmpty.isEmpty(testName,
-				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TEST_NAME);
+		trialName = p.getName();
+		IsEmpty.isEmpty(trialName,
+				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME);
 		testType = p.getType();
 		if (testType == null) {
 			throw new IllegalArgumentException(
@@ -49,7 +49,7 @@ public class TrialResultMutant implements I_TrialResult {
 		}
 		switch(testType) {
 			case SourceFileTrial:
-				testedClassName = p.getTestedClassName();
+				testedSourceFileName = p.getTestedClassName();
 				break;
 			case API_Trial:
 				testedPackageName = p.getTestedPackageName();
@@ -73,14 +73,14 @@ public class TrialResultMutant implements I_TrialResult {
 	 */
 	@Override
 	public String getName() {
-		return testName;
+		return trialName;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestedClassName()
 	 */
 	@Override
 	public String getTestedClassName() {
-		return testedClassName;
+		return testedSourceFileName;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestedPackageName()
@@ -127,11 +127,11 @@ public class TrialResultMutant implements I_TrialResult {
 	public String getAfterTestOutput() {
 		return afterTestOutput;
 	}
-	public void setTestName(String testName) {
-		this.testName = testName;
+	public void setTrialName(String testName) {
+		this.trialName = testName;
 	}
-	public void setTestedClassName(String testedClassName) {
-		this.testedClassName = testedClassName;
+	public void setTestedSourceFileName(String testedClassName) {
+		this.testedSourceFileName = testedClassName;
 	}
 	public void setTestedPackageName(String testedPackageName) {
 		this.testedPackageName = testedPackageName;
@@ -164,8 +164,8 @@ public class TrialResultMutant implements I_TrialResult {
 	}
 	
 	String toString(Class<?> c) {
-		return c.getSimpleName() + " [testName=" + testName + ", testedClassName="
-				+ testedClassName + ", testedPackageName=" + testedPackageName
+		return c.getSimpleName() + " [testName=" + trialName + ", testedClassName="
+				+ testedSourceFileName + ", testedPackageName=" + testedPackageName
 				+ ", testType="
 				+ testType + ", exhibitResults=" + results
 				+ ", ignored=" + ignored + ", beforeTestOutput="

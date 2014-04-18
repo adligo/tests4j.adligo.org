@@ -2,12 +2,10 @@ package org.adligo.tests4j.run;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.AfterTrial;
 import org.adligo.tests4j.models.shared.BeforeTrial;
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.IgnoreTest;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
@@ -17,16 +15,11 @@ import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.LineSeperator;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.models.shared.results.TrialRunResult;
-import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
-import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 
-public class Tests4J implements I_TrialRunListener, I_Tests4J {
+public class Tests4J {
 	public static final String NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED = "Null I_TestRunListener not allowed.";
 	
 	/**
@@ -39,23 +32,12 @@ public class Tests4J implements I_TrialRunListener, I_Tests4J {
 	public static Set<Class<?>> COMMON_CLASSES = getCommonClasses();
 	
 	
-	private I_TrialRunListener trialRunListener;
-	
-	private I_CoverageRecorder recorder;
-	
-	public Tests4J() {
+	static {
 		Thread.setDefaultUncaughtExceptionHandler(new Tests4J_UncaughtExceptionHandler());
 	}
 	
-	private static void logInternal(String p) {
-		System.out.println("Tests4J; " + p);
-	}
 	
-	/* (non-Javadoc)
-	 * @see org.adligo.jtests.run.I_JTests#run(org.adligo.jtests.models.shared.system.RunParameters, org.adligo.jtests.models.shared.system.I_TestRunListener)
-	 */
-	@Override
-	public void run(Tests4J_Params pParams, I_TrialRunListener pListener) {
+	public static void run(Tests4J_Params pParams, I_TrialRunListener pListener) {
 		LineSeperator.setLineSeperator(System.lineSeparator());
 		if (pListener == null) {
 			throw new IllegalArgumentException(NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED);
@@ -63,16 +45,13 @@ public class Tests4J implements I_TrialRunListener, I_Tests4J {
 		runInternal(pParams, pListener);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.adligo.jtests.run.I_JTests#run(org.adligo.jtests.models.shared.system.RunParameters)
-	 */
-	@Override
-	public void run(Tests4J_Params pParams) {
+	public static void run(Tests4J_Params pParams) {
 		LineSeperator.setLineSeperator(System.lineSeparator());
-		runInternal(pParams, this);
+		runInternal(pParams, null);
 	}
 	
-	private void runInternal(final Tests4J_Params pParams, I_TrialRunListener pListener) {
+	private static void runInternal(final Tests4J_Params pParams, I_TrialRunListener pListener) {
+		/*
 		recorder =  pParams.getCoverageRecorder();
 		trialRunListener = pListener;
 		
@@ -80,6 +59,8 @@ public class Tests4J implements I_TrialRunListener, I_Tests4J {
 		if (recorder != null) {
 			recorder.startRecording();
 		}
+		*/
+		new TrialProcessor(pParams,pListener);
 		/** TODO
 		TrialInstanceProcessor runner = new TrialInstanceProcessor(
 				pParams.getTrials(),this, recorder);
@@ -87,29 +68,6 @@ public class Tests4J implements I_TrialRunListener, I_Tests4J {
 		*/
 	}
 
-	@Override
-	public void onTestCompleted(Class<? extends I_AbstractTrial> testClass,
-			I_AbstractTrial test, I_TrialResult result) {
-		if (trialRunListener != null) {
-			trialRunListener.onTestCompleted(testClass, test, result);
-		}
-	}
-
-	@Override
-	public void onRunCompleted(I_TrialRunResult result) {
-		if (recorder != null) {
-			List<I_PackageCoverage> allCoverage = recorder.getCoverage();
-			TrialRunResultMutant trrm = new TrialRunResultMutant(result);
-			trrm.setCoverage(allCoverage);
-			result = new TrialRunResult(trrm);
-		}
-		if (trialRunListener != null) {
-			trialRunListener.onRunCompleted(result);
-		} else {
-			System.exit(0);
-		}
-	}
-	
 	
 	/**
 	 * this is the set of common classes that 
@@ -144,6 +102,10 @@ public class Tests4J implements I_TrialRunListener, I_Tests4J {
 		return Collections.unmodifiableSet(toRet);
 	}
 
+
+	private static void logInternal(String p) {
+		//System.out.println("Tests4J; " + p);
+	}
 	
 	
 }

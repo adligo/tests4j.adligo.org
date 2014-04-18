@@ -23,7 +23,7 @@ public class ByteListOutputStream  extends OutputStream {
 	}
 	
 	@Override
-	public synchronized void write(int b) throws IOException {
+	public void write(int b) throws IOException {
 		if (currentChunk >= chunckSize) {
 			bytes.add(currentArray);
 			currentArray = new byte[chunckSize];
@@ -38,7 +38,7 @@ public class ByteListOutputStream  extends OutputStream {
 	 * output stream
 	 */
 	@Override
-	public synchronized String toString() {
+	public String toString() {
 		int size = (bytes.size() * chunckSize) + currentChunk;
 		byte [] all = new byte[size];
 		int counter = 0;

@@ -17,7 +17,8 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.run.I_Tests4J;
 import org.adligo.tests4j.run.Tests4J;
 
-public class ConsoleTestRunner implements I_TrialRunListener {
+public class ConsoleTestRunner  {
+	/*
 	private PrintStream originalOut = System.out;
 	private PrintStream originalErr = System.err;
 	private int allTests;
@@ -178,7 +179,7 @@ public class ConsoleTestRunner implements I_TrialRunListener {
 		this.checkMinimums = checkMinimums;
 	}
 
-	
+	*/
 
 
 }

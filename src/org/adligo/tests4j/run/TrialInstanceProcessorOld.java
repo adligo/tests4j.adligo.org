@@ -34,7 +34,7 @@ import org.adligo.tests4j.models.shared.results.TrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.system.ByteListOutputStream;
-import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 
@@ -101,10 +101,10 @@ public class TrialInstanceProcessorOld implements Runnable, I_TestFinishedListen
 	private TestRunable testsRunner = new TestRunable();
 	private ExecutorService testRunService;
 	private ArrayBlockingQueue<Boolean> blocking = new ArrayBlockingQueue<Boolean>(1);
-	private I_CoverageRecorder recorder;
+	private I_CoveragePlugin recorder;
 	
 	public TrialInstanceProcessorOld(List<Class<? extends I_AbstractTrial>> pTests, 
-			I_TrialRunListener pTestCompletedLister, I_CoverageRecorder pRecorder) {
+			I_TrialRunListener pTestCompletedLister, I_CoveragePlugin pRecorder) {
 		
 		recorder = pRecorder;
 		testsRunner.setListener(this);
@@ -151,7 +151,7 @@ public class TrialInstanceProcessorOld implements Runnable, I_TestFinishedListen
 		
 		testClass = clazz;
 		trialResultMutant = new TrialResultMutant();
-		trialResultMutant.setTestName(testClass.getName());
+		trialResultMutant.setTrialName(testClass.getName());
 		if (checkTestClass()) {
 			
 			runBeforeTrial();
@@ -161,7 +161,8 @@ public class TrialInstanceProcessorOld implements Runnable, I_TestFinishedListen
 				runAfterTrial();
 			} 
 		} 
-		listener.onTestCompleted(testClass, trial, new TrialResult(trialResultMutant));
+		//listener.onTestCompleted(testClass, trial, new TrialResult(trialResultMutant));
+		listener.onTrialCompleted(new TrialResult(trialResultMutant));
 		trialResultMutant = null;
 	}
 
@@ -314,7 +315,7 @@ public class TrialInstanceProcessorOld implements Runnable, I_TestFinishedListen
 									type);
 							return false;
 						}
-						trialResultMutant.setTestedClassName(clazz.getName());
+						trialResultMutant.setTestedSourceFileName(clazz.getName());
 					}
 				break;
 			case API_Trial:
@@ -332,7 +333,7 @@ public class TrialInstanceProcessorOld implements Runnable, I_TestFinishedListen
 							type);
 					return false;
 				} else {
-					trialResultMutant.setTestedClassName(testedPackageName);
+					trialResultMutant.setTestedSourceFileName(testedPackageName);
 				}
 				
 				break;
@@ -342,7 +343,11 @@ public class TrialInstanceProcessorOld implements Runnable, I_TestFinishedListen
 		IgnoreTrial ignored = testClass.getAnnotation(IgnoreTrial.class);
 		if (ignored != null) {
 			trialResultMutant.setIgnored(true);
+			/*
 			listener.onTestCompleted(testClass, null, 
+					new TrialResult(trialResultMutant));
+					*/
+			listener.onTrialCompleted(
 					new TrialResult(trialResultMutant));
 			return false;
 		}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.system.console.ConsoleLogger;
 
 
 public class Tests4J_Params {
@@ -16,12 +17,16 @@ public class Tests4J_Params {
 	private boolean packageScope = true;
 	private boolean failFast = true;
 	private I_Tests4J_Logger logger = new ConsoleLogger(true);
-	private I_CoverageRecorder coverageRecorder;
+	private I_CoveragePlugin coveragePlugin;
 	private boolean checkMins = false;
 	private int minTests = 0;
 	private int minAsserts = 0;
 	private int minUniqueAssertions = 0;
 	private int threadPoolSize = 4;
+	/**
+	 * this flaggs a jvm exit
+	 */
+	private boolean exitAfterLastNotification = true;
 	
 	public List<Class<? extends I_AbstractTrial>> getTrials() {
 		return trials;
@@ -44,11 +49,11 @@ public class Tests4J_Params {
 		this.failFast = failFast;
 	}
 	
-	public I_CoverageRecorder getCoverageRecorder() {
-		return coverageRecorder;
+	public I_CoveragePlugin getCoveragePlugin() {
+		return coveragePlugin;
 	}
-	public void setCoverageRecorder(I_CoverageRecorder coverageRecorder) {
-		this.coverageRecorder = coverageRecorder;
+	public void setCoveragePlugin(I_CoveragePlugin coverageRecorder) {
+		this.coveragePlugin = coverageRecorder;
 	}
 	public boolean isCheckMins() {
 		return checkMins;
@@ -92,5 +97,11 @@ public class Tests4J_Params {
 	}
 	public void setLogger(I_Tests4J_Logger logger) {
 		this.logger = logger;
+	}
+	public boolean isExitAfterLastNotification() {
+		return exitAfterLastNotification;
+	}
+	public void setExitAfterLastNotification(boolean exitAfterLastNotification) {
+		this.exitAfterLastNotification = exitAfterLastNotification;
 	}
 }

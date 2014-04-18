@@ -1,5 +1,6 @@
 package org.adligo.tests4j.run;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -20,16 +21,12 @@ import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 public class TrialDescription {
 	public static final String THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_OR_ZERO_TIMEOUT = 
 				"The test method may not have a negative or zero timeout.";
-	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
-				"Unexpected exception thrown from ";
-	public static final String J_TEST_INTERNAL_RUNNER_REQUIRES_A_TEST_COMLETED_LISTENER = 
-				"JTestInternalRunner requires a test comleted listener";
 	public static final String REFERS_TO_A_NULL_J_TEST_TYPE_TYPE = 
 				" refers to a null TestType type.";
 	public static final String IS_MISSING_TRIAL_TYPE_ANNOTATION = 
 				" is missing a @TrialType annotation.";
 	public static final String CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE = 
-				"SourceFilesTrials must be annotated with SourceFileScope.";
+				"SourceFileTrials must be annotated with SourceFileScope.";
 	public static final String IS_MISSING_A_TRIAL_TYPE = " is missing a TrialTypeEnum.";
 	public static final String THE_TRIAL = "The trail ";
 	public static final String TRIAL_NO_TEST = 
@@ -55,34 +52,25 @@ public class TrialDescription {
 	public static final String WAS_NOT_ANNOTATED_CORRECTLY = 
 			" was not annotated correctly.";
 
-	public static final String J_TEST_INTERNAL_RUNNER_REQUIRES_A_I_RUN_DONE_LISTENER = 
-			"JTestInternalRunner requires a I_RunDoneListener.";
-	public static final String SIMPLE_RUNNER_REQUIRES_A_I_TEST_RESULTS_PROCESSOR = 
-			"SimpleRunner requires a I_TestResultsProcessor.";
 	public static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = 
 			"Classes which implement I_AbstractTrial must have a zero argument constructor.";
-	private List<Class<? extends I_AbstractTrial>> tests = new ArrayList<Class<? extends I_AbstractTrial>>();
-	private Class<? extends I_AbstractTrial> testClass;
+	private Class<? extends I_AbstractTrial> trialClass;
 	private I_AbstractTrial trial;
 	
-	private Method beforeTrial;
-	private Method afterTrial;
+	private Method beforeTrialMethod;
+	private Method afterTrialMethod;
 	private List<TestMethod> testMethods;
 	private TrialTypeEnum type;
 	private boolean trialCanRun = false;
 	private String resultFailureMessage;
-	private IllegalArgumentException resultException;
+	private Exception resultException;
 	private boolean ignored;
 	private long duration;
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrial) {
 		long start = System.currentTimeMillis();
 		
-		beforeTrial = null;
-		afterTrial = null;
-		trial = null;
-		
-		testClass = pTrial;
+		trialClass = pTrial;
 		trialCanRun = checkTestClass();
 		long end = System.currentTimeMillis();
 		duration = end - start;
@@ -91,21 +79,35 @@ public class TrialDescription {
 
 
 
-	
-
-
-
 	private boolean checkTestClass() {
 		
-		type = getType();
+		type = getTypeInternal();
+		if (!checkTypeAnnotations()) {
+			return false;
+		}
+		IgnoreTrial ignoredTrial = trialClass.getAnnotation(IgnoreTrial.class);
+		if (ignoredTrial != null) {
+			ignored = true;
+			return false;
+		}
+		if (!locateTestMethods()) {
+			return false;
+		}
+		if (!createInstance()) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean checkTypeAnnotations() {
 		switch(type) {
 			case SourceFileTrial:
-					SourceFileScope scope = testClass.getAnnotation(SourceFileScope.class);
+					SourceFileScope scope = trialClass.getAnnotation(SourceFileScope.class);
 					if (scope == null) {
 						resultFailureMessage = 
 								CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE;
 						resultException	 =
-								new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+								new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
 						return false;
 					} else {
 						Class<?> clazz = scope.sourceClass();
@@ -113,18 +115,18 @@ public class TrialDescription {
 							resultFailureMessage = 
 									CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE;
 							resultException	 =
-									new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+									new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
 							return false;
 						}
 					}
 				break;
 			case API_Trial:
-				PackageScope pkgScope = testClass.getAnnotation(PackageScope.class);
+				PackageScope pkgScope = trialClass.getAnnotation(PackageScope.class);
 				if (pkgScope == null) {
 					resultFailureMessage = 
 							PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION;
 					resultException	 =
-							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				}
 				String testedPackageName = pkgScope.packageName();
@@ -132,7 +134,7 @@ public class TrialDescription {
 					resultFailureMessage = 
 							PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION;
 					resultException	 =
-							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				} 
 				
@@ -140,12 +142,11 @@ public class TrialDescription {
 			default:
 				//do nothing, functional tests don't require annotations
 		}
-		IgnoreTrial ignoredTrial = testClass.getAnnotation(IgnoreTrial.class);
-		if (ignoredTrial != null) {
-			ignored = true;
-			return false;
-		}
-		Method [] methods = testClass.getMethods();
+		return true;
+	}
+
+	private boolean locateTestMethods() {
+		Method [] methods = trialClass.getMethods();
 		testMethods = new ArrayList<TestMethod>();
 		for (Method method: methods) {
 			BeforeTrial bt = method.getAnnotation(BeforeTrial.class);
@@ -153,60 +154,60 @@ public class TrialDescription {
 				if (!Modifier.isStatic(method.getModifiers())) {
 					resultFailureMessage = BEFORE_TRIAL_NOT_STATIC;
 					resultException	 =
-							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				}
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
 					resultFailureMessage = BEFORE_TRIAL_HAS_PARAMS;
 					resultException	 =
-							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				}
-				beforeTrial = method;
+				beforeTrialMethod = method;
 			}
 			AfterTrial at = method.getAnnotation(AfterTrial.class);
 			if (at != null) {
 				if (!Modifier.isStatic(method.getModifiers())) {
 					resultFailureMessage = AFTER_TRIAL_NOT_STATIC; 
 					resultException	 =
-							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				}
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
 					resultFailureMessage = AFTER_TRIAL_HAS_PARAMS;
 					resultException	 =
-							new IllegalArgumentException(testClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				}
-				afterTrial = method;
+				afterTrialMethod = method;
 			}
 			Test test = method.getAnnotation(Test.class);
 			if (test != null) {
 				Class<?> [] params = method.getParameterTypes();
 				if (params.length != 0) {
 					resultFailureMessage = TEST_HAS_PARAMS;
-					resultException	= new IllegalArgumentException(testClass.getName() + "." + method.getName() + 
+					resultException	= new IllegalArgumentException(trialClass.getName() + "." + method.getName() + 
 									WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				}
 				if (Modifier.isAbstract(method.getModifiers())) {
 					resultFailureMessage = TEST_IS_ABSTRACT;
-					resultException	= new IllegalArgumentException(testClass.getName() + "." + method.getName() + 
+					resultException	= new IllegalArgumentException(trialClass.getName() + "." + method.getName() + 
 									WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				}
 				if (Modifier.isStatic(method.getModifiers())) {
 					resultFailureMessage = TEST_NOT_STATIC;
-					resultException	= new IllegalArgumentException(testClass.getName() + "." + method.getName() + 
+					resultException	= new IllegalArgumentException(trialClass.getName() + "." + method.getName() + 
 									WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				}
 				long timeout = test.timout();
 				if (timeout <= 0) {
 					resultFailureMessage = THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_OR_ZERO_TIMEOUT;
-					resultException	= new IllegalArgumentException(testClass.getName() + "." + method.getName() + 
+					resultException	= new IllegalArgumentException(trialClass.getName() + "." + method.getName() + 
 									WAS_NOT_ANNOTATED_CORRECTLY);
 				}
 				IgnoreTest it = method.getAnnotation(IgnoreTest.class);
@@ -215,17 +216,37 @@ public class TrialDescription {
 		}
 		if (testMethods.size() == 0) {
 			resultFailureMessage = TRIAL_NO_TEST;
-			resultException	= new IllegalArgumentException(testClass.getName() + 
+			resultException	= new IllegalArgumentException(trialClass.getName() + 
 							WAS_NOT_ANNOTATED_CORRECTLY);
 			return false;
 		}
 		return true;
 	}
 
-	private TrialTypeEnum getType() {
-		TrialType type = testClass.getAnnotation(TrialType.class);
+	private boolean createInstance() {
+		try {
+			Constructor<? extends I_AbstractTrial> constructor =
+					trialClass.getConstructor(new Class[] {});
+			trial = constructor.newInstance();
+		} catch (Exception x) {
+			resultFailureMessage = CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR; 
+			resultException	= x;
+			return false;
+		}
+		return true;
+	}
+
+	public TrialTypeEnum getType() {
+		if (type == null) {
+			return TrialTypeEnum.UnknownTrialType;
+		}
+		return type;
+	}
+	
+	private TrialTypeEnum getTypeInternal() {
+		TrialType type = trialClass.getAnnotation(TrialType.class);
 		if (type == null)  {
-			Class<?> checking = testClass.getSuperclass();
+			Class<?> checking = trialClass.getSuperclass();
 			while (!Object.class.equals(checking)) {
 				type = checking.getAnnotation(TrialType.class);
 				if (type != null) {
@@ -235,12 +256,70 @@ public class TrialDescription {
 			}
 		}
 		if (type == null) {
-			resultFailureMessage = THE_TRIAL + testClass.getName() + 
+			resultFailureMessage = THE_TRIAL + trialClass.getName() + 
 					IS_MISSING_TRIAL_TYPE_ANNOTATION;
 			resultException	= new IllegalArgumentException(resultFailureMessage);
 			return null;
 		}
 		TrialTypeEnum typeEnum = type.type();
 		return typeEnum;
+	}
+
+	public boolean isTrialCanRun() {
+		return trialCanRun;
+	}
+
+	public String getResultFailureMessage() {
+		return resultFailureMessage;
+	}
+
+	public Exception getResultException() {
+		return resultException;
+	}
+
+	public void setTrialCanRun(boolean trialCanRun) {
+		this.trialCanRun = trialCanRun;
+	}
+
+	public void setResultFailureMessage(String resultFailureMessage) {
+		this.resultFailureMessage = resultFailureMessage;
+	}
+
+	public void setResultException(IllegalArgumentException resultException) {
+		this.resultException = resultException;
+	}
+
+	public boolean isIgnored() {
+		return ignored;
+	}
+
+	public long getDuration() {
+		return duration;
+	}
+
+	public String getTrialName() {
+		return trialClass.getName();
+	}
+	public I_AbstractTrial getTrial() {
+		return trial;
+	}
+
+	public Method getBeforeTrialMethod() {
+		return beforeTrialMethod;
+	}
+
+	public Method getAfterTrialMethod() {
+		return afterTrialMethod;
+	}
+
+	public List<TestMethod> getTestMethods() {
+		return testMethods;
+	}
+
+
+
+
+	public Class<? extends I_AbstractTrial> getTrialClass() {
+		return trialClass;
 	}
 }
