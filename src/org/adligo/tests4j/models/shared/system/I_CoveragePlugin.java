@@ -39,16 +39,4 @@ public interface I_CoveragePlugin {
 	 */
 	public I_CoverageRecorder createRecorder(String scope);
 	
-	/**
-	 * The coverage plugin should re-map the line numbers
-	 * for us so that they can show up correctly
-	 * in the stack traces provided by the
-	 * tests4j api. 
-	 *   This is because the instrumented byte code 
-	 *   generates the stack, so it adds lines between
-	 *   all of the source code lines.
-	 * @param p
-	 * @return
-	 */
-	public Integer getSourceFileLine(StackTraceElement p);
 }
