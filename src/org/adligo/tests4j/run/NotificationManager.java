@@ -1,11 +1,17 @@
 package org.adligo.tests4j.run;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.metadata.I_TrialMetadata;
+import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
+import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
+import org.adligo.tests4j.models.shared.metadata.TrialRunMetadata;
+import org.adligo.tests4j.models.shared.metadata.TrialRunMetadataMutant;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
@@ -13,10 +19,7 @@ import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
-import org.adligo.tests4j.models.shared.system.console.ConsoleLogger;
 import org.adligo.tests4j.models.shared.system.console.TextReporter;
-
-import com.sun.swing.internal.plaf.synth.resources.synth;
 
 /**
  * this class handles event notification
@@ -76,7 +79,46 @@ public class NotificationManager {
 				result = memory.pollFailureResults();
 			}
 		}
+		if (listener != null) {
+			sendMetadata();
+		}
+	}
+
+	private void sendMetadata() {
+		List<TrialDescription> descs = memory.getAllDescriptions();
+		TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
 		
+		for (TrialDescription td: descs) {
+			TrialMetadataMutant tmm = new TrialMetadataMutant();
+			tmm.setTrialName(td.getTrialName());
+			Method before = td.getBeforeTrialMethod();
+			if (before != null) {
+				tmm.setBeforeTrialMethodName(before.getName());
+			}
+			boolean ignored = td.isIgnored();
+			tmm.setSkipped(ignored);
+			long timeout = td.getTimeout();
+			tmm.setTimeout(timeout);
+			
+			List<TestMethod> tms = td.getTestMethods();
+			if (tms != null) {
+				for (TestMethod tm: tms) {
+					TestMetadataMutant testMeta = new TestMetadataMutant();
+					Method method = tm.getMethod();
+					testMeta.setTestName(method.getName());
+					long testTimeout = tm.getTimeoutMillis();
+					testMeta.setTimeout(testTimeout);
+					tmm.addTest(testMeta);
+				}
+			}
+			Method after = td.getAfterTrialMethod();
+			if (after != null) {
+				tmm.setBeforeTrialMethodName(after.getName());
+			}
+			trmm.addTrial(tmm);
+		}
+		TrialRunMetadata toSend = new TrialRunMetadata(trmm);
+		listener.onMetadataCalculated(toSend);
 	}
 
 	public synchronized void startingTrial(String name) {

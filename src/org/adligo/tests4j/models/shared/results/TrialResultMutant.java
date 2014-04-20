@@ -51,7 +51,7 @@ public class TrialResultMutant implements I_TrialResult {
 			case SourceFileTrial:
 				testedSourceFileName = p.getTestedClassName();
 				break;
-			case API_Trial:
+			case ApiTrial:
 				testedPackageName = p.getTestedPackageName();
 				break;
 			default:

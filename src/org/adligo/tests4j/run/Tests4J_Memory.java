@@ -9,7 +9,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.AbstractTrial;
+import org.adligo.tests4j.models.shared.TrialClassPair;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -18,7 +19,8 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 
 public class Tests4J_Memory {
 	public static PrintStream INITAL_OUT = System.out;
-	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
+	private ConcurrentLinkedQueue<TrialClassPair> trialClasses = 
+			new ConcurrentLinkedQueue<TrialClassPair>();
 	private ConcurrentLinkedQueue<TrialDescription> descriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
 	private List<TrialDescription> allDescriptions = new CopyOnWriteArrayList<TrialDescription>();
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
@@ -29,9 +31,17 @@ public class Tests4J_Memory {
 	private Map<String, I_CoverageRecorder> recorders = new ConcurrentHashMap<String, I_CoverageRecorder>();
 	private ThreadLocalOutputStream out = new ThreadLocalOutputStream();
 	private I_Tests4J_Logger log;
+	/**
+	 * @see Tests4J_Params#getRecordSeperateTrialCoverage()
+	 */
+	private Boolean recordSeperateTrialCoverage = null;
+	/**
+	 * @see Tests4J_Params#getRecordSeperateTestCoverage()
+	 */
+	private Boolean recordSeperateTestCoverage = null;
 	
-	public Tests4J_Memory(Tests4J_Params params) {
-		trialClasses.addAll(params.getTrials());
+	public Tests4J_Memory(Tests4J_Params params, List<TrialClassPair> pTrialClasses) {
+		trialClasses.addAll(pTrialClasses);
 		trialCount = trialClasses.size();
 		systemExit = params.isExitAfterLastNotification();
 		plugin = params.getCoveragePlugin();
@@ -40,9 +50,11 @@ public class Tests4J_Memory {
 		int threads = params.getThreadPoolSize();
 		runService = Executors.newFixedThreadPool(threads);
 		log = params.getLog();
+		recordSeperateTrialCoverage = params.getRecordSeperateTrialCoverage();
+		recordSeperateTestCoverage = params.getRecordSeperateTestCoverage();
 	}
 	
-	public Class<? extends I_AbstractTrial> pollTrial() {
+	public TrialClassPair pollTrialClassPairs() {
 		return trialClasses.poll();
 	}
 	
@@ -70,7 +82,7 @@ public class Tests4J_Memory {
 		return resultsBeforeMetadata.size();
 	}
 
-	public ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> getTrialClasses() {
+	public ConcurrentLinkedQueue<TrialClassPair> getTrialClasses() {
 		return trialClasses;
 	}
 
@@ -125,5 +137,18 @@ public class Tests4J_Memory {
 
 	public I_Tests4J_Logger getLog() {
 		return log;
+	}
+	
+	public Boolean getRecordSeperateTrialCoverage() {
+		return recordSeperateTrialCoverage;
+	}
+	public Boolean getRecordSeperateTestCoverage() {
+		return recordSeperateTestCoverage;
+	}
+	public void setRecordTrialCoverage(boolean recordTrialCoverage) {
+		this.recordSeperateTrialCoverage = recordTrialCoverage;
+	}
+	public void setRecordTestCoverage(boolean recordTestCoverage) {
+		this.recordSeperateTestCoverage = recordTestCoverage;
 	}
 }

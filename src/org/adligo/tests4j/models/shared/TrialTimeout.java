@@ -6,17 +6,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * this marks a method as a runnable exibit 
- * (like a junit @Test annotation)
+ * if a trial should timeout after a certain number of milliseconds
  * @author scott
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Test {
+@Target(ElementType.TYPE)
+public @interface TrialTimeout {
 	/**
-	 * in seconds defaults to 0 which is no timeout
+	 * defaults to 0 (never timeout)
 	 * @return
 	 */
-	long timeout() default 0;
+	long timeout();
 }

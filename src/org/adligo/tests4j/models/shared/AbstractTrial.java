@@ -11,7 +11,7 @@ import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertThrown;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertTrue;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertUniform;
 
-import org.adligo.tests4j.models.shared.asserts.AssertionFailureLocation;
+import org.adligo.tests4j.models.shared.asserts.AssertionProcessor;
 import org.adligo.tests4j.models.shared.asserts.BooleanAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
@@ -24,13 +24,9 @@ import org.adligo.tests4j.models.shared.asserts.StringUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrowableAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrowableUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.ThrownAssertionData;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
-import org.adligo.tests4j.models.shared.results.TestFailure;
-import org.adligo.tests4j.models.shared.results.TestFailureMutant;
-import org.adligo.tests4j.models.shared.system.I_AssertListener;
 
-public abstract class AbstractTrial implements I_AbstractTrial, I_Asserts {
+public abstract class AbstractTrial implements I_Asserts {
 	public static final String THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE = "The first Byte should NOT be less than the second Byte.";
 	public static final String NOT_GREATER_THAN_BYTE = "The first byte should NOT be greater than the last byte";
 	public static final String THE_EXPECTED_BYTE_SHOULD_BE_LESS_THAN_THE_ACTUAL_BYTE = "The first Byte should be less than the second byte";
@@ -48,42 +44,24 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Asserts {
 	public static final String THE_VALUE_SHOULD_BE_FALSE = "The value should be false.";
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
-	private I_AssertListener listener;
-
+	private AbstractTrialMemory memory;
 	/**
-	 * TODO
-	 * note I would like to hide this method somehow....
+	 * Set the memory of the AbstractTrial
 	 * @param p
 	 */
-	public void setListener(I_AssertListener p) {
-		listener = p;
+	void setMemory(AbstractTrialMemory pMemory) {
+		memory = pMemory;
 	}
 	
 	/**
 	 * @param cmd
 	 */
-	public synchronized void evaluate(I_BasicAssertCommand cmd) {
-		if (cmd.evaluate()) {
-			listener.assertCompleted(cmd);
-		} else {
-			TestFailureMutant fm = new TestFailureMutant();
-			fm.setMessage(cmd.getFailureMessage());
-			fm.setLocationFailed(new AssertionFailureLocation());
-			fm.setData(cmd);
-			listener.assertFailed(new TestFailure(fm));
-		}
+	public void evaluate(I_BasicAssertCommand cmd) {
+		AssertionProcessor.evaluate(memory, cmd);
 	}
 	
-	public synchronized void evaluate(I_ThrownAssertCommand cmd, I_Thrower p) {
-		if (cmd.evaluate(p)) {
-			listener.assertCompleted(cmd);
-		} else {
-			TestFailureMutant fm = new TestFailureMutant();
-			fm.setMessage(cmd.getFailureMessage());
-			fm.setLocationFailed(new AssertionFailureLocation());
-			fm.setData(cmd);
-			listener.assertFailed(new TestFailure(fm));
-		}
+	public void evaluate(I_ThrownAssertCommand cmd, I_Thrower p) {
+		AssertionProcessor.evaluate(memory, cmd, p);
 	}
 	
 	@Override
@@ -168,12 +146,10 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Asserts {
 	}
 
 
-	@Override
 	public void beforeTests() {
 		//do nothing, allow overrides
 	}
 
-	@Override
 	public void afterTests() {
 		//do nothing, allow overrides
 	}

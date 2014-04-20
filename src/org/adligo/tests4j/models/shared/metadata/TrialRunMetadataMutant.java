@@ -24,8 +24,12 @@ public class TrialRunMetadataMutant implements I_TrialRunMetadata {
 	public void setTrials(List<? extends I_TrialMetadata> p) {
 		trials.clear();
 		for (I_TrialMetadata trial: p) {
-			trials.add(new TrialMetadataMutant(trial));
+			addTrial(trial);
 		}
+	}
+
+	public void addTrial(I_TrialMetadata trial) {
+		trials.add(new TrialMetadataMutant(trial));
 	}
 	
 }

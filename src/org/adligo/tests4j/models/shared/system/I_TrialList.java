@@ -2,8 +2,8 @@ package org.adligo.tests4j.models.shared.system;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.AbstractTrial;
 
 public interface I_TrialList {
-	public List<Class<? extends I_AbstractTrial>> getTrials();
+	public List<Class<? extends AbstractTrial>> getTrials();
 }

@@ -6,14 +6,17 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adligo.tests4j.models.shared.AbstractTrial;
 import org.adligo.tests4j.models.shared.AfterTrial;
 import org.adligo.tests4j.models.shared.BeforeTrial;
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_AfterSourceFileTrialData;
 import org.adligo.tests4j.models.shared.IgnoreTest;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
 import org.adligo.tests4j.models.shared.SourceFileScope;
 import org.adligo.tests4j.models.shared.Test;
+import org.adligo.tests4j.models.shared.TrialClassPair;
+import org.adligo.tests4j.models.shared.TrialTimeout;
 import org.adligo.tests4j.models.shared.TrialType;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
@@ -40,8 +43,13 @@ public class TrialDescription {
 			"Methods Annotated with @Test must be public.";
 	public static final String TEST_HAS_PARAMS = 
 			"Methods Annotated with @Test must not take any parameters";
-	private static final String AFTER_TRIAL_HAS_PARAMS = 
-			"Methods Annotated with @AfterTrial must not take any parameters.";
+	private static final String AFTER_USE_CASE_TRIAL_HAS_PARAMS = 
+			"Use Case Trial Methods Annotated with @AfterTrial must not take any parameters.";
+	private static final String AFTER_SOURCE_FILE_TRIAL_HAS_WRONG_PARAMS = 
+			"Source File Trial Methods Annotated with @AfterTrial must take a single parameter I_AfterSourceFileTrialData.";
+	private static final String AFTER_API_TRIAL_HAS_WRONG_PARAMS = 
+			"Api Trial Methods Annotated with @AfterTrial must take a single parameter I_AfterApiTrialData.";
+	
 	public static final String AFTER_TRIAL_NOT_STATIC = 
 			"Methods Annotated with @AfterTrial must be static.";
 	public static final String BEFORE_TRIAL_HAS_PARAMS = 
@@ -55,8 +63,10 @@ public class TrialDescription {
 
 	public static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = 
 			"Classes which implement I_AbstractTrial must have a zero argument constructor.";
-	private Class<? extends I_AbstractTrial> trialClass;
-	private I_AbstractTrial trial;
+	private TrialClassPair trialClassPair;
+	private Class<? extends AbstractTrial> trialClass;
+	
+	private AbstractTrial trial;
 	
 	private Method beforeTrialMethod;
 	private Method afterTrialMethod;
@@ -67,13 +77,17 @@ public class TrialDescription {
 	private Exception resultException;
 	private boolean ignored;
 	private long duration;
+	private long timeout;
 	private I_Tests4J_Logger log;
 	
-	public TrialDescription(Class<? extends I_AbstractTrial> pTrial, I_Tests4J_Logger pLog) {
+	public TrialDescription(TrialClassPair pTrialClassPair,
+			I_Tests4J_Logger pLog) {
 		long start = System.currentTimeMillis();
 		log = pLog;
 		
-		trialClass = pTrial;
+		trialClassPair = pTrialClassPair;
+		trialClass = pTrialClassPair.getTrialClass();
+		
 		trialCanRun = checkTestClass();
 		long end = System.currentTimeMillis();
 		duration = end - start;
@@ -93,6 +107,13 @@ public class TrialDescription {
 			ignored = true;
 			return false;
 		}
+		TrialTimeout trialTimeout = trialClass.getAnnotation(TrialTimeout.class);
+		if (trialTimeout != null) {
+			timeout = trialTimeout.timeout();
+		} else {
+			timeout = 0;
+		}
+		
 		if (!locateTestMethods()) {
 			return false;
 		}
@@ -123,7 +144,7 @@ public class TrialDescription {
 						}
 					}
 				break;
-			case API_Trial:
+			case ApiTrial:
 				PackageScope pkgScope = trialClass.getAnnotation(PackageScope.class);
 				if (pkgScope == null) {
 					resultFailureMessage = 
@@ -178,11 +199,44 @@ public class TrialDescription {
 					return false;
 				}
 				Class<?> [] params = method.getParameterTypes();
-				if (params.length != 0) {
-					resultFailureMessage = AFTER_TRIAL_HAS_PARAMS;
-					resultException	 =
-							new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
-					return false;
+				switch (type) {
+					case SourceFileTrial:
+						if (params.length != 1) {
+							resultFailureMessage = AFTER_SOURCE_FILE_TRIAL_HAS_WRONG_PARAMS;
+							resultException	 =
+									new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							return false;
+						} else {
+							Class<?> param = params[0];
+							if ( !I_AfterSourceFileTrialData.class.isAssignableFrom(param)) {
+								resultFailureMessage = AFTER_SOURCE_FILE_TRIAL_HAS_WRONG_PARAMS;
+								resultException	 =
+										new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+								return false;
+							}
+						}
+					case ApiTrial:
+						if (params.length != 1) {
+							resultFailureMessage = AFTER_API_TRIAL_HAS_WRONG_PARAMS;
+							resultException	 =
+									new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							return false;
+						} else {
+							Class<?> param = params[0];
+							if ( !I_AfterSourceFileTrialData.class.isAssignableFrom(param)) {
+								resultFailureMessage = AFTER_API_TRIAL_HAS_WRONG_PARAMS;
+								resultException	 =
+										new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+								return false;
+							}
+						}
+					default:
+						if (params.length != 0) {
+							resultFailureMessage = AFTER_USE_CASE_TRIAL_HAS_PARAMS;
+							resultException	 =
+									new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							return false;
+						}
 				}
 				afterTrialMethod = method;
 			}
@@ -207,7 +261,7 @@ public class TrialDescription {
 									WAS_NOT_ANNOTATED_CORRECTLY);
 					return false;
 				}
-				long timeout = test.timout();
+				long timeout = test.timeout();
 				if (timeout <= 0) {
 					resultFailureMessage = THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_OR_ZERO_TIMEOUT;
 					resultException	= new IllegalArgumentException(trialClass.getName() + "." + method.getName() + 
@@ -228,7 +282,7 @@ public class TrialDescription {
 
 	private boolean createInstance() {
 		try {
-			Constructor<? extends I_AbstractTrial> constructor =
+			Constructor<? extends AbstractTrial> constructor =
 					trialClass.getConstructor(new Class[] {});
 			trial = constructor.newInstance();
 		} catch (Exception x) {
@@ -311,7 +365,7 @@ public class TrialDescription {
 	public String getTrialName() {
 		return trialClass.getName();
 	}
-	public I_AbstractTrial getTrial() {
+	public AbstractTrial getTrial() {
 		return trial;
 	}
 
@@ -327,10 +381,18 @@ public class TrialDescription {
 		return testMethods;
 	}
 
-
-
-
-	public Class<? extends I_AbstractTrial> getTrialClass() {
+	public Class<? extends AbstractTrial> getTrialClass() {
 		return trialClass;
+	}
+
+	public long getTimeout() {
+		return timeout;
+	}
+
+
+
+
+	public TrialClassPair getTrialClassPair() {
+		return trialClassPair;
 	}
 }

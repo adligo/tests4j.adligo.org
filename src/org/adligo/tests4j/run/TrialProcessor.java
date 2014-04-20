@@ -1,8 +1,12 @@
 package org.adligo.tests4j.run;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.adligo.tests4j.models.shared.AbstractTrial;
+import org.adligo.tests4j.models.shared.TrialClassPair;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
@@ -24,14 +28,27 @@ public class TrialProcessor {
 	public TrialProcessor(Tests4J_Params params, I_TrialRunListener processor) {
 		
 		I_CoveragePlugin plugin = params.getCoveragePlugin();
-		if (plugin != null) {
-			params.setTrials(plugin.instrumentClasses(params));
+		List<TrialClassPair> trialClassPairs = new ArrayList<TrialClassPair>();
+		if (plugin == null) {
+			List<Class<? extends AbstractTrial>> trials = params.getTrials();
+			for (Class<? extends AbstractTrial> trialClazz: trials) {
+				trialClassPairs.add(new TrialClassPair(trialClazz, null));
+			}
+		} else {
+			List<Class<? extends AbstractTrial>> trials = params.getTrials();
+			List<Class<? extends AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(params);
+			for (int i = 0; i < trials.size(); i++) {
+				Class<? extends AbstractTrial> trialClazz = trials.get(i);
+				Class<? extends AbstractTrial> instrumentedTrialClazz = instrumentedTrials.get(i);
+				
+				trialClassPairs.add(new TrialClassPair(trialClazz, instrumentedTrialClazz));
+			}
 		}
 		
 		if (params.getLog() == null) {
 			params.setLog(new ConsoleLogger(true));
 		} 
-		memory = new Tests4J_Memory(params);
+		memory = new Tests4J_Memory(params, trialClassPairs);
 		notifier = new NotificationManager(memory, params.getLog(), processor);
 		notifier.startRecordingRunCoverage();
 		

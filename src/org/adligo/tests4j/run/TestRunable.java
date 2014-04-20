@@ -3,7 +3,7 @@ package org.adligo.tests4j.run;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.AbstractTrial;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
@@ -12,15 +12,13 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 
-import com.sun.swing.internal.plaf.synth.resources.synth;
-
 public class TestRunable implements Runnable, I_AssertListener {
 
 	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
 	
 	private Method testMethod;
 	private TestResultMutant testResultMutant;
-	private I_AbstractTrial trial;
+	private AbstractTrial trial;
 	private I_TestFinishedListener listener;
 	
 	@Override
@@ -52,7 +50,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		return testMethod;
 	}
 
-	public I_AbstractTrial getTrial() {
+	public AbstractTrial getTrial() {
 		return trial;
 	}
 
@@ -64,7 +62,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		this.testMethod = testMethod;
 	}
 
-	public void setTrial(I_AbstractTrial trial) {
+	public void setTrial(AbstractTrial trial) {
 		this.trial = trial;
 	}
 

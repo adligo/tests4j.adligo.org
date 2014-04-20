@@ -83,8 +83,12 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 	public void setTests(Collection<? extends I_TestMetadata> p) {
 		tests.clear();
 		for (I_TestMetadata test: p) {
-			tests.add(new TestMetadataMutant(test));
+			addTest(test);
 		}
+	}
+	
+	public void addTest(I_TestMetadata p) {
+		tests.add(new TestMetadataMutant(p));
 	}
 	
 	public int getTestCount() {
