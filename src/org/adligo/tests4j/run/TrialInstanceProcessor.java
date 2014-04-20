@@ -1,6 +1,7 @@
 package org.adligo.tests4j.run;
 
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -162,11 +163,10 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 	 * @return all suceeded
 	 */
 	private void runTests() {
-		List<TestDescription> methods = trialDescription.getTestMethods();
+		Iterator<TestDescription> methods = trialDescription.getTestMethods();
 		
-		for(TestDescription tm: methods) {
-			
-			runTest(tm);
+		while (methods.hasNext()) {
+			runTest(methods.next());
 		}
 		
 	}
@@ -203,14 +203,15 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 			try {
 				Long timeout = tm.getTimeoutMillis();
 				if (timeout == 0L) {
-					blocking.take();
+					TestResult result = blocking.take();
+					trialResultMutant.addResult(result);
 				} else {
 					TestResult result = blocking.poll(tm.getTimeoutMillis(), TimeUnit.MILLISECONDS);
 					if (result != null) {
 						trialResultMutant.addResult(result);
 					} else {
 						TestResultMutant trm = new TestResultMutant(
-								testsRunner.getTestResultMutant());
+								testsRunner.getTestResult());
 						TestFailureMutant tfm = new TestFailureMutant();
 						String message = "Test Timedout at " + tm.getTimeoutMillis() + " milliseconds.";
 						tfm.setMessage(message);

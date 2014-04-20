@@ -17,7 +17,7 @@ public class MetadatNotifier {
 
 	public static synchronized void sendMetadata(I_Tests4J_Logger log, Tests4J_Memory memory, I_TrialRunListener listener) {
 		if (log.isEnabled()) {
-			log.log("sendingMetadata.");
+			log.log("sendingMetadata. " + memory.getDescriptionCount());
 		}
 		Iterator<TrialDescription> it = memory.getAllDescriptions();
 		TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
@@ -35,24 +35,26 @@ public class MetadatNotifier {
 			long timeout = td.getTimeout();
 			tmm.setTimeout(timeout);
 			
-			List<TestDescription> tms = td.getTestMethods();
-			if (tms != null) {
-				Iterator<TestDescription> iit = tms.iterator();
-				List<I_TestMetadata> testMetas = new ArrayList<I_TestMetadata>();
-				while (iit.hasNext()) {
-					TestDescription tm = iit.next();
-					TestMetadataMutant testMeta = new TestMetadataMutant();
-					Method method = tm.getMethod();
-					testMeta.setTestName(method.getName());
-					long testTimeout = tm.getTimeoutMillis();
-					testMeta.setTimeout(testTimeout);
-					testMetas.add(testMeta);
+			if (td.getTestMethodsSize() >= 1) {
+				Iterator<TestDescription> iit = td.getTestMethods();
+				
+				if (iit != null) {
+					List<I_TestMetadata> testMetas = new ArrayList<I_TestMetadata>();
+					while (iit.hasNext()) {
+						TestDescription tm = iit.next();
+						TestMetadataMutant testMeta = new TestMetadataMutant();
+						Method method = tm.getMethod();
+						testMeta.setTestName(method.getName());
+						long testTimeout = tm.getTimeoutMillis();
+						testMeta.setTimeout(testTimeout);
+						testMetas.add(testMeta);
+					}
+					if (log.isEnabled()) {
+						log.log("sendingMetadata trial " +tmm.getTrialName() + 
+								" has " + testMetas.size() + " tests.");
+					}
+					tmm.setTests(testMetas);
 				}
-				if (log.isEnabled()) {
-					log.log("sendingMetadata trial " +tmm.getTrialName() + 
-							" has " + testMetas.size() + " tests.");
-				}
-				tmm.setTests(testMetas);
 			}
 			Method after = td.getAfterTrialMethod();
 			if (after != null) {

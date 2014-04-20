@@ -2,6 +2,10 @@ package org.adligo.tests4j.run;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.AbstractTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
@@ -18,17 +22,21 @@ public class TestRunable implements Runnable, I_AssertListener {
 	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
 	
 	private Method testMethod;
-	private TestResultMutant testResultMutant;
 	private I_AbstractTrial trial;
 	private I_TestFinishedListener listener;
+	private TestResult testResult;
+	private CopyOnWriteArrayList<Integer> assertionHashes = new CopyOnWriteArrayList<Integer>(); 
 	
 	@Override
 	public void run() {
-		testResultMutant = new TestResultMutant();
+		TestResultMutant testResultMutant = new TestResultMutant();
+		assertionHashes.clear();
+		
 		Throwable unexpected = null;
 		try {
 			testResultMutant.setName(testMethod.getName());
 			
+			testResult = new TestResult(testResultMutant);
 			testMethod.invoke(trial, new Object[] {});
 			testResultMutant.setPassed(true);
 			
@@ -37,6 +45,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		} catch (Exception x) {
 			unexpected = x;
 		}
+		flushAssertionHashes(testResultMutant);
 		if (unexpected != null) {
 			TestFailureMutant failure = new TestFailureMutant();
 			failure.setException(unexpected);
@@ -72,16 +81,24 @@ public class TestRunable implements Runnable, I_AssertListener {
 	}
 	
 	public synchronized void assertCompleted(I_AssertCommand cmd) {
-		testResultMutant.incrementAssertionCount(cmd.hashCode());
+		assertionHashes.add(cmd.hashCode());
 	}
 
 	public synchronized void assertFailed(I_TestFailure failure) {
-		testResultMutant.setFailure(failure);
-		listener.testFinished(new TestResult(testResultMutant));
+		TestResultMutant trm = new TestResultMutant(testResult);
+		trm.setFailure(failure);
+		flushAssertionHashes(trm);
+		listener.testFinished(new TestResult(trm));
 	}
 
-	public TestResult getTestResultMutant() {
-		return new TestResult(testResultMutant);
+	private void flushAssertionHashes(TestResultMutant trm) {
+		Iterator<Integer> it = assertionHashes.iterator();
+		while (it.hasNext()) {
+			trm.incrementAssertionCount(it.next());
+		}
 	}
 
+	public TestResult getTestResult() {
+		return testResult;
+	}
 }

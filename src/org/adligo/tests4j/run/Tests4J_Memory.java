@@ -61,6 +61,10 @@ public class Tests4J_Memory {
 	
 	public synchronized void add(TrialDescription p) {
 		allDescriptions.add(p);
+		if (log.isEnabled()) {
+			log.log("TrialDescription " + p.getTrialName() +
+					" has " + p.getTestMethodsSize());
+		}
 		if (p.isTrialCanRun()) {
 			descriptionsToRun.add(p);
 		}
