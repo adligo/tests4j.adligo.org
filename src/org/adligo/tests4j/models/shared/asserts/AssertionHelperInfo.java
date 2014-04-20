@@ -1,10 +1,9 @@
-package org.adligo.tests4j.models.shared;
+package org.adligo.tests4j.models.shared.asserts;
 
-import org.adligo.tests4j.models.shared.asserts.I_AssertionHelperInfo;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 
-public class AbstractTrialMemory implements I_AssertionHelperInfo {
+public class AssertionHelperInfo implements I_AssertionHelperInfo {
 	/**
 	 * the assertion listener used to notify
 	 * the TrialInstanceProcessor that a 
@@ -19,23 +18,27 @@ public class AbstractTrialMemory implements I_AssertionHelperInfo {
 	 * the instance of the trial class getting run
 	 */
 	private Class<?> instanceClass;
-	/**
-	 * may be null if the byte code wasn't instrumented for
-	 * source code coverage.
-	 */
-	private Class<?> nonInstrumentedInstanceClass;
 	
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.models.shared.I_AbstractTrialMemory#getListener()
+	 */
+	@Override
 	public I_AssertListener getListener() {
 		return listener;
 	}
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.models.shared.I_AbstractTrialMemory#getCoveragePlugin()
+	 */
+	@Override
 	public I_CoveragePlugin getCoveragePlugin() {
 		return coveragePlugin;
 	}
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.models.shared.I_AbstractTrialMemory#getInstanceClass()
+	 */
+	@Override
 	public Class<?> getInstanceClass() {
 		return instanceClass;
-	}
-	public Class<?> getNonInstrumentedInstanceClass() {
-		return nonInstrumentedInstanceClass;
 	}
 	public void setListener(I_AssertListener listener) {
 		this.listener = listener;
@@ -45,10 +48,6 @@ public class AbstractTrialMemory implements I_AssertionHelperInfo {
 	}
 	public void setInstanceClass(Class<?> instanceClass) {
 		this.instanceClass = instanceClass;
-	}
-	public void setNonInstrumentedInstanceClass(
-			Class<?> nonInstrumentedInstanceClass) {
-		this.nonInstrumentedInstanceClass = nonInstrumentedInstanceClass;
 	}
 	
 }

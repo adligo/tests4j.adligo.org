@@ -12,9 +12,15 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 public class ConsoleLogger implements I_Tests4J_Logger {
 	private static PrintStream OUT = System.out;
 	private boolean enabled = true;
+	private String prefix = "Tests4J: ";
 	
 	public ConsoleLogger(boolean pEnabled) {
 		enabled = pEnabled;
+	}
+	
+	public ConsoleLogger(String pPrefix, boolean pEnabled) {
+		enabled = pEnabled;
+		prefix = pPrefix;
 	}
 	
 	@Override
@@ -24,7 +30,7 @@ public class ConsoleLogger implements I_Tests4J_Logger {
 
 	@Override
 	public void log(String p) {
-		OUT.println("Tests4J: " + p);
+		OUT.println(prefix + p);
 	}
 
 	@Override

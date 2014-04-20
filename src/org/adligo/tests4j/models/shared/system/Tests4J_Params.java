@@ -3,13 +3,13 @@ package org.adligo.tests4j.models.shared.system;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.AbstractTrial;
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.system.console.ConsoleLogger;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {
-	private List<Class<? extends AbstractTrial>> trials = 
-				new ArrayList<Class<? extends AbstractTrial>>();
+	private List<Class<? extends I_AbstractTrial>> trials = 
+				new ArrayList<Class<? extends I_AbstractTrial>>();
 	/**
 	 * this would only be false if running a single
 	 * ClassTest instance
@@ -45,17 +45,17 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 */
 	private Boolean recordSeperateTestCoverage = null;
 	
-	public List<Class<? extends AbstractTrial>> getTrials() {
+	public List<Class<? extends I_AbstractTrial>> getTrials() {
 		return trials;
 	}
 	public boolean isPackageScope() {
 		return packageScope;
 	}
-	public void setTrials(List<Class<? extends AbstractTrial>> p) {
+	public void setTrials(List<Class<? extends I_AbstractTrial>> p) {
 		trials.clear();
 		trials.addAll(p);
 	}
-	public void addTrial(Class<? extends AbstractTrial> p) {
+	public void addTrial(Class<? extends I_AbstractTrial> p) {
 		trials.add(p);
 	}
 	

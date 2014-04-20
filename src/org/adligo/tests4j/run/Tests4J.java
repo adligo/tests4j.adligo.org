@@ -1,7 +1,8 @@
 package org.adligo.tests4j.run;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.AfterTrial;
@@ -15,7 +16,6 @@ import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.LineSeperator;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
-import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 
@@ -29,7 +29,7 @@ public class Tests4J {
 	 * parent classloader so that wierd .
 	 * These are stored here for testing of this class.
 	 */
-	public static Set<Class<?>> COMMON_CLASSES = getCommonClasses();
+	public static List<Class<?>> COMMON_CLASSES = getCommonClasses();
 	
 	
 	static {
@@ -73,8 +73,8 @@ public class Tests4J {
 	 * this is the set of common classes that 
 	 * @return
 	 */
-	private static Set<Class<?>> getCommonClasses() {
-		Set<Class<?>> toRet = new HashSet<Class<?>>();
+	private static List<Class<?>> getCommonClasses() {
+		List<Class<?>> toRet = new ArrayList<Class<?>>();
 		//start with common
 		toRet.add(TrialTypeEnum.class);
 		
@@ -99,7 +99,7 @@ public class Tests4J {
 				throw new RuntimeException(x);
 			}
 		}
-		return Collections.unmodifiableSet(toRet);
+		return Collections.unmodifiableList(toRet);
 	}
 
 

@@ -60,7 +60,7 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		return coverage;
 	}
 
-	public void setCoverage(List<I_PackageCoverage> coverage) {
+	public synchronized void setCoverage(List<I_PackageCoverage> coverage) {
 		this.coverage = coverage;
 	}
 
@@ -76,27 +76,27 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		return asserts;
 	}
 
-	public void setTrials(int trials) {
+	public synchronized void setTrials(int trials) {
 		this.trials = trials;
 	}
 
-	public void addTrials(int p) {
+	public synchronized void addTrials(int p) {
 		this.trials = trials + p;
 	}
 	
-	public void setTests(long tests) {
+	public synchronized void setTests(long tests) {
 		this.tests = tests;
 	}
 
-	public void addTests(long p) {
+	public synchronized void addTests(long p) {
 		this.tests = tests + p;
 	}
 	
-	public void setAsserts(long asserts) {
+	public synchronized void setAsserts(long asserts) {
 		this.asserts = asserts;
 	}
 
-	public void addAsserts(long p) {
+	public synchronized void addAsserts(long p) {
 		this.asserts = asserts + p;
 	}
 	
@@ -104,11 +104,11 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		return testFailures;
 	}
 
-	public void setTestFailures(long testFailures) {
+	public synchronized void setTestFailures(long testFailures) {
 		this.testFailures = testFailures;
 	}
 
-	public void addTestFailures(long p) {
+	public synchronized void addTestFailures(long p) {
 		this.testFailures = testFailures + p;
 	}
 	
@@ -123,11 +123,11 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		return trialFailures;
 	}
 
-	public void setTrialFailures(int p) {
+	public synchronized void setTrialFailures(int p) {
 		this.trialFailures = p;
 	}
 	
-	public void addTrialFailures(int p) {
+	public synchronized void addTrialFailures(int p) {
 		this.trialFailures = trialFailures + p;
 	}
 
@@ -135,11 +135,11 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		return uniqueAsserts;
 	}
 
-	public void setUniqueAsserts(long uniqueAsserts) {
+	public synchronized void setUniqueAsserts(long uniqueAsserts) {
 		this.uniqueAsserts = uniqueAsserts;
 	}
 	
-	public void addUniqueAsserts(long p) {
+	public synchronized void addUniqueAsserts(long p) {
 		this.uniqueAsserts = uniqueAsserts + p;
 	}
 }

@@ -15,7 +15,7 @@ import org.adligo.tests4j.models.shared.asserts.AssertionProcessor;
 import org.adligo.tests4j.models.shared.asserts.BooleanAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
-import org.adligo.tests4j.models.shared.asserts.I_Asserts;
+import org.adligo.tests4j.models.shared.asserts.I_AssertionHelperInfo;
 import org.adligo.tests4j.models.shared.asserts.I_BasicAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.I_ThrownAssertCommand;
@@ -26,7 +26,7 @@ import org.adligo.tests4j.models.shared.asserts.ThrowableUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 
-public abstract class AbstractTrial implements I_Asserts {
+public abstract class AbstractTrial implements I_AbstractTrial {
 	public static final String THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE = "The first Byte should NOT be less than the second Byte.";
 	public static final String NOT_GREATER_THAN_BYTE = "The first byte should NOT be greater than the last byte";
 	public static final String THE_EXPECTED_BYTE_SHOULD_BE_LESS_THAN_THE_ACTUAL_BYTE = "The first Byte should be less than the second byte";
@@ -44,12 +44,13 @@ public abstract class AbstractTrial implements I_Asserts {
 	public static final String THE_VALUE_SHOULD_BE_FALSE = "The value should be false.";
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
-	private AbstractTrialMemory memory;
+	private I_AssertionHelperInfo memory;
 	/**
 	 * Set the memory of the AbstractTrial
 	 * @param p
 	 */
-	void setMemory(AbstractTrialMemory pMemory) {
+	public void setMemory(I_AssertionHelperInfo pMemory) {
+		
 		memory = pMemory;
 	}
 	

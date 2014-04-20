@@ -9,13 +9,13 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.AbstractTrial;
 import org.adligo.tests4j.models.shared.AfterTrial;
 import org.adligo.tests4j.models.shared.BeforeTrial;
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.I_AfterSourceFileTrialData;
 import org.adligo.tests4j.models.shared.IgnoreTest;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
 import org.adligo.tests4j.models.shared.SourceFileScope;
 import org.adligo.tests4j.models.shared.Test;
-import org.adligo.tests4j.models.shared.TrialClassPair;
 import org.adligo.tests4j.models.shared.TrialTimeout;
 import org.adligo.tests4j.models.shared.TrialType;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
@@ -63,14 +63,13 @@ public class TrialDescription {
 
 	public static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = 
 			"Classes which implement I_AbstractTrial must have a zero argument constructor.";
-	private TrialClassPair trialClassPair;
-	private Class<? extends AbstractTrial> trialClass;
+	private Class<? extends I_AbstractTrial> trialClass;
 	
-	private AbstractTrial trial;
+	private I_AbstractTrial trial;
 	
 	private Method beforeTrialMethod;
 	private Method afterTrialMethod;
-	private List<TestMethod> testMethods;
+	private List<TestDescription> testMethods;
 	private TrialTypeEnum type;
 	private boolean trialCanRun = false;
 	private String resultFailureMessage;
@@ -80,13 +79,12 @@ public class TrialDescription {
 	private long timeout;
 	private I_Tests4J_Logger log;
 	
-	public TrialDescription(TrialClassPair pTrialClassPair,
+	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
 			I_Tests4J_Logger pLog) {
 		long start = System.currentTimeMillis();
 		log = pLog;
 		
-		trialClassPair = pTrialClassPair;
-		trialClass = pTrialClassPair.getTrialClass();
+		trialClass = pTrialClass;
 		
 		trialCanRun = checkTestClass();
 		long end = System.currentTimeMillis();
@@ -171,7 +169,7 @@ public class TrialDescription {
 
 	private boolean locateTestMethods() {
 		Method [] methods = trialClass.getMethods();
-		testMethods = new ArrayList<TestMethod>();
+		testMethods = new ArrayList<TestDescription>();
 		for (Method method: methods) {
 			BeforeTrial bt = method.getAnnotation(BeforeTrial.class);
 			if (bt != null) {
@@ -268,7 +266,7 @@ public class TrialDescription {
 									WAS_NOT_ANNOTATED_CORRECTLY);
 				}
 				IgnoreTest it = method.getAnnotation(IgnoreTest.class);
-				testMethods.add(new TestMethod(method, timeout, it != null));
+				testMethods.add(new TestDescription(method, timeout, it != null));
 			}
 		}
 		if (testMethods.size() == 0) {
@@ -282,7 +280,7 @@ public class TrialDescription {
 
 	private boolean createInstance() {
 		try {
-			Constructor<? extends AbstractTrial> constructor =
+			Constructor<? extends I_AbstractTrial> constructor =
 					trialClass.getConstructor(new Class[] {});
 			trial = constructor.newInstance();
 		} catch (Exception x) {
@@ -365,7 +363,7 @@ public class TrialDescription {
 	public String getTrialName() {
 		return trialClass.getName();
 	}
-	public AbstractTrial getTrial() {
+	public I_AbstractTrial getTrial() {
 		return trial;
 	}
 
@@ -377,22 +375,15 @@ public class TrialDescription {
 		return afterTrialMethod;
 	}
 
-	public List<TestMethod> getTestMethods() {
+	public List<TestDescription> getTestMethods() {
 		return testMethods;
 	}
 
-	public Class<? extends AbstractTrial> getTrialClass() {
+	public Class<? extends I_AbstractTrial> getTrialClass() {
 		return trialClass;
 	}
 
 	public long getTimeout() {
 		return timeout;
-	}
-
-
-
-
-	public TrialClassPair getTrialClassPair() {
-		return trialClassPair;
 	}
 }

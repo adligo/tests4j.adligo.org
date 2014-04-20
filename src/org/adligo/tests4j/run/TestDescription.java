@@ -2,12 +2,12 @@ package org.adligo.tests4j.run;
 
 import java.lang.reflect.Method;
 
-public class TestMethod {
+public class TestDescription {
 	private long timeoutMillis;
 	private Method method;
 	private boolean ignore;
 	
-	public TestMethod(Method m, long pTimeout, boolean pIgnore) {
+	public TestDescription(Method m, long pTimeout, boolean pIgnore) {
 		timeoutMillis = pTimeout;
 		method = m;
 		if (method == null) {

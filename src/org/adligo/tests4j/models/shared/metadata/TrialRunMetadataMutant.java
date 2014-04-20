@@ -18,6 +18,7 @@ public class TrialRunMetadataMutant implements I_TrialRunMetadata {
 	@Override
 	public List<I_TrialMetadata> getTrials() {
 		List<I_TrialMetadata> toRet = new ArrayList<I_TrialMetadata>();
+		toRet.addAll(trials);
 		return toRet;
 	}
 

@@ -17,6 +17,5 @@ import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 public interface I_AssertionHelperInfo {
 	public I_CoveragePlugin getCoveragePlugin();
 	public Class<?> getInstanceClass();
-	public Class<?> getNonInstrumentedInstanceClass();
 	public I_AssertListener getListener();
 }

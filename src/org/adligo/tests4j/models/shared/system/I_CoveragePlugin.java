@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.system;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.AbstractTrial;
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
 
 /**
  * a pluggable interface for a this integrating testing api 
@@ -16,7 +16,7 @@ public interface I_CoveragePlugin {
 	 * this instruments the classes so that
 	 * they notify the recorder
 	 */
-	public List<Class<? extends AbstractTrial>> instrumentClasses(I_Tests4J_Params params);
+	public List<Class<? extends I_AbstractTrial>> instrumentClasses(I_Tests4J_Params params);
 	
 	/**
 	 * if this plugin has support for recorder scope other than

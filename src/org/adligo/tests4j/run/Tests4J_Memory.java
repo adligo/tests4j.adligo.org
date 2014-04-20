@@ -1,6 +1,7 @@
 package org.adligo.tests4j.run;
 
 import java.io.PrintStream;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,7 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.adligo.tests4j.models.shared.AbstractTrial;
-import org.adligo.tests4j.models.shared.TrialClassPair;
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -19,8 +20,8 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 
 public class Tests4J_Memory {
 	public static PrintStream INITAL_OUT = System.out;
-	private ConcurrentLinkedQueue<TrialClassPair> trialClasses = 
-			new ConcurrentLinkedQueue<TrialClassPair>();
+	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
+			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private ConcurrentLinkedQueue<TrialDescription> descriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
 	private List<TrialDescription> allDescriptions = new CopyOnWriteArrayList<TrialDescription>();
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
@@ -40,8 +41,8 @@ public class Tests4J_Memory {
 	 */
 	private Boolean recordSeperateTestCoverage = null;
 	
-	public Tests4J_Memory(Tests4J_Params params, List<TrialClassPair> pTrialClasses) {
-		trialClasses.addAll(pTrialClasses);
+	public Tests4J_Memory(Tests4J_Params params) {
+		trialClasses.addAll(params.getTrials());
 		trialCount = trialClasses.size();
 		systemExit = params.isExitAfterLastNotification();
 		plugin = params.getCoveragePlugin();
@@ -54,11 +55,11 @@ public class Tests4J_Memory {
 		recordSeperateTestCoverage = params.getRecordSeperateTestCoverage();
 	}
 	
-	public TrialClassPair pollTrialClassPairs() {
+	public Class<? extends I_AbstractTrial> pollTrialClassPairs() {
 		return trialClasses.poll();
 	}
 	
-	public void add(TrialDescription p) {
+	public synchronized void add(TrialDescription p) {
 		allDescriptions.add(p);
 		if (p.isTrialCanRun()) {
 			descriptionsToRun.add(p);
@@ -70,7 +71,7 @@ public class Tests4J_Memory {
 		return descriptionsToRun.poll();
 	}
 	
-	public void add(I_TrialResult p) {
+	public synchronized void add(I_TrialResult p) {
 		resultsBeforeMetadata.add(p);
 	}
 	
@@ -82,7 +83,7 @@ public class Tests4J_Memory {
 		return resultsBeforeMetadata.size();
 	}
 
-	public ConcurrentLinkedQueue<TrialClassPair> getTrialClasses() {
+	public ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> getTrialClasses() {
 		return trialClasses;
 	}
 
@@ -102,11 +103,11 @@ public class Tests4J_Memory {
 		return plugin;
 	}
 	
-	public void addRecorder(String p, I_CoverageRecorder recorder) {
+	public synchronized void addRecorder(String p, I_CoverageRecorder recorder) {
 		recorders.put(p, recorder);
 	}
 	
-	public I_CoverageRecorder getRecorder(String p) {
+	public synchronized I_CoverageRecorder getRecorder(String p) {
 		return recorders.get(p);
 	}
 	
@@ -118,13 +119,15 @@ public class Tests4J_Memory {
 		return runService;
 	}
 
-	public List<TrialDescription> getAllDescriptions() {
-		return allDescriptions;
+	public Iterator<TrialDescription> getAllDescriptions() {
+		return allDescriptions.iterator();
 	}
 	
 	public int getRunnableTrialDescriptions() {
 		int toRet = 0;
-		for (TrialDescription desc: allDescriptions) {
+		Iterator<TrialDescription> it = allDescriptions.iterator();
+		while (it.hasNext()) {
+			TrialDescription desc = it.next();
 			if (desc.isTrialCanRun()) {
 				if (!desc.isIgnored()) {
 					toRet++;
@@ -145,10 +148,10 @@ public class Tests4J_Memory {
 	public Boolean getRecordSeperateTestCoverage() {
 		return recordSeperateTestCoverage;
 	}
-	public void setRecordTrialCoverage(boolean recordTrialCoverage) {
+	public synchronized void setRecordTrialCoverage(boolean recordTrialCoverage) {
 		this.recordSeperateTrialCoverage = recordTrialCoverage;
 	}
-	public void setRecordTestCoverage(boolean recordTestCoverage) {
+	public synchronized void setRecordTestCoverage(boolean recordTestCoverage) {
 		this.recordSeperateTestCoverage = recordTestCoverage;
 	}
 }

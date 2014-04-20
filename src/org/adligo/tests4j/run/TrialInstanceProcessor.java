@@ -7,10 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.adligo.tests4j.models.shared.AbstractTrial;
-import org.adligo.tests4j.models.shared.AbstractTrialMemory;
-import org.adligo.tests4j.models.shared.AbstractTrialProtectedWrapper;
-import org.adligo.tests4j.models.shared.TrialClassPair;
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.asserts.AssertionHelperInfo;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.results.TestFailure;
@@ -31,11 +29,11 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 	private Tests4J_Memory memory;
 	private NotificationManager notifier;
 	private TrialDescription trialDescription;
-	private AbstractTrial trial;
+	private I_AbstractTrial trial;
 	private TrialResultMutant trialResultMutant;
 	
 	private ExecutorService testRunService;
-	private ArrayBlockingQueue<Boolean> blocking = new ArrayBlockingQueue<Boolean>(1);
+	private ArrayBlockingQueue<TestResult> blocking = new ArrayBlockingQueue<TestResult>(1);
 	private TestRunable testsRunner;
 	
 	public TrialInstanceProcessor(Tests4J_Memory p, NotificationManager pNotificationManager) {
@@ -49,7 +47,7 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 	@Override
 	public void run() {
 		try {
-			TrialClassPair trialClazz = memory.pollTrialClassPairs();
+			Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClassPairs();
 			while (trialClazz != null) {
 				
 				addTrialDescription(trialClazz);
@@ -69,8 +67,7 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 		}
 	}
 
-	private void addTrialDescription(TrialClassPair trials) {
-		Class<? extends AbstractTrial> trialClazz = trials.getTrialClass();
+	private void addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
 		
 		I_CoveragePlugin plugin = memory.getPlugin();
 		I_CoverageRecorder trialCoverageRecorder = null;
@@ -83,7 +80,7 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 			}
 		}
 		
-		TrialDescription desc = new TrialDescription(trials, memory.getLog());
+		TrialDescription desc = new TrialDescription(trialClazz, memory.getLog());
 		memory.add(desc);
 		if (!desc.isIgnored()) {
 			if (!desc.isTrialCanRun()) {
@@ -121,12 +118,11 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 		}
 		
 		trial = trialDescription.getTrial();
-		AbstractTrialMemory atm = new AbstractTrialMemory();
+		AssertionHelperInfo atm = new AssertionHelperInfo();
 		atm.setCoveragePlugin(memory.getPlugin());
 		atm.setListener(testsRunner);
 		
-		AbstractTrialProtectedWrapper wrapper = new AbstractTrialProtectedWrapper(trial);
-		wrapper.setMemory(atm);
+		trial.setMemory(atm);
 		
 		trialResultMutant = new TrialResultMutant();
 			
@@ -166,16 +162,16 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 	 * @return all suceeded
 	 */
 	private void runTests() {
-		List<TestMethod> methods = trialDescription.getTestMethods();
+		List<TestDescription> methods = trialDescription.getTestMethods();
 		
-		for(TestMethod tm: methods) {
+		for(TestDescription tm: methods) {
 			
 			runTest(tm);
 		}
 		
 	}
 
-	private void runTest(TestMethod tm) {
+	private void runTest(TestDescription tm) {
 		I_CoveragePlugin plugin = memory.getPlugin();
 		I_CoverageRecorder testCoverageRecorder = null;
 		if (plugin != null) {
@@ -209,8 +205,10 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 				if (timeout == 0L) {
 					blocking.take();
 				} else {
-					Boolean result = blocking.poll(tm.getTimeoutMillis(), TimeUnit.MILLISECONDS);
-					if (result == null) {
+					TestResult result = blocking.poll(tm.getTimeoutMillis(), TimeUnit.MILLISECONDS);
+					if (result != null) {
+						trialResultMutant.addResult(result);
+					} else {
 						TestResultMutant trm = new TestResultMutant(
 								testsRunner.getTestResultMutant());
 						TestFailureMutant tfm = new TestFailureMutant();
@@ -256,9 +254,10 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 	public synchronized void testFinished(TestResult p) {
 		TestResultMutant forOut = new TestResultMutant(p);
 		forOut.setOutput(memory.getThreadLocalOutput());
-		trialResultMutant.addResult(new TestResult(forOut));
+		TestResult result = new TestResult(forOut);
+		
 		try {
-			blocking.put(true);
+			blocking.put(result);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

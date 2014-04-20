@@ -65,22 +65,22 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 	public List<? extends I_TestMetadata> getTests() {
 		return tests;
 	}
-	public void setTrialName(String trialName) {
+	public synchronized void setTrialName(String trialName) {
 		this.trialName = trialName;
 	}
-	public void setTimeout(Long timeout) {
+	public synchronized void setTimeout(Long timeout) {
 		this.timeout = timeout;
 	}
-	public void setSkipped(boolean skipped) {
+	public synchronized void setSkipped(boolean skipped) {
 		this.skipped = skipped;
 	}
-	public void setBeforeTrialMethodName(String beforeTrialMethodName) {
+	public synchronized void setBeforeTrialMethodName(String beforeTrialMethodName) {
 		this.beforeTrialMethodName = beforeTrialMethodName;
 	}
-	public void setAfterTrialMethodName(String afterTrialMethodName) {
+	public synchronized void setAfterTrialMethodName(String afterTrialMethodName) {
 		this.afterTrialMethodName = afterTrialMethodName;
 	}
-	public void setTests(Collection<? extends I_TestMetadata> p) {
+	public synchronized void setTests(Collection<? extends I_TestMetadata> p) {
 		tests.clear();
 		for (I_TestMetadata test: p) {
 			addTest(test);

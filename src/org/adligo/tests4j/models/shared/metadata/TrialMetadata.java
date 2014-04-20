@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared.metadata;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class TrialMetadata implements I_TrialMetadata {
@@ -17,11 +18,12 @@ public class TrialMetadata implements I_TrialMetadata {
 		cloneCollections(p);
 	}
 
-	private void cloneCollections(I_TrialMetadata p) {
+	private synchronized void cloneCollections(I_TrialMetadata p) {
 		tests = new ArrayList<I_TestMetadata>();
 		List<? extends I_TestMetadata> oTests = p.getTests();
-		for (I_TestMetadata test: oTests){
-			tests.add(new TestMetadata(test));
+		Iterator<? extends I_TestMetadata> oti = oTests.iterator();
+		while (oti.hasNext()) {
+			tests.add(new TestMetadata(oti.next()));
 		}
 		tests = Collections.unmodifiableList(tests);
 	}

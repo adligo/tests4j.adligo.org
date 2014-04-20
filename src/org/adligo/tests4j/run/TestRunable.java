@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.adligo.tests4j.models.shared.AbstractTrial;
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
@@ -18,7 +19,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 	
 	private Method testMethod;
 	private TestResultMutant testResultMutant;
-	private AbstractTrial trial;
+	private I_AbstractTrial trial;
 	private I_TestFinishedListener listener;
 	
 	@Override
@@ -50,7 +51,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		return testMethod;
 	}
 
-	public AbstractTrial getTrial() {
+	public I_AbstractTrial getTrial() {
 		return trial;
 	}
 
@@ -62,7 +63,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		this.testMethod = testMethod;
 	}
 
-	public void setTrial(AbstractTrial trial) {
+	public void setTrial(I_AbstractTrial trial) {
 		this.trial = trial;
 	}
 

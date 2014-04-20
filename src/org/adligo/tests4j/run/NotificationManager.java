@@ -1,17 +1,12 @@
 package org.adligo.tests4j.run;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.metadata.I_TrialMetadata;
-import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
-import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
-import org.adligo.tests4j.models.shared.metadata.TrialRunMetadata;
-import org.adligo.tests4j.models.shared.metadata.TrialRunMetadataMutant;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
@@ -32,16 +27,20 @@ public class NotificationManager {
 	private I_Tests4J_Logger log;
 	private I_TrialRunListener listener;
 	private TextReporter reporter;
-	private TrialRunResultMutant runResult = new TrialRunResultMutant();
-	private int trialsDone = 0;
+	private AtomicLong startTime = new AtomicLong();
+	private AtomicLong assertionCount = new AtomicLong();
+	private AtomicLong uniqueAssertionCount = new AtomicLong();
+	private AtomicLong testCount = new AtomicLong();
+	private AtomicLong testFailureCount = new AtomicLong();
+	private AtomicInteger trialFailures = new AtomicInteger();
+	private AtomicInteger trials = new AtomicInteger();
 	
 	public NotificationManager(Tests4J_Memory pMem, I_Tests4J_Logger pLog, I_TrialRunListener pListener) {
 		memory = pMem;
 		log = pLog;
 		listener = pListener;
 		reporter = new TextReporter(log);
-		long start = System.currentTimeMillis();
-		runResult.setStartTime(start);
+		startTime.set(System.currentTimeMillis());
 	}
 	
 	public void startRecordingRunCoverage() {
@@ -55,71 +54,50 @@ public class NotificationManager {
 	}
 	
 	public synchronized void checkDoneDescribingTrials() {
-		if (doneDescribeingTrials.get()) {
-			return;
+		if (log.isEnabled()) {
+			log.log("checking if done describing trials.");
 		}
-		int trialDescriptions = memory.getDescriptionCount();
-		int trialCount = memory.getTrialCount();
+		synchronized (doneDescribeingTrials) {
+			if (doneDescribeingTrials.get()) {
+				if (log.isEnabled()) {
+					log.log("done describing trials.");
+				}
+				return;
+			}
+			int trialDescriptions = memory.getDescriptionCount();
+			int trialCount = memory.getTrialCount();
+			
+			if (trialCount == trialDescriptions) {
+				onTrialDefinitionsDone();
+			}
+		}
 		
-		if (trialCount == trialDescriptions) {
-			onTrialDefinitionsDone();
-		}
 	}
 
 	private void onTrialDefinitionsDone() {
-		if (log.isEnabled()) {
-			logPrivate("DescribingTrials is Done.");
-		}
-		doneDescribeingTrials.set(true);
-		int classDefFailures = memory.getFailureResultsSize();
-		if (classDefFailures >= 1) {
-			I_TrialResult result = memory.pollFailureResults();
-			while (result != null) {
-				trialDoneInternal(result);
-				result = memory.pollFailureResults();
+		synchronized (doneDescribeingTrials) {
+			if (log.isEnabled()) {
+				logPrivate("DescribingTrials is Done.");
 			}
-		}
-		if (listener != null) {
-			sendMetadata();
-		}
-	}
-
-	private void sendMetadata() {
-		List<TrialDescription> descs = memory.getAllDescriptions();
-		TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
-		
-		for (TrialDescription td: descs) {
-			TrialMetadataMutant tmm = new TrialMetadataMutant();
-			tmm.setTrialName(td.getTrialName());
-			Method before = td.getBeforeTrialMethod();
-			if (before != null) {
-				tmm.setBeforeTrialMethodName(before.getName());
-			}
-			boolean ignored = td.isIgnored();
-			tmm.setSkipped(ignored);
-			long timeout = td.getTimeout();
-			tmm.setTimeout(timeout);
+			doneDescribeingTrials.set(true);
 			
-			List<TestMethod> tms = td.getTestMethods();
-			if (tms != null) {
-				for (TestMethod tm: tms) {
-					TestMetadataMutant testMeta = new TestMetadataMutant();
-					Method method = tm.getMethod();
-					testMeta.setTestName(method.getName());
-					long testTimeout = tm.getTimeoutMillis();
-					testMeta.setTimeout(testTimeout);
-					tmm.addTest(testMeta);
+			if (listener != null) {
+				MetadatNotifier.sendMetadata(log, memory, listener);
+			}
+			
+			int classDefFailures = memory.getFailureResultsSize();
+			if (classDefFailures >= 1) {
+				I_TrialResult result = memory.pollFailureResults();
+				while (result != null) {
+					trialDoneInternal(result);
+					result = memory.pollFailureResults();
 				}
 			}
-			Method after = td.getAfterTrialMethod();
-			if (after != null) {
-				tmm.setBeforeTrialMethodName(after.getName());
-			}
-			trmm.addTrial(tmm);
 		}
-		TrialRunMetadata toSend = new TrialRunMetadata(trmm);
-		listener.onMetadataCalculated(toSend);
+		
+		
 	}
+
 
 	public synchronized void startingTrial(String name) {
 		if (log.isEnabled()) {
@@ -135,7 +113,6 @@ public class NotificationManager {
 	
 	public synchronized void trialDone(I_TrialResult result) {
 		trialDoneInternal(result);
-		trialsDone++;
 	}
 	
 	public void trialDoneInternal(I_TrialResult result) {
@@ -145,23 +122,32 @@ public class NotificationManager {
 		if (listener != null) {
 			listener.onTrialCompleted(result);
 		}
-		runResult.addAsserts(result.getAssertionCount());
-		runResult.addUniqueAsserts(result.getUniqueAssertionCount());
-		runResult.addTests(result.getTestCount());
-		runResult.addTestFailures(result.getTestFailureCount());
+		assertionCount.addAndGet(result.getAssertionCount());
+		uniqueAssertionCount.addAndGet(result.getUniqueAssertionCount());
+		testCount.addAndGet(result.getTestCount());
+		testFailureCount.addAndGet(result.getTestFailureCount());
 		if (!result.isPassed()) {
-			runResult.addTrialFailures(1);
+			trialFailures.addAndGet(1);
 		}
-		runResult.addTrials(1);
+		trials.addAndGet(1);
 	}
 	
 	public synchronized void checkDoneRunningTrials() {
 		int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
 		
-		if (trialsDone == trialsWhichCanRun) {
+		if (trials.get() == trialsWhichCanRun) {
 			if (log.isEnabled()) {
 				logPrivate("DoneRunningTrials.");
 			}
+			TrialRunResultMutant runResult = new TrialRunResultMutant();
+			runResult.setStartTime(startTime.get());
+			runResult.setAsserts(assertionCount.get());
+			runResult.setUniqueAsserts(uniqueAssertionCount.get());
+			runResult.setTestFailures(testFailureCount.get());
+			runResult.setTests(testCount.get());
+			runResult.setTrialFailures(trialFailures.get());
+			runResult.setTrials(trials.get());
+			
 			I_CoverageRecorder allCoverageRecorder = memory.getRecorder(I_CoverageRecorder.TRIAL_RUN);
 			if (allCoverageRecorder != null) {
 				List<I_PackageCoverage> packageCoverage = allCoverageRecorder.getCoverage();
