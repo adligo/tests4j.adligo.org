@@ -55,7 +55,18 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 				trialClazz = memory.pollTrialClassPairs();
 			}
 			notifier.checkDoneDescribingTrials();
-			
+		} catch (Exception x) {
+			x.printStackTrace(Tests4J_Memory.INITAL_OUT);
+			notifier.onDescibeTrialError();
+			return;
+		} catch (Error x) {
+			x.printStackTrace(Tests4J_Memory.INITAL_OUT);
+			notifier.onDescibeTrialError();
+			return;
+		}
+		
+		try {
+		
 			trialDescription = memory.pollDescriptions();
 			while (trialDescription != null) {
 				runTrial();
@@ -64,6 +75,8 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 			testRunService.shutdownNow();
 			notifier.checkDoneRunningTrials();
 		} catch (Exception x) {
+			x.printStackTrace(Tests4J_Memory.INITAL_OUT);
+		} catch (Error x) {
 			x.printStackTrace(Tests4J_Memory.INITAL_OUT);
 		}
 	}

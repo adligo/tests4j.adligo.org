@@ -173,6 +173,14 @@ public class NotificationManager {
 		}
 	}
 	
+	public synchronized void onDescibeTrialError() {
+		ExecutorService runService =  memory.getRunService();
+		runService.shutdownNow();
+		if (memory.isSystemExit()) {
+			System.exit(0);
+		}
+	}
+	
 	public boolean isLogEnabled() {
 		return log.isEnabled();
 	}
