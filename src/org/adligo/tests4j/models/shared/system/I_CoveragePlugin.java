@@ -19,16 +19,18 @@ public interface I_CoveragePlugin {
 	public List<Class<? extends I_AbstractTrial>> instrumentClasses(I_Tests4J_Params params);
 	
 	/**
-	 * if this plugin has support for recorder scope other than
-	 * I_CoverageRecorder#TRIAL_RUN
-	 * @see createRecorder(String)
+	 *
 	 * @return
+	 *    false if this coverage plugin 
+	 *    can create sub recordings at the Trial or Test level
+	 *    @see I_CoverageRecorder#getScope()
 	 */
-	public boolean hasSupportForRecorderScope();
+	public boolean canSubRecord();
+	
 	/**
 	 * for recording all coverage for a run of trials
 	 * the scope is;
-	 * @see I_CoverageRecorder#TRIAL_RUN
+	 * @see I_CoverageRecorder#getScope()
 	 * for coverage recorders that can and want to record 
 	 * at a more detailed level the scope is;
 	 * TrialClassName for capturing the code covered by the trial

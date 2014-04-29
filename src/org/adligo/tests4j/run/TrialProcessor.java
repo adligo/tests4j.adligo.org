@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.system.ConsoleLogger;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
-import org.adligo.tests4j.models.shared.system.console.ConsoleLogger;
 
 /**
  * ok this is the main processing class which does this;

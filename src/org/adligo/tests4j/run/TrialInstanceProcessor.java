@@ -56,16 +56,11 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 			}
 			notifier.checkDoneDescribingTrials();
 		} catch (Exception x) {
-			x.printStackTrace(Tests4J_Memory.INITAL_OUT);
-			Throwable cause = x.getCause();
-			while (cause != null) {
-				cause.printStackTrace(Tests4J_Memory.INITAL_OUT);
-				cause = cause.getCause();
-			}
+			memory.getLog().log(x);
 			notifier.onDescibeTrialError();
 			return;
 		} catch (Error x) {
-			x.printStackTrace(Tests4J_Memory.INITAL_OUT);
+			memory.getLog().log(x);
 			notifier.onDescibeTrialError();
 			return;
 		}
@@ -80,9 +75,9 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 			testRunService.shutdownNow();
 			notifier.checkDoneRunningTrials();
 		} catch (Exception x) {
-			x.printStackTrace(Tests4J_Memory.INITAL_OUT);
+			memory.getLog().log(x);
 		} catch (Error x) {
-			x.printStackTrace(Tests4J_Memory.INITAL_OUT);
+			memory.getLog().log(x);
 		}
 	}
 

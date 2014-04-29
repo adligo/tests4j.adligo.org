@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.system.console.ConsoleLogger;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {

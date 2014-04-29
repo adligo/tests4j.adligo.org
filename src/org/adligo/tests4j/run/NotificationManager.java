@@ -34,20 +34,23 @@ public class NotificationManager {
 	private AtomicLong testFailureCount = new AtomicLong();
 	private AtomicInteger trialFailures = new AtomicInteger();
 	private AtomicInteger trials = new AtomicInteger();
+	private final String mainScope;
 	
 	public NotificationManager(Tests4J_Memory pMem, I_Tests4J_Logger pLog, I_TrialRunListener pListener) {
 		memory = pMem;
 		log = pLog;
 		listener = pListener;
 		reporter = new TextReporter(log);
-		startTime.set(System.currentTimeMillis());
+		long now = System.currentTimeMillis();
+		startTime.set(now);
+		mainScope = I_CoverageRecorder.TESTS4J_ + now + I_CoverageRecorder.RECORDER;
 	}
 	
 	public void startRecordingRunCoverage() {
 		I_CoveragePlugin plugin = memory.getPlugin();
 		if (plugin != null) {
-			I_CoverageRecorder allCoverageRecorder = plugin.createRecorder(I_CoverageRecorder.TRIAL_RUN);
-			memory.addRecorder(I_CoverageRecorder.TRIAL_RUN, allCoverageRecorder);
+			I_CoverageRecorder allCoverageRecorder = plugin.createRecorder(mainScope);
+			memory.addRecorder(mainScope, allCoverageRecorder);
 			allCoverageRecorder.startRecording();
 		}
 		
@@ -148,7 +151,7 @@ public class NotificationManager {
 			runResult.setTrialFailures(trialFailures.get());
 			runResult.setTrials(trials.get());
 			
-			I_CoverageRecorder allCoverageRecorder = memory.getRecorder(I_CoverageRecorder.TRIAL_RUN);
+			I_CoverageRecorder allCoverageRecorder = memory.getRecorder(mainScope);
 			if (allCoverageRecorder != null) {
 				List<I_PackageCoverage> packageCoverage = allCoverageRecorder.getCoverage();
 				runResult.setCoverage(packageCoverage);

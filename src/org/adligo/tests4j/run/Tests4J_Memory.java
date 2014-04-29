@@ -1,6 +1,5 @@
 package org.adligo.tests4j.run;
 
-import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +9,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.adligo.tests4j.models.shared.AbstractTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.FilteringPrintStream;
@@ -20,7 +18,6 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 
 public class Tests4J_Memory {
-	public static PrintStream INITAL_OUT = System.out;
 	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private ConcurrentLinkedQueue<TrialDescription> descriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
@@ -47,7 +44,6 @@ public class Tests4J_Memory {
 		trialCount = trialClasses.size();
 		systemExit = params.isExitAfterLastNotification();
 		plugin = params.getCoveragePlugin();
-		
 		System.setOut(new FilteringPrintStream(out, System.out));
 		System.setOut(new FilteringPrintStream(out, System.err));
 		//System.setOut(new PrintStream(out));
