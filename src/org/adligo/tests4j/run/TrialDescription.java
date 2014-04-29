@@ -290,7 +290,8 @@ public class TrialDescription {
 		try {
 			Constructor<? extends I_AbstractTrial> constructor =
 					trialClass.getConstructor(new Class[] {});
-			trial = constructor.newInstance();
+			Object o = constructor.newInstance();
+			trial = (I_AbstractTrial) o;
 		} catch (Exception x) {
 			resultFailureMessage = CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR; 
 			resultException	= x;

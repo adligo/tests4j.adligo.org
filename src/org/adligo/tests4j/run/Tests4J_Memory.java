@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import org.adligo.tests4j.models.shared.AbstractTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.models.shared.system.FilteringPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
@@ -46,8 +47,11 @@ public class Tests4J_Memory {
 		trialCount = trialClasses.size();
 		systemExit = params.isExitAfterLastNotification();
 		plugin = params.getCoveragePlugin();
-		System.setOut(new PrintStream(out));
-		System.setErr(new PrintStream(out));
+		
+		System.setOut(new FilteringPrintStream(out, System.out));
+		System.setOut(new FilteringPrintStream(out, System.err));
+		//System.setOut(new PrintStream(out));
+		//System.setErr(new PrintStream(out));
 		int threads = params.getThreadPoolSize();
 		runService = Executors.newFixedThreadPool(threads);
 		log = params.getLog();

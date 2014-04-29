@@ -57,6 +57,11 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 			notifier.checkDoneDescribingTrials();
 		} catch (Exception x) {
 			x.printStackTrace(Tests4J_Memory.INITAL_OUT);
+			Throwable cause = x.getCause();
+			while (cause != null) {
+				cause.printStackTrace(Tests4J_Memory.INITAL_OUT);
+				cause = cause.getCause();
+			}
 			notifier.onDescibeTrialError();
 			return;
 		} catch (Error x) {
