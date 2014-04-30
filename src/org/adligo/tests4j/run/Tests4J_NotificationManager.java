@@ -52,6 +52,9 @@ public class Tests4J_NotificationManager {
 		startTime.set(now);
 	}
 	
+	/**
+	 * in diagram Overview.seq
+	 */
 	public synchronized void checkDoneDescribingTrials() {
 		if (log.isEnabled()) {
 			log.log("checking if done describing trials.");
@@ -73,6 +76,9 @@ public class Tests4J_NotificationManager {
 		
 	}
 
+	/**
+	 * in diagram Overview.seq
+	 */
 	private void onTrialDefinitionsDone() {
 		synchronized (doneDescribeingTrials) {
 			if (log.isEnabled()) {
@@ -98,6 +104,9 @@ public class Tests4J_NotificationManager {
 	}
 
 
+	/**
+	 * in diagram Overview.seq
+	 */
 	public void sendMetadata() {
 		synchronized (listener) {
 			if (log.isEnabled()) {
