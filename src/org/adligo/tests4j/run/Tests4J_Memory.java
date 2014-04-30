@@ -38,6 +38,8 @@ public class Tests4J_Memory {
 	 * @see Tests4J_Params#getRecordSeperateTestCoverage()
 	 */
 	private Boolean recordSeperateTestCoverage = null;
+	private final String mainRecorderScope;
+	
 	
 	public Tests4J_Memory(Tests4J_Params params) {
 		trialClasses.addAll(params.getTrials());
@@ -53,9 +55,12 @@ public class Tests4J_Memory {
 		log = params.getLog();
 		recordSeperateTrialCoverage = params.getRecordSeperateTrialCoverage();
 		recordSeperateTestCoverage = params.getRecordSeperateTestCoverage();
+
+		long now = System.currentTimeMillis();
+		mainRecorderScope = I_CoverageRecorder.TESTS4J_ + now + I_CoverageRecorder.RECORDER;
 	}
 	
-	public Class<? extends I_AbstractTrial> pollTrialClassPairs() {
+	public Class<? extends I_AbstractTrial> pollTrialClasses() {
 		return trialClasses.poll();
 	}
 	
@@ -115,6 +120,10 @@ public class Tests4J_Memory {
 		return recorders.get(p);
 	}
 	
+	public synchronized I_CoverageRecorder getMainRecorder() {
+		return recorders.get(mainRecorderScope);
+	}
+	
 	public String getThreadLocalOutput() {
 		return out.get().toString();
 	}
@@ -157,5 +166,9 @@ public class Tests4J_Memory {
 	}
 	public synchronized void setRecordTestCoverage(boolean recordTestCoverage) {
 		this.recordSeperateTestCoverage = recordTestCoverage;
+	}
+
+	public String getMainRecorderScope() {
+		return mainRecorderScope;
 	}
 }

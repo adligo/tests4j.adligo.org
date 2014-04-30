@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.adligo.tests4j.models.shared.AfterTrial;
 import org.adligo.tests4j.models.shared.BeforeTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.I_AfterSourceFileTrialData;
+import org.adligo.tests4j.models.shared.I_AfterSourceFileTrialTests;
 import org.adligo.tests4j.models.shared.IgnoreTest;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
@@ -213,7 +213,7 @@ public class TrialDescription {
 											WAS_NOT_ANNOTATED_CORRECTLY)));
 						} else {
 							Class<?> param = params[0];
-							if ( !I_AfterSourceFileTrialData.class.isAssignableFrom(param)) {
+							if ( !I_AfterSourceFileTrialTests.class.isAssignableFrom(param)) {
 								failures.add(new TrialVerificationFailure(
 										AFTER_SOURCE_FILE_TRIAL_HAS_WRONG_PARAMS,
 										new IllegalArgumentException(trialClass.getName() + 
@@ -228,7 +228,7 @@ public class TrialDescription {
 											WAS_NOT_ANNOTATED_CORRECTLY)));
 						} else {
 							Class<?> param = params[0];
-							if ( !I_AfterSourceFileTrialData.class.isAssignableFrom(param)) {
+							if ( !I_AfterSourceFileTrialTests.class.isAssignableFrom(param)) {
 								failures.add(new TrialVerificationFailure(
 										AFTER_API_TRIAL_HAS_WRONG_PARAMS,
 										new IllegalArgumentException(trialClass.getName() +

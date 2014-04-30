@@ -23,12 +23,12 @@ import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 
-public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener {
+public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
 
 	private Tests4J_Memory memory;
-	private NotificationManager notifier;
+	private Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
 	private I_AbstractTrial trial;
 	private TrialResultMutant trialResultMutant;
@@ -37,7 +37,7 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 	private ArrayBlockingQueue<TestResult> blocking = new ArrayBlockingQueue<TestResult>(1);
 	private TestRunable testsRunner;
 	
-	public TrialInstanceProcessor(Tests4J_Memory p, NotificationManager pNotificationManager) {
+	public TrialInstancesProcessor(Tests4J_Memory p, Tests4J_NotificationManager pNotificationManager) {
 		memory = p;
 		notifier = pNotificationManager;
 		testsRunner = new TestRunable();
@@ -48,11 +48,11 @@ public class TrialInstanceProcessor implements Runnable, I_TestFinishedListener 
 	@Override
 	public void run() {
 		try {
-			Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClassPairs();
+			Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClasses();
 			while (trialClazz != null) {
 				
 				addTrialDescription(trialClazz);
-				trialClazz = memory.pollTrialClassPairs();
+				trialClazz = memory.pollTrialClasses();
 			}
 			notifier.checkDoneDescribingTrials();
 		} catch (Exception x) {

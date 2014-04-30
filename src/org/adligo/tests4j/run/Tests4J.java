@@ -60,7 +60,7 @@ public class Tests4J {
 			recorder.startRecording();
 		}
 		*/
-		new TrialProcessor(pParams,pListener);
+		new TrialsProcessor(pParams,pListener);
 		/** TODO
 		TrialInstanceProcessor runner = new TrialInstanceProcessor(
 				pParams.getTrials(),this, recorder);
