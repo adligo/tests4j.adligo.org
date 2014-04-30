@@ -4,7 +4,7 @@ import java.io.PrintStream;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 public class Tests4J_UncaughtExceptionHandler implements UncaughtExceptionHandler {
-	public static final PrintStream OUT = System.out;
+	private static final PrintStream OUT = System.out;
 	public static final Tests4J_UncaughtExceptionHandler HANDLER = new Tests4J_UncaughtExceptionHandler();
 	
 	Tests4J_UncaughtExceptionHandler() {}

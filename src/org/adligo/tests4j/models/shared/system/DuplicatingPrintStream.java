@@ -4,10 +4,10 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Locale;
 
-public class FilteringPrintStream extends PrintStream {
+public class DuplicatingPrintStream extends PrintStream {
 	private PrintStream delegate;
 	
-	public FilteringPrintStream(OutputStream out, PrintStream pDelegate) {
+	public DuplicatingPrintStream(OutputStream out, PrintStream pDelegate) {
 		super(out);
 		delegate = pDelegate;
 	}

@@ -18,6 +18,7 @@ import org.adligo.tests4j.models.shared.common.LineSeperator;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
+import org.adligo.tests4j.run.helpers.TrialsProcessor;
 
 public class Tests4J {
 	public static final String NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED = "Null I_TestRunListener not allowed.";

@@ -1,4 +1,4 @@
-package org.adligo.tests4j.run;
+package org.adligo.tests4j.run.helpers;
 
 public class TrialVerificationFailure {
 	private String failureMessage;
