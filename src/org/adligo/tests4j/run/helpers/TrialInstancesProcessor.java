@@ -45,6 +45,10 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		testRunService = Executors.newSingleThreadExecutor();
 	}
 
+	/**
+	 * 
+	 * 
+	 */
 	@Override
 	public void run() {
 		try {
@@ -199,14 +203,14 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		Method method = tm.getMethod();
 		blocking.clear();
 		
-		
+		String trialName = trialDescription.getTrialName();
 		if (tm.isIgnore()) {
 			TestResultMutant trm = new TestResultMutant();
 			trm.setName(method.getName());
 			trm.setIgnored(true);
 			trialResultMutant.addResult(trm);
 		} else {
-			notifier.startingTest(trialDescription.getTrialName() + "." + method.getName());
+			notifier.startingTest(trialName, method.getName());
 			
 			
 			
@@ -219,6 +223,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				if (timeout == 0L) {
 					TestResult result = blocking.take();
 					trialResultMutant.addResult(result);
+					notifier.onTestCompleted(trialName, method.getName(), result.isPassed());
 				} else {
 					TestResult result = blocking.poll(tm.getTimeoutMillis(), TimeUnit.MILLISECONDS);
 					if (result != null) {
@@ -237,6 +242,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 							//trm.setCoverage(coverage);
 						}
 						trialResultMutant.addResult(new TestResult(trm));
+						notifier.onTestCompleted(trialName, method.getName(), trm.isPassed());
 					}
 				}
 			} catch (InterruptedException x) {

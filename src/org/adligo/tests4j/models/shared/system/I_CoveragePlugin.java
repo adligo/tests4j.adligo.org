@@ -15,6 +15,8 @@ public interface I_CoveragePlugin {
 	/**
 	 * this instruments the classes so that
 	 * they notify the recorder
+	 * 
+	 * @diagram Overview.seq sync on 5/1/2014
 	 */
 	public List<Class<? extends I_AbstractTrial>> instrumentClasses(I_Tests4J_Params params);
 	
@@ -38,6 +40,9 @@ public interface I_CoveragePlugin {
 	 * 
 	 * @param scope
 	 * @return
+	 * 
+	 * 
+	 * @diagram Overview.seq sync on 5/1/2014
 	 */
 	public I_CoverageRecorder createRecorder(String scope);
 	

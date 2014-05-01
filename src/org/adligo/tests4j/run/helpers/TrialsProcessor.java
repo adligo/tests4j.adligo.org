@@ -22,6 +22,17 @@ public class TrialsProcessor {
 	private Tests4J_Memory memory;
 	private Tests4J_NotificationManager notifier;
 	
+	/**
+	 * This method kicks off the TheadPool (ExecutorService)
+	 * creating as many TrialInstancesProcessors
+	 * as there are params.getThreadPoolSize().
+	 *  
+	 * @param params
+	 * @param processor
+	 * 
+	 * @diagram Overview.seq sync on 5/1/2014
+	 * 
+	 */
 	public TrialsProcessor(Tests4J_Params params, I_TrialRunListener processor) {
 		
 		I_CoveragePlugin plugin = params.getCoveragePlugin();
@@ -40,12 +51,15 @@ public class TrialsProcessor {
 			String mainScope = memory.getMainRecorderScope();
 			I_CoverageRecorder allCoverageRecorder = plugin.createRecorder(mainScope);
 			memory.addRecorder(mainScope, allCoverageRecorder);
+			//@diagram Overview.seq sync on 5/1/2014 'startRecordingTrialRun'
 			allCoverageRecorder.startRecording();
 		}
 		
+		//@diagram Overview.seq sync on 5/1/2014 'runService a ExecutorService'
 		ExecutorService runService = memory.getRunService();
 		int threads = params.getThreadPoolSize();
 		
+		//@diagram Overview.seq sync on 5/1/2014 'loop theadPoolSize'
 		for (int i = 0; i < threads; i++) {
 			TrialInstancesProcessor tip = new TrialInstancesProcessor(memory, notifier); 
 			runService.execute(tip);

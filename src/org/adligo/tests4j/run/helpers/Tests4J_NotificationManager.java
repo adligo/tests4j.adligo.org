@@ -25,7 +25,9 @@ import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.console.TextReporter;
 
 /**
- * this class handles event notification
+ * This class handles event notification
+ * to the I_TrailRunListener.
+ * 
  * @author scott
  *
  */
@@ -112,7 +114,7 @@ public class Tests4J_NotificationManager {
 			if (log.isEnabled()) {
 				log.log("sendingMetadata. " + memory.getDescriptionCount());
 			}
-			Iterator<TrialDescription> it = memory.getAllDescriptions();
+			Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
 			TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
 			
 			while (it.hasNext()) {
@@ -165,11 +167,30 @@ public class Tests4J_NotificationManager {
 		if (log.isEnabled()) {
 			logPrivate("startingTrial " + name);
 		}
+		if (listener != null) {
+			listener.onStartingTrail(name);
+		}
 	}
 	
-	public synchronized void startingTest(String name) {
+	public synchronized void startingTest(String trialName, String testName) {
 		if (log.isEnabled()) {
-			logPrivate("startingTest " + name);
+			logPrivate("startingTest " + trialName + "." + testName);
+		}
+		if (listener != null) {
+			listener.onStartingTest(trialName, testName);
+		}
+	}
+	
+	public synchronized void onTestCompleted(String trialName, String testName, boolean passed) {
+		if (log.isEnabled()) {
+			String passedString = " passed!";
+			if (!passed) {
+				passedString = " failed!";
+			}
+			logPrivate("" + trialName + "." + testName + passedString);
+		}
+		if (listener != null) {
+			listener.onTestCompleted(trialName, testName, passed);
 		}
 	}
 	
@@ -217,6 +238,9 @@ public class Tests4J_NotificationManager {
 	}
 
 	/**
+	 * All the trials are finished running,
+	 * so notify the listener and cleanup.
+	 * 
 	 * diagrammed in Overview.seq
 	 */
 	private void onDoneRunningTrials() {
@@ -234,6 +258,8 @@ public class Tests4J_NotificationManager {
 		
 		I_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
 		if (allCoverageRecorder != null) {
+			//@diagram Overview.seq sync on 5/1/2014 'stopRecordingTrialsRun'
+			allCoverageRecorder.stopRecording();
 			List<I_PackageCoverage> packageCoverage = allCoverageRecorder.getCoverage();
 			runResult.setCoverage(packageCoverage);
 		}
