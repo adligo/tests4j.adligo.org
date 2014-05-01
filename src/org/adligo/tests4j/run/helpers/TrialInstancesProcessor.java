@@ -150,6 +150,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			//TODO
 			//trialResultMutant.setCoverage(coverage);
 		}
+		runAfterTrialTests();
 		runAfterTrial();
 		
 		TrialResult result = new TrialResult(trialResultMutant); 
@@ -248,6 +249,10 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				//trialResultMutant.setCoverage(coverage);
 			}
 		}
+	}
+	
+	private void runAfterTrialTests() {
+		
 	}
 	
 	private void runAfterTrial() {

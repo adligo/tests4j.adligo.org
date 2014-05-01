@@ -173,10 +173,21 @@ public class Tests4J_NotificationManager {
 		}
 	}
 	
+	/**
+	 * diagrammed in Overview.seq
+	 * 
+	 * @param result
+	 */
 	public synchronized void trialDone(I_TrialResult result) {
 		trialDoneInternal(result);
 	}
-	
+
+	/**
+	 * diagrammed in Overview.seq
+	 * 
+	 * @param result
+	 */
+
 	public void trialDoneInternal(I_TrialResult result) {
 		if (log.isEnabled()) {
 			reporter.printTestCompleted(result);
@@ -194,6 +205,9 @@ public class Tests4J_NotificationManager {
 		trials.addAndGet(1);
 	}
 	
+	/**
+	 * diagrammed in Overview.seq
+	 */
 	public synchronized void checkDoneRunningTrials() {
 		int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
 		
@@ -202,6 +216,9 @@ public class Tests4J_NotificationManager {
 		}
 	}
 
+	/**
+	 * diagrammed in Overview.seq
+	 */
 	private void onDoneRunningTrials() {
 		if (log.isEnabled()) {
 			logPrivate("DoneRunningTrials.");

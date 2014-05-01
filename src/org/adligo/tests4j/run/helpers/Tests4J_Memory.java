@@ -1,6 +1,8 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +11,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.adligo.tests4j.models.shared.AfterTrial;
+import org.adligo.tests4j.models.shared.BeforeTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.IgnoreTest;
+import org.adligo.tests4j.models.shared.IgnoreTrial;
+import org.adligo.tests4j.models.shared.PackageScope;
+import org.adligo.tests4j.models.shared.SourceFileScope;
+import org.adligo.tests4j.models.shared.TrialType;
+import org.adligo.tests4j.models.shared.UseCaseScope;
+import org.adligo.tests4j.models.shared.common.I_Immutable;
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
@@ -19,6 +32,16 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 
 public class Tests4J_Memory {
+	private static AtomicBoolean LOADED_COMMON_CLASSES = new AtomicBoolean(false);
+	/**
+	 * these are enums, interfaces and other classes
+	 * that have NO methods or runtime code 
+	 * which are loaded by this class's
+	 * parent classloader so that wierd .
+	 * These are stored here for testing of this class.
+	 */
+	public static List<Class<?>> COMMON_CLASSES;
+	
 	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private ConcurrentLinkedQueue<TrialDescription> descriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
@@ -43,11 +66,20 @@ public class Tests4J_Memory {
 	
 	
 	public Tests4J_Memory(Tests4J_Params params) {
+		
 		trialClasses.addAll(params.getTrials());
 		trialCount = trialClasses.size();
 		systemExit = params.isExitAfterLastNotification();
 		plugin = params.getCoveragePlugin();
 		log = params.getLog();
+		if (!LOADED_COMMON_CLASSES.get()) {
+			synchronized (LOADED_COMMON_CLASSES) {
+				if (!LOADED_COMMON_CLASSES.get()) {
+					COMMON_CLASSES = getCommonClasses(log);
+				}
+				LOADED_COMMON_CLASSES.set(true);
+			}
+		}
 		if (log.isEnabled()) {
 			System.setOut(new DuplicatingPrintStream(out, System.out));
 			System.setErr(new DuplicatingPrintStream(out, System.err));
@@ -65,6 +97,41 @@ public class Tests4J_Memory {
 		mainRecorderScope = I_CoverageRecorder.TESTS4J_ + now + I_CoverageRecorder.RECORDER;
 	}
 	
+	/**
+	 * this is the set of common classes that 
+	 * @return
+	 */
+	private List<Class<?>> getCommonClasses(I_Tests4J_Logger log) {
+		List<Class<?>> toRet = new ArrayList<Class<?>>();
+		//start with common
+		toRet.add(TrialTypeEnum.class);
+		
+		toRet.add(I_Immutable.class);
+		
+		//end with shared/
+		toRet.add(AfterTrial.class);
+		toRet.add(BeforeTrial.class);
+		toRet.add(IgnoreTest.class);
+		toRet.add(IgnoreTrial.class);
+		toRet.add(PackageScope.class);
+		toRet.add(SourceFileScope.class);
+		toRet.add(TrialType.class);
+		toRet.add(UseCaseScope.class);
+		
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		for (Class<?> c: toRet) {
+			try {
+				cl.loadClass(c.getName());
+				if (log.isEnabled()) {
+					log.log("Loaded Class " + c.getName());
+				}
+			} catch (ClassNotFoundException x) {
+				throw new RuntimeException(x);
+			}
+		}
+		return Collections.unmodifiableList(toRet);
+	}
+
 	public Class<? extends I_AbstractTrial> pollTrialClasses() {
 		return trialClasses.poll();
 	}

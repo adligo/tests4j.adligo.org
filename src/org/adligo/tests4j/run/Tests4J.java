@@ -23,14 +23,7 @@ import org.adligo.tests4j.run.helpers.TrialsProcessor;
 public class Tests4J {
 	public static final String NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED = "Null I_TestRunListener not allowed.";
 	
-	/**
-	 * these are enums, interfaces and other classes
-	 * that have NO methods or runtime code 
-	 * which are loaded by this class's
-	 * parent classloader so that wierd .
-	 * These are stored here for testing of this class.
-	 */
-	public static List<Class<?>> COMMON_CLASSES = getCommonClasses();
+
 	
 	
 	static {
@@ -70,43 +63,7 @@ public class Tests4J {
 	}
 
 	
-	/**
-	 * this is the set of common classes that 
-	 * @return
-	 */
-	private static List<Class<?>> getCommonClasses() {
-		List<Class<?>> toRet = new ArrayList<Class<?>>();
-		//start with common
-		toRet.add(TrialTypeEnum.class);
-		
-		toRet.add(I_Immutable.class);
-		
-		//end with shared/
-		toRet.add(AfterTrial.class);
-		toRet.add(BeforeTrial.class);
-		toRet.add(IgnoreTest.class);
-		toRet.add(IgnoreTrial.class);
-		toRet.add(PackageScope.class);
-		toRet.add(SourceFileScope.class);
-		toRet.add(TrialType.class);
-		toRet.add(UseCaseScope.class);
-		
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
-		for (Class<?> c: toRet) {
-			try {
-				cl.loadClass(c.getName());
-				logInternal("Loaded Class " + c.getName());
-			} catch (ClassNotFoundException x) {
-				throw new RuntimeException(x);
-			}
-		}
-		return Collections.unmodifiableList(toRet);
-	}
 
-
-	private static void logInternal(String p) {
-		System.out.println("Tests4J; " + p);
-	}
 	
 	
 }
