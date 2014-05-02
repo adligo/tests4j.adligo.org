@@ -19,6 +19,7 @@ public class BeforeTrialAuditor {
 	public static boolean audit(I_TrialDescription trialDesc,
 			List<TrialVerificationFailure> failures,
 			Method method) {
+		
 		String trialName = trialDesc.getTrialName();
 		BeforeTrial bt = method.getAnnotation(BeforeTrial.class);
 		if (bt != null) {
@@ -29,13 +30,6 @@ public class BeforeTrialAuditor {
 			if (!Modifier.isStatic(method.getModifiers())) {
 				failures.add(new TrialVerificationFailure(
 						errors.getNotStatic(),
-						new IllegalArgumentException(trialName + 
-								errors.getWasAnnotatedIncorrectly())));
-
-			}
-			if (Modifier.isAbstract(method.getModifiers())) {
-				failures.add(new TrialVerificationFailure(
-						errors.getIsAbstract(),
 						new IllegalArgumentException(trialName + 
 								errors.getWasAnnotatedIncorrectly())));
 

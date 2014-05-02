@@ -1,8 +1,9 @@
 package org.adligo.tests4j.models.shared.system.report;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_CompareAssertionData;
@@ -18,35 +19,37 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 	private String prefix = DEFAULT_PREFIX;
 	private boolean snare = false;
 	private boolean redirect = true;
-	private boolean logEnabled = true;
+	private Set<String> enabledLogClasses = new HashSet<String>();
 	private List<I_TrialResult> failedTrials = new ArrayList<I_TrialResult>();
 	private I_LineOut out = new SystemOut();
 	
 	public ConsoleReporter() {
+		setLogOn(ConsoleReporter.class.getName());
 	}
 	
 	public ConsoleReporter(I_LineOut p) {
+		setLogOn(ConsoleReporter.class.getName());
 		out = p;
 	}
 	
 	@Override
 	public void onMetadataCalculated(I_TrialRunMetadata metadata) {
-		if (logEnabled) {
-			log("MetadataCalculated: " + metadata.getTrialCount() + " trials with " +
-					metadata.getTrialCount() + " tests.");
+		if (isLogEnabled(ConsoleReporter.class.getName())) {
+			log("Metadata Calculated: " + metadata.getTrialCount() + " trials with " +
+					metadata.getTestCount() + " tests.");
 		}
 	}
 
 	@Override
 	public synchronized void onStartingTrail(String trialName) {
-		if (logEnabled) {
+		if (isLogEnabled(SystemOut.class.getName())) {
 			log("startingTrial: " + trialName);
 		}
 	}
 
 	@Override
 	public synchronized void onStartingTest(String trialName, String testName) {
-		if (logEnabled) {
+		if (isLogEnabled(SystemOut.class.getName())) {
 			log("startingTest: " + trialName + "." + testName);
 		}
 	}
@@ -54,7 +57,7 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 	@Override
 	public synchronized void onTestCompleted(String trialName, String testName,
 			boolean passed) {
-		if (logEnabled) {
+		if (isLogEnabled(SystemOut.class.getName())) {
 			String passedString = " passed!";
 			if (!passed) {
 				passedString = " failed!";
@@ -65,7 +68,7 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 
 	@Override
 	public synchronized void onTrialCompleted(I_TrialResult result) {
-		if (logEnabled) {
+		if (isLogEnabled(ConsoleReporter.class.getName())) {
 			String passedString = " passed!";
 			if (!result.isPassed()) {
 				passedString = " failed!";
@@ -77,12 +80,12 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 
 	@Override
 	public void onRunCompleted(I_TrialRunResult result) {
-		if (logEnabled) {
+		if (isLogEnabled(ConsoleReporter.class.getName())) {
 			log("Tests completed in " + result.getRunTimeSecs() + " seconds.");
 			if (result.getTrialsPassed() == result.getTrials()) {
 				log("All Trials " + result.getTrialsPassed()  + "/" 
 						+ result.getTrials() + " passed!");
-				log("Tests " + result.getTests() + " Assertions: " + 
+				log("Tests: " + result.getTests() + " Assertions: " + 
 						result.getUniqueAsserts() + "/" +
 						result.getAsserts());
 			} else {
@@ -140,8 +143,11 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 	}
 
 	@Override
-	public boolean isLogEnabled() {
-		return logEnabled;
+	public boolean isLogEnabled(String clazzName) {
+		if (enabledLogClasses.contains(clazzName)) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -149,10 +155,18 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 		return snare;
 	}
 	
-	public void setLogEnabled(boolean p) {
-		logEnabled = p;
+	public synchronized void setLogOn(String clazzName)  {
+		enabledLogClasses.add(clazzName);
 	}
 
+	public synchronized void setLogOff(String clazzName)  {
+		enabledLogClasses.remove(clazzName);
+	}
+	
+	public synchronized void setLogOff()  {
+		enabledLogClasses.clear();
+	}
+	
 	public void setSnare(boolean p) {
 		snare = p;
 	}

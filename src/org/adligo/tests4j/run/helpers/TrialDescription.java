@@ -77,8 +77,10 @@ public class TrialDescription implements I_TrialDescription {
 			I_Tests4J_Reporter pLog) {
 		long start = System.currentTimeMillis();
 		reporter = pLog;
-		
 		trialClass = pTrialClass;
+		if (reporter.isLogEnabled(TrialDescription.class.getName())) {
+			reporter.log("Creating TrialDescription for " + trialClass);
+		}
 		
 		trialCanRun = checkTestClass();
 		long end = System.currentTimeMillis();
@@ -167,10 +169,19 @@ public class TrialDescription implements I_TrialDescription {
 
 	private List<TrialVerificationFailure> locateTestMethods() {
 		List<TrialVerificationFailure> failures = new ArrayList<TrialVerificationFailure>();
-		Method [] methods = trialClass.getMethods();
+		Method [] methods = trialClass.getDeclaredMethods();
+		
 		
 		for (Method method: methods) {
+			if (reporter.isLogEnabled(TrialDescription.class.getName())) {
+				reporter.log(trialClass.getName() +
+						" had a method " + method.getName());
+			}
 			if (BeforeTrialAuditor.audit(this, failures, method)) {
+				if (reporter.isLogEnabled(TrialDescription.class.getName())) {
+					reporter.log(trialClass.getName() +
+							" had a @BeforeTrial method");
+				}
 				beforeTrialMethod = method;
 			}
 			TestDescription testDesc = TestAuditor.audit(this, failures, method);

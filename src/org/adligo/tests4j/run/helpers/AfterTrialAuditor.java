@@ -37,12 +37,6 @@ public class AfterTrialAuditor {
 						new IllegalArgumentException(trialName + 
 								errors.getWasAnnotatedIncorrectly())));
 			}
-			if (Modifier.isAbstract(method.getModifiers())) {
-				verificationFailures.add(new TrialVerificationFailure(
-						errors.getIsAbstract(),
-						new IllegalArgumentException(trialName + 
-								errors.getWasAnnotatedIncorrectly())));
-			}
 			if (!Modifier.isPublic(method.getModifiers())) {
 				verificationFailures.add(new TrialVerificationFailure(
 						errors.getNotPublic(),

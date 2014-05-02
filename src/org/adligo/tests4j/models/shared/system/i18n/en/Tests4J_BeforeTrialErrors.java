@@ -8,8 +8,7 @@ public class Tests4J_BeforeTrialErrors extends AbstractTests4J_MethodErrors
 	private static final String NOT_PUBLIC = "Methods Annotated with @BeforeTrial must be public.";
 	private static final String NOT_STATIC = "Methods Annotated with @BeforeTrial must be static.";
 	public static final String HAS_PARAMS = "Methods Annotated with @BeforeTrial must NOT take any parameters.";
-	public static final String IS_ABSTRACT = "Methods Annotated with @BeforeTrial must NOT be abstract.";
-
+	
 	@Override
 	public String getHasParams() {
 		return HAS_PARAMS;
@@ -25,9 +24,5 @@ public class Tests4J_BeforeTrialErrors extends AbstractTests4J_MethodErrors
 		return NOT_PUBLIC;
 	}
 
-	@Override
-	public String getIsAbstract() {
-		return IS_ABSTRACT;
-	}
 
 }

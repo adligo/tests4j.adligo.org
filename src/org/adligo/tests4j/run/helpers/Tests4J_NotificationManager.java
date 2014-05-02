@@ -56,12 +56,12 @@ public class Tests4J_NotificationManager {
 	 * in diagram Overview.seq
 	 */
 	public void checkDoneDescribingTrials() {
-		if (reporter.isLogEnabled()) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
 			reporter.log("checking if done describing trials.");
 		}
 		synchronized (doneDescribeingTrials) {
 			if (doneDescribeingTrials.get()) {
-				if (reporter.isLogEnabled()) {
+				if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
 					reporter.log("done describing trials.");
 				}
 				return;
@@ -70,7 +70,7 @@ public class Tests4J_NotificationManager {
 			int trialCount = memory.getTrialCount();
 			
 			if (trialCount == trialDescriptions) {
-				if (reporter.isLogEnabled()) {
+				if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
 					reporter.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
 				}
 				doneDescribeingTrials.set(true);
@@ -84,9 +84,7 @@ public class Tests4J_NotificationManager {
 	 * in diagram Overview.seq
 	 */
 	private void onTrialDefinitionsDone() {
-		if (listener != null) {
-			sendMetadata();
-		}
+		sendMetadata();
 		
 		int classDefFailures = memory.getFailureResultsSize();
 		if (classDefFailures >= 1) {
@@ -103,7 +101,7 @@ public class Tests4J_NotificationManager {
 	 * in diagram Overview.seq
 	 */
 	public void sendMetadata() {
-		if (reporter.isLogEnabled()) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
 			reporter.log("sendingMetadata. " + memory.getDescriptionCount());
 		}
 		Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
@@ -148,7 +146,9 @@ public class Tests4J_NotificationManager {
 		TrialRunMetadata toSend = new TrialRunMetadata(trmm);
 		
 		reporter.onMetadataCalculated(toSend);
-		listener.onMetadataCalculated(toSend);
+		if (listener != null) {
+			listener.onMetadataCalculated(toSend);
+		}
 	}
 
 	public void startingTrial(String name) {
@@ -188,9 +188,7 @@ public class Tests4J_NotificationManager {
 	 */
 
 	public void trialDoneInternal(I_TrialResult result) {
-		if (reporter.isLogEnabled()) {
-			reporter.onTrialCompleted(result);
-		}
+		reporter.onTrialCompleted(result);
 		if (listener != null) {
 			listener.onTrialCompleted(result);
 		}
@@ -227,7 +225,7 @@ public class Tests4J_NotificationManager {
 	 * diagrammed in Overview.seq
 	 */
 	private void onDoneRunningTrials() {
-		if (reporter.isLogEnabled()) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
 			reporter.log("DoneRunningTrials.");
 		}
 		TrialRunResultMutant runResult = new TrialRunResultMutant();
@@ -254,9 +252,7 @@ public class Tests4J_NotificationManager {
 		if (listener != null) {
 			listener.onRunCompleted(endResult);
 		}
-		if (reporter.isLogEnabled()) {
-			reporter.onRunCompleted(endResult);
-		}
+		reporter.onRunCompleted(endResult);
 		
 		ExecutorService runService =  memory.getRunService();
 		runService.shutdownNow();

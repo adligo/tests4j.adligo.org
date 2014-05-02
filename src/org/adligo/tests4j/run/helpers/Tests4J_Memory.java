@@ -131,7 +131,7 @@ public class Tests4J_Memory {
 		for (Class<?> c: toRet) {
 			try {
 				cl.loadClass(c.getName());
-				if (log.isLogEnabled()) {
+				if (log.isLogEnabled(Tests4J_Memory.class.getName())) {
 					log.log("Loaded Class " + c.getName());
 				}
 			} catch (ClassNotFoundException x) {
@@ -163,7 +163,7 @@ public class Tests4J_Memory {
 	 */
 	public void add(TrialDescription p) {
 		allTrialDescriptions.add(p);
-		if (log.isLogEnabled()) {
+		if (log.isLogEnabled(Tests4J_Memory.class.getName())) {
 			log.log("TrialDescription " + p.getTrialName() +
 					" has " + p.getTestMethodsSize());
 		}
