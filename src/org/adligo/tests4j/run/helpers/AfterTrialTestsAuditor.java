@@ -5,6 +5,8 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.AfterTrialTests;
+import org.adligo.tests4j.models.shared.I_AfterApiTrialCoverage;
+import org.adligo.tests4j.models.shared.I_AfterSourceFileTrialCoverage;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -49,13 +51,14 @@ public class AfterTrialTestsAuditor {
 							errors.getSourceFileTrialHasWrongParams(),
 							new IllegalArgumentException(trialName + 
 									errors.getWasAnnotatedIncorrectly())));
-				}
-				Class<?> sfParamClass = params[0];
-				if (I_SourceFileCoverage.class.isAssignableFrom(sfParamClass)) {
-					failures.add(new TrialVerificationFailure(
-							errors.getSourceFileTrialHasWrongParams(),
-							new IllegalArgumentException(trialName + 
-									errors.getWasAnnotatedIncorrectly())));
+				} else {
+					Class<?> sfParamClass = params[0];
+					if ( !I_AfterSourceFileTrialCoverage.class.isAssignableFrom(sfParamClass)) {
+						failures.add(new TrialVerificationFailure(
+								errors.getSourceFileTrialHasWrongParams(),
+								new IllegalArgumentException(trialName + 
+										errors.getWasAnnotatedIncorrectly())));
+					}
 				}
 				break;
 
@@ -65,13 +68,15 @@ public class AfterTrialTestsAuditor {
 							errors.getApiTrialTestsHasWrongParams(),
 							new IllegalArgumentException(trialName + 
 									errors.getWasAnnotatedIncorrectly())));
-				}
-				Class<?> apiParamClass = params[0];
-				if (I_SourceFileCoverage.class.isAssignableFrom(apiParamClass)) {
-					failures.add(new TrialVerificationFailure(
-							errors.getApiTrialTestsHasWrongParams(),
-							new IllegalArgumentException(trialName + 
-									errors.getWasAnnotatedIncorrectly())));
+				} else {
+					
+					Class<?> apiParamClass = params[0];
+					if ( !I_AfterApiTrialCoverage.class.isAssignableFrom(apiParamClass)) {
+						failures.add(new TrialVerificationFailure(
+								errors.getApiTrialTestsHasWrongParams(),
+								new IllegalArgumentException(trialName + 
+										errors.getWasAnnotatedIncorrectly())));
+					}
 				}
 				break;
 			default:

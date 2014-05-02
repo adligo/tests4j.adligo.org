@@ -26,6 +26,11 @@ import org.adligo.tests4j.models.shared.asserts.ThrowableUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 
+/**
+ * TODO i18n the assert messages (currently constants).
+ * @author scott
+ *
+ */
 public abstract class AbstractTrial implements I_AbstractTrial {
 	public static final String THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE = "The first Byte should NOT be less than the second Byte.";
 	public static final String NOT_GREATER_THAN_BYTE = "The first byte should NOT be greater than the last byte";
@@ -50,7 +55,6 @@ public abstract class AbstractTrial implements I_AbstractTrial {
 	 * @param p
 	 */
 	public void setMemory(I_AssertionHelperInfo pMemory) {
-		
 		memory = pMemory;
 	}
 	

@@ -86,13 +86,12 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		}
 		
 		try {
-		
+			
 			trialDescription = memory.pollDescriptions();
 			while (trialDescription != null) {
 				runTrial();
 				trialDescription = memory.pollDescriptions();
 			}
-			
 			testRunService.shutdownNow();
 			notifier.checkDoneRunningTrials();
 		} catch (Exception x) {

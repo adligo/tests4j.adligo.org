@@ -33,7 +33,7 @@ public interface I_Tests4J_Reporter extends I_TrialRunListener {
 	 * 
 	 * @return
 	 */
-	public boolean isLogEnabled(String clazzName);
+	public boolean isLogEnabled(Class<?> clazz);
 	
 	/**
 	 * When this returns true, the original System.out

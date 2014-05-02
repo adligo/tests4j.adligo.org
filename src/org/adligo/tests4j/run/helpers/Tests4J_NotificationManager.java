@@ -43,6 +43,7 @@ public class Tests4J_NotificationManager {
 	private AtomicLong testFailureCount = new AtomicLong();
 	private AtomicInteger trialFailures = new AtomicInteger();
 	private AtomicInteger trials = new AtomicInteger();
+	private AtomicInteger trialClassDefFailures = new AtomicInteger();
 	
 	public Tests4J_NotificationManager(Tests4J_Memory pMem, I_Tests4J_Reporter pLog, I_TrialRunListener pListener) {
 		memory = pMem;
@@ -56,12 +57,12 @@ public class Tests4J_NotificationManager {
 	 * in diagram Overview.seq
 	 */
 	public void checkDoneDescribingTrials() {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("checking if done describing trials.");
 		}
 		synchronized (doneDescribeingTrials) {
 			if (doneDescribeingTrials.get()) {
-				if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
+				if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 					reporter.log("done describing trials.");
 				}
 				return;
@@ -70,7 +71,7 @@ public class Tests4J_NotificationManager {
 			int trialCount = memory.getTrialCount();
 			
 			if (trialCount == trialDescriptions) {
-				if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
+				if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 					reporter.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
 				}
 				doneDescribeingTrials.set(true);
@@ -86,8 +87,10 @@ public class Tests4J_NotificationManager {
 	private void onTrialDefinitionsDone() {
 		sendMetadata();
 		
-		int classDefFailures = memory.getFailureResultsSize();
-		if (classDefFailures >= 1) {
+		int defFailures = memory.getFailureResultsSize();
+		trialClassDefFailures.set(defFailures);
+		
+		if (defFailures >= 1) {
 			I_TrialResult result = memory.pollFailureResults();
 			while (result != null) {
 				trialDoneInternal(result);
@@ -101,8 +104,9 @@ public class Tests4J_NotificationManager {
 	 * in diagram Overview.seq
 	 */
 	public void sendMetadata() {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
-			reporter.log("sendingMetadata. " + memory.getDescriptionCount());
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("sendingMetadata. " + memory.getDescriptionCount()
+					+ " TrialDescription ");
 		}
 		Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
 		TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
@@ -212,8 +216,11 @@ public class Tests4J_NotificationManager {
 	 */
 	public void checkDoneRunningTrials() {
 		int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
-		
-		if (trials.get() == trialsWhichCanRun) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("checkDoneRunningTrials " + trials.get() + " =? " +
+					trialsWhichCanRun + " + " + trialClassDefFailures.get());
+		}
+		if (trials.get() == trialsWhichCanRun + trialClassDefFailures.get()) {
 			onDoneRunningTrials();
 		}
 	}
@@ -225,7 +232,7 @@ public class Tests4J_NotificationManager {
 	 * diagrammed in Overview.seq
 	 */
 	private void onDoneRunningTrials() {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class.getName())) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("DoneRunningTrials.");
 		}
 		TrialRunResultMutant runResult = new TrialRunResultMutant();

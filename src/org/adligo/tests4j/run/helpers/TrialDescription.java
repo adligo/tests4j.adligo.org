@@ -53,7 +53,7 @@ public class TrialDescription implements I_TrialDescription {
 		long start = System.currentTimeMillis();
 		reporter = pLog;
 		trialClass = pTrialClass;
-		if (reporter.isLogEnabled(TrialDescription.class.getName())) {
+		if (reporter.isLogEnabled(TrialDescription.class)) {
 			reporter.log("Creating TrialDescription for " + trialClass);
 		}
 		
