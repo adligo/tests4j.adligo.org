@@ -1,8 +1,8 @@
-package org.adligo.tests4j.models.shared.system.i18n.en;
+package org.adligo.tests4j.models.shared.system.i18n.en.trials;
 
 import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TestMethodErrors;
 
-public class Tests4J_TestMethodErrors extends AbstractTests4J_MethodErrors 
+public class Tests4J_AnnotationErrors extends AbstractTests4J_MethodErrors 
 	implements I_Tests4J_TestMethodErrors {
 
 	public static final String THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_TIMEOUT = "The test method may not have a negative timeout.";

@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.system.i18n.trials;
 
-public interface I_Tests4J_TestMethodErrors extends I_Tests4J_MethodErrors {
+public interface I_Tests4J_TestMethodErrors extends I_Tests4J_AnnotationErrors {
 	public String getIsStatic();
 	public String getIsAbstract();
 	public String getIsNotPublic();

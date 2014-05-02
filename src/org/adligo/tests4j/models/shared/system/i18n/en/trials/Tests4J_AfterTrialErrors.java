@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.system.i18n.en;
+package org.adligo.tests4j.models.shared.system.i18n.en.trials;
 
 import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4j_AfterTrialErrors;
 

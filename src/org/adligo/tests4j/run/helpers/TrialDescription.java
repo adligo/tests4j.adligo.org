@@ -2,25 +2,22 @@ package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.adligo.tests4j.models.shared.AfterTrialTests;
-import org.adligo.tests4j.models.shared.BeforeTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.IgnoreTest;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
 import org.adligo.tests4j.models.shared.SourceFileScope;
-import org.adligo.tests4j.models.shared.Test;
 import org.adligo.tests4j.models.shared.TrialTimeout;
 import org.adligo.tests4j.models.shared.TrialType;
+import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TrialDescriptionMessages;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 /**
@@ -33,29 +30,7 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
  */
 public class TrialDescription implements I_TrialDescription {
 
-	public static final String REFERS_TO_A_NULL_J_TEST_TYPE_TYPE = 
-				" refers to a null TestType type.";
-	public static final String IS_MISSING_TRIAL_TYPE_ANNOTATION = 
-				" is missing a @TrialType annotation.";
-	public static final String CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE = 
-				"SourceFileTrials must be annotated with SourceFileScope.";
-	public static final String IS_MISSING_A_TRIAL_TYPE = " is missing a TrialTypeEnum.";
-	public static final String THE_TRIAL = "The trail ";
-	
 
-	public static final String TRIAL_NO_TEST = 
-			"Trial Classes must have at least one method annotated with @Test.";
-
-
-
-	
-	public static final String PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION = 
-			"PackageTrials must be annotated with a PackageScope annotation.";
-	public static final String WAS_NOT_ANNOTATED_CORRECTLY = 
-			" was not annotated correctly.";
-
-	public static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = 
-			"Classes which implement I_AbstractTrial must have a zero argument constructor.";
 	private Class<? extends I_AbstractTrial> trialClass;
 	
 	private I_AbstractTrial trial;
@@ -122,22 +97,27 @@ public class TrialDescription implements I_TrialDescription {
 	}
 
 	private boolean checkTypeAnnotations() {
+		I_Tests4J_TrialDescriptionMessages messages = Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
+		
+		String trialName = trialClass.getName();
 		switch(type) {
 			case SourceFileTrial:
 					SourceFileScope scope = trialClass.getAnnotation(SourceFileScope.class);
 					if (scope == null) {
 						resultFailureMessage = 
-								CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE;
+								messages.getNoSourceFileScope();
 						resultException	 =
-								new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+								new IllegalArgumentException(trialName + 
+										messages.getWasAnnotatedIncorrectly());
 						return false;
 					} else {
 						Class<?> clazz = scope.sourceClass();
 						if (clazz == null) {
 							resultFailureMessage = 
-									CLASS_TRIALS_MUST_BE_ANNOTATED_WITH_CLASS_TEST_SCOPE;
+									messages.getSourceFileScopeEmptyClass();
 							resultException	 =
-									new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+									new IllegalArgumentException(trialName + 
+											messages.getWasAnnotatedIncorrectly());
 							return false;
 						}
 					}
@@ -146,23 +126,62 @@ public class TrialDescription implements I_TrialDescription {
 				PackageScope pkgScope = trialClass.getAnnotation(PackageScope.class);
 				if (pkgScope == null) {
 					resultFailureMessage = 
-							PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION;
+							messages.getNoPackageScope();
 					resultException	 =
-							new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							new IllegalArgumentException(trialName + 
+									messages.getWasAnnotatedIncorrectly());
 					return false;
 				}
 				String testedPackageName = pkgScope.packageName();
 				if (IsEmpty.isEmpty(testedPackageName)) {
 					resultFailureMessage = 
-							PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION;
+							messages.getPackageScopeEmptyName();
 					resultException	 =
-							new IllegalArgumentException(trialClass.getName() + WAS_NOT_ANNOTATED_CORRECTLY);
+							new IllegalArgumentException(trialName + 
+									messages.getWasAnnotatedIncorrectly());
 					return false;
 				} 
 				
 				break;
 			default:
-				//do nothing, functional tests don't require annotations
+				UseCaseScope ucScope = trialClass.getAnnotation(UseCaseScope.class);
+				if (ucScope == null) {
+					resultFailureMessage = 
+							messages.getNoUseCaseScope();
+					resultException	 =
+							new IllegalArgumentException(trialName + 
+									messages.getWasAnnotatedIncorrectly());
+					return false;
+				}
+				String system = ucScope.system();
+				if (IsEmpty.isEmpty(system)) {
+					resultFailureMessage = 
+							messages.getUseCaseScopeEmptySystem();
+					resultException	 =
+							new IllegalArgumentException(trialName + 
+									messages.getWasAnnotatedIncorrectly());
+					return false;
+				} 
+				
+				String nown = ucScope.nown();
+				if (IsEmpty.isEmpty(nown)) {
+					resultFailureMessage = 
+							messages.getUseCaseScopeEmptyNown();
+					resultException	 =
+							new IllegalArgumentException(trialName + 
+									messages.getWasAnnotatedIncorrectly());
+					return false;
+				} 
+				
+				String verb = ucScope.verb();
+				if (IsEmpty.isEmpty(verb)) {
+					resultFailureMessage = 
+							messages.getUseCaseScopeEmptyVerb();
+					resultException	 =
+							new IllegalArgumentException(trialName + 
+									messages.getWasAnnotatedIncorrectly());
+					return false;
+				} 
 		}
 		return true;
 	}
@@ -171,54 +190,56 @@ public class TrialDescription implements I_TrialDescription {
 		List<TrialVerificationFailure> failures = new ArrayList<TrialVerificationFailure>();
 		Method [] methods = trialClass.getDeclaredMethods();
 		
+		I_Tests4J_TrialDescriptionMessages messages = 
+				Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
 		
 		for (Method method: methods) {
-			if (reporter.isLogEnabled(TrialDescription.class.getName())) {
-				reporter.log(trialClass.getName() +
-						" had a method " + method.getName());
-			}
 			if (BeforeTrialAuditor.audit(this, failures, method)) {
-				if (reporter.isLogEnabled(TrialDescription.class.getName())) {
-					reporter.log(trialClass.getName() +
-							" had a @BeforeTrial method");
+				if (beforeTrialMethod == null) {
+					beforeTrialMethod = method;
+				} else {
+					failures.add(new TrialVerificationFailure(
+							messages.getMultipleBeforeTrial(),
+							new IllegalArgumentException(trialClass.getName() + 
+									messages.getWasAnnotatedIncorrectly())));
 				}
-				beforeTrialMethod = method;
 			}
 			TestDescription testDesc = TestAuditor.audit(this, failures, method);
 			if (testDesc != null) {
 				testMethods.add(testDesc);
 			}
 			if (AfterTrialTestsAuditor.audit(this, failures, method)) {
-				afterTrialTestsMethod = method;
+				if (afterTrialTestsMethod == null) {
+					afterTrialTestsMethod = method;
+				} else {
+					failures.add(new TrialVerificationFailure(
+							messages.getMultipleAfterTrialTests(),
+							new IllegalArgumentException(trialClass.getName() + 
+									messages.getWasAnnotatedIncorrectly())));
+				}
 			}
 			if (AfterTrialAuditor.audit(this, failures, method)) {
-				afterTrialMethod = method;
+				if (afterTrialMethod == null) {
+					afterTrialMethod = method;
+				} else {
+					failures.add(new TrialVerificationFailure(
+							messages.getMultipleAfterTrial(),
+							new IllegalArgumentException(trialClass.getName() + 
+									messages.getWasAnnotatedIncorrectly())));
+				}
 			}
 			
 		}
+
+		
 		if (testMethods.size() == 0) {
 			failures.add(new TrialVerificationFailure(
-					TRIAL_NO_TEST,
+					messages.getNoTests(),
 					new IllegalArgumentException(trialClass.getName() + 
-							WAS_NOT_ANNOTATED_CORRECTLY)));
+							messages.getWasAnnotatedIncorrectly())));
 		}
 		return failures;
 	}
-
-
-
-
-
-
-
-	
-
-
-
-
-
-
-
 
 
 
@@ -229,7 +250,10 @@ public class TrialDescription implements I_TrialDescription {
 			Object o = constructor.newInstance();
 			trial = (I_AbstractTrial) o;
 		} catch (Exception x) {
-			resultFailureMessage = CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR; 
+			I_Tests4J_TrialDescriptionMessages messages = 
+					Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
+			
+			resultFailureMessage = messages.getBadConstuctor(); 
 			resultException	= x;
 			return false;
 		}
@@ -255,9 +279,13 @@ public class TrialDescription implements I_TrialDescription {
 				checking = checking.getSuperclass();
 			}
 		}
+		I_Tests4J_TrialDescriptionMessages messages = 
+				Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
+		
 		if (type == null) {
-			resultFailureMessage = THE_TRIAL + trialClass.getName() + 
-					IS_MISSING_TRIAL_TYPE_ANNOTATION;
+			resultFailureMessage = messages.getMissingTypeAnnotationPre() + 
+						trialClass.getName() + 
+					messages.getMissingTypeAnnotationPost();
 			resultException	= new IllegalArgumentException(resultFailureMessage);
 			return null;
 		}
