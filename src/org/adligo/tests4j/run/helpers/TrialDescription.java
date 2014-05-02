@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.adligo.tests4j.models.shared.AfterTrial;
 import org.adligo.tests4j.models.shared.AfterTrialTests;
 import org.adligo.tests4j.models.shared.BeforeTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
@@ -22,11 +21,18 @@ import org.adligo.tests4j.models.shared.TrialType;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
-public class TrialDescription {
-	public static final String THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_OR = 
-				"The test method may not have a negative.";
+/**
+ * a generally immutable class that represents/wrapps
+ * a Trial class adding the reflection Methods exc
+ * so that it can be run.
+ * 
+ * @author scott
+ *
+ */
+public class TrialDescription implements I_TrialDescription {
+
 	public static final String REFERS_TO_A_NULL_J_TEST_TYPE_TYPE = 
 				" refers to a null TestType type.";
 	public static final String IS_MISSING_TRIAL_TYPE_ANNOTATION = 
@@ -35,33 +41,14 @@ public class TrialDescription {
 				"SourceFileTrials must be annotated with SourceFileScope.";
 	public static final String IS_MISSING_A_TRIAL_TYPE = " is missing a TrialTypeEnum.";
 	public static final String THE_TRIAL = "The trail ";
+	
+
 	public static final String TRIAL_NO_TEST = 
 			"Trial Classes must have at least one method annotated with @Test.";
-	public static final String TEST_NOT_STATIC = 
-			"Methods Annotated with @Test must NOT be static.";
-	public static final String TEST_IS_ABSTRACT = 
-			"Methods Annotated with @Test must NOT be abstract.";
-	public static final String TEST_NOT_PUBLIC = 
-			"Methods Annotated with @Test must be public.";
-	public static final String TEST_HAS_PARAMS = 
-			"Methods Annotated with @Test must not take any parameters";
-	private static final String AFTER_TRIAL_HAS_PARAMS = 
-			"Trial Methods Annotated with @AfterTrial must not take any parameters.";
-	private static final String USE_CASE_TRIAL_HAS_AFTER_TRIAL_TESTS = 
-			"Use Case Trial Methods may not be Annotated with @AfterTrialTests.";
-	private static final String AFTER_SOURCE_FILE_TRIAL_TESTS_HAS_WRONG_PARAMS = 
-			"Source File Trial Methods Annotated with @AfterTrialTests must take a single parameter I_AfterSourceFileTrialCoverage.";
-	private static final String AFTER_API_TRIAL_TESTS_HAS_WRONG_PARAMS = 
-			"Api Trial Methods Annotated with @AfterTrialTests must take a single parameter I_AfterApiTrialCoverage.";
+
+
+
 	
-	public static final String AFTER_TRIAL_NOT_STATIC = 
-			"Methods Annotated with @AfterTrial must be static.";
-	public static final String AFTER_TRIAL_TESTS_NOT_STATIC = 
-			"Methods Annotated with @AfterTrialTests must be static.";
-	public static final String BEFORE_TRIAL_HAS_PARAMS = 
-			"Methods Annotated with @BeforeTrial must not take any parameters.";
-	public static final String BEFORE_TRIAL_NOT_STATIC = 
-			"Methods Annotated with @BeforeTrial must be static.";
 	public static final String PACKAGE_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_TEST_SCOPE_ANNOTATION = 
 			"PackageTrials must be annotated with a PackageScope annotation.";
 	public static final String WAS_NOT_ANNOTATED_CORRECTLY = 
@@ -181,124 +168,22 @@ public class TrialDescription {
 	private List<TrialVerificationFailure> locateTestMethods() {
 		List<TrialVerificationFailure> failures = new ArrayList<TrialVerificationFailure>();
 		Method [] methods = trialClass.getMethods();
+		
 		for (Method method: methods) {
-			BeforeTrial bt = method.getAnnotation(BeforeTrial.class);
-			if (bt != null) {
-				if (!Modifier.isStatic(method.getModifiers())) {
-					failures.add(new TrialVerificationFailure(
-							BEFORE_TRIAL_NOT_STATIC,
-							new IllegalArgumentException(trialClass.getName() + 
-									WAS_NOT_ANNOTATED_CORRECTLY)));
-
-				}
-				Class<?> [] params = method.getParameterTypes();
-				if (params.length != 0) {
-					failures.add(new TrialVerificationFailure(
-							BEFORE_TRIAL_HAS_PARAMS,
-							new IllegalArgumentException(trialClass.getName() + 
-									WAS_NOT_ANNOTATED_CORRECTLY)));
-				}
+			if (BeforeTrialAuditor.audit(this, failures, method)) {
 				beforeTrialMethod = method;
 			}
-			AfterTrialTests att = method.getAnnotation(AfterTrialTests.class);
-			if (att != null) {
-				if (!Modifier.isStatic(method.getModifiers())) {
-					failures.add(new TrialVerificationFailure(
-							AFTER_TRIAL_TESTS_NOT_STATIC,
-							new IllegalArgumentException(trialClass.getName() + 
-									WAS_NOT_ANNOTATED_CORRECTLY)));
-				}
-				Class<?> [] params = method.getParameterTypes();
-				switch (type) {
-				case SourceFileTrial:
-					if (params.length != 1) {
-						failures.add(new TrialVerificationFailure(
-								AFTER_SOURCE_FILE_TRIAL_TESTS_HAS_WRONG_PARAMS,
-								new IllegalArgumentException(trialClass.getName() + 
-										WAS_NOT_ANNOTATED_CORRECTLY)));
-					}
-					Class<?> sfParamClass = params[0];
-					if (I_SourceFileCoverage.class.isAssignableFrom(sfParamClass)) {
-						failures.add(new TrialVerificationFailure(
-								AFTER_SOURCE_FILE_TRIAL_TESTS_HAS_WRONG_PARAMS,
-								new IllegalArgumentException(trialClass.getName() + 
-										WAS_NOT_ANNOTATED_CORRECTLY)));
-					}
-					break;
-
-				case ApiTrial:
-					if (params.length != 1) {
-						failures.add(new TrialVerificationFailure(
-								AFTER_API_TRIAL_TESTS_HAS_WRONG_PARAMS,
-								new IllegalArgumentException(trialClass.getName() + 
-										WAS_NOT_ANNOTATED_CORRECTLY)));
-					}
-					Class<?> apiParamClass = params[0];
-					if (I_SourceFileCoverage.class.isAssignableFrom(apiParamClass)) {
-						failures.add(new TrialVerificationFailure(
-								AFTER_API_TRIAL_TESTS_HAS_WRONG_PARAMS,
-								new IllegalArgumentException(trialClass.getName() + 
-										WAS_NOT_ANNOTATED_CORRECTLY)));
-					}
-					break;
-				default:
-					failures.add(new TrialVerificationFailure(
-							USE_CASE_TRIAL_HAS_AFTER_TRIAL_TESTS,
-							new IllegalArgumentException(trialClass.getName() + 
-									WAS_NOT_ANNOTATED_CORRECTLY)));
-				}
+			TestDescription testDesc = TestAuditor.audit(this, failures, method);
+			if (testDesc != null) {
+				testMethods.add(testDesc);
+			}
+			if (AfterTrialTestsAuditor.audit(this, failures, method)) {
 				afterTrialTestsMethod = method;
 			}
-			
-			AfterTrial at = method.getAnnotation(AfterTrial.class);
-			if (at != null) {
-				if (!Modifier.isStatic(method.getModifiers())) {
-					failures.add(new TrialVerificationFailure(
-							AFTER_TRIAL_NOT_STATIC,
-							new IllegalArgumentException(trialClass.getName() + 
-									WAS_NOT_ANNOTATED_CORRECTLY)));
-				}
-				Class<?> [] params = method.getParameterTypes();
-				if (params.length != 0) {
-							failures.add(new TrialVerificationFailure(
-									AFTER_TRIAL_HAS_PARAMS,
-									new IllegalArgumentException(trialClass.getName() + 
-											WAS_NOT_ANNOTATED_CORRECTLY)));
-				
-				}
+			if (AfterTrialAuditor.audit(this, failures, method)) {
 				afterTrialMethod = method;
 			}
-			Test test = method.getAnnotation(Test.class);
-			if (test != null) {
-				Class<?> [] params = method.getParameterTypes();
-				if (params.length != 0) {
-					failures.add(new TrialVerificationFailure(
-							TEST_HAS_PARAMS,
-							new IllegalArgumentException(trialClass.getName() + "." + method.getName() + 
-									WAS_NOT_ANNOTATED_CORRECTLY)));
-				}
-				if (Modifier.isAbstract(method.getModifiers())) {
-					failures.add(new TrialVerificationFailure(
-							TEST_IS_ABSTRACT,
-							new IllegalArgumentException(trialClass.getName() + "." + method.getName() + 
-									WAS_NOT_ANNOTATED_CORRECTLY)));
-				}
-				if (Modifier.isStatic(method.getModifiers())) {
-					failures.add(new TrialVerificationFailure(
-							TEST_NOT_STATIC,
-							new IllegalArgumentException(trialClass.getName() + "." + method.getName() + 
-									WAS_NOT_ANNOTATED_CORRECTLY)));
-				}
-				long timeout = test.timeout();
-				if (timeout < 0) {
-					failures.add(new TrialVerificationFailure(
-							THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_OR,
-							new IllegalArgumentException(trialClass.getName() + "." + method.getName() + 
-									WAS_NOT_ANNOTATED_CORRECTLY)));
-				}
-				IgnoreTest it = method.getAnnotation(IgnoreTest.class);
-				testMethods.add(new TestDescription(method, timeout, it != null));
-			}
+			
 		}
 		if (testMethods.size() == 0) {
 			failures.add(new TrialVerificationFailure(
@@ -308,6 +193,23 @@ public class TrialDescription {
 		}
 		return failures;
 	}
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
 
 	private boolean createInstance() {
 		try {
@@ -414,9 +316,6 @@ public class TrialDescription {
 	public long getTimeout() {
 		return timeout;
 	}
-
-
-
 
 	public Method getAfterTrialTestsMethod() {
 		return afterTrialTestsMethod;

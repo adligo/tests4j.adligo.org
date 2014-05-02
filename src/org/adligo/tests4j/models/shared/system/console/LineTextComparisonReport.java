@@ -6,7 +6,7 @@ import org.adligo.tests4j.models.shared.asserts.line_text.LineDiff;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.StartEndDiff;
 import org.adligo.tests4j.models.shared.asserts.line_text.StartEndDiffPair;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 public class LineTextComparisonReport {
 

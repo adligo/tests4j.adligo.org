@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
+import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {

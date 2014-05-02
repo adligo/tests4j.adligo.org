@@ -23,7 +23,7 @@ import org.adligo.tests4j.models.shared.results.TrialResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 

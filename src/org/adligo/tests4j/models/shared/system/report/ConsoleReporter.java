@@ -11,20 +11,22 @@ import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 
 public class ConsoleReporter implements I_Tests4J_Reporter {
 	public static final String DEFAULT_PREFIX = "Tests4J: ";
-	private static final PrintStream OUT = System.out;
 	
 	private String prefix = DEFAULT_PREFIX;
 	private boolean snare = false;
 	private boolean redirect = true;
 	private boolean logEnabled = true;
 	private List<I_TrialResult> failedTrials = new ArrayList<I_TrialResult>();
+	private I_LineOut out = new SystemOut();
 	
 	public ConsoleReporter() {
-		
+	}
+	
+	public ConsoleReporter(I_LineOut p) {
+		out = p;
 	}
 	
 	@Override
@@ -106,7 +108,6 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 				I_TestFailure tf = tr.getFailure();
 				log("\t" + tf.getMessage());
 				Throwable t = tf.getLocationFailed();
-				StackTraceElement [] stack = t.getStackTrace();
 				I_AssertionData ad =  tf.getData();
 				if (ad instanceof I_CompareAssertionData) {
 					I_CompareAssertionData<?> cad = (I_CompareAssertionData<?>) ad;
@@ -115,23 +116,27 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 					log("\tActual;");
 					log("\t" + cad.getActual());
 				}
-				log("\t" + t.toString());
-				for (int i = 0; i < stack.length; i++) {
-					log("\t\tat " + stack[i]);
-				}
+				logThrowable("\t",t);
 			}
+		}
+	}
+
+	private void logThrowable(String indent, Throwable t) {
+		StackTraceElement [] stack = t.getStackTrace();
+		log(indent + t.toString());
+		for (int i = 0; i < stack.length; i++) {
+			log(indent + indent +"at " + stack[i]);
 		}
 	}
 
 	@Override
 	public synchronized void log(String p) {
-		OUT.println(prefix + p);
+		out.println(prefix + p);
 	}
 
 	@Override
 	public void onError(Throwable p) {
-		log(p.getMessage());
-		p.printStackTrace();
+		logThrowable("", p);
 	}
 
 	@Override

@@ -1,4 +1,6 @@
-package org.adligo.tests4j.models.shared.system;
+package org.adligo.tests4j.models.shared.system.report;
+
+import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 
 
 /**
