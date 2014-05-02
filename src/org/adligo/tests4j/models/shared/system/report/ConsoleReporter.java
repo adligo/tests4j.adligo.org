@@ -119,7 +119,11 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 					log("\tActual;");
 					log("\t" + cad.getActual());
 				}
-				logThrowable("\t",t);
+				if (t == null) {
+					log("\tUnknown Location a Test4J error please try to reproduce and report it;");
+				} else {
+					logThrowable("\t",t);
+				}
 			}
 		}
 	}

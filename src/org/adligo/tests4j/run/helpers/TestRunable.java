@@ -48,6 +48,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		if (unexpected != null) {
 			TestFailureMutant failure = new TestFailureMutant();
 			failure.setException(unexpected);
+			failure.setLocationFailed(unexpected);
 			failure.setMessage(UNEXPECTED_EXCEPTION_WAS_THROWN);
 			testResultMutant.setFailure(failure);
 		
