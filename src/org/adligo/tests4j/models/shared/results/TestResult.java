@@ -10,8 +10,8 @@ public class TestResult implements I_TestResult {
 		mutant = new TestResultMutant(p);
 	}
 
-	public String getExhibitName() {
-		return mutant.getExhibitName();
+	public String getName() {
+		return mutant.getName();
 	}
 
 	public int getAssertionCount() {

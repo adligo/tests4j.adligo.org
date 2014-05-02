@@ -20,7 +20,7 @@ import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.console.TextReporter;
 
@@ -34,9 +34,8 @@ import org.adligo.tests4j.models.shared.system.console.TextReporter;
 public class Tests4J_NotificationManager {
 	private AtomicBoolean doneDescribeingTrials = new AtomicBoolean(false);
 	private Tests4J_Memory memory;
-	private I_Tests4J_Logger log;
+	private I_Tests4J_Reporter reporter;
 	private I_TrialRunListener listener;
-	private TextReporter reporter;
 	private AtomicLong startTime = new AtomicLong();
 	private AtomicLong assertionCount = new AtomicLong();
 	private AtomicLong uniqueAssertionCount = new AtomicLong();
@@ -45,11 +44,10 @@ public class Tests4J_NotificationManager {
 	private AtomicInteger trialFailures = new AtomicInteger();
 	private AtomicInteger trials = new AtomicInteger();
 	
-	public Tests4J_NotificationManager(Tests4J_Memory pMem, I_Tests4J_Logger pLog, I_TrialRunListener pListener) {
+	public Tests4J_NotificationManager(Tests4J_Memory pMem, I_Tests4J_Reporter pLog, I_TrialRunListener pListener) {
 		memory = pMem;
-		log = pLog;
+		reporter = pLog;
 		listener = pListener;
-		reporter = new TextReporter(log);
 		long now = System.currentTimeMillis();
 		startTime.set(now);
 	}
@@ -57,14 +55,14 @@ public class Tests4J_NotificationManager {
 	/**
 	 * in diagram Overview.seq
 	 */
-	public synchronized void checkDoneDescribingTrials() {
-		if (log.isEnabled()) {
-			log.log("checking if done describing trials.");
+	public void checkDoneDescribingTrials() {
+		if (reporter.isLogEnabled()) {
+			reporter.log("checking if done describing trials.");
 		}
 		synchronized (doneDescribeingTrials) {
 			if (doneDescribeingTrials.get()) {
-				if (log.isEnabled()) {
-					log.log("done describing trials.");
+				if (reporter.isLogEnabled()) {
+					reporter.log("done describing trials.");
 				}
 				return;
 			}
@@ -72,6 +70,10 @@ public class Tests4J_NotificationManager {
 			int trialCount = memory.getTrialCount();
 			
 			if (trialCount == trialDescriptions) {
+				if (reporter.isLogEnabled()) {
+					reporter.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
+				}
+				doneDescribeingTrials.set(true);
 				onTrialDefinitionsDone();
 			}
 		}
@@ -82,27 +84,18 @@ public class Tests4J_NotificationManager {
 	 * in diagram Overview.seq
 	 */
 	private void onTrialDefinitionsDone() {
-		synchronized (doneDescribeingTrials) {
-			if (log.isEnabled()) {
-				logPrivate("DescribingTrials is Done.");
-			}
-			doneDescribeingTrials.set(true);
-			
-			if (listener != null) {
-				sendMetadata();
-			}
-			
-			int classDefFailures = memory.getFailureResultsSize();
-			if (classDefFailures >= 1) {
-				I_TrialResult result = memory.pollFailureResults();
-				while (result != null) {
-					trialDoneInternal(result);
-					result = memory.pollFailureResults();
-				}
-			}
+		if (listener != null) {
+			sendMetadata();
 		}
 		
-		
+		int classDefFailures = memory.getFailureResultsSize();
+		if (classDefFailures >= 1) {
+			I_TrialResult result = memory.pollFailureResults();
+			while (result != null) {
+				trialDoneInternal(result);
+				result = memory.pollFailureResults();
+			}
+		}
 	}
 
 
@@ -110,85 +103,70 @@ public class Tests4J_NotificationManager {
 	 * in diagram Overview.seq
 	 */
 	public void sendMetadata() {
-		synchronized (listener) {
-			if (log.isEnabled()) {
-				log.log("sendingMetadata. " + memory.getDescriptionCount());
-			}
-			Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
-			TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
-			
-			while (it.hasNext()) {
-				TrialDescription td = it.next();
-				TrialMetadataMutant tmm = new TrialMetadataMutant();
-				tmm.setTrialName(td.getTrialName());
-				Method before = td.getBeforeTrialMethod();
-				if (before != null) {
-					tmm.setBeforeTrialMethodName(before.getName());
-				}
-				boolean ignored = td.isIgnored();
-				tmm.setSkipped(ignored);
-				long timeout = td.getTimeout();
-				tmm.setTimeout(timeout);
-				
-				if (td.getTestMethodsSize() >= 1) {
-					Iterator<TestDescription> iit = td.getTestMethods();
-					
-					if (iit != null) {
-						List<I_TestMetadata> testMetas = new ArrayList<I_TestMetadata>();
-						while (iit.hasNext()) {
-							TestDescription tm = iit.next();
-							TestMetadataMutant testMeta = new TestMetadataMutant();
-							Method method = tm.getMethod();
-							testMeta.setTestName(method.getName());
-							long testTimeout = tm.getTimeoutMillis();
-							testMeta.setTimeout(testTimeout);
-							testMetas.add(testMeta);
-						}
-						if (log.isEnabled()) {
-							log.log("sendingMetadata trial " +tmm.getTrialName() + 
-									" has " + testMetas.size() + " tests.");
-						}
-						tmm.setTests(testMetas);
-					}
-				}
-				Method after = td.getAfterTrialMethod();
-				if (after != null) {
-					tmm.setBeforeTrialMethodName(after.getName());
-				}
-				trmm.addTrial(tmm);
-			}
-			TrialRunMetadata toSend = new TrialRunMetadata(trmm);
-			
-			listener.onMetadataCalculated(toSend);
+		if (reporter.isLogEnabled()) {
+			reporter.log("sendingMetadata. " + memory.getDescriptionCount());
 		}
+		Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
+		TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
+		
+		while (it.hasNext()) {
+			TrialDescription td = it.next();
+			TrialMetadataMutant tmm = new TrialMetadataMutant();
+			tmm.setTrialName(td.getTrialName());
+			Method before = td.getBeforeTrialMethod();
+			if (before != null) {
+				tmm.setBeforeTrialMethodName(before.getName());
+			}
+			boolean ignored = td.isIgnored();
+			tmm.setSkipped(ignored);
+			long timeout = td.getTimeout();
+			tmm.setTimeout(timeout);
+			
+			if (td.getTestMethodsSize() >= 1) {
+				Iterator<TestDescription> iit = td.getTestMethods();
+				
+				if (iit != null) {
+					List<I_TestMetadata> testMetas = new ArrayList<I_TestMetadata>();
+					while (iit.hasNext()) {
+						TestDescription tm = iit.next();
+						TestMetadataMutant testMeta = new TestMetadataMutant();
+						Method method = tm.getMethod();
+						testMeta.setTestName(method.getName());
+						long testTimeout = tm.getTimeoutMillis();
+						testMeta.setTimeout(testTimeout);
+						testMetas.add(testMeta);
+					}
+					tmm.setTests(testMetas);
+				}
+			}
+			Method after = td.getAfterTrialMethod();
+			if (after != null) {
+				tmm.setBeforeTrialMethodName(after.getName());
+			}
+			trmm.addTrial(tmm);
+		}
+		TrialRunMetadata toSend = new TrialRunMetadata(trmm);
+		
+		reporter.onMetadataCalculated(toSend);
+		listener.onMetadataCalculated(toSend);
 	}
 
-	public synchronized void startingTrial(String name) {
-		if (log.isEnabled()) {
-			logPrivate("startingTrial " + name);
-		}
+	public void startingTrial(String name) {
+		reporter.onStartingTrail(name);
 		if (listener != null) {
 			listener.onStartingTrail(name);
 		}
 	}
 	
-	public synchronized void startingTest(String trialName, String testName) {
-		if (log.isEnabled()) {
-			logPrivate("startingTest " + trialName + "." + testName);
-		}
+	public void startingTest(String trialName, String testName) {
+		reporter.onStartingTest(trialName, testName);
 		if (listener != null) {
 			listener.onStartingTest(trialName, testName);
 		}
 	}
 	
-	public synchronized void onTestCompleted(String trialName, String testName, boolean passed) {
-		if (log.isEnabled()) {
-			String passedString = " passed!";
-			if (!passed) {
-				passedString = " failed!";
-			}
-			logPrivate("" + trialName + "." + testName + passedString);
-		}
+	public void onTestCompleted(String trialName, String testName, boolean passed) {
+		reporter.onTestCompleted(trialName, testName, passed);
 		if (listener != null) {
 			listener.onTestCompleted(trialName, testName, passed);
 		}
@@ -199,7 +177,7 @@ public class Tests4J_NotificationManager {
 	 * 
 	 * @param result
 	 */
-	public synchronized void trialDone(I_TrialResult result) {
+	public void trialDone(I_TrialResult result) {
 		trialDoneInternal(result);
 	}
 
@@ -210,8 +188,8 @@ public class Tests4J_NotificationManager {
 	 */
 
 	public void trialDoneInternal(I_TrialResult result) {
-		if (log.isEnabled()) {
-			reporter.printTestCompleted(result);
+		if (reporter.isLogEnabled()) {
+			reporter.onTrialCompleted(result);
 		}
 		if (listener != null) {
 			listener.onTrialCompleted(result);
@@ -227,9 +205,14 @@ public class Tests4J_NotificationManager {
 	}
 	
 	/**
+	 * Check to see if all of the trials are done running
+	 * by comparing the trialsWhichCanRun 
+	 * from the memory's RunnableTrialDescriptions 
+	 * and the count of trials from the trialDone method calls.
+	 * 
 	 * diagrammed in Overview.seq
 	 */
-	public synchronized void checkDoneRunningTrials() {
+	public void checkDoneRunningTrials() {
 		int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
 		
 		if (trials.get() == trialsWhichCanRun) {
@@ -244,8 +227,8 @@ public class Tests4J_NotificationManager {
 	 * diagrammed in Overview.seq
 	 */
 	private void onDoneRunningTrials() {
-		if (log.isEnabled()) {
-			logPrivate("DoneRunningTrials.");
+		if (reporter.isLogEnabled()) {
+			reporter.log("DoneRunningTrials.");
 		}
 		TrialRunResultMutant runResult = new TrialRunResultMutant();
 		runResult.setStartTime(startTime.get());
@@ -271,7 +254,7 @@ public class Tests4J_NotificationManager {
 		if (listener != null) {
 			listener.onRunCompleted(endResult);
 		}
-		if (log.isEnabled()) {
+		if (reporter.isLogEnabled()) {
 			reporter.onRunCompleted(endResult);
 		}
 		
@@ -290,15 +273,5 @@ public class Tests4J_NotificationManager {
 		}
 	}
 	
-	public boolean isLogEnabled() {
-		return log.isEnabled();
-	}
 	
-	public synchronized void log(String p) {
-		logPrivate(p);
-	}
-	
-	private void logPrivate(String p) {
-		log.log(p);
-	}
 }

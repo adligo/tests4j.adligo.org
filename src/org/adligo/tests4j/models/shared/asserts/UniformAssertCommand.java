@@ -34,29 +34,6 @@ public abstract class UniformAssertCommand extends AbstractAssertCommand
 	}
 
 	@Override
-	public Set<String> getKeys() {
-		Set<String> toRet = new HashSet<String>();
-		if (lineTextResult != null) {
-			toRet.add(LINE_TEXT_RESULT);
-		}
-		if (failureSubMessage != null) {
-			toRet.add(FAILURE_SUB_MESSAGE);
-		}
-		toRet.addAll(data.getKeys());
-		return Collections.unmodifiableSet(toRet);
-	}
-
-	@Override
-	public Object getData(String key) {
-		if (LINE_TEXT_RESULT.equals(key)) {
-			return lineTextResult;
-		} else if (FAILURE_SUB_MESSAGE.equals(key)) {
-			return failureSubMessage;
-		}
-		return data.getData(key);
-	}
-
-	@Override
 	public Object getExpected() {
 		return data.getExpected();
 	}
@@ -66,5 +43,8 @@ public abstract class UniformAssertCommand extends AbstractAssertCommand
 		return data.getActual();
 	}
 
-	
+	@Override
+	public I_AssertionData getData() {
+		return data;
+	}
 }

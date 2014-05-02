@@ -6,11 +6,11 @@ import org.adligo.tests4j.models.shared.asserts.line_text.LineDiff;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.StartEndDiff;
 import org.adligo.tests4j.models.shared.asserts.line_text.StartEndDiffPair;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 
 public class LineTextComparisonReport {
 
-	public static void display(I_Tests4J_Logger out, LineTextCompareResult result) {
+	public static void display(I_Tests4J_Reporter out, LineTextCompareResult result) {
 		out.log("Expected;");
 		out.log(result.getExample());
 		out.log("Actual;");
@@ -32,7 +32,7 @@ public class LineTextComparisonReport {
 		} 
 	}
 	
-	private static void print(I_Tests4J_Logger out, String content, StartEndDiff diff) {
+	private static void print(I_Tests4J_Reporter out, String content, StartEndDiff diff) {
 		String inDiff = content.substring(diff.getStart(), diff.getEnd());
 		out.log(inDiff);
 	}

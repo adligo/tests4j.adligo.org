@@ -38,25 +38,6 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		}
 	}
 
-	@Override
-	public Set<String> getKeys() {
-		Set<String> keys = new HashSet<String>();
-		keys.addAll(data.getKeys());
-		if (type == AssertType.AssertThrownUniform) {
-			keys.add(LINE_TEXT_RESULT);
-		}
-		keys.add(CAUGHT);
-		return Collections.unmodifiableSet(keys);
-	}
-
-	@Override
-	public Object getData(String key) {
-		if (CAUGHT.equals(key)) {
-			return caught;
-		}
-		return data.getData(key);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean evaluate(I_Thrower thrower) {
@@ -113,6 +94,11 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 				return false;
 		}
 		return false;
+	}
+
+	@Override
+	public I_AssertionData getData() {
+		return data;
 	}
 
 }

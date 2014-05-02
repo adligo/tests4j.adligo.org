@@ -1,14 +1,17 @@
 package org.adligo.tests4j.run.helpers;
 
+import java.io.PrintStream;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.system.ConsoleLogger;
+import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
+import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 
 /**
  * ok this is the main processing class which does this;
@@ -19,6 +22,13 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Params;
  *
  */
 public class TrialsProcessor {
+	/**
+	 * note this is static and final, so that 
+	 * when Tests4J tests itself the ThreadLocalOutputStream
+	 * is shared, so that the correct output will show up 
+	 * in the I_TrialResults.
+	 */
+	private static final ThreadLocalOutputStream OUT = new ThreadLocalOutputStream();
 	private Tests4J_Memory memory;
 	private Tests4J_NotificationManager notifier;
 	
@@ -41,11 +51,24 @@ public class TrialsProcessor {
 			params.setTrials(instrumentedTrials);
 		}
 		
-		if (params.getLog() == null) {
-			params.setLog(new ConsoleLogger(true));
+		I_Tests4J_Reporter reporter = params.getReporter();
+		if (reporter == null) {
+			reporter = new ConsoleReporter();
+			params.setReporter(reporter);
 		} 
-		memory = new Tests4J_Memory(params);
-		notifier = new Tests4J_NotificationManager(memory, params.getLog(), processor);
+		
+		if (reporter.isRedirect()) {
+			if (reporter.isSnare()) {
+				System.setOut(new PrintStream(OUT));
+				System.setErr(new PrintStream(OUT));
+			} else {
+				System.setOut(new DuplicatingPrintStream(OUT, System.out));
+				System.setErr(new DuplicatingPrintStream(OUT, System.err));
+			}
+		}
+		
+		memory = new Tests4J_Memory(params,OUT);
+		notifier = new Tests4J_NotificationManager(memory, params.getReporter(), processor);
 		
 		if (plugin != null) {
 			String mainScope = memory.getMainRecorderScope();
@@ -61,7 +84,7 @@ public class TrialsProcessor {
 		
 		//@diagram Overview.seq sync on 5/1/2014 'loop theadPoolSize'
 		for (int i = 0; i < threads; i++) {
-			TrialInstancesProcessor tip = new TrialInstancesProcessor(memory, notifier); 
+			TrialInstancesProcessor tip = new TrialInstancesProcessor(memory, notifier, reporter); 
 			runService.execute(tip);
 		}
 	}

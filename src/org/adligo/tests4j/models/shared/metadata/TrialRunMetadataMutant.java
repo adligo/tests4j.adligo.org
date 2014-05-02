@@ -32,5 +32,19 @@ public class TrialRunMetadataMutant implements I_TrialRunMetadata {
 	public void addTrial(I_TrialMetadata trial) {
 		trials.add(new TrialMetadataMutant(trial));
 	}
+
+	@Override
+	public int getTrialCount() {
+		return trials.size();
+	}
+
+	@Override
+	public int getTestCount() {
+		int toRet = 0;
+		for (I_TrialMetadata trial: trials) {
+			toRet = toRet + trial.getTestCount();
+		}
+		return toRet;
+	}
 	
 }

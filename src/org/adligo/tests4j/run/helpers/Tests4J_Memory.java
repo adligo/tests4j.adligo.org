@@ -28,7 +28,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 
 /**
@@ -61,8 +61,7 @@ public class Tests4J_Memory {
 	private I_CoveragePlugin plugin;
 	private ExecutorService runService;
 	private Map<String, I_CoverageRecorder> recorders = new ConcurrentHashMap<String, I_CoverageRecorder>();
-	private ThreadLocalOutputStream out = new ThreadLocalOutputStream();
-	private I_Tests4J_Logger log;
+	private I_Tests4J_Reporter log;
 	/**
 	 * @see Tests4J_Params#getRecordSeperateTrialCoverage()
 	 */
@@ -72,20 +71,20 @@ public class Tests4J_Memory {
 	 */
 	private Boolean recordSeperateTestCoverage = null;
 	private final String mainRecorderScope;
-	
+	private ThreadLocalOutputStream out;
 	/**
 	 * 
 	 * @param params
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public Tests4J_Memory(Tests4J_Params params) {
-		
+	public Tests4J_Memory(Tests4J_Params params, ThreadLocalOutputStream pOut) {
+		out = pOut;
 		trialClasses.addAll(params.getTrials());
 		trialCount = trialClasses.size();
 		systemExit = params.isExitAfterLastNotification();
 		plugin = params.getCoveragePlugin();
-		log = params.getLog();
+		log = params.getReporter();
 		if (!LOADED_COMMON_CLASSES.get()) {
 			synchronized (LOADED_COMMON_CLASSES) {
 				if (!LOADED_COMMON_CLASSES.get()) {
@@ -94,13 +93,7 @@ public class Tests4J_Memory {
 				LOADED_COMMON_CLASSES.set(true);
 			}
 		}
-		if (log.isEnabled()) {
-			System.setOut(new DuplicatingPrintStream(out, System.out));
-			System.setErr(new DuplicatingPrintStream(out, System.err));
-		} else {
-			System.setOut(new PrintStream(out));
-			System.setErr(new PrintStream(out));
-		}
+		
 		
 		int threads = params.getThreadPoolSize();
 		//@diagram Overview.seq sync on 5/1/2014 'runService = Executors.newFixedThreadPool(threads)'
@@ -117,7 +110,7 @@ public class Tests4J_Memory {
 	 * this is the set of common classes that 
 	 * @return
 	 */
-	private List<Class<?>> getCommonClasses(I_Tests4J_Logger log) {
+	private List<Class<?>> getCommonClasses(I_Tests4J_Reporter log) {
 		List<Class<?>> toRet = new ArrayList<Class<?>>();
 		//start with common
 		toRet.add(TrialTypeEnum.class);
@@ -138,7 +131,7 @@ public class Tests4J_Memory {
 		for (Class<?> c: toRet) {
 			try {
 				cl.loadClass(c.getName());
-				if (log.isEnabled()) {
+				if (log.isLogEnabled()) {
 					log.log("Loaded Class " + c.getName());
 				}
 			} catch (ClassNotFoundException x) {
@@ -170,7 +163,7 @@ public class Tests4J_Memory {
 	 */
 	public void add(TrialDescription p) {
 		allTrialDescriptions.add(p);
-		if (log.isEnabled()) {
+		if (log.isLogEnabled()) {
 			log.log("TrialDescription " + p.getTrialName() +
 					" has " + p.getTestMethodsSize());
 		}
@@ -303,7 +296,7 @@ public class Tests4J_Memory {
 		return toRet;
 	}
 
-	public I_Tests4J_Logger getLog() {
+	public I_Tests4J_Reporter getLog() {
 		return log;
 	}
 	

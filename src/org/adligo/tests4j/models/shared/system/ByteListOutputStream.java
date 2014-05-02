@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * this class is to bridget GWT and JSE,
@@ -13,8 +12,6 @@ import java.util.Map;
  *
  */
 public class ByteListOutputStream  extends OutputStream {
-	private transient static Map<Integer,Boolean> scott;
-	
 	private List<byte[]> bytes = new ArrayList<byte[]>();
 	private byte[] currentArray;
 	private int chunckSize;

@@ -6,5 +6,5 @@ import org.adligo.tests4j.models.shared.I_AbstractTrial;
 
 public interface I_Tests4J_Params {
 	public List<Class<? extends I_AbstractTrial>> getTrials();
-	public I_Tests4J_Logger getLog();
+	public I_Tests4J_Reporter getReporter();
 }

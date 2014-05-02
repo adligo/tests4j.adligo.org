@@ -2,7 +2,8 @@ package org.adligo.tests4j.models.shared.asserts;
 
 
 
-public class IdenticalAssertCommand extends AbstractCompareAssertCommand implements I_CompareAssertCommand {
+public class IdenticalAssertCommand extends AbstractCompareAssertCommand 
+	implements I_CompareAssertCommand {
 	private static final String BAD_TYPE = 
 			"IdenticalAssertCommand requires it's type to be one of AssertType.IDENTICAL_TYPES";
 	private CompareAssertionData<?> data;
@@ -85,5 +86,10 @@ public class IdenticalAssertCommand extends AbstractCompareAssertCommand impleme
 		if (type != other.type)
 			return false;
 		return true;
+	}
+
+	@Override
+	public I_AssertionData getData() {
+		return data;
 	}
 }

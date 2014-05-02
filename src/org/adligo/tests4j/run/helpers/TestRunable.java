@@ -20,7 +20,6 @@ import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 public class TestRunable implements Runnable, I_AssertListener {
 
 	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
-	
 	private Method testMethod;
 	private I_AbstractTrial trial;
 	private I_TestFinishedListener listener;
@@ -101,4 +100,5 @@ public class TestRunable implements Runnable, I_AssertListener {
 	public TestResult getTestResult() {
 		return testResult;
 	}
+
 }

@@ -4,7 +4,7 @@ import java.util.Set;
 
 public interface I_TestResult {
 
-	public abstract String getExhibitName();
+	public abstract String getName();
 
 	public abstract int getAssertionCount();
 

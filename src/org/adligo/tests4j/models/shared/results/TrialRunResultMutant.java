@@ -11,8 +11,10 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 	private long runTime;
 	private List<I_PackageCoverage> coverage = new ArrayList<I_PackageCoverage>();
 	private int trials;
+	private int trialsIgnored;
 	private int trialFailures;
 	private long tests;
+	private long testsIgnored;
 	private long testFailures;
 	private long asserts;
 	private long uniqueAsserts;
@@ -25,9 +27,11 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		coverage.addAll(p.getCoverage());
 		
 		trials = p.getTrials();
+		trialsIgnored = p.getTrialsIgnored();
 		trialFailures = p.getTrialFailures();
 		
 		tests = p.getTests();
+		testsIgnored = p.getTestsIgnored();
 		testFailures = p.getTestFailures();
 		
 		asserts = p.getAsserts();
@@ -112,11 +116,11 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		this.testFailures = testFailures + p;
 	}
 	
-	public int getPassingTrials() {
+	public int getTrialsPassed() {
 		return trials - trialFailures;
 	}
 	
-	public long getPassingTests() {
+	public long getTestsPassed() {
 		return tests - testFailures;
 	}
 	public int getTrialFailures() {
@@ -141,5 +145,23 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 	
 	public synchronized void addUniqueAsserts(long p) {
 		this.uniqueAsserts = uniqueAsserts + p;
+	}
+
+	@Override
+	public int getTrialsIgnored() {
+		return trialsIgnored;
+	}
+
+	@Override
+	public long getTestsIgnored() {
+		return testsIgnored;
+	}
+
+	public void setIgnoredTrials(int trialIgnored) {
+		this.trialsIgnored = trialIgnored;
+	}
+
+	public void setIgnoredTests(long testIgnored) {
+		this.testsIgnored = testIgnored;
 	}
 }

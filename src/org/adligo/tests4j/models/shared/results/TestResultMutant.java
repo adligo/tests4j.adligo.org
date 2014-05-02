@@ -21,7 +21,7 @@ public class TestResultMutant implements I_TestResult {
 	public TestResultMutant() {}
 	
 	public TestResultMutant(I_TestResult p) {
-		name = p.getExhibitName();
+		name = p.getName();
 		IsEmpty.isEmpty(name,
 				TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME);
 		assertionCount = p.getAssertionCount();
@@ -42,7 +42,7 @@ public class TestResultMutant implements I_TestResult {
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getExhibitName()
 	 */
 	@Override
-	public String getExhibitName() {
+	public String getName() {
 		return name;
 	}
 	/* (non-Javadoc)

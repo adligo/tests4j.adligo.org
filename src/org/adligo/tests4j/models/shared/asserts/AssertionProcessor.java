@@ -21,7 +21,7 @@ public class AssertionProcessor {
 				TestFailureMutant fm = new TestFailureMutant();
 				fm.setMessage(cmd.getFailureMessage());
 				fm.setLocationFailed(new AssertionFailureLocation(info));
-				fm.setData(cmd);
+				fm.setData(cmd.getData());
 				listener.assertFailed(new TestFailure(fm));
 			}
 		}
@@ -39,7 +39,7 @@ public class AssertionProcessor {
 				TestFailureMutant fm = new TestFailureMutant();
 				fm.setMessage(cmd.getFailureMessage());
 				fm.setLocationFailed(new AssertionFailureLocation(info));
-				fm.setData(cmd);
+				fm.setData(cmd.getData());
 				listener.assertFailed(new TestFailure(fm));
 			}
 		}

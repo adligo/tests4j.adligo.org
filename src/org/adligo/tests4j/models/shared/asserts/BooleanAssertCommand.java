@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.Set;
 
 
-public class BooleanAssertCommand extends AbstractAssertCommand implements I_BasicAssertCommand {
+public class BooleanAssertCommand extends AbstractAssertCommand 
+	implements I_BasicAssertCommand, I_AssertionData {
+	
 	public static final String VALUE = "value";
 	public static final String BOOLEAN_ASSERT_COMMAND_REQUIRES_A_BOOLEAN_TYPE = "BooleanAssertCommand requires a boolean type.";
 	private Object value;
@@ -75,18 +77,21 @@ public class BooleanAssertCommand extends AbstractAssertCommand implements I_Bas
 		return false;
 	}
 
-	@Override
 	public Set<String> getKeys() {
 		// TODO Auto-generated method stub
 		return Collections.singleton(VALUE);
 	}
 
-
-	@Override
 	public Object getData(String key) {
 		if (VALUE.equals(key)) {
 			return value;
 		}
 		return null;
+	}
+
+
+	@Override
+	public I_AssertionData getData() {
+		return this;
 	}
 }

@@ -5,5 +5,6 @@ import java.util.List;
 public interface I_TrialRunMetadata {
 
 	public abstract List<? extends I_TrialMetadata> getTrials();
-
+	public int getTrialCount();
+	public int getTestCount();
 }

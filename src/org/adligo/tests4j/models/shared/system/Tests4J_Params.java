@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {
@@ -14,7 +15,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * ClassTest instance
 	 */
 	private boolean packageScope = true;
-	private I_Tests4J_Logger log = new ConsoleLogger(true);
+	private I_Tests4J_Reporter reporter = new ConsoleReporter();
 	
 	private boolean checkMins = false;
 	private int minTests = 0;
@@ -111,11 +112,11 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public void setThreadPoolSize(int threadPoolSize) {
 		this.threadPoolSize = threadPoolSize;
 	}
-	public I_Tests4J_Logger getLog() {
-		return log;
+	public I_Tests4J_Reporter getReporter() {
+		return reporter;
 	}
-	public void setLog(I_Tests4J_Logger logger) {
-		this.log = logger;
+	public void setReporter(I_Tests4J_Reporter p) {
+		this.reporter = p;
 	}
 	public boolean isExitAfterLastNotification() {
 		return exitAfterLastNotification;

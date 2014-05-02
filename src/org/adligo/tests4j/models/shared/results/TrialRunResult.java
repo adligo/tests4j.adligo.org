@@ -56,12 +56,20 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getUniqueAsserts();
 	}
 
-	public int getPassingTrials() {
-		return mutant.getPassingTrials();
+	public int getTrialsPassed() {
+		return mutant.getTrialsPassed();
 	}
 
-	public long getPassingTests() {
-		return mutant.getPassingTests();
+	public long getTestsPassed() {
+		return mutant.getTestsPassed();
+	}
+
+	public int getTrialsIgnored() {
+		return mutant.getTrialsIgnored();
+	}
+
+	public long getTestsIgnored() {
+		return mutant.getTestsIgnored();
 	}
 
 }

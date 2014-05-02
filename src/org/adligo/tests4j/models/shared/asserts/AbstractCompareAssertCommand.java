@@ -16,15 +16,10 @@ public abstract class AbstractCompareAssertCommand extends AbstractAssertCommand
 			throw new IllegalArgumentException(NULL_DATA);
 		}
 	}
-
+	
 	@Override
-	public Set<String> getKeys() {
-		return data.getKeys();
-	}
-
-	@Override
-	public Object getData(String key) {
-		return data.getData(key);
+	public I_AssertionData getData() {
+		return data;
 	}
 
 	@Override

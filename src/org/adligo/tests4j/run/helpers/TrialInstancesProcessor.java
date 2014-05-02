@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
@@ -22,6 +23,7 @@ import org.adligo.tests4j.models.shared.results.TrialResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 
 public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
@@ -29,17 +31,31 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 
 	private Tests4J_Memory memory;
 	private Tests4J_NotificationManager notifier;
+	private I_Tests4J_Reporter reporter;
 	private TrialDescription trialDescription;
 	private I_AbstractTrial trial;
 	private TrialResultMutant trialResultMutant;
 	
 	private ExecutorService testRunService;
+	private Future<?> testResultFuture;
 	private ArrayBlockingQueue<TestResult> blocking = new ArrayBlockingQueue<TestResult>(1);
 	private TestRunable testsRunner;
 	
-	public TrialInstancesProcessor(Tests4J_Memory p, Tests4J_NotificationManager pNotificationManager) {
+	/**
+	 * 
+	 * @param p
+	 * @param pNotificationManager
+	 * @param pReporter
+	 * 
+	 * @diagram Overview.seq sync on 5/1/2014
+	 */
+	public TrialInstancesProcessor(Tests4J_Memory p, 
+			Tests4J_NotificationManager pNotificationManager,
+			I_Tests4J_Reporter pReporter) {
 		memory = p;
 		notifier = pNotificationManager;
+		reporter = pReporter;
+		
 		testsRunner = new TestRunable();
 		testsRunner.setListener(this);
 		testRunService = Executors.newSingleThreadExecutor();
@@ -60,11 +76,11 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			}
 			notifier.checkDoneDescribingTrials();
 		} catch (Exception x) {
-			memory.getLog().log(x);
+			memory.getLog().onError(x);
 			notifier.onDescibeTrialError();
 			return;
 		} catch (Error x) {
-			memory.getLog().log(x);
+			memory.getLog().onError(x);
 			notifier.onDescibeTrialError();
 			return;
 		}
@@ -76,12 +92,13 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				runTrial();
 				trialDescription = memory.pollDescriptions();
 			}
+			
 			testRunService.shutdownNow();
 			notifier.checkDoneRunningTrials();
 		} catch (Exception x) {
-			memory.getLog().log(x);
+			memory.getLog().onError(x);
 		} catch (Error x) {
-			memory.getLog().log(x);
+			memory.getLog().onError(x);
 		}
 	}
 
@@ -216,7 +233,8 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			
 			trial.beforeTests();
 			testsRunner.setTestMethod(method);
-			testRunService.execute(testsRunner);
+			testResultFuture = testRunService.submit(testsRunner);
+			
 			
 			try {
 				Long timeout = tm.getTimeoutMillis();
@@ -283,9 +301,9 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		
 		try {
 			blocking.put(result);
+			testResultFuture.cancel(true);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//do nothing
 		}
 	}
 }

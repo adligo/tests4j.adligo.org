@@ -20,4 +20,18 @@ public class TrialRunMetadata implements I_TrialRunMetadata {
 	public List<? extends I_TrialMetadata> getTrials() {
 		return trials;
 	}
+	
+	@Override
+	public int getTrialCount() {
+		return trials.size();
+	}
+
+	@Override
+	public int getTestCount() {
+		int toRet = 0;
+		for (I_TrialMetadata trial: trials) {
+			toRet = toRet + trial.getTestCount();
+		}
+		return toRet;
+	}
 }
