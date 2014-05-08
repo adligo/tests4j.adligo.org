@@ -16,6 +16,8 @@ import org.adligo.tests4j.models.shared.TrialType;
 import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.results.I_UseCase;
+import org.adligo.tests4j.models.shared.results.UseCase;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TrialDescriptionMessages;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
@@ -47,6 +49,9 @@ public class TrialDescription implements I_TrialDescription {
 	private long duration;
 	private long timeout;
 	private I_Tests4J_Reporter reporter;
+	private SourceFileScope sourceFileScope;
+	private UseCaseScope useCaseScope;
+	private PackageScope packageScope;
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
 			I_Tests4J_Reporter pLog) {
@@ -102,8 +107,8 @@ public class TrialDescription implements I_TrialDescription {
 		String trialName = trialClass.getName();
 		switch(type) {
 			case SourceFileTrial:
-					SourceFileScope scope = trialClass.getAnnotation(SourceFileScope.class);
-					if (scope == null) {
+					sourceFileScope = trialClass.getAnnotation(SourceFileScope.class);
+					if (sourceFileScope == null) {
 						resultFailureMessage = 
 								messages.getNoSourceFileScope();
 						resultException	 =
@@ -111,7 +116,7 @@ public class TrialDescription implements I_TrialDescription {
 										messages.getWasAnnotatedIncorrectly());
 						return false;
 					} else {
-						Class<?> clazz = scope.sourceClass();
+						Class<?> clazz = sourceFileScope.sourceClass();
 						if (clazz == null) {
 							resultFailureMessage = 
 									messages.getSourceFileScopeEmptyClass();
@@ -123,8 +128,8 @@ public class TrialDescription implements I_TrialDescription {
 					}
 				break;
 			case ApiTrial:
-				PackageScope pkgScope = trialClass.getAnnotation(PackageScope.class);
-				if (pkgScope == null) {
+				packageScope = trialClass.getAnnotation(PackageScope.class);
+				if (packageScope == null) {
 					resultFailureMessage = 
 							messages.getNoPackageScope();
 					resultException	 =
@@ -132,7 +137,7 @@ public class TrialDescription implements I_TrialDescription {
 									messages.getWasAnnotatedIncorrectly());
 					return false;
 				}
-				String testedPackageName = pkgScope.packageName();
+				String testedPackageName = packageScope.packageName();
 				if (IsEmpty.isEmpty(testedPackageName)) {
 					resultFailureMessage = 
 							messages.getPackageScopeEmptyName();
@@ -144,8 +149,8 @@ public class TrialDescription implements I_TrialDescription {
 				
 				break;
 			default:
-				UseCaseScope ucScope = trialClass.getAnnotation(UseCaseScope.class);
-				if (ucScope == null) {
+				useCaseScope = trialClass.getAnnotation(UseCaseScope.class);
+				if (useCaseScope == null) {
 					resultFailureMessage = 
 							messages.getNoUseCaseScope();
 					resultException	 =
@@ -153,7 +158,7 @@ public class TrialDescription implements I_TrialDescription {
 									messages.getWasAnnotatedIncorrectly());
 					return false;
 				}
-				String system = ucScope.system();
+				String system = useCaseScope.system();
 				if (IsEmpty.isEmpty(system)) {
 					resultFailureMessage = 
 							messages.getUseCaseScopeEmptySystem();
@@ -163,7 +168,7 @@ public class TrialDescription implements I_TrialDescription {
 					return false;
 				} 
 				
-				String nown = ucScope.nown();
+				String nown = useCaseScope.nown();
 				if (IsEmpty.isEmpty(nown)) {
 					resultFailureMessage = 
 							messages.getUseCaseScopeEmptyNown();
@@ -173,7 +178,7 @@ public class TrialDescription implements I_TrialDescription {
 					return false;
 				} 
 				
-				String verb = ucScope.verb();
+				String verb = useCaseScope.verb();
 				if (IsEmpty.isEmpty(verb)) {
 					resultFailureMessage = 
 							messages.getUseCaseScopeEmptyVerb();
@@ -358,5 +363,41 @@ public class TrialDescription implements I_TrialDescription {
 
 	public Method getAfterTrialTestsMethod() {
 		return afterTrialTestsMethod;
+	}
+	
+	public Class<?> getSourceFileClass() {
+		if (sourceFileScope == null) {
+			return null;
+		}
+		return sourceFileScope.sourceClass();
+	}
+	
+	public String getPackageName() {
+		if (packageScope == null) {
+			return null;
+		}
+		return packageScope.packageName();
+	}
+	
+	public String getSystemName() {
+		if (useCaseScope == null) {
+			return null;
+		}
+		return useCaseScope.system();
+	}
+	
+	public I_UseCase getUseCase() {
+		if (useCaseScope == null) {
+			return null;
+		}
+		String nown = useCaseScope.nown();
+		String verb = useCaseScope.verb();
+		if (IsEmpty.isEmpty(nown)) {
+			return null;
+		}
+		if (IsEmpty.isEmpty(verb)) {
+			return null;
+		}
+		return new UseCase(nown, verb);
 	}
 }

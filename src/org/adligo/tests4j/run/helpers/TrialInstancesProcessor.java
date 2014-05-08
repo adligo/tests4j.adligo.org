@@ -13,13 +13,20 @@ import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.asserts.AssertionHelperInfo;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.results.ApiTrialResult;
+import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
+import org.adligo.tests4j.models.shared.results.BaseTrialResult;
+import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
+import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
+import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.models.shared.results.TrialResult;
-import org.adligo.tests4j.models.shared.results.AbstractTrialResultMutant;
+import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
+import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
@@ -31,10 +38,9 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 
 	private Tests4J_Memory memory;
 	private Tests4J_NotificationManager notifier;
-	private I_Tests4J_Reporter reporter;
 	private TrialDescription trialDescription;
 	private I_AbstractTrial trial;
-	private AbstractTrialResultMutant trialResultMutant;
+	private BaseTrialResultMutant trialResultMutant;
 	
 	private ExecutorService testRunService;
 	private Future<?> testResultFuture;
@@ -54,7 +60,6 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			I_Tests4J_Reporter pReporter) {
 		memory = p;
 		notifier = pNotificationManager;
-		reporter = pReporter;
 		
 		testsRunner = new TestRunable();
 		testsRunner.setListener(this);
@@ -118,16 +123,43 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		memory.add(desc);
 		if (!desc.isIgnored()) {
 			if (!desc.isTrialCanRun()) {
-				AbstractTrialResultMutant trm = new AbstractTrialResultMutant();
+				BaseTrialResultMutant trm = new BaseTrialResultMutant();
 				trm.setTrialName(desc.getTrialName());
 				String failureMessage = desc.getResultFailureMessage();
 				if (failureMessage != null) {
 					TrialFailure tf = new TrialFailure(failureMessage, desc.getResultException());
 					trm.setFailure(tf);
 				}
-				trm.setType(desc.getType());
+				
 				trm.setPassed(false);
-				memory.add(new TrialResult(trm));
+				TrialTypeEnum type = desc.getType();
+				trm.setType(type);
+				
+				switch (type) {
+					case UseCaseTrial:
+							UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trm);
+							mut.setSystem(desc.getSystemName());
+							mut.setUseCase(desc.getUseCase());
+							memory.add(new UseCaseTrialResult(mut));
+						break;
+					case ApiTrial:
+							ApiTrialResultMutant api = new ApiTrialResultMutant(trm);
+							api.setPackageName(desc.getPackageName());
+							memory.add(new ApiTrialResult(api));
+						break;
+					case SourceFileTrial:
+							SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trm);
+							Class<?> clazz = desc.getSourceFileClass();
+							if (clazz != null) {
+								src.setSourceFileName(clazz.getSimpleName());
+								memory.add(new SourceFileTrialResult(src));
+								break;
+							}
+					default:
+						memory.add(new BaseTrialResult(trm));
+				}
+				
+				
 			}
 		}
 		if (trialCoverageRecorder != null) {
@@ -158,7 +190,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		
 		trial.setMemory(atm);
 		
-		trialResultMutant = new AbstractTrialResultMutant();
+		trialResultMutant = new BaseTrialResultMutant();
 			
 		trialResultMutant.setType(trialDescription.getType());
 		trialResultMutant.setTrialName(trialDescription.getTrialName());
@@ -173,7 +205,27 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		runAfterTrialTests();
 		runAfterTrial();
 		
-		TrialResult result = new TrialResult(trialResultMutant); 
+		TrialTypeEnum type = trialDescription.getType();
+		I_TrialResult result;
+		switch (type) {
+			case UseCaseTrial:
+					UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trialResultMutant);
+					mut.setSystem(trialDescription.getSystemName());
+					mut.setUseCase(trialDescription.getUseCase());
+					result = new UseCaseTrialResult(mut);
+				break;
+			case ApiTrial:
+					ApiTrialResultMutant api = new ApiTrialResultMutant(trialResultMutant);
+					api.setPackageName(trialDescription.getPackageName());
+					result = new ApiTrialResult(api);
+				break;
+			default:
+					SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trialResultMutant);
+					Class<?> clazz = trialDescription.getSourceFileClass();
+					src.setSourceFileName(clazz.getSimpleName());
+					result = new SourceFileTrialResult(src);
+				break;
+		}
 		notifier.trialDone(result);
 		trialResultMutant = null;
 	}

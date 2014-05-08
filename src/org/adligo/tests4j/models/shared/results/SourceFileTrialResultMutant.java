@@ -3,17 +3,31 @@ package org.adligo.tests4j.models.shared.results;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageMutant;
 
-public class SourceFileTrialResultMutant extends AbstractTrialResultMutant implements I_SourceFileTrialResult {
+public class SourceFileTrialResultMutant extends BaseTrialResultMutant implements I_SourceFileTrialResult {
 	private SourceFileCoverageMutant coverage;
 	private String sourceFileName;
 	
 	public SourceFileTrialResultMutant() {}
-	
+
 	public SourceFileTrialResultMutant(I_SourceFileTrialResult p) {
-		super(p);
-		coverage = new SourceFileCoverageMutant(p.getSourceFileCoverage());
+		this(p, true);
+	}
+	
+	public SourceFileTrialResultMutant(I_SourceFileTrialResult p, boolean cloneRelations) {
+		super(p, cloneRelations);
+		if (cloneRelations) {
+			coverage = new SourceFileCoverageMutant(p.getSourceFileCoverage());
+		}
 	}
 
+	public SourceFileTrialResultMutant(I_TrialResult p) {
+		this(p, true);
+	}
+	
+	public SourceFileTrialResultMutant(I_TrialResult p, boolean cloneRelations) {
+		super(p, cloneRelations);
+	}
+	
 	@Override
 	public I_SourceFileCoverage getSourceFileCoverage() {
 		return coverage;

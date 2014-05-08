@@ -4,84 +4,31 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.coverage.SourceFileCoverage;
 
-public class SourceFileTrialResult {
+public class SourceFileTrialResult extends BaseTrialResult implements I_SourceFileTrialResult {
 	private SourceFileTrialResultMutant mutant;
+	private SourceFileCoverage coverage;
 	
 	public SourceFileTrialResult() {
 		mutant = new SourceFileTrialResultMutant();
 	}
 	
 	public SourceFileTrialResult(I_SourceFileTrialResult p) {
-		mutant = new SourceFileTrialResultMutant(p);
+		super(p);
+		mutant = new SourceFileTrialResultMutant(p, false);
+		I_SourceFileCoverage sourceFileCoverage =  p.getSourceFileCoverage();
+		if (sourceFileCoverage != null) {
+			coverage = new SourceFileCoverage(sourceFileCoverage);
+		}
 	}
-
+	
 	public I_SourceFileCoverage getSourceFileCoverage() {
-		return mutant.getSourceFileCoverage();
-	}
-
-	public int hashCode() {
-		return mutant.hashCode();
-	}
-
-	public String getName() {
-		return mutant.getName();
-	}
-
-
-	public TrialTypeEnum getType() {
-		return mutant.getType();
-	}
-
-	public List<I_TestResult> getResults() {
-		return mutant.getResults();
-	}
-
-	public boolean equals(Object obj) {
-		return mutant.equals(obj);
-	}
-
-	public boolean isIgnored() {
-		return mutant.isIgnored();
-	}
-
-	public String getBeforeTestOutput() {
-		return mutant.getBeforeTestOutput();
-	}
-
-	public String getAfterTestOutput() {
-		return mutant.getAfterTestOutput();
-	}
-
-	public String toString() {
-		return mutant.toString();
-	}
-
-	public I_TrialFailure getFailure() {
-		return mutant.getFailure();
-	}
-
-	public boolean isPassed() {
-		return mutant.isPassed();
-	}
-
-	public int getTestCount() {
-		return mutant.getTestCount();
-	}
-
-	public int getTestFailureCount() {
-		return mutant.getTestFailureCount();
-	}
-
-	public int getAssertionCount() {
-		return mutant.getAssertionCount();
-	}
-
-	public int getUniqueAssertionCount() {
-		return mutant.getUniqueAssertionCount();
+		return coverage;
 	}
 
 	public String getSourceFileName() {
 		return mutant.getSourceFileName();
 	}
+
 }

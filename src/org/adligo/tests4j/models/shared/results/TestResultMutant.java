@@ -140,4 +140,15 @@ public class TestResultMutant implements I_TestResult {
 		this.afterOutput = afterOutput;
 	}
 	
+	@Override
+	public String toString() {
+		return toString(this);
+	}
+	
+	public static String toString(I_TestResult result) {
+		return result.getClass().getSimpleName() + " [name=" +
+				result.getName() + ", passed=" + 
+				result.isPassed() + ", ignored=" + 
+				result.isIgnored() + "]";
+	}
 }

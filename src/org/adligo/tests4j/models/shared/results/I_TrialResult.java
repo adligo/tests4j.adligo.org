@@ -15,9 +15,9 @@ public interface I_TrialResult {
 
 	public abstract boolean isIgnored();
 
-	public abstract String getBeforeTestOutput();
+	public abstract String getBeforeTrialOutput();
 
-	public abstract String getAfterTestOutput();
+	public abstract String getAfterTrialOutput();
 	
 	public I_TrialFailure getFailure();
 	public boolean isPassed();
@@ -25,4 +25,5 @@ public interface I_TrialResult {
 	public int getTestFailureCount();
 	public int getAssertionCount();
 	public int getUniqueAssertionCount();
+	public I_TrialResult clone(boolean cloneRelations);
 }

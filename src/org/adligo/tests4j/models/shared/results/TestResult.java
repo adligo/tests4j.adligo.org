@@ -54,4 +54,8 @@ public class TestResult implements I_TestResult {
 	public int getUniqueAssertionCount() {
 		return mutant.getUniqueAssertionCount();
 	}
+
+	public String toString() {
+		return TestResultMutant.toString(this);
+	}
 }
