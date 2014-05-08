@@ -6,7 +6,7 @@ package org.adligo.tests4j.models.shared.coverage;
  * @author scott
  *
  */
-public interface I_SourceFileCoverage extends I_CoverageUnitContainer {
+public interface I_SourceFileCoverage extends I_CoverageUnitsContainer {
 	/**
 	 * the main class name which matches up with the file name
 	 * @return

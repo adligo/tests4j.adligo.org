@@ -1,21 +1,35 @@
 package org.adligo.tests4j.models.shared.coverage;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @see I_SourceFileCoverage
  * @author scott
  *
  */
-public class SourceFileCoverage {
+public class SourceFileCoverage implements I_SourceFileCoverage {
 	private SourceFileCoverageMutant mutant;
+	private List<LineCoverage> lines;
 	
 	public SourceFileCoverage() {
 		mutant = new SourceFileCoverageMutant();
 	}
 	
 	public SourceFileCoverage(I_SourceFileCoverage p) {
-		mutant = new SourceFileCoverageMutant(p);
+		mutant = new SourceFileCoverageMutant(p, false);
+		int lastLine = p.getLastLine();
+		if (lastLine >= 1) {
+			lines = new ArrayList<LineCoverage>();
+			for (int i = 0; i < lastLine; i++) {
+				lines.add(new LineCoverage(p.getLineCoverage(i)));
+			}
+			lines = Collections.unmodifiableList(lines);
+		} else {
+			lines = Collections.emptyList();
+		}
 	}
 
 	public I_CoverageUnits getCoverageUnits() {
@@ -35,11 +49,11 @@ public class SourceFileCoverage {
 	}
 
 	public int getLastLine() {
-		return mutant.getLastLine();
+		return lines.size();
 	}
 
 	public I_LineCoverage getLineCoverage(int p) {
-		return mutant.getLineCoverage(p);
+		return lines.get(p);
 	}
 
 	public String toString() {

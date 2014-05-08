@@ -1,5 +1,8 @@
 package org.adligo.tests4j.models.shared.coverage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * @author scott
@@ -30,16 +33,29 @@ public class LineCoverageMutant implements I_LineCoverage {
 	 * @see I_LineCoverage#hasSegments()
 	 */
 	private boolean hasSegments = false;
+	private List<LineCoverageSegmentMutant> segments;
 	
 	public LineCoverageMutant() {}
 
 	public LineCoverageMutant(I_LineCoverage lc) {
+		this(lc, true);
+	}
+	
+	public LineCoverageMutant(I_LineCoverage lc, boolean cloneRelations) {
 		covered = lc.getCovered();
 		cus = lc.getCoverageUnits();
 		covered_cus = lc.getCoveredCoverageUnits();
 		branches = lc.getBranches();
 		covered_branches = lc.getCoveredBranches();
 		hasSegments = lc.hasSegments();
+		if (hasSegments) {
+			if (cloneRelations) {
+				short segment = lc.getLineCoverageSegmentCount();
+				for (short i = 0; i < segment; i++) {
+					add(lc.getLineCoverageSegment(i));
+				}
+			}
+		}
 	}
 	/**
 	 * @see I_LineCoverage#getCovered()
@@ -101,12 +117,20 @@ public class LineCoverageMutant implements I_LineCoverage {
 	 * @see I_LineCoverage#getLineCoverageSegment(int)
 	 */
 	@Override
-	public I_LineCoverageSegment getLineCoverageSegment(int p) {
-		throw new IllegalStateException(this.getClass() + 
-				".getLineCoverageSegment(int p) is not implemented,"
-				+ "please override it if you have implemented line coverage segments.");
+	public I_LineCoverageSegment getLineCoverageSegment(short p) {
+		if (segments == null) {
+			return null;
+		}
+		return segments.get(p);
 	}
 
+	public void add(I_LineCoverageSegment p) {
+		if (segments == null) {
+			segments = new ArrayList<LineCoverageSegmentMutant>();
+		}
+		segments.add(new LineCoverageSegmentMutant(p));
+	}
+	
 	public void setCovered(Boolean covered) {
 		this.covered = covered;
 	}

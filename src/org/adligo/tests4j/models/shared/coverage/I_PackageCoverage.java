@@ -18,7 +18,7 @@ import java.util.Set;
  * @author scott
  *
  */
-public interface I_PackageCoverage extends I_CoverageUnits {
+public interface I_PackageCoverage extends I_CoverageUnitsContainer {
 	/**
 	 * the java package name, of the package
 	 * this instance represents coverage for.
@@ -28,10 +28,10 @@ public interface I_PackageCoverage extends I_CoverageUnits {
 	/**
 	 * @see I_SourceFileCoverage
 	 * 
-	 * @param className
+	 * @param sourceFileName
 	 * @return
 	 */
-	public I_SourceFileCoverage getCoverage(String className);
+	public I_SourceFileCoverage getCoverage(String sourceFileName);
 	/**
 	 * return the classes directly in this package
 	 * which pertain to a .java file,
@@ -64,7 +64,7 @@ public interface I_PackageCoverage extends I_CoverageUnits {
 	 * child packages.
 	 * @return
 	 */
-	public long getTotalCoverageUnits();
+	public I_CoverageUnits getTotalCoverageUnits();
 	/**
 	 * Return the number of CoverageUnits that
 	 * were actually covered 
@@ -73,7 +73,7 @@ public interface I_PackageCoverage extends I_CoverageUnits {
 	 * child packages.
 	 * @return
 	 */
-	public long getTotalCoveredCoverageUnits();
+	public I_CoverageUnits getTotalCoveredCoverageUnits();
 	
 	/**
 	 * Return the percentage of coverage units covered

@@ -66,7 +66,7 @@ public interface I_LineCoverage {
 	 * @param p
 	 * @return
 	 */
-	public I_LineCoverageSegment getLineCoverageSegment(int p);
+	public I_LineCoverageSegment getLineCoverageSegment(short p);
 	
 
 }

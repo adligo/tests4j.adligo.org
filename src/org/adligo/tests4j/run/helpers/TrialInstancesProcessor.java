@@ -19,7 +19,7 @@ import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialResult;
-import org.adligo.tests4j.models.shared.results.TrialResultMutant;
+import org.adligo.tests4j.models.shared.results.AbstractTrialResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
@@ -34,7 +34,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	private I_Tests4J_Reporter reporter;
 	private TrialDescription trialDescription;
 	private I_AbstractTrial trial;
-	private TrialResultMutant trialResultMutant;
+	private AbstractTrialResultMutant trialResultMutant;
 	
 	private ExecutorService testRunService;
 	private Future<?> testResultFuture;
@@ -118,7 +118,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		memory.add(desc);
 		if (!desc.isIgnored()) {
 			if (!desc.isTrialCanRun()) {
-				TrialResultMutant trm = new TrialResultMutant();
+				AbstractTrialResultMutant trm = new AbstractTrialResultMutant();
 				trm.setTrialName(desc.getTrialName());
 				String failureMessage = desc.getResultFailureMessage();
 				if (failureMessage != null) {
@@ -158,7 +158,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		
 		trial.setMemory(atm);
 		
-		trialResultMutant = new TrialResultMutant();
+		trialResultMutant = new AbstractTrialResultMutant();
 			
 		trialResultMutant.setType(trialDescription.getType());
 		trialResultMutant.setTrialName(trialDescription.getTrialName());

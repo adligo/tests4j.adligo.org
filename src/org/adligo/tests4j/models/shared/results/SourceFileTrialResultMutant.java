@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.results;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageMutant;
 
-public class SourceFileTrialResultMutant extends TrialResultMutant implements I_SourceFileTrialResult {
+public class SourceFileTrialResultMutant extends AbstractTrialResultMutant implements I_SourceFileTrialResult {
 	private SourceFileCoverageMutant coverage;
 	private String sourceFileName;
 	

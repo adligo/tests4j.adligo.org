@@ -9,41 +9,28 @@ import java.util.List;
  * @author scott
  *
  */
-public class SourceFileCoverageMutant implements I_SourceFileCoverage {
+public class SourceFileCoverageMutant extends CoverageUnitContinerMutant implements I_SourceFileCoverage {
 	private String className;
 	private List<LineCoverageMutant> lines = new ArrayList<LineCoverageMutant>();
-	private I_CoverageUnits coverageUnits;
-	private I_CoverageUnits coveredCoverageUnits;
 	
 	public SourceFileCoverageMutant() {}
 	
 	public SourceFileCoverageMutant(I_SourceFileCoverage p) {
+		this(p, true);
+	}
+	
+	public SourceFileCoverageMutant(I_SourceFileCoverage p, boolean cloneRelations) {
+		super(p);
 		className = p.getClassName();
-		int lineCount = p.getLastLine();
-		for (int i = 0; i < lineCount; i++) {
-			lines.add(new LineCoverageMutant(p.getLineCoverage(i)));
+		if (cloneRelations) {
+			int lineCount = p.getLastLine();
+			for (int i = 0; i < lineCount; i++) {
+				lines.add(new LineCoverageMutant(p.getLineCoverage(i)));
+			}
 		}
-		coverageUnits = p.getCoverageUnits();
-		coveredCoverageUnits = p.getCoveredCoverageUnits();
+		
 	}
 	
-	@Override
-	public I_CoverageUnits getCoverageUnits() {
-		return coverageUnits;
-	}
-	
-	@Override
-	public I_CoverageUnits getCoveredCoverageUnits() {
-		return coveredCoverageUnits;
-	}
-	
-	@Override
-	public BigDecimal getPercentageCovered() {
-		BigDecimal coverageUnitsBD = new BigDecimal(coverageUnits.getBig());
-		BigDecimal coveredCoverageUnitsBD = new BigDecimal(coveredCoverageUnits.getBig());
-		BigDecimal toRet = coveredCoverageUnitsBD.divide(coverageUnitsBD).multiply(new BigDecimal(100));
-		return toRet;
-	}
 	
 	@Override
 	public String getClassName() {
@@ -77,12 +64,6 @@ public class SourceFileCoverageMutant implements I_SourceFileCoverage {
 		int result = 1;
 		result = prime * result
 				+ ((className == null) ? 0 : className.hashCode());
-		result = prime * result
-				+ ((coverageUnits == null) ? 0 : coverageUnits.hashCode());
-		result = prime
-				* result
-				+ ((coveredCoverageUnits == null) ? 0 : coveredCoverageUnits
-						.hashCode());
 		result = prime * result + ((lines == null) ? 0 : lines.hashCode());
 		return result;
 	}
@@ -97,16 +78,6 @@ public class SourceFileCoverageMutant implements I_SourceFileCoverage {
 					if (other.getClassName() != null)
 						return false;
 				} else if (!className.equals(other.getClassName()))
-					return false;
-				if (coverageUnits == null) {
-					if (other.getCoverageUnits() != null)
-						return false;
-				} else if (!coverageUnits.equals(other.getCoverageUnits()))
-					return false;
-				if (coveredCoverageUnits == null) {
-					if (other.getCoveredCoverageUnits() != null)
-						return false;
-				} else if (!coveredCoverageUnits.equals(other.getCoveredCoverageUnits()))
 					return false;
 				if (getLastLine() != other.getLastLine()) {
 					return false;
@@ -141,11 +112,4 @@ public class SourceFileCoverageMutant implements I_SourceFileCoverage {
 		lines.add(new LineCoverageMutant(p));
 	}
 	
-	public void setCoverageUnits(I_CoverageUnits coverageUnits) {
-		this.coverageUnits = coverageUnits;
-	}
-
-	public void setCoveredCoverageUnits(I_CoverageUnits coveredCoverageUnits) {
-		this.coveredCoverageUnits = coveredCoverageUnits;
-	}
 }

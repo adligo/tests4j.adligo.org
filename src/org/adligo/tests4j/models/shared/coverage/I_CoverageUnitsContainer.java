@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * @author scott
  *
  */
-public interface I_CoverageUnitContainer {
+public interface I_CoverageUnitsContainer {
 	/**
 	 * Coverage Units are simply the count of all 
 	 * instructions/branches exc

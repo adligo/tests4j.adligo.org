@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.coverage;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**

@@ -6,7 +6,7 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 
-public class TrialResultMutant implements I_TrialResult {
+public abstract class AbstractTrialResultMutant implements I_TrialResult {
 	public static final String COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS = "Coverage is not currently supported by JTests";
 	public static final String TRIAL_RESULT_MUTANT_S_WITH_A_CLASS_TEST_TYPE_REQUIRE_A_TESTED_CLASS_NAME = 
 				"TrialResultMutant's with a ClassTest type require a testedClassName";
@@ -32,9 +32,9 @@ public class TrialResultMutant implements I_TrialResult {
 	private TrialFailure failure;
 	private Boolean passed = null;
 	
-	public TrialResultMutant() {}
+	public AbstractTrialResultMutant() {}
 	
-	public TrialResultMutant(I_TrialResult p) {
+	public AbstractTrialResultMutant(I_TrialResult p) {
 		trialName = p.getName();
 		IsEmpty.isEmpty(trialName,
 				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME);
