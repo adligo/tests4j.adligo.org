@@ -29,11 +29,16 @@ public interface I_CoverageRecorder {
 	 */
 	public void startRecording();
 	/**
-	 * this stop recording for the context of the current recorder
+	 * this pauses recording for the context of the current recorder
 	 */
-	public void stopRecording();
-
-
+	public void pauseRecording();
+	/**
+	 * this ends recording for the context of the current recorder
+	 * for good and cleans up the memory resources
+	 */
+	public void endRecording();
+	
+	
 	/**
 	 * this stops recording coverage and returns the
 	 * coverage.

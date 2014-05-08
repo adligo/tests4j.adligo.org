@@ -247,7 +247,7 @@ public class Tests4J_NotificationManager {
 		I_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
 		if (allCoverageRecorder != null) {
 			//@diagram Overview.seq sync on 5/1/2014 'stopRecordingTrialsRun'
-			allCoverageRecorder.stopRecording();
+			allCoverageRecorder.pauseRecording();
 			List<I_PackageCoverage> packageCoverage = allCoverageRecorder.getCoverage();
 			runResult.setCoverage(packageCoverage);
 		}

@@ -9,6 +9,9 @@ public interface I_Asserts {
 	public void assertFalse(boolean p);
 	public void assertFalse(String message, boolean p);	
 	
+	public void assertGreaterThanOrEquals(Double p, Double a);
+	public void assertGreaterThanOrEquals(String message, Double p, Double a);	
+	
 	public void assertNull(Object p);
 	public void assertNull(String message, Object p);
 	public void assertNotNull(Object p);
@@ -31,7 +34,6 @@ public interface I_Asserts {
 	
 	public void assertTrue(boolean p);
 	public void assertTrue(String message, boolean p);
-
 
 	
 	public void assertThrown(I_AssertionData p, I_Thrower thrower);

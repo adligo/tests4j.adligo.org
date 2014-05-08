@@ -30,4 +30,11 @@ public interface I_CoverageUnitsContainer {
 	 * @return
 	 */
 	public BigDecimal getPercentageCovered();
+	
+	/**
+	 * same as getPercentageCovered but
+	 * return a double
+	 * @return
+	 */
+	public double getPercentageCoveredDouble();
 }

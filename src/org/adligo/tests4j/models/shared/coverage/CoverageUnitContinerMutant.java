@@ -53,4 +53,9 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 		sb.append(", coveredCoverageUnits=");
 		sb.append(coveredCoverageUnits);
 	}
+
+	@Override
+	public double getPercentageCoveredDouble() {
+		return getPercentageCovered().doubleValue();
+	}
 }

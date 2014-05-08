@@ -1,18 +1,23 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.adligo.tests4j.models.shared.ApiTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.SourceFileTrial;
 import org.adligo.tests4j.models.shared.asserts.AssertionHelperInfo;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
@@ -106,18 +111,15 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		}
 	}
 
+	/**
+	 * @diagram sync on 5/8/2014
+	 *    for Overview.seq
+	 *    
+	 * @param trialClazz
+	 */
 	private void addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
 		
-		I_CoveragePlugin plugin = memory.getPlugin();
-		I_CoverageRecorder trialCoverageRecorder = null;
-		if (plugin != null) {
-			if (Boolean.TRUE == memory.getRecordSeperateTrialCoverage()) {
-				String name = trialClazz.getName();
-				trialCoverageRecorder = plugin.createRecorder(name);
-				memory.addRecorder(name, trialCoverageRecorder);
-				trialCoverageRecorder.startRecording();
-			}
-		}
+		I_CoverageRecorder trialCoverageRecorder = startRecordingTrial(trialClazz);
 		
 		TrialDescription desc = new TrialDescription(trialClazz, memory.getLog());
 		memory.add(desc);
@@ -162,9 +164,44 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				
 			}
 		}
+		pauseRecordingTrial(trialCoverageRecorder);
+	}
+
+	/**
+	 * @diagram sync on 5/8/2014
+	 *    for Overview.seq
+	 *    
+	 * @param trialCoverageRecorder
+	 */
+	private void pauseRecordingTrial(I_CoverageRecorder trialCoverageRecorder) {
 		if (trialCoverageRecorder != null) {
-			trialCoverageRecorder.stopRecording();
+			trialCoverageRecorder.pauseRecording();
 		}
+	}
+
+	/**
+	 * @diagram sync on 5/8/2014
+	 *    for Overview.seq
+	 *    
+	 * @param trialClazz
+	 */
+	private I_CoverageRecorder startRecordingTrial(
+			Class<? extends I_AbstractTrial> trialClazz) {
+		I_CoveragePlugin plugin = memory.getPlugin();
+		I_CoverageRecorder trialCoverageRecorder = null;
+		if (plugin != null) {
+			String name = trialClazz.getName();
+			trialCoverageRecorder = memory.getRecorder(name);
+			if (trialCoverageRecorder == null) {
+				if (Boolean.TRUE == memory.getRecordSeperateTrialCoverage()) {
+					
+					trialCoverageRecorder = plugin.createRecorder(name);
+					memory.addRecorder(name, trialCoverageRecorder);
+					trialCoverageRecorder.startRecording();
+				}
+			}
+		}
+		return trialCoverageRecorder;
 	}
 	
 	private void failTestOnException(String message, Throwable p, TrialTypeEnum type) {
@@ -177,11 +214,9 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	}
 	private void runTrial() {
 		String trialName = trialDescription.getTrialName();
+		Class<? extends I_AbstractTrial> trialClazz = trialDescription.getTrialClass();
 		notifier.startingTrial(trialName);
-		I_CoverageRecorder trialCoverageRecorder = memory.getRecorder(trialName);
-		if (trialCoverageRecorder != null) {
-			trialCoverageRecorder.startRecording();
-		}
+		I_CoverageRecorder trialCoverageRecorder =  startRecordingTrial(trialClazz);
 		
 		trial = trialDescription.getTrial();
 		AssertionHelperInfo atm = new AssertionHelperInfo();
@@ -197,12 +232,8 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		runBeforeTrial();
 		testsRunner.setTrial(trial);
 		runTests();
-		if (trialCoverageRecorder != null) {
-			List<I_PackageCoverage> coverage = trialCoverageRecorder.getCoverage();
-			//TODO
-			//trialResultMutant.setCoverage(coverage);
-		}
-		runAfterTrialTests();
+		
+		runAfterTrialTests(trialCoverageRecorder);
 		runAfterTrial();
 		
 		TrialTypeEnum type = trialDescription.getType();
@@ -258,16 +289,6 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	}
 
 	private void runTest(TestDescription tm) {
-		I_CoveragePlugin plugin = memory.getPlugin();
-		I_CoverageRecorder testCoverageRecorder = null;
-		if (plugin != null) {
-			if (Boolean.TRUE == memory.getRecordSeperateTestCoverage()) {
-				String name = trial.getClass().getName() + tm.getMethod().getName();
-				testCoverageRecorder = plugin.createRecorder(name);
-				memory.addRecorder(name, testCoverageRecorder);
-				testCoverageRecorder.startRecording();
-			}
-		}
 		Method method = tm.getMethod();
 		blocking.clear();
 		
@@ -305,11 +326,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 						tfm.setMessage(message);
 						tfm.setException(new IllegalStateException(message));
 						trm.setFailure(new TestFailure(tfm));
-						if (testCoverageRecorder != null) {
-							List<I_PackageCoverage> coverage = testCoverageRecorder.getCoverage();
-							//TODO
-							//trm.setCoverage(coverage);
-						}
+					
 						trialResultMutant.addResult(new TestResult(trm));
 						notifier.onTestCompleted(trialName, method.getName(), trm.isPassed());
 					}
@@ -318,16 +335,36 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				//do nothing
 			}
 			trial.afterTests();
-			if (testCoverageRecorder != null) {
-				List<I_PackageCoverage> coverage = testCoverageRecorder.getCoverage();
-				//TODO
-				//trialResultMutant.setCoverage(coverage);
-			}
 		}
 	}
 	
-	private void runAfterTrialTests() {
+	private void runAfterTrialTests(I_CoverageRecorder trialCoverageRecorder) {
 		
+		if (trialCoverageRecorder != null) {
+			TrialTypeEnum type = trialDescription.getType();
+			
+			List<I_PackageCoverage> coverage = trialCoverageRecorder.getCoverage();
+			switch (type) {
+				case SourceFileTrial:
+					I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
+					try {
+						((SourceFileTrial) trial).afterTrialTests(cover);
+					} catch (Exception x) {
+						failTestOnException(x.getMessage(), x, type);
+					}
+					break;
+				case ApiTrial:
+					I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);
+					try {
+						((ApiTrial) trial).afterTrialTests(pkgCover);
+					} catch (Exception x) {
+						failTestOnException(x.getMessage(), x, type);
+					}
+					break;
+				default:
+					//do nothing
+			}
+		}
 	}
 	
 	private void runAfterTrial() {

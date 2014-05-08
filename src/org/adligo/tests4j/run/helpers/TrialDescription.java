@@ -16,6 +16,8 @@ import org.adligo.tests4j.models.shared.TrialType;
 import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.results.I_UseCase;
 import org.adligo.tests4j.models.shared.results.UseCase;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -213,16 +215,6 @@ public class TrialDescription implements I_TrialDescription {
 			if (testDesc != null) {
 				testMethods.add(testDesc);
 			}
-			if (AfterTrialTestsAuditor.audit(this, failures, method)) {
-				if (afterTrialTestsMethod == null) {
-					afterTrialTestsMethod = method;
-				} else {
-					failures.add(new TrialVerificationFailure(
-							messages.getMultipleAfterTrialTests(),
-							new IllegalArgumentException(trialClass.getName() + 
-									messages.getWasAnnotatedIncorrectly())));
-				}
-			}
 			if (AfterTrialAuditor.audit(this, failures, method)) {
 				if (afterTrialMethod == null) {
 					afterTrialMethod = method;
@@ -399,5 +391,38 @@ public class TrialDescription implements I_TrialDescription {
 			return null;
 		}
 		return new UseCase(nown, verb);
+	}
+	
+	public I_SourceFileCoverage findSourceFileCoverage(List<I_PackageCoverage> coverages) {
+		I_PackageCoverage cover = findPackageCoverage(coverages);
+		if (cover != null) {
+			Class<?> sourceFileClass = getSourceFileClass();
+			if (sourceFileClass != null) {
+				return cover.getCoverage(sourceFileClass.getSimpleName());
+			}
+		}
+		return null;
+	}
+	
+	public I_PackageCoverage findPackageCoverage(List<I_PackageCoverage> coverages) {
+		String packageName = getPackageName();
+		if (packageName == null) {
+			Class<?> sourceFileClass = getSourceFileClass();
+			if (sourceFileClass != null) {
+				packageName = sourceFileClass.getPackage().getName();
+			}
+		}
+		if (packageName == null) {
+			return null;
+		}
+		for (I_PackageCoverage cover: coverages) {
+			String coverName = cover.getPackageName();
+			if (coverName.equals(packageName)) {
+				return cover;
+			} else if (packageName.contains(coverName)) {
+				return findPackageCoverage(cover.getChildPackageCoverage());
+			}
+		}
+		return null;
 	}
 }

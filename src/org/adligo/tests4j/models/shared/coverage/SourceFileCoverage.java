@@ -67,4 +67,9 @@ public class SourceFileCoverage implements I_SourceFileCoverage {
 	public boolean equals(Object obj) {
 		return mutant.equals(obj);
 	}
+	
+	@Override
+	public double getPercentageCoveredDouble() {
+		return getPercentageCovered().doubleValue();
+	}
 }

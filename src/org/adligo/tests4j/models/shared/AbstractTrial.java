@@ -10,10 +10,12 @@ import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertSame;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertThrown;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertTrue;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertUniform;
+import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertGreaterThanOrEquals;
 
 import org.adligo.tests4j.models.shared.asserts.AssertionProcessor;
 import org.adligo.tests4j.models.shared.asserts.BooleanAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.CompareAssertionData;
+import org.adligo.tests4j.models.shared.asserts.DoubleAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_AssertionHelperInfo;
 import org.adligo.tests4j.models.shared.asserts.I_BasicAssertCommand;
@@ -32,6 +34,7 @@ import org.adligo.tests4j.models.shared.common.IsEmpty;
  *
  */
 public abstract class AbstractTrial implements I_AbstractTrial {
+	public static final String THE_EXAMPLE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_ACTUAL_VALUE = "The example should be greater than or equal to the actual value.";
 	public static final String THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE = "The first Byte should NOT be less than the second Byte.";
 	public static final String NOT_GREATER_THAN_BYTE = "The first byte should NOT be greater than the last byte";
 	public static final String THE_EXPECTED_BYTE_SHOULD_BE_LESS_THAN_THE_ACTUAL_BYTE = "The first Byte should be less than the second byte";
@@ -258,5 +261,19 @@ public abstract class AbstractTrial implements I_AbstractTrial {
 		evaluate(new ThrowableUniformAssertCommand(
 				AssertUniform, message, 
 				new CompareAssertionData<Throwable>(p, a)));
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(Double p, Double a) {
+		evaluate(new DoubleAssertCommand(
+				AssertGreaterThanOrEquals, THE_EXAMPLE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_ACTUAL_VALUE, 
+				new CompareAssertionData<Double>(p, a)));
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(String message, Double p, Double a) {
+		evaluate(new DoubleAssertCommand(
+				AssertGreaterThanOrEquals, message, 
+				new CompareAssertionData<Double>(p, a)));
 	}
 }
