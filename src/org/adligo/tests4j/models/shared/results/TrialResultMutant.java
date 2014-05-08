@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
-import org.adligo.tests4j.models.shared.coverage.I_ClassCoverage;
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 
 public class TrialResultMutant implements I_TrialResult {
 	public static final String COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS = "Coverage is not currently supported by JTests";
@@ -22,8 +20,6 @@ public class TrialResultMutant implements I_TrialResult {
 	public static final String TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME = 
 			"TrialResultMutant requires a non empty trialName.";
 	private String trialName;
-	private String testedSourceFileName;
-	private String testedPackageName;
 	
 	private TrialTypeEnum testType;
 	private List<TestResultMutant> results = 
@@ -47,15 +43,6 @@ public class TrialResultMutant implements I_TrialResult {
 			throw new IllegalArgumentException(
 				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_NULL_TYPE);
 		}
-		switch(testType) {
-			case SourceFileTrial:
-				testedSourceFileName = p.getTestedClassName();
-				break;
-			case ApiTrial:
-				testedPackageName = p.getTestedPackageName();
-				break;
-			default:
-		}
 		
 		List<I_TestResult> results = p.getResults();
 		setResults(results);
@@ -75,20 +62,7 @@ public class TrialResultMutant implements I_TrialResult {
 	public String getName() {
 		return trialName;
 	}
-	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestedClassName()
-	 */
-	@Override
-	public String getTestedClassName() {
-		return testedSourceFileName;
-	}
-	/* (non-Javadoc)
-	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestedPackageName()
-	 */
-	@Override
-	public String getTestedPackageName() {
-		return testedPackageName;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TrialResult#getTrialType()
@@ -130,12 +104,6 @@ public class TrialResultMutant implements I_TrialResult {
 	public void setTrialName(String testName) {
 		this.trialName = testName;
 	}
-	public void setTestedSourceFileName(String testedClassName) {
-		this.testedSourceFileName = testedClassName;
-	}
-	public void setTestedPackageName(String testedPackageName) {
-		this.testedPackageName = testedPackageName;
-	}
 	public void setType(TrialTypeEnum p) {
 		this.testType = p;
 	}
@@ -160,17 +128,31 @@ public class TrialResultMutant implements I_TrialResult {
 
 	@Override
 	public String toString() {
-		return toString(TrialResultMutant.class);
+		return toString(this);
 	}
 	
-	String toString(Class<?> c) {
-		return c.getSimpleName() + " [testName=" + trialName + ", testedClassName="
-				+ testedSourceFileName + ", testedPackageName=" + testedPackageName
-				+ ", testType="
-				+ testType + ", exhibitResults=" + results
-				+ ", ignored=" + ignored + ", beforeTestOutput="
-				+ beforeTestOutput + ", afterTestOutput=" + afterTestOutput
-				+ "]";
+	public String toString(I_TrialResult p) {
+		StringBuilder sb = new StringBuilder();
+		toString(p, sb);
+		sb.append("]");
+		return sb.toString();
+	}
+	
+	void toString(I_TrialResult c, StringBuilder sb) {
+		sb.append(c.getClass().getName());
+		sb.append(" [testName=");
+		sb.append(trialName);
+		sb.append(", testedClassName=");
+		sb.append(", testType=");
+		sb.append(testType);
+		sb.append(", exhibitResults=");
+		sb.append(results);
+		sb.append(", ignored=");
+		sb.append(ignored);
+		sb.append(", beforeTestOutput=");
+		sb.append(beforeTestOutput);
+		sb.append(", afterTestOutput=");
+		sb.append(afterTestOutput);
 	}
 
 	public I_TrialFailure getFailure() {
@@ -181,15 +163,6 @@ public class TrialResultMutant implements I_TrialResult {
 		this.failure = failure;
 	}
 
-	@Override
-	public I_PackageCoverage getPackageCoverage() {
-		throw new IllegalStateException(COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS);
-	}
-
-	@Override
-	public I_ClassCoverage getClassCoverage() {
-		throw new IllegalStateException(COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS);
-	}
 
 	public void setPassed(boolean passed) {
 		this.passed = passed;

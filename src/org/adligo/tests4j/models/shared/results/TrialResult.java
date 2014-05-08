@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
-import org.adligo.tests4j.models.shared.coverage.I_ClassCoverage;
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 
 public class TrialResult implements I_TrialResult {
 	private TrialResultMutant mutant;
@@ -17,19 +15,11 @@ public class TrialResult implements I_TrialResult {
 	
 	@Override
 	public String toString() {
-		return mutant.toString(TrialResult.class);
+		return mutant.toString(this);
 	}
 
 	public String getName() {
 		return mutant.getName();
-	}
-
-	public String getTestedClassName() {
-		return mutant.getTestedClassName();
-	}
-
-	public String getTestedPackageName() {
-		return mutant.getTestedPackageName();
 	}
 
 	public TrialTypeEnum getType() {
@@ -60,13 +50,6 @@ public class TrialResult implements I_TrialResult {
 		return mutant.getFailure();
 	}
 
-	public I_PackageCoverage getPackageCoverage() {
-		return mutant.getPackageCoverage();
-	}
-
-	public I_ClassCoverage getClassCoverage() {
-		return mutant.getClassCoverage();
-	}
 
 	public boolean isPassed() {
 		return mutant.isPassed();
