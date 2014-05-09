@@ -322,6 +322,11 @@ public class TrialDescription implements I_TrialDescription {
 		return duration;
 	}
 
+	/**
+	 * @return 
+	 *    trialClass.getName(); or in other words the 
+	 *    full name of the trial class with dots.
+	 */
 	public String getTrialName() {
 		return trialClass.getName();
 	}

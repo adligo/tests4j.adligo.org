@@ -97,7 +97,9 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 			if (result.getTrialsPassed() == result.getTrials()) {
 				log("\t\tAll Trials " + result.getTrialsPassed()  + "/" 
 						+ result.getTrials() + " Trials with " + formatter.format(pct) + "% cover passed!");
-				log("\t\t\tTests: " + result.getTests() + " Assertions: " + 
+				log("\t\t\tTests: " + result.getTestsPassed() + "/" +
+						result.getTests());
+				log("\t\t\tAssertions: " + 
 						result.getUniqueAsserts() + "/" +
 						result.getAsserts());
 			} else {
@@ -107,8 +109,9 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 				log("\t\t" + result.getTrialFailures()  + "/" 
 						+ result.getTrials() + " Trials with " + formatter.format(pct) + "% cover failed!");
 				logCoverage(result, formatter);
-				log("\t\t\tTests " + result.getTestFailures() + "/" +
-						result.getTests() + " Assertions: " + 
+				log("\t\t\tTests: " + result.getTestsPassed() + "/" +
+						result.getTests());
+				log("\t\t\tAssertions: " + 
 						result.getUniqueAsserts() + "/" +
 						result.getAsserts());
 			}

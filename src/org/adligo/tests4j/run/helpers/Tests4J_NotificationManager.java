@@ -23,7 +23,9 @@ import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
+import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegate;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.report.Tests4jReporterDelegate;
 
 /**
  * This class handles event notification
@@ -34,8 +36,15 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
  */
 public class Tests4J_NotificationManager {
 	private AtomicBoolean doneDescribeingTrials = new AtomicBoolean(false);
+	private AtomicBoolean doneRunningTrials = new AtomicBoolean(false);
 	private Tests4J_Memory memory;
+	/**
+	 * always call reporter first then call listener
+	 */
 	private I_Tests4J_Reporter reporter;
+	/**
+	 * always call reporter first then call listener
+	 */
 	private I_TrialRunListener listener;
 	private AtomicLong startTime = new AtomicLong();
 	private AtomicLong assertionCount = new AtomicLong();
@@ -49,8 +58,11 @@ public class Tests4J_NotificationManager {
 	
 	public Tests4J_NotificationManager(Tests4J_Memory pMem, I_Tests4J_Reporter pLog, I_TrialRunListener pListener) {
 		memory = pMem;
-		reporter = pLog;
-		listener = pListener;
+		reporter = new Tests4jReporterDelegate(pLog);
+		if (pListener != null) {
+			listener = new TrialRunListenerDelegate(pListener);
+		}
+		
 		long now = System.currentTimeMillis();
 		startTime.set(now);
 	}
@@ -91,7 +103,15 @@ public class Tests4J_NotificationManager {
 		
 		int defFailures = memory.getFailureResultsSize();
 		trialClassDefFailures.set(defFailures);
-		
+		Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
+		while (it.hasNext()) {
+			TrialDescription desc = it.next();
+			
+			String name = desc.getTrialName();
+			int lastDot = name.lastIndexOf(".");
+			String trialPkg = name.substring(0, lastDot);
+			trialPackageNames.add(trialPkg);
+		}
 		if (defFailures >= 1) {
 			I_TrialResult result = memory.pollFailureResults();
 			while (result != null) {
@@ -198,10 +218,6 @@ public class Tests4J_NotificationManager {
 		if (listener != null) {
 			listener.onTrialCompleted(result);
 		}
-		String name = result.getName();
-		int lastDot = name.lastIndexOf(".");
-		String trialPkg = name.substring(0, lastDot);
-		trialPackageNames.add(trialPkg);
 		
 		assertionCount.addAndGet(result.getAssertionCount());
 		uniqueAssertionCount.addAndGet(result.getUniqueAssertionCount());
@@ -212,6 +228,7 @@ public class Tests4J_NotificationManager {
 		}
 		trials.addAndGet(1);
 	}
+
 	
 	/**
 	 * Check to see if all of the trials are done running
@@ -221,14 +238,22 @@ public class Tests4J_NotificationManager {
 	 * 
 	 * diagrammed in Overview.seq
 	 */
-	public void checkDoneRunningTrials() {
-		int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("checkDoneRunningTrials " + trials.get() + " =? " +
-					trialsWhichCanRun + " + " + trialClassDefFailures.get());
-		}
-		if (trials.get() == trialsWhichCanRun + trialClassDefFailures.get()) {
-			onDoneRunningTrials();
+	public  void checkDoneRunningTrials() {
+		if (doneDescribeingTrials.get()) {
+			int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
+			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+				reporter.log("checkDoneRunningTrials " + trials.get() + " =? " +
+						trialsWhichCanRun + " + " + trialClassDefFailures.get());
+			}
+			if (trials.get() == trialsWhichCanRun + trialClassDefFailures.get()) {
+				synchronized (doneRunningTrials) {
+					if (!doneRunningTrials.get()) {
+						doneRunningTrials.set(true);
+						onDoneRunningTrials();
+					}
+				}
+				
+			}
 		}
 	}
 
@@ -257,10 +282,11 @@ public class Tests4J_NotificationManager {
 		runResult.setRunTime(end - runResult.getStartTime());
 		
 		TrialRunResult endResult = new TrialRunResult(runResult);
+		reporter.onRunCompleted(endResult);
 		if (listener != null) {
 			listener.onRunCompleted(endResult);
 		}
-		reporter.onRunCompleted(endResult);
+		
 		
 		ExecutorService runService =  memory.getRunService();
 		runService.shutdownNow();
@@ -286,12 +312,14 @@ public class Tests4J_NotificationManager {
 				String coveragePkgName = cover.getPackageName();
 				for (String trialPackageName: trialPackageNames) {
 					
-					if (trialPackageName.contains(coveragePkgName)) {
+					if (trialPackageName.contains(coveragePkgName) ||
+							coveragePkgName.contains(trialPackageName)) {
 						overlapped = true;
 						break;
 					}
 				}
 				if (!overlapped) {
+					//add it to the results
 					toAdd.add(new PackageCoverageDelegator(cover));
 				}
 			}
