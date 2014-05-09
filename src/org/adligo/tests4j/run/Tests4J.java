@@ -1,9 +1,11 @@
 package org.adligo.tests4j.run;
 
 import org.adligo.tests4j.models.shared.common.LineSeperator;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_DelegateFactory;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
-import org.adligo.tests4j.run.helpers.TrialsProcessor;
+import org.adligo.tests4j.run.helpers.DefaultDelegateFactory;
 
 /**
  * The main api to run tests for the Tests4J framework.
@@ -13,6 +15,7 @@ import org.adligo.tests4j.run.helpers.TrialsProcessor;
  */
 public class Tests4J {
 	public static final String NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED = "Null I_TestRunListener not allowed.";
+	private static I_Tests4J_DelegateFactory FACTORY = new DefaultDelegateFactory();
 	
 	static {
 		Thread.setDefaultUncaughtExceptionHandler(new Tests4J_UncaughtExceptionHandler());
@@ -31,7 +34,8 @@ public class Tests4J {
 		if (pListener == null) {
 			throw new IllegalArgumentException(NULL_I_TEST_RUN_LISTENER_NOT_ALLOWED);
 		}
-		new TrialsProcessor(pParams,pListener);
+		I_Tests4J_Delegate delegate =  FACTORY.create();
+		delegate.run(pListener,pParams);
 	}
 	
 	/**
@@ -41,6 +45,15 @@ public class Tests4J {
 	 */
 	public static void run(Tests4J_Params pParams) {
 		LineSeperator.setLineSeperator(System.lineSeparator());
-		new TrialsProcessor(pParams,null);
+		I_Tests4J_Delegate delegate =  FACTORY.create();
+		delegate.run(null,pParams);
+	}
+	
+	public static synchronized void setFactory(I_Tests4J_DelegateFactory pFactory) {
+		FACTORY = pFactory;
+	}
+	
+	public static I_Tests4J_DelegateFactory getFactory() {
+		return FACTORY;
 	}
 }

@@ -11,17 +11,28 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 public class Tests4J_Params implements I_Tests4J_Params {
 	private List<Class<? extends I_AbstractTrial>> trials = 
 				new ArrayList<Class<? extends I_AbstractTrial>>();
+
 	/**
-	 * this would only be false if running a single
-	 * ClassTest instance
+	 * @see I_Tests4J_Params#getReporter()
 	 */
-	private boolean packageScope = true;
 	private I_Tests4J_Reporter reporter = new ConsoleReporter();
 	
-	private boolean checkMins = false;
-	private int minTests = 0;
-	private int minAsserts = 0;
-	private int minUniqueAssertions = 0;
+	/**
+	 * @see I_Tests4J_Params#getMinTrials()
+	 */
+	private Integer minTrials = null;
+	/**
+	 * @see I_Tests4J_Params#getMinTests()
+	 */
+	private Integer minTests = null;
+	/**
+	 *  a null value means don't check it
+	 */
+	private Integer minAsserts = null;
+	/**
+	 *  a null value means don't check it
+	 */
+	private Integer minUniqueAssertions = null;
 	private int threadPoolSize = 32;
 	/**
 	 * this flaggs a jvm exit
@@ -46,11 +57,22 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 */
 	private Boolean recordSeperateTestCoverage = null;
 	
+	public Tests4J_Params() {}
+	
+	public Tests4J_Params(I_Tests4J_Params p) {
+		trials.addAll(p.getTrials());
+		reporter = p.getReporter();
+		minTrials = p.getMinTrials();
+		minTests = p.getMinTests();
+		minAsserts = p.getMinAsserts();
+		minUniqueAssertions = p.getMinUniqueAssertions();
+		coveragePlugin = p.getCoveragePlugin();
+		exitAfterLastNotification = p.isExitAfterLastNotification();
+		threadPoolSize = p.getThreadPoolSize();
+	}
+	
 	public List<Class<? extends I_AbstractTrial>> getTrials() {
 		return trials;
-	}
-	public boolean isPackageScope() {
-		return packageScope;
 	}
 	public void setTrials(List<Class<? extends I_AbstractTrial>> p) {
 		trials.clear();
@@ -60,31 +82,20 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		trials.add(p);
 	}
 	
-	public void setPackageScope(boolean packageScope) {
-		this.packageScope = packageScope;
-	}
-
-	
 	public I_CoveragePlugin getCoveragePlugin() {
 		return coveragePlugin;
 	}
 	public void setCoveragePlugin(I_CoveragePlugin coverageRecorder) {
 		this.coveragePlugin = coverageRecorder;
 	}
-	public boolean isCheckMins() {
-		return checkMins;
-	}
-	public int getMinTests() {
+	public Integer getMinTests() {
 		return minTests;
 	}
-	public int getMinAsserts() {
+	public Integer getMinAsserts() {
 		return minAsserts;
 	}
-	public int getMinUniqueAssertions() {
+	public Integer getMinUniqueAssertions() {
 		return minUniqueAssertions;
-	}
-	public void setCheckMins(boolean checkMins) {
-		this.checkMins = checkMins;
 	}
 	public void setMinTests(int minTests) {
 		this.minTests = minTests;
@@ -136,5 +147,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 	public void setRecordTestCoverage(boolean recordTestCoverage) {
 		this.recordSeperateTestCoverage = recordTestCoverage;
+	}
+
+	public Integer getMinTrials() {
+		return minTrials;
+	}
+
+	public void setMinTrials(Integer minTrials) {
+		this.minTrials = minTrials;
 	}
 }

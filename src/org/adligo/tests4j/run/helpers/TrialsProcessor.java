@@ -8,6 +8,8 @@ import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
@@ -21,7 +23,7 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
  * @author scott
  *
  */
-public class TrialsProcessor {
+public class TrialsProcessor implements I_Tests4J_Delegate {
 	/**
 	 * note this is static and final, so that 
 	 * when Tests4J tests itself the ThreadLocalOutputStream
@@ -43,8 +45,9 @@ public class TrialsProcessor {
 	 * @diagram Overview.seq sync on 5/1/2014
 	 * 
 	 */
-	public TrialsProcessor(Tests4J_Params params, I_TrialRunListener processor) {
+	public void run(I_TrialRunListener processor, I_Tests4J_Params pParams) {
 		
+		Tests4J_Params params = new Tests4J_Params(pParams);
 		I_CoveragePlugin plugin = params.getCoveragePlugin();
 		if (plugin != null) {
 			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(params);

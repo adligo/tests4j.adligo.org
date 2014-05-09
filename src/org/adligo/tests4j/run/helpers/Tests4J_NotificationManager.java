@@ -74,22 +74,24 @@ public class Tests4J_NotificationManager {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("checking if done describing trials.");
 		}
-		synchronized (doneDescribeingTrials) {
-			if (doneDescribeingTrials.get()) {
-				if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-					reporter.log("done describing trials.");
-				}
-				return;
+		if (doneDescribeingTrials.get()) {
+			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+				reporter.log("done describing trials.");
 			}
-			int trialDescriptions = memory.getDescriptionCount();
-			int trialCount = memory.getTrialCount();
-			
-			if (trialCount == trialDescriptions) {
-				if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-					reporter.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
-				}
-				doneDescribeingTrials.set(true);
-				onTrialDefinitionsDone();
+			return;
+		}
+		int trialDescriptions = memory.getDescriptionCount();
+		int trialCount = memory.getTrialCount();
+		
+		if (trialCount == trialDescriptions) {
+			synchronized (doneDescribeingTrials) {
+				if (!doneDescribeingTrials.get()) {
+					doneDescribeingTrials.set(true);
+					if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+						reporter.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
+					}
+					onTrialDefinitionsDone();
+				}	
 			}
 		}
 		
