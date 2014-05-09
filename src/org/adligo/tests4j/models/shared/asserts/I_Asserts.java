@@ -1,6 +1,11 @@
 package org.adligo.tests4j.models.shared.asserts;
 
+import java.util.Collection;
+
 public interface I_Asserts {
+	public void assertContains(Collection<?> p, Object a);
+	public void assertContains(String message, Collection<?> p, Object a);	
+	
 	public void assertEquals(Object p, Object a);
 	public void assertEquals(String message, Object p, Object a);	
 	public void assertEquals(Throwable p, Throwable a);

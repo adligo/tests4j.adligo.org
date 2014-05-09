@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompareResult;
+import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
@@ -71,7 +71,7 @@ public class TextReporter {
 		if (data != null) {
 			Set<String> keys = data.getKeys();
 			if (keys.contains(I_AssertionData.LINE_TEXT_RESULT)) {
-				LineTextCompareResult result = (LineTextCompareResult)
+				I_LineTextCompareResult result = (I_LineTextCompareResult)
 						data.getData(I_AssertionData.LINE_TEXT_RESULT);
 				LineTextComparisonReport.display(reporter, result);
 			} else {

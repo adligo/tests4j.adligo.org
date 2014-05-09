@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class LineTextCompare  {
 	
-	public static LineTextCompareResult compare(String example, String actual) {
+	public static I_LineTextCompareResult compare(String example, String actual) {
 		String exStripped  = replaceAllLineSeperatorsWithUnix(example);
 		String exActual  = replaceAllLineSeperatorsWithUnix(actual);
 		

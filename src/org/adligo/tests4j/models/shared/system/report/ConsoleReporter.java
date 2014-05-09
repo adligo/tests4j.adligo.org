@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.coverage.I_CoverageUnits;
@@ -80,7 +81,7 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 				passedString = " failed!";
 				failedTrials.add(result);
 			}
-			log("Trial: " + result + passedString);
+			log("Trial: " + result.getName() + passedString);
 		}
 	}
 
@@ -124,10 +125,11 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 		double covered_cus = 0;
 		for (I_PackageCoverage cover: coverage) {
 			Set<String> sourceFileNames = cover.getSourceFileNames();
-			log("\t\t\t" + cover.getPackageName() + " was covered " + 
+			log("\t\t\t+" + cover.getPackageName() + " was covered " + 
 						formatter.format(cover.getTotalPercentageCovered()) + "% with " +
-						sourceFileNames.size() + " source files " +
-						cover.getTotalCoveredCoverageUnits().get() + "/" + 
+						sourceFileNames.size() + " source files, " +
+						cover.getChildPackageCoverage().size() + " child packages and " +
+						cover.getTotalCoveredCoverageUnits().get() + "/" +
 						cover.getTotalCoverageUnits().get() + " coverage units.");
 			I_CoverageUnits cu = cover.getCoverageUnits();
 			cus = cus + cu.get();
@@ -165,6 +167,9 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 					log("\t" + cad.getExpected());
 					log("\tActual;");
 					log("\t" + cad.getActual());
+				} else if (ad instanceof ContainsAssertCommand) {
+					log("\tExpected;");
+					log("\t" + ad.getData(ContainsAssertCommand.VALUE));
 				}
 				if (t == null) {
 					log("\tUnknown Location a Test4J error please try to reproduce and report it;");

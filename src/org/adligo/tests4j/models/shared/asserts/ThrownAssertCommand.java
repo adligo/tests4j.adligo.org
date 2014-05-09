@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompare;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompareResult;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 
 public class ThrownAssertCommand extends AbstractAssertCommand 
@@ -17,7 +17,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	private I_AssertionData data;
 	private AssertType type;
 	private Throwable caught;
-	private LineTextCompareResult lineTextResult;
+	private I_LineTextCompareResult lineTextResult;
 	
 	public ThrownAssertCommand(I_AssertType pType, String pFailureMessage) {
 		super(pType, pFailureMessage);

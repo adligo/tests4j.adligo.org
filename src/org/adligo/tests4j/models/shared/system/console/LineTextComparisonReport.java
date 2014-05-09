@@ -2,15 +2,15 @@ package org.adligo.tests4j.models.shared.system.console;
 
 import java.util.List;
 
+import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineDiff;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.StartEndDiff;
 import org.adligo.tests4j.models.shared.asserts.line_text.StartEndDiffPair;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 public class LineTextComparisonReport {
 
-	public static void display(I_Tests4J_Reporter out, LineTextCompareResult result) {
+	public static void display(I_Tests4J_Reporter out, I_LineTextCompareResult result) {
 		out.log("Expected;");
 		out.log(result.getExample());
 		out.log("Actual;");

@@ -28,7 +28,8 @@ public enum AssertType implements I_AssertType{
 	AssertTrue(0), AssertFalse(1), AssertNull(2), AssertNotNull(3),
 	AssertEquals(4), AssertNotEquals(5), AssertSame(6), AssertNotSame(7),
 	AssertThrown(8), AssertNotThrown(9), AssertThrownUniform(9), 
-	AssertUniform(10), AssertNotUniform(11), AssertGreaterThanOrEquals(12);
+	AssertUniform(10), AssertNotUniform(11), AssertContains(12), 
+	AssertGreaterThanOrEquals(13);
 	
 	public static Set<AssertType> BOOLEAN_TYPES = getBooleanTypes();
 	public static Set<AssertType> IDENTICAL_TYPES = getIdenticalTypes();

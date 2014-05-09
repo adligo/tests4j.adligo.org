@@ -286,7 +286,7 @@ public class Tests4J_NotificationManager {
 				String coveragePkgName = cover.getPackageName();
 				for (String trialPackageName: trialPackageNames) {
 					
-					if (coveragePkgName.contains(trialPackageName)) {
+					if (trialPackageName.contains(coveragePkgName)) {
 						overlapped = true;
 						break;
 					}

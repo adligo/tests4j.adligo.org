@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompareResult;
+import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
 
 public abstract class UniformAssertCommand extends AbstractAssertCommand 
 	implements I_CompareAssertCommand {
@@ -18,7 +18,7 @@ public abstract class UniformAssertCommand extends AbstractAssertCommand
 			"UniformAssertCommand requires it's type to be one of AssertType.UNIFORM_TYPES";
 	protected I_CompareAssertionData<?> data;
 	protected AssertType type;
-	protected LineTextCompareResult lineTextResult;
+	protected I_LineTextCompareResult lineTextResult;
 	protected String failureSubMessage;
 	
 	public UniformAssertCommand(I_AssertType pType, String failureMessage, I_CompareAssertionData<?> pData) {
