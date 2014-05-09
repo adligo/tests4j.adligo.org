@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
@@ -95,25 +98,31 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 			
 			
 			if (result.getTrialsPassed() == result.getTrials()) {
-				log("\t\tAll Trials " + result.getTrialsPassed()  + "/" 
-						+ result.getTrials() + " Trials with " + formatter.format(pct) + "% cover passed!");
-				log("\t\t\tTests: " + result.getTestsPassed() + "/" +
+				log("\t\tTests: " + result.getTestsPassed() + "/" +
 						result.getTests());
-				log("\t\t\tAssertions: " + 
+				log("\t\tUnique/Assertions: " + 
 						result.getUniqueAsserts() + "/" +
 						result.getAsserts());
+				log("\t\tAll Trials " + result.getTrialsPassed()  + "/" 
+						+ result.getTrials() + " Trials with " + formatter.format(pct) + "% coverage;");
+				log("");
+				log("\t\t\tPassed!");
+				log("");
 			} else {
 				for (I_TrialResult trial: failedTrials) {
 					logTestFailure(trial);
 				}
-				log("\t\t" + result.getTrialFailures()  + "/" 
-						+ result.getTrials() + " Trials with " + formatter.format(pct) + "% cover failed!");
-				logCoverage(result, formatter);
-				log("\t\t\tTests: " + result.getTestsPassed() + "/" +
+				log("\t\tTests: " + result.getTestsPassed() + "/" +
 						result.getTests());
-				log("\t\t\tAssertions: " + 
+				log("\t\tUnique/Assertions: " + 
 						result.getUniqueAsserts() + "/" +
 						result.getAsserts());
+				log("\t\t" + result.getTrialFailures()  + "/" 
+						+ result.getTrials() + " Trials with " + formatter.format(pct) + "% coverage;");
+				log("");
+				log("\t\t\tFAILED!");
+				log("");
+				
 			}
 			log("------------------------Test Results End---------------------");
 		}
@@ -126,7 +135,12 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 		}
 		double cus = 0;
 		double covered_cus = 0;
+		Map<String, I_PackageCoverage> treeMap = new TreeMap<String, I_PackageCoverage>();
 		for (I_PackageCoverage cover: coverage) {
+			treeMap.put(cover.getPackageName(), cover);
+		}
+		Collection<I_PackageCoverage> ordered =  treeMap.values();
+		for (I_PackageCoverage cover: ordered) {
 			Set<String> sourceFileNames = cover.getSourceFileNames();
 			log("\t\t\t+" + cover.getPackageName() + " was covered " + 
 						formatter.format(cover.getTotalPercentageCovered()) + "% with " +
