@@ -36,14 +36,7 @@ public interface I_CoverageRecorder {
 	 * this ends recording for the context of the current recorder
 	 * for good and cleans up the memory resources
 	 */
-	public void endRecording();
+	public List<I_PackageCoverage> endRecording();
 	
 	
-	/**
-	 * this stops recording coverage and returns the
-	 * coverage.
-	 * @param packageName
-	 * @return
-	 */
-	public List<I_PackageCoverage> getCoverage();
 }

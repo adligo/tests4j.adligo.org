@@ -4,12 +4,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
 import org.adligo.tests4j.models.shared.metadata.I_TestMetadata;
 import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
@@ -18,10 +21,8 @@ import org.adligo.tests4j.models.shared.metadata.TrialRunMetadataMutant;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
-import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
-import org.adligo.tests4j.models.shared.system.console.TextReporter;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 /**
@@ -44,6 +45,7 @@ public class Tests4J_NotificationManager {
 	private AtomicInteger trialFailures = new AtomicInteger();
 	private AtomicInteger trials = new AtomicInteger();
 	private AtomicInteger trialClassDefFailures = new AtomicInteger();
+	private Set<String> trialPackageNames = new CopyOnWriteArraySet<String>();
 	
 	public Tests4J_NotificationManager(Tests4J_Memory pMem, I_Tests4J_Reporter pLog, I_TrialRunListener pListener) {
 		memory = pMem;
@@ -93,7 +95,7 @@ public class Tests4J_NotificationManager {
 		if (defFailures >= 1) {
 			I_TrialResult result = memory.pollFailureResults();
 			while (result != null) {
-				trialDoneInternal(result);
+				onTrialCompetedInternal(result);
 				result = memory.pollFailureResults();
 			}
 		}
@@ -177,25 +179,30 @@ public class Tests4J_NotificationManager {
 	}
 	
 	/**
-	 * diagrammed in Overview.seq
+	 * @diagram sync on 5/8/201 with  Overview.seq
 	 * 
 	 * @param result
 	 */
-	public void trialDone(I_TrialResult result) {
-		trialDoneInternal(result);
+	public void onTrialCompleted(I_TrialResult result) {
+		onTrialCompetedInternal(result);
 	}
 
 	/**
-	 * diagrammed in Overview.seq
+	 * @diagram sync on 5/8/201 with  Overview.seq
 	 * 
 	 * @param result
 	 */
 
-	public void trialDoneInternal(I_TrialResult result) {
+	public void onTrialCompetedInternal(I_TrialResult result) {
 		reporter.onTrialCompleted(result);
 		if (listener != null) {
 			listener.onTrialCompleted(result);
 		}
+		String name = result.getName();
+		int lastDot = name.lastIndexOf(".");
+		String trialPkg = name.substring(0, lastDot);
+		trialPackageNames.add(trialPkg);
+		
 		assertionCount.addAndGet(result.getAssertionCount());
 		uniqueAssertionCount.addAndGet(result.getUniqueAssertionCount());
 		testCount.addAndGet(result.getTestCount());
@@ -244,13 +251,7 @@ public class Tests4J_NotificationManager {
 		runResult.setTrialFailures(trialFailures.get());
 		runResult.setTrials(trials.get());
 		
-		I_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
-		if (allCoverageRecorder != null) {
-			//@diagram Overview.seq sync on 5/1/2014 'stopRecordingTrialsRun'
-			allCoverageRecorder.pauseRecording();
-			List<I_PackageCoverage> packageCoverage = allCoverageRecorder.getCoverage();
-			runResult.setCoverage(packageCoverage);
-		}
+		stopRecordingTrialsRun(runResult);
 		
 		long end = System.currentTimeMillis();
 		runResult.setRunTime(end - runResult.getStartTime());
@@ -265,6 +266,36 @@ public class Tests4J_NotificationManager {
 		runService.shutdownNow();
 		if (memory.isSystemExit()) {
 			System.exit(0);
+		}
+	}
+
+	/**
+	 * @diagram on 5/8/2014 to Overview.seq 
+	 * @param runResult
+	 */
+	private void stopRecordingTrialsRun(TrialRunResultMutant runResult) {
+		I_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
+		if (allCoverageRecorder != null) {
+			//
+			List<I_PackageCoverage> packageCoverage = allCoverageRecorder.endRecording();
+			List<I_PackageCoverage> toAdd = new ArrayList<I_PackageCoverage>();
+			
+			//filter out trial/test code from result
+			for (I_PackageCoverage cover: packageCoverage) {
+				boolean overlapped = false;
+				String coveragePkgName = cover.getPackageName();
+				for (String trialPackageName: trialPackageNames) {
+					
+					if (coveragePkgName.contains(trialPackageName)) {
+						overlapped = true;
+						break;
+					}
+				}
+				if (!overlapped) {
+					toAdd.add(new PackageCoverageDelegator(cover));
+				}
+			}
+			runResult.setCoverage(toAdd);
 		}
 	}
 	

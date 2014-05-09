@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.coverage;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 /**
  * @see I_CoverageUnitsContainer 
@@ -34,8 +35,14 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 	public BigDecimal getPercentageCovered() {
 		BigDecimal coverageUnitsBD = new BigDecimal(coverageUnits.getBig());
 		BigDecimal coveredCoverageUnitsBD = new BigDecimal(coveredCoverageUnits.getBig());
-		BigDecimal toRet = coveredCoverageUnitsBD.divide(coverageUnitsBD).multiply(new BigDecimal(100));
-		return toRet;
+		if (coverageUnitsBD.intValue() == 0) {
+			return new BigDecimal("0.00");
+		} else {
+			BigDecimal pct = coveredCoverageUnitsBD.divide(coverageUnitsBD, MathContext.DECIMAL128);
+			BigDecimal toRet = pct.multiply(new BigDecimal(100), MathContext.DECIMAL128);
+			MathContext mc = new MathContext(2);
+			return toRet.round(mc);
+		}
 	}
 	
 

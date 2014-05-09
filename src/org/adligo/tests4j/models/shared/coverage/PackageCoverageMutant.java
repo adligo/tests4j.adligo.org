@@ -108,4 +108,9 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 				+ ", coverage=" + getTotalPercentageCovered() +
 				",child_packages=" + p.getChildPackageCoverage().size() + "]";
 	}
+
+	@Override
+	public double getTotalPercentageCoveredDouble() {
+		return getTotalPercentageCovered().doubleValue();
+	}
 }

@@ -257,7 +257,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 					result = new SourceFileTrialResult(src);
 				break;
 		}
-		notifier.trialDone(result);
+		notifier.onTrialCompleted(result);
 		trialResultMutant = null;
 	}
 	
@@ -343,7 +343,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		if (trialCoverageRecorder != null) {
 			TrialTypeEnum type = trialDescription.getType();
 			
-			List<I_PackageCoverage> coverage = trialCoverageRecorder.getCoverage();
+			List<I_PackageCoverage> coverage = trialCoverageRecorder.endRecording();
 			switch (type) {
 				case SourceFileTrial:
 					I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);

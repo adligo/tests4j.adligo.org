@@ -88,5 +88,10 @@ public class PackageCoverage implements I_PackageCoverage {
 	public double getPercentageCoveredDouble() {
 		return getPercentageCovered().doubleValue();
 	}
+
+	@Override
+	public double getTotalPercentageCoveredDouble() {
+		return mutant.getTotalPercentageCoveredDouble();
+	}
 	
 }

@@ -1,5 +1,8 @@
 package org.adligo.tests4j.models.shared.system.report;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,6 +10,8 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_CompareAssertionData;
+import org.adligo.tests4j.models.shared.coverage.I_CoverageUnits;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
@@ -82,25 +87,58 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 	@Override
 	public void onRunCompleted(I_TrialRunResult result) {
 		if (isLogEnabled(ConsoleReporter.class)) {
-			log("Tests completed in " + result.getRunTimeSecs() + " seconds.");
+			log("------------------------Test Results-------------------------");
+			log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds.");
+			DecimalFormat formatter = new DecimalFormat("###.##");
+			BigDecimal pct = logCoverage(result,  formatter );
+			
+			
 			if (result.getTrialsPassed() == result.getTrials()) {
-				log("All Trials " + result.getTrialsPassed()  + "/" 
-						+ result.getTrials() + " passed!");
-				log("Tests: " + result.getTests() + " Assertions: " + 
+				log("\t\tAll Trials " + result.getTrialsPassed()  + "/" 
+						+ result.getTrials() + " Trials with " + formatter.format(pct) + "% cover passed!");
+				log("\t\t\tTests: " + result.getTests() + " Assertions: " + 
 						result.getUniqueAsserts() + "/" +
 						result.getAsserts());
 			} else {
 				for (I_TrialResult trial: failedTrials) {
 					logTestFailure(trial);
 				}
-				log("" + result.getTrialFailures()  + "/" 
-						+ result.getTrials() + " Trials failed!");
-				log("Tests " + result.getTestFailures() + "/" +
+				log("\t\t" + result.getTrialFailures()  + "/" 
+						+ result.getTrials() + " Trials with " + formatter.format(pct) + "% cover failed!");
+				logCoverage(result, formatter);
+				log("\t\t\tTests " + result.getTestFailures() + "/" +
 						result.getTests() + " Assertions: " + 
 						result.getUniqueAsserts() + "/" +
 						result.getAsserts());
 			}
+			log("------------------------Test Results End---------------------");
 		}
+	}
+
+	private BigDecimal logCoverage(I_TrialRunResult result, DecimalFormat formatter) {
+		List<I_PackageCoverage> coverage = result.getCoverage();
+		if (coverage.size() >= 1) {
+			log("\t\tPackage Coverage;");
+		}
+		double cus = 0;
+		double covered_cus = 0;
+		for (I_PackageCoverage cover: coverage) {
+			Set<String> sourceFileNames = cover.getSourceFileNames();
+			log("\t\t\t" + cover.getPackageName() + " was covered " + 
+						formatter.format(cover.getTotalPercentageCovered()) + "% with " +
+						sourceFileNames.size() + " source files " +
+						cover.getTotalCoveredCoverageUnits().get() + "/" + 
+						cover.getTotalCoverageUnits().get() + " coverage units.");
+			I_CoverageUnits cu = cover.getCoverageUnits();
+			cus = cus + cu.get();
+			I_CoverageUnits ccu = cover.getCoveredCoverageUnits();
+			covered_cus = covered_cus + ccu.get();
+		}
+		if (cus == 0.0) {
+			return new BigDecimal("0.00");
+		}
+		double pct = covered_cus/cus * 100;
+		return new BigDecimal(pct).round(new MathContext(2));
 	}
 
 	private void logTestFailure(I_TrialResult trial) {

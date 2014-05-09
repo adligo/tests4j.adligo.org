@@ -85,4 +85,10 @@ public interface I_PackageCoverage extends I_CoverageUnitsContainer {
 	 * @return
 	 */
 	public BigDecimal getTotalPercentageCovered();
+	
+	/**
+	 * @see getTotalPercentageCovered
+	 * @return
+	 */
+	public double getTotalPercentageCoveredDouble();
 }
