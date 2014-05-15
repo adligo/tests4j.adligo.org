@@ -137,6 +137,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		this.exitAfterLastNotification = exitAfterLastNotification;
 	}
 	public Boolean getRecordSeperateTrialCoverage() {
+		if (recordSeperateTestCoverage == null) {
+			if (coveragePlugin != null) {
+				if (coveragePlugin.canSubRecord()) {
+					return true;
+				}
+			}
+		}
 		return recordSeperateTrialCoverage;
 	}
 	public Boolean getRecordSeperateTestCoverage() {

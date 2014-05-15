@@ -31,6 +31,7 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 	private boolean redirect = true;
 	private Set<String> enabledLogClasses = new HashSet<String>();
 	private List<I_TrialResult> failedTrials = new ArrayList<I_TrialResult>();
+	private boolean hadTrialTestsWhichDidNOTRun = false;
 	private I_LineOut out = new SystemOut();
 	
 	public ConsoleReporter() {
@@ -85,6 +86,11 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 				failedTrials.add(result);
 			}
 			log("Trial: " + result.getName() + passedString);
+			if (result.isHadAfterTrialTests()) {
+				if (!result.isRanAfterTrialTests()) {
+					hadTrialTestsWhichDidNOTRun = true;
+				}
+			}
 		}
 	}
 
@@ -107,6 +113,9 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 						+ result.getTrials() + " Trials with " + formatter.format(pct) + "% coverage;");
 				log("");
 				log("\t\t\tPassed!");
+				if (hadTrialTestsWhichDidNOTRun) {
+					log("\t\tWarning afterTrialTests methods/assertions did not run!");
+				}
 				log("");
 			} else {
 				for (I_TrialResult trial: failedTrials) {
@@ -172,7 +181,7 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 		}
 		List<I_TestResult> testResults = trial.getResults();
 		for (I_TestResult tr: testResults) {
-			if (!tr.isPassed()) {
+			if (!tr.isPassed() && !tr.isIgnored()) {
 				log("\t" + tr + " failed!");
 				I_TestFailure tf = tr.getFailure();
 				log("\t" + tf.getMessage());

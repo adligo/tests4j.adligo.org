@@ -32,6 +32,8 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	private String afterTestOutput;
 	private TrialFailure failure;
 	private Boolean passed = null;
+	private boolean hadAfterTrialTests = false;
+	private boolean ranAfterTrialTests = false;
 	
 	public BaseTrialResultMutant() {}
 	
@@ -60,6 +62,8 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		if (pFailure != null) {
 			failure = new TrialFailure(pFailure);
 		}
+		hadAfterTrialTests = p.isHadAfterTrialTests();
+		ranAfterTrialTests = p.isRanAfterTrialTests();
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestName()
@@ -247,5 +251,21 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	
 	Boolean getPassed() {
 		return passed;
+	}
+
+	public boolean isHadAfterTrialTests() {
+		return hadAfterTrialTests;
+	}
+
+	public boolean isRanAfterTrialTests() {
+		return ranAfterTrialTests;
+	}
+
+	public void setHadAfterTrialTests(boolean hadAfterTrialTests) {
+		this.hadAfterTrialTests = hadAfterTrialTests;
+	}
+
+	public void setRanAfterTrialTests(boolean ranAfterTrialTests) {
+		this.ranAfterTrialTests = ranAfterTrialTests;
 	}
 }

@@ -99,4 +99,12 @@ public class BaseTrialResult implements I_TrialResult {
 	public BaseTrialResultMutant clone(boolean cloneRelations) {
 		return new BaseTrialResultMutant(this, cloneRelations);
 	}
+
+	public boolean isHadAfterTrialTests() {
+		return mutant.isHadAfterTrialTests();
+	}
+
+	public boolean isRanAfterTrialTests() {
+		return mutant.isRanAfterTrialTests();
+	}
 }

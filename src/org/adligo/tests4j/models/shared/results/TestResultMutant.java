@@ -6,8 +6,8 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 
 public class TestResultMutant implements I_TestResult {
-	public static final String TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME = 
-			"TestResultMutant requires a non empty exhibitName";
+	public static final String TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_NAME = 
+			"TestResultMutant requires a non empty testName";
 	private String name = "";
 	private int assertionCount = 0;
 	private Set<Integer> uniqueAsserts = new HashSet<Integer>();
@@ -23,7 +23,7 @@ public class TestResultMutant implements I_TestResult {
 	public TestResultMutant(I_TestResult p) {
 		name = p.getName();
 		IsEmpty.isEmpty(name,
-				TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_EXHIBIT_NAME);
+				TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_NAME);
 		assertionCount = p.getAssertionCount();
 		uniqueAsserts.addAll(p.getUniqueAsserts());
 		

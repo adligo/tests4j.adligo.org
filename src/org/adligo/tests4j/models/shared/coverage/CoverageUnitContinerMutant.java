@@ -38,6 +38,9 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 		if (coverageUnitsBD.intValue() == 0) {
 			return new BigDecimal("0.00");
 		} else {
+			if (coveredCoverageUnitsBD.equals(coverageUnitsBD)) {
+				return new BigDecimal("100.00");
+			}
 			BigDecimal pct = coveredCoverageUnitsBD.divide(coverageUnitsBD, MathContext.DECIMAL128);
 			BigDecimal toRet = pct.multiply(new BigDecimal(100), MathContext.DECIMAL128);
 			MathContext mc = new MathContext(2);

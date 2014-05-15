@@ -29,7 +29,7 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 				if (expected == null || actual == null) {
 					return false;
 				}
-			   if(expected.doubleValue() >= actual.doubleValue()) {
+			   if(actual.doubleValue() >= expected.doubleValue()) {
 				   return true;
 			   } else {
 				   return false;

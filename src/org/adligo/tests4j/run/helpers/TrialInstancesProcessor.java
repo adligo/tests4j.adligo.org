@@ -1,10 +1,9 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,6 +14,7 @@ import org.adligo.tests4j.models.shared.ApiTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.SourceFileTrial;
 import org.adligo.tests4j.models.shared.asserts.AssertionHelperInfo;
+import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -22,6 +22,7 @@ import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
 import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
+import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
@@ -32,12 +33,13 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
+import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
-public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener {
+public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener, I_AssertListener {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
 
@@ -51,6 +53,10 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	private Future<?> testResultFuture;
 	private ArrayBlockingQueue<TestResult> blocking = new ArrayBlockingQueue<TestResult>(1);
 	private TestRunable testsRunner;
+	private boolean ranAfterTrialTests;
+	private boolean hadAfterTrialTests;
+	private List<Integer> afterTrialTestsAssertionHashes = new ArrayList<Integer>(); 
+	private TestResultMutant afterTrialTestsResultMutant;
 	
 	/**
 	 * 
@@ -213,10 +219,14 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		}
 	}
 	private void runTrial() {
+		afterTrialTestsAssertionHashes.clear();
+		afterTrialTestsResultMutant = null;
+		
 		String trialName = trialDescription.getTrialName();
 		Class<? extends I_AbstractTrial> trialClazz = trialDescription.getTrialClass();
 		notifier.startingTrial(trialName);
 		I_CoverageRecorder trialCoverageRecorder =  startRecordingTrial(trialClazz);
+		
 		
 		trial = trialDescription.getTrial();
 		AssertionHelperInfo atm = new AssertionHelperInfo();
@@ -243,22 +253,33 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 					UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trialResultMutant);
 					mut.setSystem(trialDescription.getSystemName());
 					mut.setUseCase(trialDescription.getUseCase());
+					setAfterTrialTestsState(mut);
 					result = new UseCaseTrialResult(mut);
 				break;
 			case ApiTrial:
 					ApiTrialResultMutant api = new ApiTrialResultMutant(trialResultMutant);
 					api.setPackageName(trialDescription.getPackageName());
+					setAfterTrialTestsState(api);
 					result = new ApiTrialResult(api);
 				break;
 			default:
 					SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trialResultMutant);
 					Class<?> clazz = trialDescription.getSourceFileClass();
 					src.setSourceFileName(clazz.getSimpleName());
+					setAfterTrialTestsState(src);
 					result = new SourceFileTrialResult(src);
 				break;
 		}
 		notifier.onTrialCompleted(result);
 		trialResultMutant = null;
+	}
+	
+	private void setAfterTrialTestsState(BaseTrialResultMutant mutant) {
+		mutant.setHadAfterTrialTests(hadAfterTrialTests);
+		mutant.setRanAfterTrialTests(ranAfterTrialTests);
+		if (afterTrialTestsResultMutant != null) {
+			mutant.addResult(afterTrialTestsResultMutant);
+		}
 	}
 	
 	private void runBeforeTrial()  {
@@ -339,31 +360,73 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	}
 	
 	private void runAfterTrialTests(I_CoverageRecorder trialCoverageRecorder) {
+		ranAfterTrialTests = false;
+		hadAfterTrialTests = false;
 		
-		if (trialCoverageRecorder != null) {
-			TrialTypeEnum type = trialDescription.getType();
-			
-			List<I_PackageCoverage> coverage = trialCoverageRecorder.endRecording();
-			switch (type) {
-				case SourceFileTrial:
-					I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
-					try {
-						((SourceFileTrial) trial).afterTrialTests(cover);
-					} catch (Exception x) {
-						failTestOnException(x.getMessage(), x, type);
-					}
-					break;
-				case ApiTrial:
-					I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);
-					try {
-						((ApiTrial) trial).afterTrialTests(pkgCover);
-					} catch (Exception x) {
-						failTestOnException(x.getMessage(), x, type);
-					}
-					break;
-				default:
+		TrialTypeEnum type = trialDescription.getType();
+		
+		List<I_PackageCoverage> coverage = null;
+		Method clazzMethod = null;
+		switch (type) {
+			case SourceFileTrial:
+				Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();
+				
+				try {
+					clazzMethod = trialClass.getDeclaredMethod("afterTrialTests", I_SourceFileCoverage.class);
+				} catch (NoSuchMethodException e) {
 					//do nothing
-			}
+				} catch (SecurityException e) {
+					//do nothing
+				}
+				if (clazzMethod != null) {
+					hadAfterTrialTests = true;
+				}
+				if (trialCoverageRecorder == null) {
+					return;
+				}
+				coverage = trialCoverageRecorder.endRecording();
+				ranAfterTrialTests = true;
+				I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
+				AssertionHelperInfo atm = new AssertionHelperInfo();
+				atm.setCoveragePlugin(memory.getPlugin());
+				atm.setListener(this);
+				trial.setMemory(atm);
+				try {
+					((SourceFileTrial) trial).afterTrialTests(cover);
+				} catch (Exception x) {
+					failTestOnException(x.getMessage(), x, type);
+				}
+				break;
+			case ApiTrial:
+				trialClass = trialDescription.getTrialClass();
+				try {
+					clazzMethod = trialClass.getDeclaredMethod("afterTrialTests", I_PackageCoverage.class);
+				} catch (NoSuchMethodException e) {
+					//do nothing
+				} catch (SecurityException e) {
+					//do nothing
+				}
+				if (clazzMethod != null) {
+					hadAfterTrialTests = true;
+				}
+				if (trialCoverageRecorder == null) {
+					return;
+				}
+				atm = new AssertionHelperInfo();
+				atm.setCoveragePlugin(memory.getPlugin());
+				atm.setListener(this);
+				trial.setMemory(atm);
+				coverage = trialCoverageRecorder.endRecording();
+				ranAfterTrialTests = true;
+				I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);
+				try {
+					((ApiTrial) trial).afterTrialTests(pkgCover);
+				} catch (Exception x) {
+					failTestOnException(x.getMessage(), x, type);
+				}
+				break;
+			default:
+				//do nothing
 		}
 	}
 	
@@ -392,6 +455,26 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			testResultFuture.cancel(true);
 		} catch (InterruptedException e) {
 			//do nothing
+		}
+	}
+
+	@Override
+	public void assertCompleted(I_AssertCommand cmd) {
+		afterTrialTestsAssertionHashes.add(cmd.hashCode());
+	}
+
+	@Override
+	public void assertFailed(I_TestFailure failure) {
+		afterTrialTestsResultMutant = new TestResultMutant();
+		afterTrialTestsResultMutant.setFailure(failure);
+		afterTrialTestsResultMutant.setName("afterTrialTests");
+		flushAssertionHashes(afterTrialTestsResultMutant);
+	}
+
+	private void flushAssertionHashes(TestResultMutant trm) {
+		Iterator<Integer> it = afterTrialTestsAssertionHashes.iterator();
+		while (it.hasNext()) {
+			trm.incrementAssertionCount(it.next());
 		}
 	}
 }

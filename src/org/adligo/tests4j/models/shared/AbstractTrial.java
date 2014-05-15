@@ -38,7 +38,7 @@ import org.adligo.tests4j.models.shared.common.IsEmpty;
  */
 public abstract class AbstractTrial implements I_AbstractTrial {
 	public static final String THE_COLLECTION_SHOULD_CONTAIN_THE_VALUE = "The collection should contain the value";
-	public static final String THE_EXAMPLE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_ACTUAL_VALUE = "The example should be greater than or equal to the actual value.";
+	public static final String THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE = "The actual value should be greater than or equal to the expected value.";
 	public static final String THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE = "The first Byte should NOT be less than the second Byte.";
 	public static final String NOT_GREATER_THAN_BYTE = "The first byte should NOT be greater than the last byte";
 	public static final String THE_EXPECTED_BYTE_SHOULD_BE_LESS_THAN_THE_ACTUAL_BYTE = "The first Byte should be less than the second byte";
@@ -270,7 +270,7 @@ public abstract class AbstractTrial implements I_AbstractTrial {
 	@Override
 	public void assertGreaterThanOrEquals(Double p, Double a) {
 		evaluate(new DoubleAssertCommand(
-				AssertGreaterThanOrEquals, THE_EXAMPLE_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_ACTUAL_VALUE, 
+				AssertGreaterThanOrEquals, THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE, 
 				new CompareAssertionData<Double>(p, a)));
 	}
 

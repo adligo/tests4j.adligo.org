@@ -310,12 +310,6 @@ public class Tests4J_Memory {
 	public Boolean getRecordSeperateTestCoverage() {
 		return recordSeperateTestCoverage;
 	}
-	public synchronized void setRecordTrialCoverage(boolean recordTrialCoverage) {
-		this.recordSeperateTrialCoverage = recordTrialCoverage;
-	}
-	public synchronized void setRecordTestCoverage(boolean recordTestCoverage) {
-		this.recordSeperateTestCoverage = recordTestCoverage;
-	}
 
 	public String getMainRecorderScope() {
 		return mainRecorderScope;
