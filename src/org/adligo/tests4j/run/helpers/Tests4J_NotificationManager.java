@@ -180,6 +180,9 @@ public class Tests4J_NotificationManager {
 	}
 
 	public void startingTrial(String name) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("startingTrial " + name);
+		}
 		reporter.onStartingTrail(name);
 		if (listener != null) {
 			listener.onStartingTrail(name);
@@ -187,6 +190,9 @@ public class Tests4J_NotificationManager {
 	}
 	
 	public void startingTest(String trialName, String testName) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("startingTest " + trialName + "." + testName);
+		}
 		reporter.onStartingTest(trialName, testName);
 		if (listener != null) {
 			listener.onStartingTest(trialName, testName);
@@ -194,6 +200,9 @@ public class Tests4J_NotificationManager {
 	}
 	
 	public void onTestCompleted(String trialName, String testName, boolean passed) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("testFinished " + trialName + "." + testName + " " + passed);
+		}
 		reporter.onTestCompleted(trialName, testName, passed);
 		if (listener != null) {
 			listener.onTestCompleted(trialName, testName, passed);
@@ -206,6 +215,9 @@ public class Tests4J_NotificationManager {
 	 * @param result
 	 */
 	public void onTrialCompleted(I_TrialResult result) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("trialFinished " + result.getName() + " " + result.isPassed());
+		}
 		onTrialCompetedInternal(result);
 	}
 

@@ -203,9 +203,11 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 					
 					trialCoverageRecorder = plugin.createRecorder(name);
 					memory.addRecorder(name, trialCoverageRecorder);
-					trialCoverageRecorder.startRecording();
 				}
 			}
+		}
+		if (trialCoverageRecorder != null) {
+			trialCoverageRecorder.startRecording();
 		}
 		return trialCoverageRecorder;
 	}
