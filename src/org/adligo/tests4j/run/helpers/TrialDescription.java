@@ -430,4 +430,12 @@ public class TrialDescription implements I_TrialDescription {
 		}
 		return null;
 	}
+
+
+
+
+	@Override
+	public String toString() {
+		return "TrialDescription [trialClass=" + trialClass + "]";
+	}
 }

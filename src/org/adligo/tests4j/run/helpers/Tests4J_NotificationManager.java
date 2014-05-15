@@ -81,7 +81,7 @@ public class Tests4J_NotificationManager {
 			return;
 		}
 		int trialDescriptions = memory.getDescriptionCount();
-		int trialCount = memory.getTrialCount();
+		int trialCount = memory.getAllTrialCount();
 		
 		if (trialCount == trialDescriptions) {
 			synchronized (doneDescribeingTrials) {
@@ -190,9 +190,6 @@ public class Tests4J_NotificationManager {
 	}
 	
 	public void startingTest(String trialName, String testName) {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("startingTest " + trialName + "." + testName);
-		}
 		reporter.onStartingTest(trialName, testName);
 		if (listener != null) {
 			listener.onStartingTest(trialName, testName);
@@ -200,9 +197,6 @@ public class Tests4J_NotificationManager {
 	}
 	
 	public void onTestCompleted(String trialName, String testName, boolean passed) {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("testFinished " + trialName + "." + testName + " " + passed);
-		}
 		reporter.onTestCompleted(trialName, testName, passed);
 		if (listener != null) {
 			listener.onTestCompleted(trialName, testName, passed);
@@ -241,6 +235,10 @@ public class Tests4J_NotificationManager {
 			trialFailures.addAndGet(1);
 		}
 		trials.addAndGet(1);
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("trialFinished " + result.getName() + " " + trials.get() + 
+					" trials completed ");
+		}
 	}
 
 	
@@ -255,18 +253,34 @@ public class Tests4J_NotificationManager {
 	public  void checkDoneRunningTrials() {
 		if (doneDescribeingTrials.get()) {
 			int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
+			int trialsRan = trials.get();
+			int trialClazzFails = trialClassDefFailures.get();
+			int ignoredTrials = memory.getAllTrialCount() - trialsWhichCanRun;
+			
 			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-				reporter.log("checkDoneRunningTrials " + trials.get() + " =? " +
-						trialsWhichCanRun + " + " + trialClassDefFailures.get());
+				reporter.log("checkDoneRunningTrials " + trialsRan + " =? " +
+						trialsWhichCanRun + " + " + trialClazzFails + " + " +
+						ignoredTrials);
 			}
-			if (trials.get() == trialsWhichCanRun + trialClassDefFailures.get()) {
+			if (trialsRan == trialsWhichCanRun + trialClazzFails + ignoredTrials) {
 				synchronized (doneRunningTrials) {
 					if (!doneRunningTrials.get()) {
 						doneRunningTrials.set(true);
 						onDoneRunningTrials();
 					}
 				}
-				
+			} else {
+				List<TrialInstancesProcessor> tips =  memory.getTrialInstancesProcessors();
+				for (TrialInstancesProcessor tip: tips) {
+					if (!tip.isFinished()) {
+						TrialDescription td =  tip.getTrialDescription();
+						if (td != null) {
+							if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+								reporter.log("currently working on " + td);
+							}
+						}
+					}
+				}
 			}
 		}
 	}

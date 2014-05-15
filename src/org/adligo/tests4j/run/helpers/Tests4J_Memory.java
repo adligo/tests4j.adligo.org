@@ -1,7 +1,7 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +25,6 @@ import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
@@ -56,7 +55,7 @@ public class Tests4J_Memory {
 	private ConcurrentLinkedQueue<TrialDescription> trialDescriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
 	private List<TrialDescription> allTrialDescriptions = new CopyOnWriteArrayList<TrialDescription>();
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
-	private int trialCount;
+	private int allTrialCount;
 	private boolean systemExit;
 	private I_CoveragePlugin plugin;
 	private ExecutorService runService;
@@ -72,6 +71,8 @@ public class Tests4J_Memory {
 	private Boolean recordSeperateTestCoverage = null;
 	private final String mainRecorderScope;
 	private ThreadLocalOutputStream out;
+	private CopyOnWriteArrayList<TrialInstancesProcessor> trialInstancesProcessors = 
+			new CopyOnWriteArrayList<TrialInstancesProcessor>();
 	/**
 	 * 
 	 * @param params
@@ -81,7 +82,7 @@ public class Tests4J_Memory {
 	public Tests4J_Memory(Tests4J_Params params, ThreadLocalOutputStream pOut) {
 		out = pOut;
 		trialClasses.addAll(params.getTrials());
-		trialCount = trialClasses.size();
+		allTrialCount = trialClasses.size();
 		systemExit = params.isExitAfterLastNotification();
 		plugin = params.getCoveragePlugin();
 		log = params.getReporter();
@@ -203,8 +204,8 @@ public class Tests4J_Memory {
 		return trialClasses;
 	}
 
-	public int getTrialCount() {
-		return trialCount;
+	public int getAllTrialCount() {
+		return allTrialCount;
 	}
 
 	public int getDescriptionCount() {
@@ -313,5 +314,19 @@ public class Tests4J_Memory {
 
 	public String getMainRecorderScope() {
 		return mainRecorderScope;
+	}
+
+	public List<TrialInstancesProcessor> getTrialInstancesProcessors() {
+		return new ArrayList<TrialInstancesProcessor>(trialInstancesProcessors);
+	}
+
+	public void setTrialInstancesProcessors(
+			Collection<TrialInstancesProcessor> p) {
+		trialInstancesProcessors.clear();
+		trialInstancesProcessors.addAll(p);
+	}
+	
+	public void addTrialInstancesProcessors(TrialInstancesProcessor p) {
+		trialInstancesProcessors.add(p);
 	}
 }

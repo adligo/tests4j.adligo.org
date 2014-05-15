@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.system.CoveragePluginWrapper;
 import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -52,6 +53,8 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		if (plugin != null) {
 			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(params);
 			params.setTrials(instrumentedTrials);
+			plugin = new CoveragePluginWrapper(plugin);
+			params.setCoveragePlugin(plugin);
 		}
 		
 		I_Tests4J_Reporter reporter = params.getReporter();
@@ -89,6 +92,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		for (int i = 0; i < threads; i++) {
 			TrialInstancesProcessor tip = new TrialInstancesProcessor(memory, notifier, reporter); 
 			runService.execute(tip);
+			memory.addTrialInstancesProcessors(tip);
 		}
 	}
 }

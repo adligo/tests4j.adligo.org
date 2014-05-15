@@ -57,7 +57,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	private boolean hadAfterTrialTests;
 	private List<Integer> afterTrialTestsAssertionHashes = new ArrayList<Integer>(); 
 	private TestResultMutant afterTrialTestsResultMutant;
-	
+	private boolean finished = false;
 	/**
 	 * 
 	 * @param p
@@ -115,6 +115,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		} catch (Error x) {
 			memory.getLog().onError(x);
 		}
+		finished = true;
 	}
 
 	/**
@@ -479,4 +480,13 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			trm.incrementAssertionCount(it.next());
 		}
 	}
+
+	public boolean isFinished() {
+		return finished;
+	}
+
+	public synchronized TrialDescription getTrialDescription() {
+		return trialDescription;
+	}
+	
 }
