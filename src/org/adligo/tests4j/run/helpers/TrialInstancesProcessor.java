@@ -46,6 +46,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	private Tests4J_Memory memory;
 	private Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
+	private I_Tests4J_Reporter reporter;
 	private I_AbstractTrial trial;
 	private BaseTrialResultMutant trialResultMutant;
 	
@@ -71,8 +72,9 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			I_Tests4J_Reporter pReporter) {
 		memory = p;
 		notifier = pNotificationManager;
+		reporter = pReporter;
 		
-		testsRunner = new TestRunable();
+		testsRunner = new TestRunable(pReporter);
 		testsRunner.setListener(this);
 		testRunService = Executors.newSingleThreadExecutor();
 	}
@@ -222,6 +224,10 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		}
 	}
 	private void runTrial() {
+		
+		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+			reporter.log("running trial " + trialDescription.getTrialName());
+		}
 		afterTrialTestsAssertionHashes.clear();
 		afterTrialTestsResultMutant = null;
 		
@@ -244,11 +250,20 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		trialResultMutant.setTrialName(trialDescription.getTrialName());
 		runBeforeTrial();
 		testsRunner.setTrial(trial);
+		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+			reporter.log("running trial tests " + trialDescription.getTrialName());
+		}
 		runTests();
+		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+			reporter.log("finished trial tests" + trialDescription.getTrialName());
+		}
 		
 		runAfterTrialTests(trialCoverageRecorder);
 		runAfterTrial();
 		
+		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+			reporter.log("calculating trial results " + trialDescription.getTrialName());
+		}
 		TrialTypeEnum type = trialDescription.getType();
 		I_TrialResult result;
 		switch (type) {
@@ -272,6 +287,9 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 					setAfterTrialTestsState(src);
 					result = new SourceFileTrialResult(src);
 				break;
+		}
+		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+			reporter.log("notifying trial finished " + trialDescription.getTrialName());
 		}
 		notifier.onTrialCompleted(result);
 		trialResultMutant = null;
@@ -330,7 +348,6 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			trial.beforeTests();
 			testsRunner.setTestMethod(method);
 			testResultFuture = testRunService.submit(testsRunner);
-			
 			
 			try {
 				Long timeout = tm.getTimeoutMillis();
@@ -448,14 +465,15 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	}
 	
 	@Override
-	public synchronized void testFinished(TestResult p) {
+	public void testFinished(TestResult p) {
 		TestResultMutant forOut = new TestResultMutant(p);
 		forOut.setOutput(memory.getThreadLocalOutput());
 		TestResult result = new TestResult(forOut);
 		
 		try {
 			blocking.put(result);
-			testResultFuture.cancel(true);
+			blocking.notify();
+			testResultFuture.cancel(false);
 		} catch (InterruptedException e) {
 			//do nothing
 		}
@@ -489,4 +507,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		return trialDescription;
 	}
 	
+	public void poke() {
+		
+	}
 }

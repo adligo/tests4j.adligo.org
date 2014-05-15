@@ -273,6 +273,7 @@ public class Tests4J_NotificationManager {
 				List<TrialInstancesProcessor> tips =  memory.getTrialInstancesProcessors();
 				for (TrialInstancesProcessor tip: tips) {
 					if (!tip.isFinished()) {
+						tip.poke();
 						TrialDescription td =  tip.getTrialDescription();
 						if (td != null) {
 							if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {

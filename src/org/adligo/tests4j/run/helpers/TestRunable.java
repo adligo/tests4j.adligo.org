@@ -16,6 +16,7 @@ import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
+import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 public class TestRunable implements Runnable, I_AssertListener {
 
@@ -25,12 +26,20 @@ public class TestRunable implements Runnable, I_AssertListener {
 	private I_TestFinishedListener listener;
 	private TestResult testResult;
 	private CopyOnWriteArrayList<Integer> assertionHashes = new CopyOnWriteArrayList<Integer>(); 
+	private I_Tests4J_Reporter reporter;
+	
+	public TestRunable(I_Tests4J_Reporter pReporter) {
+		reporter = pReporter;
+	}
 	
 	@Override
 	public void run() {
 		TestResultMutant testResultMutant = new TestResultMutant();
 		assertionHashes.clear();
 		
+		if (reporter.isLogEnabled(TestRunable.class)) {
+			reporter.log("running test " + trial.getClass().getName() + "." + testMethod.getName());
+		}
 		Throwable unexpected = null;
 		try {
 			testResultMutant.setName(testMethod.getName());
@@ -53,7 +62,12 @@ public class TestRunable implements Runnable, I_AssertListener {
 			testResultMutant.setFailure(failure);
 		
 		}
-		listener.testFinished(new TestResult(testResultMutant));
+		TestResult toRet = new TestResult(testResultMutant);
+		if (reporter.isLogEnabled(TestRunable.class)) {
+			reporter.log("notifying test finished " + trial.getClass().getName() + 
+					"." + testMethod.getName() + " " + toRet.isPassed());
+		}
+		listener.testFinished(toRet);
 	}
 
 	public Method getTestMethod() {
