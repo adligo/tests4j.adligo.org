@@ -6,9 +6,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,6 +54,8 @@ public class Tests4J_Memory {
 	
 	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
+	private Set<String> tests;
+	
 	private ConcurrentLinkedQueue<TrialDescription> trialDescriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
 	private List<TrialDescription> allTrialDescriptions = new CopyOnWriteArrayList<TrialDescription>();
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
@@ -82,6 +86,12 @@ public class Tests4J_Memory {
 	public Tests4J_Memory(Tests4J_Params params, ThreadLocalOutputStream pOut) {
 		out = pOut;
 		trialClasses.addAll(params.getTrials());
+		Set<String> pTests = params.getTests();
+		if (pTests.size() >= 1) {
+			tests = new CopyOnWriteArraySet<String>();
+			tests.addAll(pTests);
+			tests = Collections.unmodifiableSet(tests);
+		}
 		allTrialCount = trialClasses.size();
 		systemExit = params.isExitAfterLastNotification();
 		plugin = params.getCoveragePlugin();
@@ -328,5 +338,20 @@ public class Tests4J_Memory {
 	
 	public void addTrialInstancesProcessors(TrialInstancesProcessor p) {
 		trialInstancesProcessors.add(p);
+	}
+	
+	public boolean hasTestsFilter() {
+		if (tests != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean runTest(Class<?> trial, String method) {
+		String trialMethod = trial.getName() + "." + method;
+		if (tests.contains(trialMethod)) {
+			return true;
+		}
+		return false;
 	}
 }

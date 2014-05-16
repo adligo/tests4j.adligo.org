@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
 import java.util.List;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
@@ -14,11 +15,23 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
  */
 public interface I_Tests4J_Params {
 	/**
-	 * The trials/tests to run.
+	 * The trials to run.
 	 * 
 	 * @return
 	 */
 	public List<Class<? extends I_AbstractTrial>> getTrials();
+	
+	/**
+	 * The specific tests to run, if this set is empty
+	 * Tests4J will run all of the tests in all of the trials.
+	 * The Strings should conform to the full package name
+	 * of the trail dot trial name dot method name ie;
+	 * org.adligo.tests4j.models.shared.system.I_Tests4J_Params.getTests
+	 * 
+	 * @return
+	 */
+	public Set<String> getTests();
+	
 	/**
 	 * The reporter originally used to print messages to the console,
 	 * since Test4J usually modifies System.out and System.err

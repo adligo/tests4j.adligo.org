@@ -1,7 +1,9 @@
 package org.adligo.tests4j.models.shared.system;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
@@ -9,9 +11,13 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {
+	/**
+	 * @see I_Tests4J_Params#getTrials()
+	 */
 	private List<Class<? extends I_AbstractTrial>> trials = 
 				new ArrayList<Class<? extends I_AbstractTrial>>();
-
+	
+	private Set<String> tests = new HashSet<String>();
 	/**
 	 * @see I_Tests4J_Params#getReporter()
 	 */
@@ -61,6 +67,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	
 	public Tests4J_Params(I_Tests4J_Params p) {
 		trials.addAll(p.getTrials());
+		tests.addAll(p.getTests());
 		reporter = p.getReporter();
 		minTrials = p.getMinTrials();
 		minTests = p.getMinTests();
@@ -162,5 +169,22 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 	public void setMinTrials(Integer minTrials) {
 		this.minTrials = minTrials;
+	}
+
+	public Set<String> getTests() {
+		return tests;
+	}
+
+	public void setTests(Set<String> p) {
+		tests.clear();
+		tests.addAll(p);
+	}
+	
+	public void addTest(String p) {
+		tests.add(p);
+	}
+	
+	public void removeTest(String p) {
+		tests.remove(p);
 	}
 }

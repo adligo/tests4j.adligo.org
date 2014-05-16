@@ -1,5 +1,10 @@
 package org.adligo.tests4j.models.shared;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * this annotation is just so that
  * a test runner can identify trials that should run
@@ -10,6 +15,8 @@ package org.adligo.tests4j.models.shared;
  * @author scott
  *
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 public @interface TrialRecursion {
 
 }

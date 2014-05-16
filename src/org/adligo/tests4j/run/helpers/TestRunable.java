@@ -42,6 +42,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		}
 		Throwable unexpected = null;
 		try {
+			
 			testResultMutant.setName(testMethod.getName());
 			
 			testResult = new TestResult(testResultMutant);

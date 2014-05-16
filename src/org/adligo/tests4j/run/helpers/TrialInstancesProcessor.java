@@ -334,6 +334,13 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		Method method = tm.getMethod();
 		blocking.clear();
 		
+		if (memory.hasTestsFilter()) {
+			Class<?> trialClazz = trialDescription.getTrialClass();
+			if (!memory.runTest(trialClazz, method.getName())) {
+				return;
+			}
+		}
+
 		String trialName = trialDescription.getTrialName();
 		if (tm.isIgnore()) {
 			TestResultMutant trm = new TestResultMutant();
