@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="jar" name="xml_schemas">
+<project basedir="." default="jar" name="tests4j">
 	<import file="${user.home}/conf/adligo/builds/jse-build.xml"/>
 </project>
