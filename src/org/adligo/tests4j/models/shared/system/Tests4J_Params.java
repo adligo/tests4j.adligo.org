@@ -57,12 +57,12 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * @see coveragePlugin
 	 * null means use the coverage plugin's default
 	 */
-	private Boolean recordSeperateTrialCoverage = null;
+	private boolean recordSeperateTrialCoverage = true;
+	
 	/**
-	 * @see coveragePlugin
-	 * null means use the coverage plugin's default
+	 * these classes get reporting turned on 
 	 */
-	private Boolean recordSeperateTestCoverage = null;
+	private List<Class<?>> loggingClasses = new ArrayList<Class<?>>();
 	
 	public Tests4J_Params() {}
 	
@@ -77,6 +77,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		coveragePlugin = p.getCoveragePlugin();
 		trialThreads = p.getTrialThreadCount();
 		exitAfterLastNotification = p.isExitAfterLastNotification();
+		recordSeperateTrialCoverage = p.isRecordSeperateTrialCoverage();
+		loggingClasses.addAll(p.getLoggingClasses());
 	}
 	
 	public List<Class<? extends I_AbstractTrial>> getTrials() {
@@ -138,26 +140,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public void setReporter(I_Tests4J_Reporter p) {
 		this.reporter = p;
 	}
-	
-	public Boolean getRecordSeperateTrialCoverage() {
-		if (recordSeperateTestCoverage == null) {
-			if (coveragePlugin != null) {
-				if (coveragePlugin.canSubRecord()) {
-					return true;
-				}
-			}
-		}
-		return recordSeperateTrialCoverage;
-	}
-	public Boolean getRecordSeperateTestCoverage() {
-		return recordSeperateTestCoverage;
-	}
-	public void setRecordTrialCoverage(boolean recordTrialCoverage) {
-		this.recordSeperateTrialCoverage = recordTrialCoverage;
-	}
-	public void setRecordTestCoverage(boolean recordTestCoverage) {
-		this.recordSeperateTestCoverage = recordTestCoverage;
-	}
 
 	public Integer getMinTrials() {
 		return minTrials;
@@ -190,6 +172,28 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 	public void setExitAfterLastNotification(boolean exitAfterLastNotification) {
 		this.exitAfterLastNotification = exitAfterLastNotification;
+	}
+
+	@Override
+	public boolean isRecordSeperateTrialCoverage() {
+		return recordSeperateTrialCoverage;
+	}
+
+	public void setRecordSeperateTrialCoverage(boolean p) {
+		recordSeperateTrialCoverage = p;
+	}
+
+	public List<Class<?>> getLoggingClasses() {
+		return new ArrayList<Class<?>>(loggingClasses);
+	}
+
+	public void setLoggingClasses(List<Class<?>> p) {
+		loggingClasses.clear();
+		loggingClasses.addAll(p);
+	}
+
+	public void addLoggingClass(Class<?> p) {
+		loggingClasses.add(p);
 	}
 
 }

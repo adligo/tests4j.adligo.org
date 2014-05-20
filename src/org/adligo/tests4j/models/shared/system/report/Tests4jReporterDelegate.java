@@ -29,4 +29,13 @@ public class Tests4jReporterDelegate extends TrialRunListenerDelegate implements
 	public synchronized boolean isRedirect() {
 		return delegate.isRedirect();
 	}
+
+	public void setLogOn(Class<?> clazz) {
+		delegate.setLogOn(clazz);
+	}
+
+	public void setLogOff(Class<?> clazz) {
+		delegate.setLogOff(clazz);
+	}
+
 }

@@ -14,6 +14,7 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
  *
  */
 public interface I_Tests4J_Params {
+
 	/**
 	 * The trials to run.
 	 * 
@@ -93,4 +94,17 @@ public interface I_Tests4J_Params {
 	 * @return
 	 */
 	public Integer getMinUniqueAssertions();
+	
+	/** 
+	 * if the coverage plug-in allows separate trial coverage
+	 * this can turn it off
+	 * @return
+	 */
+	public boolean isRecordSeperateTrialCoverage();
+	/**
+	 * the list of classes to report for 
+	 * reporting really is just Tests4J internal logging
+	 * @return
+	 */
+	public List<Class<?>> getLoggingClasses();
 }

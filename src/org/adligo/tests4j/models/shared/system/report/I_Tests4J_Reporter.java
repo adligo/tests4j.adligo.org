@@ -36,6 +36,18 @@ public interface I_Tests4J_Reporter extends I_TrialRunListener {
 	public boolean isLogEnabled(Class<?> clazz);
 	
 	/**
+	 * enable logging for a class
+	 * 
+	 * @return
+	 */
+	public  void setLogOn(Class<?> clazz);
+	/**
+	 * disable logging for a class
+	 * 
+	 * @return
+	 */
+	public  void setLogOff(Class<?> clazz);
+	/**
 	 * When this returns true, the original System.out
 	 * and System.err are not delegated to.
 	 * 

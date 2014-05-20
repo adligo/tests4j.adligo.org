@@ -68,6 +68,10 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			reporter = new ConsoleReporter();
 			params.setReporter(reporter);
 		} 
+		List<Class<?>> reportingClasses = pParams.getLoggingClasses();
+		for (Class<?> clazz: reportingClasses) {
+			reporter.setLogOn(clazz);
+		}
 		
 		if (reporter.isRedirect()) {
 			if (reporter.isSnare()) {
