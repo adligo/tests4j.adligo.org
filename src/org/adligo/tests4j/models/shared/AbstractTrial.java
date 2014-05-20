@@ -56,24 +56,24 @@ public abstract class AbstractTrial implements I_AbstractTrial {
 	public static final String THE_VALUE_SHOULD_BE_FALSE = "The value should be false.";
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
-	private I_AssertionHelperInfo memory;
+	private I_AssertionHelperInfo runtime;
 	/**
 	 * Set the memory of the AbstractTrial
 	 * @param p
 	 */
-	public void setMemory(I_AssertionHelperInfo pMemory) {
-		memory = pMemory;
+	public void setRuntime(I_AssertionHelperInfo pMemory) {
+		runtime = pMemory;
 	}
 	
 	/**
 	 * @param cmd
 	 */
 	public void evaluate(I_BasicAssertCommand cmd) {
-		AssertionProcessor.evaluate(memory, cmd);
+		AssertionProcessor.evaluate(runtime, cmd);
 	}
 	
 	public void evaluate(I_ThrownAssertCommand cmd, I_Thrower p) {
-		AssertionProcessor.evaluate(memory, cmd, p);
+		AssertionProcessor.evaluate(runtime, cmd, p);
 	}
 	
 	@Override
@@ -292,4 +292,5 @@ public abstract class AbstractTrial implements I_AbstractTrial {
 		evaluate(new ContainsAssertCommand(
 				message, p, a));
 	}
+	
 }

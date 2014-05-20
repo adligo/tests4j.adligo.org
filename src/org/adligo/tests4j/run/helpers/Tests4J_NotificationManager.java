@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -38,6 +39,7 @@ public class Tests4J_NotificationManager {
 	private AtomicBoolean doneDescribeingTrials = new AtomicBoolean(false);
 	private AtomicBoolean doneRunningTrials = new AtomicBoolean(false);
 	private Tests4J_Memory memory;
+	private Tests4J_ThreadManager threadManager;
 	/**
 	 * always call reporter first then call listener
 	 */
@@ -55,10 +57,13 @@ public class Tests4J_NotificationManager {
 	private AtomicInteger trials = new AtomicInteger();
 	private AtomicInteger trialClassDefFailures = new AtomicInteger();
 	private Set<String> trialPackageNames = new CopyOnWriteArraySet<String>();
+	private AtomicBoolean running = new AtomicBoolean(true);
 	
-	public Tests4J_NotificationManager(Tests4J_Memory pMem, I_Tests4J_Reporter pLog, I_TrialRunListener pListener) {
+	public Tests4J_NotificationManager(Tests4J_Memory pMem) {
 		memory = pMem;
-		reporter = new Tests4jReporterDelegate(pLog);
+		threadManager = pMem.getThreadManager();
+		reporter = new Tests4jReporterDelegate(pMem.getReporter());
+		I_TrialRunListener pListener = pMem.getListener();
 		if (pListener != null) {
 			listener = new TrialRunListenerDelegate(pListener);
 		}
@@ -273,7 +278,6 @@ public class Tests4J_NotificationManager {
 				List<TrialInstancesProcessor> tips =  memory.getTrialInstancesProcessors();
 				for (TrialInstancesProcessor tip: tips) {
 					if (!tip.isFinished()) {
-						tip.poke();
 						TrialDescription td =  tip.getTrialDescription();
 						if (td != null) {
 							if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
@@ -315,13 +319,7 @@ public class Tests4J_NotificationManager {
 		if (listener != null) {
 			listener.onRunCompleted(endResult);
 		}
-		
-		
-		ExecutorService runService =  memory.getRunService();
-		runService.shutdownNow();
-		if (memory.isSystemExit()) {
-			System.exit(0);
-		}
+		threadManager.shutdown();
 	}
 
 	/**
@@ -357,11 +355,11 @@ public class Tests4J_NotificationManager {
 	}
 	
 	public synchronized void onDescibeTrialError() {
-		ExecutorService runService =  memory.getRunService();
-		runService.shutdownNow();
-		if (memory.isSystemExit()) {
-			System.exit(0);
-		}
+		threadManager.shutdown();
+	}
+	
+	public boolean isRunning() {
+		return running.get();
 	}
 	
 	

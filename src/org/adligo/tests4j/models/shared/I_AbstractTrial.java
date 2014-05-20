@@ -16,5 +16,5 @@ public interface I_AbstractTrial extends I_Asserts {
 
 	public void afterTests();
 	
-	void setMemory(I_AssertionHelperInfo pMemory);
+	void setRuntime(I_AssertionHelperInfo pMemory);
 }

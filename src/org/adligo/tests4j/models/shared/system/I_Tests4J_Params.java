@@ -56,7 +56,7 @@ public interface I_Tests4J_Params {
 	 * 
 	 * @return
 	 */
-	public int getThreadPoolSize();
+	public int getTrialThreadCount();
 	/**
 	 * This determines if System.exit(0);
 	 *  should be called after the last notification.

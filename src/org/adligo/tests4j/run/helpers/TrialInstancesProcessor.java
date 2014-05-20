@@ -8,7 +8,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.ApiTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
@@ -42,8 +44,9 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener, I_AssertListener {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
-
+	
 	private Tests4J_Memory memory;
+	private Tests4J_ThreadManager threadManager;
 	private Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
 	private I_Tests4J_Reporter reporter;
@@ -73,10 +76,11 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		memory = p;
 		notifier = pNotificationManager;
 		reporter = pReporter;
+		threadManager = p.getThreadManager();
 		
 		testsRunner = new TestRunable(pReporter);
 		testsRunner.setListener(this);
-		testRunService = Executors.newSingleThreadExecutor();
+		testRunService = threadManager.createNewTestRunService();
 	}
 
 	/**
@@ -94,11 +98,11 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			}
 			notifier.checkDoneDescribingTrials();
 		} catch (Exception x) {
-			memory.getLog().onError(x);
+			memory.getReporter().onError(x);
 			notifier.onDescibeTrialError();
 			return;
 		} catch (Error x) {
-			memory.getLog().onError(x);
+			memory.getReporter().onError(x);
 			notifier.onDescibeTrialError();
 			return;
 		}
@@ -112,11 +116,13 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			}
 			testRunService.shutdownNow();
 			notifier.checkDoneRunningTrials();
+		} catch (RejectedExecutionException x) {
+				//do nothing
 		} catch (Exception x) {
-			memory.getLog().onError(x);
+			memory.getReporter().onError(x);
 		} catch (Error x) {
-			memory.getLog().onError(x);
-		}
+			memory.getReporter().onError(x);
+		} 
 		finished = true;
 	}
 
@@ -130,7 +136,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		
 		I_CoverageRecorder trialCoverageRecorder = startRecordingTrial(trialClazz);
 		
-		TrialDescription desc = new TrialDescription(trialClazz, memory.getLog());
+		TrialDescription desc = new TrialDescription(trialClazz, memory.getReporter());
 		memory.add(desc);
 		if (!desc.isIgnored()) {
 			if (!desc.isTrialCanRun()) {
@@ -223,7 +229,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			trialResultMutant.setType(type);
 		}
 	}
-	private void runTrial() {
+	private void runTrial() throws RejectedExecutionException  {
 		
 		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
 			reporter.log("running trial " + trialDescription.getTrialName());
@@ -242,7 +248,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		atm.setCoveragePlugin(memory.getPlugin());
 		atm.setListener(testsRunner);
 		
-		trial.setMemory(atm);
+		trial.setRuntime(atm);
 		
 		trialResultMutant = new BaseTrialResultMutant();
 			
@@ -321,7 +327,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	 * 
 	 * @return all suceeded
 	 */
-	private void runTests() {
+	private void runTests() throws RejectedExecutionException {
 		Iterator<TestDescription> methods = trialDescription.getTestMethods();
 		
 		while (methods.hasNext()) {
@@ -330,7 +336,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		
 	}
 
-	private void runTest(TestDescription tm) {
+	private void runTest(TestDescription tm) throws RejectedExecutionException {
 		Method method = tm.getMethod();
 		blocking.clear();
 		
@@ -355,6 +361,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			trial.beforeTests();
 			testsRunner.setTestMethod(method);
 			testResultFuture = testRunService.submit(testsRunner);
+			threadManager.setTestRunFuture(testRunService, testResultFuture);
 			
 			try {
 				Long timeout = tm.getTimeoutMillis();
@@ -417,9 +424,11 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				AssertionHelperInfo atm = new AssertionHelperInfo();
 				atm.setCoveragePlugin(memory.getPlugin());
 				atm.setListener(this);
-				trial.setMemory(atm);
+				trial.setRuntime(atm);
 				try {
-					((SourceFileTrial) trial).afterTrialTests(cover);
+					if (trial instanceof SourceFileTrial) {
+						((SourceFileTrial) trial).afterTrialTests(cover);
+					}
 				} catch (Exception x) {
 					failTestOnException(x.getMessage(), x, type);
 				}
@@ -442,12 +451,14 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				atm = new AssertionHelperInfo();
 				atm.setCoveragePlugin(memory.getPlugin());
 				atm.setListener(this);
-				trial.setMemory(atm);
+				trial.setRuntime(atm);
 				coverage = trialCoverageRecorder.endRecording();
 				ranAfterTrialTests = true;
 				I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);
 				try {
-					((ApiTrial) trial).afterTrialTests(pkgCover);
+					if (trial instanceof ApiTrial) {
+						((ApiTrial) trial).afterTrialTests(pkgCover);
+					}
 				} catch (Exception x) {
 					failTestOnException(x.getMessage(), x, type);
 				}
@@ -512,9 +523,5 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 
 	public synchronized TrialDescription getTrialDescription() {
 		return trialDescription;
-	}
-	
-	public void poke() {
-		
 	}
 }

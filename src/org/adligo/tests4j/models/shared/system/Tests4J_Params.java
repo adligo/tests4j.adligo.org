@@ -24,6 +24,11 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private I_Tests4J_Reporter reporter = new ConsoleReporter();
 	
 	/**
+	 * this flaggs a jvm exit
+	 */
+	private boolean exitAfterLastNotification = true;
+	
+	/**
 	 * @see I_Tests4J_Params#getMinTrials()
 	 */
 	private Integer minTrials = null;
@@ -39,11 +44,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 *  a null value means don't check it
 	 */
 	private Integer minUniqueAssertions = null;
-	private int threadPoolSize = 32;
-	/**
-	 * this flaggs a jvm exit
-	 */
-	private boolean exitAfterLastNotification = true;
+	private int trialThreads = 32;
 	/**
 	 * All coverage is always recorded if there is a plugin,
 	 * more fine grained coverage may be recorded if the 
@@ -74,8 +75,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		minAsserts = p.getMinAsserts();
 		minUniqueAssertions = p.getMinUniqueAssertions();
 		coveragePlugin = p.getCoveragePlugin();
+		trialThreads = p.getTrialThreadCount();
 		exitAfterLastNotification = p.isExitAfterLastNotification();
-		threadPoolSize = p.getThreadPoolSize();
 	}
 	
 	public List<Class<? extends I_AbstractTrial>> getTrials() {
@@ -122,14 +123,14 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		minUniqueAssertions = minUniqueAssertions + p.getMinUniqueAssertions();
 		*/
 	}
-	public int getThreadPoolSize() {
-		if (trials.size() < threadPoolSize) {
+	public int getTrialThreadCount() {
+		if (trials.size() < trialThreads) {
 			return trials.size();
 		}
-		return threadPoolSize;
+		return trialThreads;
 	}
-	public void setThreadPoolSize(int threadPoolSize) {
-		this.threadPoolSize = threadPoolSize;
+	public void setTrialThreads(int p) {
+		this.trialThreads = p;
 	}
 	public I_Tests4J_Reporter getReporter() {
 		return reporter;
@@ -137,12 +138,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public void setReporter(I_Tests4J_Reporter p) {
 		this.reporter = p;
 	}
-	public boolean isExitAfterLastNotification() {
-		return exitAfterLastNotification;
-	}
-	public void setExitAfterLastNotification(boolean exitAfterLastNotification) {
-		this.exitAfterLastNotification = exitAfterLastNotification;
-	}
+	
 	public Boolean getRecordSeperateTrialCoverage() {
 		if (recordSeperateTestCoverage == null) {
 			if (coveragePlugin != null) {
@@ -187,4 +183,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public void removeTest(String p) {
 		tests.remove(p);
 	}
+
+	public boolean isExitAfterLastNotification() {
+		return exitAfterLastNotification;
+	}
+
+	public void setExitAfterLastNotification(boolean exitAfterLastNotification) {
+		this.exitAfterLastNotification = exitAfterLastNotification;
+	}
+
 }

@@ -29,6 +29,7 @@ import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
@@ -43,6 +44,7 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
  */
 public class Tests4J_Memory {
 	private static AtomicBoolean LOADED_COMMON_CLASSES = new AtomicBoolean(false);
+	
 	/**
 	 * these are enums, interfaces and other classes
 	 * that have NO methods or runtime code 
@@ -60,11 +62,9 @@ public class Tests4J_Memory {
 	private List<TrialDescription> allTrialDescriptions = new CopyOnWriteArrayList<TrialDescription>();
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
 	private int allTrialCount;
-	private boolean systemExit;
 	private I_CoveragePlugin plugin;
-	private ExecutorService runService;
 	private Map<String, I_CoverageRecorder> recorders = new ConcurrentHashMap<String, I_CoverageRecorder>();
-	private I_Tests4J_Reporter log;
+	private I_Tests4J_Reporter reporter;
 	/**
 	 * @see Tests4J_Params#getRecordSeperateTrialCoverage()
 	 */
@@ -77,15 +77,30 @@ public class Tests4J_Memory {
 	private ThreadLocalOutputStream out;
 	private CopyOnWriteArrayList<TrialInstancesProcessor> trialInstancesProcessors = 
 			new CopyOnWriteArrayList<TrialInstancesProcessor>();
+	private I_TrialRunListener listener;
+	private Tests4J_ThreadManager threadManager;
 	/**
 	 * 
 	 * @param params
 	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
+	 * @diagram sync on 5/1/2014 with Overview.seq 
 	 */
-	public Tests4J_Memory(Tests4J_Params params, ThreadLocalOutputStream pOut) {
+	public Tests4J_Memory(Tests4J_Params params, ThreadLocalOutputStream pOut, I_TrialRunListener pListener) {
 		out = pOut;
+		listener = pListener;
 		trialClasses.addAll(params.getTrials());
+		reporter = params.getReporter();
+		
+		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
+			reporter.log("Starting thread manager with " + params.getTrialThreadCount());
+		}
+		/**
+		 * @diagram sync on 5/19/2014 with Overview.seq
+		 */
+		threadManager = new Tests4J_ThreadManager(
+				params.isExitAfterLastNotification(), 
+				params.getTrialThreadCount());
+		
 		Set<String> pTests = params.getTests();
 		if (pTests.size() >= 1) {
 			tests = new CopyOnWriteArraySet<String>();
@@ -93,22 +108,15 @@ public class Tests4J_Memory {
 			tests = Collections.unmodifiableSet(tests);
 		}
 		allTrialCount = trialClasses.size();
-		systemExit = params.isExitAfterLastNotification();
 		plugin = params.getCoveragePlugin();
-		log = params.getReporter();
 		if (!LOADED_COMMON_CLASSES.get()) {
 			synchronized (LOADED_COMMON_CLASSES) {
 				if (!LOADED_COMMON_CLASSES.get()) {
-					COMMON_CLASSES = getCommonClasses(log);
+					COMMON_CLASSES = getCommonClasses(reporter);
 				}
 				LOADED_COMMON_CLASSES.set(true);
 			}
 		}
-		
-		
-		int threads = params.getThreadPoolSize();
-		//@diagram Overview.seq sync on 5/1/2014 'runService = Executors.newFixedThreadPool(threads)'
-		runService = Executors.newFixedThreadPool(threads);
 		
 		recordSeperateTrialCoverage = params.getRecordSeperateTrialCoverage();
 		recordSeperateTestCoverage = params.getRecordSeperateTestCoverage();
@@ -174,15 +182,15 @@ public class Tests4J_Memory {
 	 */
 	public void add(TrialDescription p) {
 		allTrialDescriptions.add(p);
-		if (log.isLogEnabled(Tests4J_Memory.class)) {
-			log.log("TrialDescription " + p.getTrialName() +
+		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
+			reporter.log("TrialDescription " + p.getTrialName() +
 					" has " + p.getTestMethodsSize());
 		}
 		if (p.isTrialCanRun()) {
 			trialDescriptionsToRun.add(p);
 		}
-		if (log.isLogEnabled(Tests4J_Memory.class)) {
-			log.log("TrialDescriptions counts " + trialDescriptionsToRun.size() +
+		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
+			reporter.log("TrialDescriptions counts " + trialDescriptionsToRun.size() +
 					"/" + allTrialDescriptions.size());
 		}
 	}
@@ -220,17 +228,6 @@ public class Tests4J_Memory {
 
 	public int getDescriptionCount() {
 		return allTrialDescriptions.size();
-	}
-
-	/**
-	 * 
-	 * @return if System.exit(0); should be called
-	 * at the end of a run of trials.
-	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
-	 */
-	public boolean isSystemExit() {
-		return systemExit;
 	}
 
 	/**
@@ -281,16 +278,7 @@ public class Tests4J_Memory {
 		return out.get().toString();
 	}
 
-	/**
-	 * 
-	 * @return the main executor service to 
-	 * run instances of TrialInstancesProcessor in.
-	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
-	 */
-	public ExecutorService getRunService() {
-		return runService;
-	}
+
 
 	public Iterator<TrialDescription> getAllTrialDescriptions() {
 		return allTrialDescriptions.iterator();
@@ -311,8 +299,8 @@ public class Tests4J_Memory {
 		return toRet;
 	}
 
-	public I_Tests4J_Reporter getLog() {
-		return log;
+	public I_Tests4J_Reporter getReporter() {
+		return reporter;
 	}
 	
 	public Boolean getRecordSeperateTrialCoverage() {
@@ -354,4 +342,13 @@ public class Tests4J_Memory {
 		}
 		return false;
 	}
+
+	public I_TrialRunListener getListener() {
+		return listener;
+	}
+
+	public Tests4J_ThreadManager getThreadManager() {
+		return threadManager;
+	}
+
 }

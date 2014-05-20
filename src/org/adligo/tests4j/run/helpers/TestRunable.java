@@ -48,7 +48,6 @@ public class TestRunable implements Runnable, I_AssertListener {
 			testResult = new TestResult(testResultMutant);
 			testMethod.invoke(trial, new Object[] {});
 			testResultMutant.setPassed(true);
-			
 		} catch (InvocationTargetException e) {
 			unexpected = e.getCause();
 		} catch (Exception x) {
