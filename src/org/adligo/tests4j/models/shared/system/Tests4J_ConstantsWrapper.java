@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
 import org.adligo.tests4j.models.shared.system.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.models.shared.system.i18n.eclipse.I_EclipseErrors;
 import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TrialDescriptionMessages;
 
 public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
@@ -12,5 +13,9 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 
 	public I_Tests4J_TrialDescriptionMessages getTrialDescriptionMessages() {
 		return delegate.getTrialDescriptionMessages();
+	}
+
+	public I_EclipseErrors getEclipseErrors() {
+		return delegate.getEclipseErrors();
 	}
 }
