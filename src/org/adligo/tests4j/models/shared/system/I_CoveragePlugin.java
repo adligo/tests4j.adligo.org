@@ -7,6 +7,8 @@ import org.adligo.tests4j.models.shared.I_AbstractTrial;
 /**
  * a pluggable interface for a this integrating testing api 
  * code coverage tools (like EclEmma/Jacoco)
+ * Also the coverage plugin must implement a zero arg
+ * constructor.
  * 
  * @author scott
  *

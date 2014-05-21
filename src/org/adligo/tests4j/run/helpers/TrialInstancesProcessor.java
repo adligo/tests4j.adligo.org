@@ -208,11 +208,8 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			String name = trialClazz.getName();
 			trialCoverageRecorder = memory.getRecorder(name);
 			if (trialCoverageRecorder == null) {
-				if (Boolean.TRUE == memory.getRecordSeperateTrialCoverage()) {
-					
-					trialCoverageRecorder = plugin.createRecorder(name);
-					memory.addRecorder(name, trialCoverageRecorder);
-				}
+				trialCoverageRecorder = plugin.createRecorder(name);
+				memory.addRecorder(name, trialCoverageRecorder);
 			}
 		}
 		if (trialCoverageRecorder != null) {

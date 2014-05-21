@@ -13,12 +13,15 @@ import org.adligo.tests4j.models.shared.common.IsEmpty;
  *
  */
 public class Tests4J_SocketMessage {
-	private static final String END_SECTION = "';";
-	private static final String TESTS4J_SOCKET_MESSAGE_COMMAND = "tests4j_socketMessage;command='";
-	private static final String VERSION = "1.0";
+	public static final String END_SECTION = "';";
+	public static final String MESSAGE_START = "tests4j_socketMessage;command='";
+	public static final String VERSION = "1.0";
 	public static final String VERSION_KEY = "version='";
 	public static final String CONNECTION_ID = "connection_id='";
-	private static final String PAYLOAD = "payload=;";
+	public static final String PAYLOAD = "payload=;";
+	public static final String MESSAGE_END = "/tests4j_socketMessage;";
+	
+	
 	private Tests4J_Commands command;
 	private String version = VERSION;
 	private String connectionId;
@@ -36,14 +39,14 @@ public class Tests4J_SocketMessage {
 	}
 	
 	public Tests4J_SocketMessage(String socketMessage) {
-		if (socketMessage.length() >= TESTS4J_SOCKET_MESSAGE_COMMAND.length()) {
-			throw new IllegalArgumentException("Requires " + TESTS4J_SOCKET_MESSAGE_COMMAND);
+		if (socketMessage.length() >= MESSAGE_START.length()) {
+			throw new IllegalArgumentException("Requires " + MESSAGE_START);
 		}
-		String afterSocketMessage = socketMessage.substring(TESTS4J_SOCKET_MESSAGE_COMMAND.length() - 1, socketMessage.length());
+		String afterSocketMessage = socketMessage.substring(MESSAGE_START.length() - 1, socketMessage.length());
 		int index = afterSocketMessage.indexOf(END_SECTION);
 		
 		if (index == -1) {
-			throw new IllegalArgumentException("Requires " + TESTS4J_SOCKET_MESSAGE_COMMAND + "XXX" + END_SECTION);
+			throw new IllegalArgumentException("Requires " + MESSAGE_START + "XXX" + END_SECTION);
 		}
 		String commandString = afterSocketMessage.substring(0, index);
 		command = Tests4J_Commands.valueOf(commandString);
@@ -65,12 +68,12 @@ public class Tests4J_SocketMessage {
 		if (index == -1) {
 			throw new IllegalArgumentException("Requires " + PAYLOAD);
 		}
-		payload = afterSocketMessage.substring(PAYLOAD.length() - 1, afterSocketMessage.length());
+		payload = afterSocketMessage.substring(PAYLOAD.length() - 1, afterSocketMessage.length() - MESSAGE_END.length());
 	}
 	
 	public String toSocketMessage() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(TESTS4J_SOCKET_MESSAGE_COMMAND);
+		sb.append(MESSAGE_START);
 		sb.append(command);
 		sb.append(END_SECTION);
 		if (command == Tests4J_Commands.CONNECT) {
@@ -90,6 +93,8 @@ public class Tests4J_SocketMessage {
 			sb.append(PAYLOAD);
 			sb.append(payload);
 		}
+		sb.append("\n");
+		sb.append(MESSAGE_END);
 		return sb.toString();
 	}
 
@@ -107,5 +112,46 @@ public class Tests4J_SocketMessage {
 
 	public String getConnectionId() {
 		return connectionId;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((command == null) ? 0 : command.hashCode());
+		result = prime * result
+				+ ((connectionId == null) ? 0 : connectionId.hashCode());
+		result = prime * result + ((payload == null) ? 0 : payload.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Tests4J_SocketMessage other = (Tests4J_SocketMessage) obj;
+		if (command != other.command)
+			return false;
+		if (connectionId == null) {
+			if (other.connectionId != null)
+				return false;
+		} else if (!connectionId.equals(other.connectionId))
+			return false;
+		if (payload == null) {
+			if (other.payload != null)
+				return false;
+		} else if (!payload.equals(other.payload))
+			return false;
+		if (version == null) {
+			if (other.version != null)
+				return false;
+		} else if (!version.equals(other.version))
+			return false;
+		return true;
 	}
 }

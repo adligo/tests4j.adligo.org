@@ -49,6 +49,7 @@ public interface I_Tests4J_Params {
 	 * @return
 	 */
 	public I_CoveragePlugin getCoveragePlugin();
+	public Class<? extends I_CoveragePlugin> getCoveragePluginClass();
 	/**
 	 * The number of threads which to process 
 	 * Trials concurrently, the thread pool size
@@ -94,13 +95,6 @@ public interface I_Tests4J_Params {
 	 * @return
 	 */
 	public Integer getMinUniqueAssertions();
-	
-	/** 
-	 * if the coverage plug-in allows separate trial coverage
-	 * this can turn it off
-	 * @return
-	 */
-	public boolean isRecordSeperateTrialCoverage();
 	/**
 	 * the list of classes to report for 
 	 * reporting really is just Tests4J internal logging

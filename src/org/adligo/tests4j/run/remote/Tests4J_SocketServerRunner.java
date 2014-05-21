@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.rmi.server.SocketSecurityException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.common.IsEmpty;
@@ -15,14 +16,16 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.run.remote.socket_api.AfterShutdownHandler;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
 
-public class Tests4J_RunnerWithSocket extends Tests4J_SocketApiHandler implements I_TrialRunListener {
+public class Tests4J_SocketServerRunner extends Tests4J_SocketApiHandler implements I_TrialRunListener {
 	private static Integer port;
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
-
+	private AfterShutdownHandler afterShutdownHandler = new AfterShutdownHandler();
+	
 	private AtomicBoolean connected = new AtomicBoolean(false);
 	
 	public static void main(String [] args) {
@@ -32,7 +35,7 @@ public class Tests4J_RunnerWithSocket extends Tests4J_SocketApiHandler implement
 				i++;
 			}
 		}
-		Tests4J_RunnerWithSocket runner = new Tests4J_RunnerWithSocket();
+		Tests4J_SocketServerRunner runner = new Tests4J_SocketServerRunner();
 		
 		if (port == null) {
 			runner.getReporter().log("Port is null exiting.");
@@ -41,9 +44,12 @@ public class Tests4J_RunnerWithSocket extends Tests4J_SocketApiHandler implement
 		runner.start();
 	}
 	
-	public Tests4J_RunnerWithSocket() {
+	public Tests4J_SocketServerRunner() {
 		try { 
-			super.getReporter().setLogOn(Tests4J_RunnerWithSocket.class);
+			I_Tests4J_Reporter reporter = super.getReporter();
+			reporter.setLogOn(Tests4J_SocketServerRunner.class);
+			reporter.setLogOn(Tests4J_SocketApiHandler.class);
+			
 			serverSocket = new ServerSocket(port);
 		    clientSocket = serverSocket.accept();
 		    super.setOut(new PrintWriter(clientSocket.getOutputStream(), true));
@@ -94,7 +100,7 @@ public class Tests4J_RunnerWithSocket extends Tests4J_SocketApiHandler implement
 	@Override
 	void processIncomingMessage(Tests4J_SocketMessage message) {
 		Tests4J_Commands cmd = message.getCommand();
-		if (super.getReporter().isLogEnabled(Tests4J_RunnerWithSocket.class)) {
+		if (super.getReporter().isLogEnabled(Tests4J_SocketServerRunner.class)) {
 			super.getReporter().log("received command " + cmd);
 		}
 		switch (cmd) {
@@ -116,6 +122,9 @@ public class Tests4J_RunnerWithSocket extends Tests4J_SocketApiHandler implement
 				break;
 			case SHUTDOWN:
 				checkConnectionId(message);
+				super.send(new Tests4J_SocketMessage(
+						Tests4J_Commands.ACK, 
+						super.getConnectionId()), afterShutdownHandler);
 			default:
 		}
 	}
@@ -129,4 +138,20 @@ public class Tests4J_RunnerWithSocket extends Tests4J_SocketApiHandler implement
 			throw new SecurityException("ConnectionId Mismatch!");
 		}
 	}
+
+	@Override
+	void shutdownChild() {
+		try {
+			clientSocket.close();
+		} catch (IOException x) {
+			x.printStackTrace();
+		}
+		try {
+			serverSocket.close();
+		} catch (IOException x) {
+			x.printStackTrace();
+		}
+		System.exit(0);
+	}
+
 }

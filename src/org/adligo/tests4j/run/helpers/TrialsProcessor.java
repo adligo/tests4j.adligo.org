@@ -60,7 +60,6 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(params);
 			params.setTrials(instrumentedTrials);
 			plugin = new CoveragePluginWrapper(plugin);
-			params.setCoveragePlugin(plugin);
 		}
 		
 		I_Tests4J_Reporter reporter = params.getReporter();
@@ -86,7 +85,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		if ( !(securityManager instanceof Tests4J_SecurityManager)) {
 			System.setSecurityManager(new Tests4J_SecurityManager(reporter));
 		}
-		memory = new Tests4J_Memory(params,OUT, pListener);
+		memory = new Tests4J_Memory(params,OUT, pListener, plugin);
 		Tests4J_ThreadManager threadManager = memory.getThreadManager();
 		
 		

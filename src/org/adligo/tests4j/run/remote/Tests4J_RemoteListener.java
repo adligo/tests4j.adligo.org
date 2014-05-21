@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
-import org.adligo.tests4j.run.remote.socket_api.I_SocketMessageHandler;
+import org.adligo.tests4j.run.remote.socket_api.I_AckHandler;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
 
@@ -21,14 +21,13 @@ import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
  */
 public class Tests4J_RemoteListener extends Tests4J_SocketApiHandler {
 	private Socket socket;
-	private PrintWriter out;
-	private BufferedReader in;
-	private AtomicBoolean connected = new AtomicBoolean(false);
-	private Tests4J_Commands lastCommnadSent;
 	private String uuid;
-	private I_SocketMessageHandler onConnectHandler;
+	private I_AckHandler onConnectHandler;
 	
-	public Tests4J_RemoteListener(int port, I_SocketMessageHandler pOnConnectHandler) {
+	public Tests4J_RemoteListener() {}
+	
+	
+	public void connect(int port, I_AckHandler pOnConnectHandler) {
 		UUID random = UUID.randomUUID();
 		Tests4J_SocketMessage message = new Tests4J_SocketMessage(
 				Tests4J_Commands.CONNECT, random.toString());
@@ -37,9 +36,9 @@ public class Tests4J_RemoteListener extends Tests4J_SocketApiHandler {
 		
 		try {
 			socket = new Socket("localhost",port);
-			out  = new PrintWriter(socket.getOutputStream(), true);
-			BufferedReader in = new BufferedReader(
-			        new InputStreamReader(socket.getInputStream()));
+			super.setOut(new PrintWriter(socket.getOutputStream(), true));
+			super.setIn(new BufferedReader(
+			        new InputStreamReader(socket.getInputStream())));
 			super.start();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
@@ -51,18 +50,6 @@ public class Tests4J_RemoteListener extends Tests4J_SocketApiHandler {
 		
 	}
 	
-	@Override
-	void transportMessage(Tests4J_SocketMessage p) throws IOException {
-		if (super.getReporter().isLogEnabled(Tests4J_RemoteListener.class)) {
-			super.getReporter().log("sending command " + p.getCommand());
-		}
-		String message = p.toSocketMessage();
-		lastCommnadSent = p.getCommand();
-		out.write(message);
-		out.flush();
-	}
-
-
 
 	void processIncomingMessage(Tests4J_SocketMessage message) {
 		Tests4J_Commands cmd = message.getCommand();
@@ -71,16 +58,36 @@ public class Tests4J_RemoteListener extends Tests4J_SocketApiHandler {
 		}
 		switch (cmd) {
 			case ACK:
-				switch (lastCommnadSent) {
+				Tests4J_Commands lastCommandSent = getLastCommnadSent();
+				switch (lastCommandSent) {
 					case CONNECT:
 						String connectionId = message.getPayload();
 						super.setConnectionId(connectionId);
 						onConnectHandler.onAck();
+						super.connected.set(true);
 					break;
+					case SHUTDOWN:
+					shutdown();
+					break;
+					default:
+						//do nothing for run
 				}
 			break;
 		}
 	}
 
 
+	
+	public void shutdownAndDisconnect() {
+		super.send(new Tests4J_SocketMessage(Tests4J_Commands.SHUTDOWN, super.getConnectionId()));
+	}
+	
+	@Override
+	void shutdownChild() {
+		try {
+			socket.close();
+		} catch (IOException x) {
+			x.printStackTrace();
+		}
+	}
 }

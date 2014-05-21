@@ -65,10 +65,6 @@ public class Tests4J_Memory {
 	private I_CoveragePlugin plugin;
 	private Map<String, I_CoverageRecorder> recorders = new ConcurrentHashMap<String, I_CoverageRecorder>();
 	private I_Tests4J_Reporter reporter;
-	/**
-	 * @see Tests4J_Params#getRecordSeperateTrialCoverage()
-	 */
-	private Boolean recordSeperateTrialCoverage = null;
 	private final String mainRecorderScope;
 	private ThreadLocalOutputStream out;
 	private CopyOnWriteArrayList<TrialInstancesProcessor> trialInstancesProcessors = 
@@ -79,9 +75,10 @@ public class Tests4J_Memory {
 	 * 
 	 * @param params
 	 * 
-	 * @diagram sync on 5/1/2014 with Overview.seq 
+	 * @diagram sync on 5/21/2014 with Overview.seq 
 	 */
-	public Tests4J_Memory(Tests4J_Params params, ThreadLocalOutputStream pOut, I_TrialRunListener pListener) {
+	public Tests4J_Memory(Tests4J_Params params, ThreadLocalOutputStream pOut, 
+			I_TrialRunListener pListener,I_CoveragePlugin pPlugin) {
 		out = pOut;
 		listener = pListener;
 		trialClasses.addAll(params.getTrials());
@@ -104,7 +101,7 @@ public class Tests4J_Memory {
 			tests = Collections.unmodifiableSet(tests);
 		}
 		allTrialCount = trialClasses.size();
-		plugin = params.getCoveragePlugin();
+		plugin = pPlugin;
 		if (!LOADED_COMMON_CLASSES.get()) {
 			synchronized (LOADED_COMMON_CLASSES) {
 				if (!LOADED_COMMON_CLASSES.get()) {
@@ -114,7 +111,6 @@ public class Tests4J_Memory {
 			}
 		}
 		
-		recordSeperateTrialCoverage = params.isRecordSeperateTrialCoverage();
 
 		long now = System.currentTimeMillis();
 		mainRecorderScope = I_CoverageRecorder.TESTS4J_ + now + I_CoverageRecorder.RECORDER;
@@ -296,10 +292,6 @@ public class Tests4J_Memory {
 
 	public I_Tests4J_Reporter getReporter() {
 		return reporter;
-	}
-	
-	public Boolean getRecordSeperateTrialCoverage() {
-		return recordSeperateTrialCoverage;
 	}
 
 	public String getMainRecorderScope() {

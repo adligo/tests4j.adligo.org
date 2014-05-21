@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +13,27 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {
+	public static final String TRIAL_XML_END = "</trial>";
+	public static final String TRIAL_XML_START = "<trial>";
+	public static final String TRIALS_XML_END = "</trials>";
+	public static final String TRIALS_XML_START = "<trials>";
+	public static final String MIN_TRIALS_XML_KEY = "\" minTrials=\"";
+	public static final String MIN_TESTS_XML_KEY = "\" minTests=\"";
+	public static final String MIN_ASSERTS_XML_KEY = "\" minAsserts=\"";
+	public static final String MIN_UNIQUE_ASSERTS_XML_KEY = "\" minUniqueAsserts=\"";
+	public static final String COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY = "\" coveragePluginConfigurator=\"";
+	public static final String COVERAGE_PLUGIN_XML_KEY = "\" coveragePlugin=\"";
+	public static final String TEST_XML_END = "</test>";
+	public static final String TEST_XML_START = "<test>";
+	public static final String TESTS_XML_START = "<tests>";
+	public static final String TESTS_XML_END = "</tests>";
+	public static final String LOGS_XML_START = "<logs>";
+	public static final String LOG_XML_START = "<log>";
+	public static final String LOG_XML_END = "</log>";
+	public static final String LOGS_XML_END = "</logs>";
+	public static final String XML_END = "</Tests4J_Params>";
+	public static final String XML_START = "<Tests4J_Params trialThreadCount=\"";
+
 	/**
 	 * @see I_Tests4J_Params#getTrials()
 	 */
@@ -37,13 +60,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 */
 	private Integer minTests = null;
 	/**
-	 *  a null value means don't check it
+	 *  a null value means don\"t check it
 	 */
 	private Integer minAsserts = null;
 	/**
-	 *  a null value means don't check it
+	 *  a null value means don\"t check it
 	 */
-	private Integer minUniqueAssertions = null;
+	private Integer minUniqueAsserts = null;
 	private int trialThreads = 32;
 	/**
 	 * All coverage is always recorded if there is a plugin,
@@ -52,13 +75,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * is null or true, and if recordTestCoverage is 
 	 * null or true.
 	 */
-	private I_CoveragePlugin coveragePlugin;
-	/**
-	 * @see coveragePlugin
-	 * null means use the coverage plugin's default
-	 */
-	private boolean recordSeperateTrialCoverage = true;
-	
+	private Class<? extends I_CoveragePlugin> coveragePluginClass;
+	private Class<? extends I_CoveragePluginConfigurator> coveragePluginConfiguratorClass;
 	/**
 	 * these classes get reporting turned on 
 	 */
@@ -73,11 +91,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		minTrials = p.getMinTrials();
 		minTests = p.getMinTests();
 		minAsserts = p.getMinAsserts();
-		minUniqueAssertions = p.getMinUniqueAssertions();
-		coveragePlugin = p.getCoveragePlugin();
+		minUniqueAsserts = p.getMinUniqueAssertions();
+		coveragePluginClass = p.getCoveragePluginClass();
 		trialThreads = p.getTrialThreadCount();
 		exitAfterLastNotification = p.isExitAfterLastNotification();
-		recordSeperateTrialCoverage = p.isRecordSeperateTrialCoverage();
 		loggingClasses.addAll(p.getLoggingClasses());
 	}
 	
@@ -92,11 +109,41 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		trials.add(p);
 	}
 	
-	public I_CoveragePlugin getCoveragePlugin() {
-		return coveragePlugin;
+	public Class<? extends I_CoveragePlugin> getCoveragePluginClass() {
+		return coveragePluginClass;
 	}
-	public void setCoveragePlugin(I_CoveragePlugin coverageRecorder) {
-		this.coveragePlugin = coverageRecorder;
+	
+	public I_CoveragePlugin getCoveragePlugin() {
+		if (coveragePluginClass == null) {
+			return null;
+		}
+		try {
+			Constructor<? extends I_CoveragePlugin> con =
+					coveragePluginClass.getConstructor(new Class[] {});
+			I_CoveragePlugin plugin = con.newInstance(new Object[] {});
+			
+			if (coveragePluginConfiguratorClass != null) {
+				Constructor<? extends I_CoveragePluginConfigurator> con2
+						= coveragePluginConfiguratorClass.getConstructor(new Class[] {});
+				I_CoveragePluginConfigurator configurator = con2.newInstance(new Object[] {});
+				configurator.configure(plugin);
+			}
+			return plugin;
+		} catch (NoSuchMethodException x) {
+			x.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public void setCoveragePluginClass(Class<? extends I_CoveragePlugin> coverageRecorder) {
+		this.coveragePluginClass = coverageRecorder;
 	}
 	public Integer getMinTests() {
 		return minTests;
@@ -105,7 +152,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		return minAsserts;
 	}
 	public Integer getMinUniqueAssertions() {
-		return minUniqueAssertions;
+		return minUniqueAsserts;
 	}
 	public void setMinTests(int minTests) {
 		this.minTests = minTests;
@@ -114,7 +161,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		this.minAsserts = minAsserts;
 	}
 	public void setMinUniqueAssertions(int minUniqueAssertions) {
-		this.minUniqueAssertions = minUniqueAssertions;
+		this.minUniqueAsserts = minUniqueAssertions;
 	}
 	
 	public void addTrials(I_TrialList p) {
@@ -174,15 +221,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		this.exitAfterLastNotification = exitAfterLastNotification;
 	}
 
-	@Override
-	public boolean isRecordSeperateTrialCoverage() {
-		return recordSeperateTrialCoverage;
-	}
-
-	public void setRecordSeperateTrialCoverage(boolean p) {
-		recordSeperateTrialCoverage = p;
-	}
-
 	public List<Class<?>> getLoggingClasses() {
 		return new ArrayList<Class<?>>(loggingClasses);
 	}
@@ -196,4 +234,101 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		loggingClasses.add(p);
 	}
 
+	public String toXmlString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(XML_START);
+		sb.append(trialThreads);
+		if (coveragePluginClass != null) {
+			sb.append(COVERAGE_PLUGIN_XML_KEY);
+			sb.append(coveragePluginClass.getName());
+		}
+		if (coveragePluginConfiguratorClass != null) {
+			sb.append(COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY);
+			sb.append(coveragePluginConfiguratorClass.getName());
+		}
+		//don\"t include exitAfterLastNotification
+		if (minUniqueAsserts != null) {
+			sb.append(MIN_UNIQUE_ASSERTS_XML_KEY);
+			sb.append(minUniqueAsserts);
+		}
+		if (minAsserts != null) {
+			sb.append(MIN_ASSERTS_XML_KEY);
+			sb.append(minAsserts);
+		}
+		if (minTests != null) {
+			sb.append(MIN_TESTS_XML_KEY);
+			sb.append(minTests);
+		}
+		if (minTrials != null) {
+			sb.append(MIN_TRIALS_XML_KEY);
+			sb.append(minTrials);
+		}
+		sb.append("\" >\n");
+		if (trials.size() >= 1) {
+			sb.append("\t");
+			sb.append(TRIALS_XML_START);
+			sb.append("\n");
+			for (Class<? extends I_AbstractTrial> c: trials) {
+				if (c != null) {
+					sb.append("\t");
+					sb.append("\t");
+					sb.append(TRIAL_XML_START);
+					sb.append(c.getName());
+					sb.append(TRIAL_XML_END);
+					sb.append("\n");
+				}
+			}
+			sb.append("\t");
+			sb.append(TRIALS_XML_END);
+			sb.append("\n");
+		}
+		if (tests.size() >= 1) {
+			sb.append("\t");
+			sb.append(TESTS_XML_START);
+			sb.append("\n");
+			for (String test: tests) {
+				if (test != null) {
+					sb.append("\t");
+					sb.append("\t");
+					sb.append(TEST_XML_START);
+					sb.append(test);
+					sb.append(TEST_XML_END);
+					sb.append("\n");
+				}
+			}
+			
+			sb.append("\t");
+			sb.append(TESTS_XML_END);
+			sb.append("\n");
+		}
+		if (loggingClasses.size() >= 1) {
+			sb.append("\t");
+			sb.append(LOGS_XML_START);
+			sb.append("\n");
+			for (Class<?> c: loggingClasses) {
+				if (c != null) {
+					sb.append("\t");
+					sb.append("\t");
+					sb.append(LOG_XML_START);
+					sb.append(c.getName());
+					sb.append(LOG_XML_END);
+					sb.append("\n");
+				}
+			}
+			sb.append("\t");
+			sb.append(LOGS_XML_END);
+			sb.append("\n");
+		}
+		sb.append(XML_END);
+		return sb.toString();
+	}
+
+	public Class<? extends I_CoveragePluginConfigurator> getCoveragePluginConfiguratorClass() {
+		return coveragePluginConfiguratorClass;
+	}
+
+	public void setCoveragePluginConfiguratorClass(
+			Class<? extends I_CoveragePluginConfigurator> coveragePluginConfiguratorClass) {
+		this.coveragePluginConfiguratorClass = coveragePluginConfiguratorClass;
+	}
 }
