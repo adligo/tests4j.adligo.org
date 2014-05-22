@@ -75,6 +75,9 @@ public class Tests4J_SecurityManager extends SecurityManager {
 					Exception e = new Exception();
 					StackTraceElement [] stack = e.getStackTrace();
 					if (!stackContainsTests4J_ThreadGroup_createNewThread(stack)) {
+						if (reporter.isLogEnabled(Tests4J_SecurityManager.class)) {
+							reporter.log("Throwing thread creation exception" + names + " .");
+						}
 						throw new SecurityException("During tests (beforeTest(), @Tests and afterTests()), "
 					      		+ "we do not allow thread creation.");
 					}

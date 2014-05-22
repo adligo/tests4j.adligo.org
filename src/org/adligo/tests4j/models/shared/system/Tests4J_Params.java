@@ -81,6 +81,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * these classes get reporting turned on 
 	 */
 	private List<Class<?>> loggingClasses = new ArrayList<Class<?>>();
+	private I_SystemExit exitor = new DefaultSystemExitor();
 	
 	public Tests4J_Params() {}
 	
@@ -96,6 +97,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		trialThreads = p.getTrialThreadCount();
 		exitAfterLastNotification = p.isExitAfterLastNotification();
 		loggingClasses.addAll(p.getLoggingClasses());
+		exitor = p.getExitor();
 	}
 	
 	public List<Class<? extends I_AbstractTrial>> getTrials() {
@@ -330,5 +332,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public void setCoveragePluginConfiguratorClass(
 			Class<? extends I_CoveragePluginConfigurator> coveragePluginConfiguratorClass) {
 		this.coveragePluginConfiguratorClass = coveragePluginConfiguratorClass;
+	}
+
+	public I_SystemExit getExitor() {
+		return exitor;
+	}
+
+	public void setExitor(I_SystemExit exitor) {
+		this.exitor = exitor;
 	}
 }

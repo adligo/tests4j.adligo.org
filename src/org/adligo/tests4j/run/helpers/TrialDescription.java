@@ -244,7 +244,8 @@ public class TrialDescription implements I_TrialDescription {
 		try {
 			Constructor<? extends I_AbstractTrial> constructor =
 					trialClass.getConstructor(new Class[] {});
-			Object o = constructor.newInstance();
+			constructor.setAccessible(true);
+			Object o = constructor.newInstance(new Object[] {});
 			trial = (I_AbstractTrial) o;
 		} catch (Exception x) {
 			I_Tests4J_TrialDescriptionMessages messages = 

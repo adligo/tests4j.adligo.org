@@ -2,6 +2,8 @@ package org.adligo.tests4j.run.remote;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -14,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.run.helpers.Tests4J_ThreadFactory;
 import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
@@ -24,12 +27,14 @@ public abstract class Tests4J_SocketApiHandler {
 			new ConcurrentHashMap<Tests4J_SocketMessage, I_AfterMessageHandler>();
 	private ExecutorService listenerService;
 	private I_Tests4J_Reporter reporter = new ConsoleReporter();
-	private PrintWriter out;
-	private BufferedReader in;
+	private OutputStream out;
+	private InputStream in;
 	private String connectionId;
 	private Tests4J_Commands lastCommnadSent;
 	protected AtomicBoolean connected = new AtomicBoolean(false);
-	
+	private int port;
+	private String threadName;
+
 	public Tests4J_SocketApiHandler() {}
 	
 	public Tests4J_SocketApiHandler(Tests4J_SocketMessage initalMessage) {
@@ -45,11 +50,19 @@ public abstract class Tests4J_SocketApiHandler {
 	 * starts listening to the connection
 	 */
 	void start() {
-		listenerService = Executors.newFixedThreadPool(1);
-		listenerService.submit(new Runnable() {
+		Tests4J_ThreadFactory factory = new Tests4J_ThreadFactory(threadName);
+		listenerService = Executors.newFixedThreadPool(1, factory);
+		listenerService.execute(new Runnable() {
 			
 			@Override
 			public void run() {
+				try {
+					startChild();
+				} catch (IOException x) {
+					reporter.onError(x);
+					shutdown();
+					return;
+				}
 				while (true) {
 					try {
 						if (messages.size() == 0) {
@@ -86,7 +99,7 @@ public abstract class Tests4J_SocketApiHandler {
 		}
 		lastCommnadSent = p.getCommand();
 		String message = p.toSocketMessage();
-		out.write(message);
+		out.write(message.getBytes());
 		out.flush();
 		I_AfterMessageHandler handler = afterMessageTransportHandlers.get(message);
 		if (handler != null) {
@@ -95,18 +108,13 @@ public abstract class Tests4J_SocketApiHandler {
 	}
 	
 	void acceptMessage() throws IOException {
-		if (reporter.isLogEnabled(Tests4J_SocketApiHandler.class)) {
-			reporter.log("in acceptMessage ");
-		}
 		try {
 			StringBuilder sb = new StringBuilder();
-			String line = in.readLine();
-			while (!Tests4J_SocketMessage.MESSAGE_END.equals(line) && line != null) {
-				sb.append(line);
-				line = in.readLine();
-			}
-			if (line != null) {
-				sb.append(line);
+			String line = null;
+			//ASCII
+			byte [] bytes = new byte[1];
+			while (in.read(bytes) != -1) {
+				sb.append(bytes[0]);
 			}
 			String content = sb.toString();
 			if (!IsEmpty.isEmpty(content)) {
@@ -125,12 +133,21 @@ public abstract class Tests4J_SocketApiHandler {
 	
 	void shutdown() {
 		stop();
-		out.close();
-		try {
-			in.close();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		if (out != null) {
+			try {
+				out.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		if (in != null) {
+			try {
+				in.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		this.connected.set(false);
 		connectionId = "";
@@ -155,19 +172,19 @@ public abstract class Tests4J_SocketApiHandler {
 		}
 	}
 
-	public PrintWriter getOut() {
+	public OutputStream getOut() {
 		return out;
 	}
 
-	public BufferedReader getIn() {
+	public InputStream getIn() {
 		return in;
 	}
 
-	public void setOut(PrintWriter out) {
+	public void setOut(OutputStream out) {
 		this.out = out;
 	}
 
-	public void setIn(BufferedReader in) {
+	public void setIn(InputStream in) {
 		this.in = in;
 	}
 
@@ -183,9 +200,27 @@ public abstract class Tests4J_SocketApiHandler {
 		return lastCommnadSent;
 	}
 	
+	abstract void startChild() throws IOException;
+	
 	abstract void processIncomingMessage(Tests4J_SocketMessage p) throws IOException;
 	
 	abstract void shutdownChild();
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	String getThreadName() {
+		return threadName;
+	}
+
+	void setThreadName(String threadName) {
+		this.threadName = threadName;
+	}
 	
 	
 }

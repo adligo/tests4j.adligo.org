@@ -101,4 +101,11 @@ public interface I_Tests4J_Params {
 	 * @return
 	 */
 	public List<Class<?>> getLoggingClasses();
+	
+	/**
+	 * return the delegate for System.exit(int status)
+	 * mosty for stubbing
+	 * @return
+	 */
+	public I_SystemExit getExitor();
 }

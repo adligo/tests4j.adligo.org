@@ -88,11 +88,12 @@ public class Tests4J_Memory {
 			reporter.log("Starting thread manager with " + params.getTrialThreadCount());
 		}
 		/**
-		 * @diagram sync on 5/19/2014 with Overview.seq
+		 * @diagram sync //TODO
 		 */
 		threadManager = new Tests4J_ThreadManager(
 				params.isExitAfterLastNotification(), 
-				params.getTrialThreadCount());
+				params.getTrialThreadCount(),
+				params.getExitor());
 		
 		Set<String> pTests = params.getTests();
 		if (pTests.size() >= 1) {

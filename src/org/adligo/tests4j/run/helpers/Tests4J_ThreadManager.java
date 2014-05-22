@@ -10,6 +10,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
+import org.adligo.tests4j.models.shared.system.I_SystemExit;
+
 /**
  * This class manages all child threads 
  * created by Tests4J or custom Trials.
@@ -23,11 +26,12 @@ public class Tests4J_ThreadManager {
 	private ExecutorService trialRunService;
 	private List<Future<?>> trialFutures = new CopyOnWriteArrayList<Future<?>>();
 	private Map<ExecutorService, Future<?>> testRuns = new ConcurrentHashMap<ExecutorService, Future<?>>();
-	
+	private I_SystemExit exitor;
 	
 	private boolean jvmExit = false;
-	public Tests4J_ThreadManager(boolean pJvmExit, int trialThreads) {
+	public Tests4J_ThreadManager(boolean pJvmExit, int trialThreads, I_SystemExit pExitor) {
 		jvmExit = pJvmExit;
+		exitor = pExitor;
 		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME);
 		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME, trialFactory.getGroup());
 		trialRunService = Executors.newFixedThreadPool(trialThreads, trialFactory);
@@ -53,7 +57,7 @@ public class Tests4J_ThreadManager {
 		}
 		trialRunService.shutdownNow();
 		if (jvmExit) {
-			System.exit(0);
+			exitor.doSystemExit(0);	
 		}
 	}
 	

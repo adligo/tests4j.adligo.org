@@ -1,18 +1,18 @@
 package org.adligo.tests4j.run.remote;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.net.ServerSocket;
 
 public class Tests4J_SocketUtil {
 
-	public static int getFreeSocket() {
+	public static int getFreePort() {
 		int toRet = -1;
 		try {
-			Socket socket = new Socket();
+			ServerSocket socket = new ServerSocket(0);
 			toRet = socket.getLocalPort();
 			socket.close();
 		} catch (IOException x) {
-			x.printStackTrace();
+			throw new RuntimeException(x);
 		}
 		return toRet;
 	}

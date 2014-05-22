@@ -252,17 +252,21 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		trialResultMutant.setType(trialDescription.getType());
 		trialResultMutant.setTrialName(trialDescription.getTrialName());
 		runBeforeTrial();
-		testsRunner.setTrial(trial);
-		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
-			reporter.log("running trial tests " + trialDescription.getTrialName());
-		}
-		runTests();
-		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
-			reporter.log("finished trial tests" + trialDescription.getTrialName());
-		}
+		if (this.trialResultMutant.getFailure() == null) {
 		
-		runAfterTrialTests(trialCoverageRecorder);
-		runAfterTrial();
+			testsRunner.setTrial(trial);
+			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+				reporter.log("running trial tests " + trialDescription.getTrialName());
+			}
+			runTests();
+			
+			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+				reporter.log("finished trial tests" + trialDescription.getTrialName());
+			}
+			
+			runAfterTrialTests(trialCoverageRecorder);
+			runAfterTrial();
+		}
 		
 		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
 			reporter.log("calculating trial results " + trialDescription.getTrialName());

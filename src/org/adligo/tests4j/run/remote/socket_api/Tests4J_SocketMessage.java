@@ -39,7 +39,7 @@ public class Tests4J_SocketMessage {
 	}
 	
 	public Tests4J_SocketMessage(String socketMessage) {
-		if (socketMessage.length() >= MESSAGE_START.length()) {
+		if (socketMessage.length() < MESSAGE_START.length()) {
 			throw new IllegalArgumentException("Requires " + MESSAGE_START);
 		}
 		String afterSocketMessage = socketMessage.substring(MESSAGE_START.length() - 1, socketMessage.length());
@@ -48,14 +48,14 @@ public class Tests4J_SocketMessage {
 		if (index == -1) {
 			throw new IllegalArgumentException("Requires " + MESSAGE_START + "XXX" + END_SECTION);
 		}
-		String commandString = afterSocketMessage.substring(0, index);
+		String commandString = afterSocketMessage.substring(1, index);
 		command = Tests4J_Commands.valueOf(commandString);
 		afterSocketMessage = afterSocketMessage.substring(index + END_SECTION.length(), afterSocketMessage.length());
 		
 		index = afterSocketMessage.indexOf(VERSION_KEY);
 		if (index != -1) {
 			int endIndex = afterSocketMessage.indexOf(END_SECTION);
-			version = afterSocketMessage.substring(VERSION_KEY.length() - 1, endIndex);
+			version = afterSocketMessage.substring(VERSION_KEY.length(), endIndex);
 		}
 		index = afterSocketMessage.indexOf(CONNECTION_ID);
 		if (index != -1) {
@@ -68,7 +68,7 @@ public class Tests4J_SocketMessage {
 		if (index == -1) {
 			throw new IllegalArgumentException("Requires " + PAYLOAD);
 		}
-		payload = afterSocketMessage.substring(PAYLOAD.length() - 1, afterSocketMessage.length() - MESSAGE_END.length());
+		payload = afterSocketMessage.substring(index + PAYLOAD.length(), afterSocketMessage.length() - MESSAGE_END.length());
 	}
 	
 	public String toSocketMessage() {
