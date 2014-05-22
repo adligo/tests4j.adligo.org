@@ -20,7 +20,8 @@ public class Tests4J_SocketMessage {
 	public static final String CONNECTION_ID = "connection_id='";
 	public static final String PAYLOAD = "payload=;";
 	public static final String MESSAGE_END = "/tests4j_socketMessage;";
-	
+	public static int MIN_LENGTH = MESSAGE_START.length() +
+			PAYLOAD.length() + MESSAGE_END.length();
 	
 	private Tests4J_Commands command;
 	private String version = VERSION;

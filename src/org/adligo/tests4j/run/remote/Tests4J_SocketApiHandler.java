@@ -114,7 +114,12 @@ public abstract class Tests4J_SocketApiHandler {
 			//ASCII
 			byte [] bytes = new byte[1];
 			while (in.read(bytes) != -1) {
-				sb.append(bytes[0]);
+				sb.append((char) bytes[0]);
+				if (Tests4J_SocketMessage.MIN_LENGTH <= sb.length()) {
+					if (sb.indexOf(Tests4J_SocketMessage.MESSAGE_END) != -1) {
+						break;
+					}
+				}
 			}
 			String content = sb.toString();
 			if (!IsEmpty.isEmpty(content)) {
