@@ -112,7 +112,6 @@ public abstract class Tests4J_SocketApiHandler {
 	void acceptMessage() throws IOException {
 		try {
 			StringBuilder sb = new StringBuilder();
-			String line = null;
 			
 			Character c = utf8In.read();
 			while (c != null) {
@@ -122,6 +121,7 @@ public abstract class Tests4J_SocketApiHandler {
 						break;
 					}
 				}
+				c = utf8In.read();
 			}
 			String content = sb.toString();
 			if (!IsEmpty.isEmpty(content)) {
