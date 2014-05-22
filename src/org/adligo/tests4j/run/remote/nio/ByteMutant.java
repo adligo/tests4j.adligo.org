@@ -191,6 +191,10 @@ public class ByteMutant {
 		}
 	}
 	
+	public void setSlot(int i, boolean p) {
+		bits[i] = p;
+	}
+	
 	public void setSlotZero(boolean p) {
 		bits[0] = p;
 	}

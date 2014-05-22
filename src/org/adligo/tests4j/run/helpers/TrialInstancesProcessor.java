@@ -245,7 +245,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		atm.setCoveragePlugin(memory.getPlugin());
 		atm.setListener(testsRunner);
 		
-		trial.setRuntime(atm);
+		trial.setRuntime(atm, reporter);
 		
 		trialResultMutant = new BaseTrialResultMutant();
 			
@@ -425,7 +425,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				AssertionHelperInfo atm = new AssertionHelperInfo();
 				atm.setCoveragePlugin(memory.getPlugin());
 				atm.setListener(this);
-				trial.setRuntime(atm);
+				trial.setRuntime(atm, reporter);
 				try {
 					if (trial instanceof SourceFileTrial) {
 						((SourceFileTrial) trial).afterTrialTests(cover);
@@ -452,7 +452,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				atm = new AssertionHelperInfo();
 				atm.setCoveragePlugin(memory.getPlugin());
 				atm.setListener(this);
-				trial.setRuntime(atm);
+				trial.setRuntime(atm, reporter);
 				coverage = trialCoverageRecorder.endRecording();
 				ranAfterTrialTests = true;
 				I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);

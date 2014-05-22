@@ -30,6 +30,7 @@ import org.adligo.tests4j.models.shared.asserts.ThrowableAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrowableUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
+import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 /**
  * TODO i18n the assert messages (currently constants).
@@ -57,12 +58,15 @@ public abstract class AbstractTrial implements I_AbstractTrial {
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
 	private I_AssertionHelperInfo runtime;
+	private I_Tests4J_Reporter reporter;
 	/**
 	 * Set the memory of the AbstractTrial
 	 * @param p
 	 */
-	public void setRuntime(I_AssertionHelperInfo pMemory) {
+	@Override
+	public void setRuntime(I_AssertionHelperInfo pMemory, I_Tests4J_Reporter pReporter) {
 		runtime = pMemory;
+		reporter = pReporter;
 	}
 	
 	/**
@@ -293,4 +297,7 @@ public abstract class AbstractTrial implements I_AbstractTrial {
 				message, p, a));
 	}
 	
+	public void log(String p) {
+		reporter.log(p);
+	}
 }
