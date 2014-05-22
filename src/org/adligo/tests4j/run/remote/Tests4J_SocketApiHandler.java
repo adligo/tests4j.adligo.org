@@ -17,6 +17,7 @@ import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 import org.adligo.tests4j.run.helpers.Tests4J_ThreadFactory;
+import org.adligo.tests4j.run.remote.nio.UTF8_InputStream;
 import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
@@ -34,6 +35,7 @@ public abstract class Tests4J_SocketApiHandler {
 	protected AtomicBoolean connected = new AtomicBoolean(false);
 	private int port;
 	private String threadName;
+	private UTF8_InputStream utf8In;
 
 	public Tests4J_SocketApiHandler() {}
 	
@@ -111,10 +113,10 @@ public abstract class Tests4J_SocketApiHandler {
 		try {
 			StringBuilder sb = new StringBuilder();
 			String line = null;
-			//ASCII
-			byte [] bytes = new byte[1];
-			while (in.read(bytes) != -1) {
-				sb.append((char) bytes[0]);
+			
+			Character c = utf8In.read();
+			while (c != null) {
+				sb.append(c);
 				if (Tests4J_SocketMessage.MIN_LENGTH <= sb.length()) {
 					if (sb.indexOf(Tests4J_SocketMessage.MESSAGE_END) != -1) {
 						break;
@@ -191,6 +193,7 @@ public abstract class Tests4J_SocketApiHandler {
 
 	public void setIn(InputStream in) {
 		this.in = in;
+		utf8In = new UTF8_InputStream(in);
 	}
 
 	public String getConnectionId() {
