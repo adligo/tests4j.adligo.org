@@ -5,6 +5,11 @@ package org.adligo.tests4j.run.remote.nio;
  * the JSE Standard, as it produces more readable
  * byte manipulation source code.
  * 
+ * slot zero is the most significant
+ * slot seven is 0 or 1
+ * slot six and seven is 0 - 3
+ * exc.
+ * 
  * @author scott
  *
  */
@@ -29,16 +34,28 @@ public class ByteMutant {
 	
 	public ByteMutant(String onesAndZeros) {
 		clean();
-		char [] cs = onesAndZeros.toCharArray();
-		for (int i = 0; i < 8 - cs.length; i++) {
-			bits[i] = false;
+		char [] cs = new char[8];
+		int padEndIndex = 0;
+		if (onesAndZeros.length() < 8) {
+			padEndIndex = 8 - onesAndZeros.length();
 		}
-		for (int i = 8 - cs.length; i < 8; i++) {
-			int ic = i;
-			if (cs.length < 8) {
-				ic = i - cs.length;
+		char [] inChars = onesAndZeros.toCharArray();
+		if (padEndIndex != 0) {
+			int inCharsCounter = 0;
+			for (int i = 0; i < cs.length; i++) {
+				if (i < padEndIndex) {
+					cs[i] = '0';
+				} else {
+					cs[i] = inChars[inCharsCounter++];
+				}
 			}
-			char c = cs[ic];
+		} else {
+			cs = onesAndZeros.toCharArray();
+		}
+		
+
+		for (int i = 0; i < 8; i++) {
+			char c = cs[i];
 			if (c == '0') {
 				bits[i] = false;
 			} else {
@@ -258,6 +275,9 @@ public class ByteMutant {
 	 * utf-8 character.
 	 */
 	public int getUTF8_BytesInSequence() {
+		if (!getSlotZero() || !getSlotOne()) {
+			return 1;
+		}
 		int counter = 1;
 		for (int i = 1; i < 6; i++) {
 			if (getSlot(i)) {
