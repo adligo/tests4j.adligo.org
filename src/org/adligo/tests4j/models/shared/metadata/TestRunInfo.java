@@ -5,15 +5,11 @@ public class TestRunInfo {
 
 	public TestRunInfo() {}
 	
-	public TestRunInfo(I_AbstractTestRunInfo p) {
+	public TestRunInfo(I_TestRunInfo p) {
 		mutant = new TestRunInfoMutant(p);
 	}
 	public boolean hasRecordedCoverage() {
 		return mutant.hasRecordedCoverage();
-	}
-
-	public I_TrialMetadata getTrialMetadata() {
-		return new TrialMetadata(mutant.getTrialMetadata());
 	}
 
 	public long getUniqueAssertions() {

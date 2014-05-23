@@ -1,16 +1,14 @@
 package org.adligo.tests4j.models.shared.metadata;
 
-public class TestRunInfoMutant implements I_AbstractTestRunInfo {
+public class TestRunInfoMutant implements I_TestRunInfo {
 	private boolean recordedCoverage = false;
-	private TrialMetadataMutant trialMetadata;
 	private long uniqueAssertions;
 	private long assertions;
 	
 	public TestRunInfoMutant() {}
 	
-	public TestRunInfoMutant(I_AbstractTestRunInfo p) {
+	public TestRunInfoMutant(I_TestRunInfo p) {
 		recordedCoverage = p.hasRecordedCoverage();
-		trialMetadata = new TrialMetadataMutant(p.getTrialMetadata());
 		uniqueAssertions = p.getUniqueAssertions();
 		assertions = p.getAssertions();
 	}
@@ -21,13 +19,6 @@ public class TestRunInfoMutant implements I_AbstractTestRunInfo {
 	@Override
 	public boolean hasRecordedCoverage() {
 		return recordedCoverage;
-	}
-	/* (non-Javadoc)
-	 * @see org.adligo.tests4j.models.shared.metadata.I_AbstractTestsRunInfo#getTrialMetadata()
-	 */
-	@Override
-	public I_TrialMetadata getTrialMetadata() {
-		return trialMetadata;
 	}
 	
 	/* (non-Javadoc)
@@ -46,13 +37,6 @@ public class TestRunInfoMutant implements I_AbstractTestRunInfo {
 	}
 	public void setRecordedCoverage(boolean recordedCoverage) {
 		this.recordedCoverage = recordedCoverage;
-	}
-	public void setTrialMetadata(I_TrialMetadata p) {
-		this.trialMetadata = new TrialMetadataMutant(p);
-	}
-	
-	public void setTrialMetadata(TrialMetadataMutant p) {
-		this.trialMetadata = p;
 	}
 	
 	public void setUniqueAssertions(long uniqueAssertions) {

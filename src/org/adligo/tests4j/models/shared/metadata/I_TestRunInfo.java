@@ -1,10 +1,8 @@
 package org.adligo.tests4j.models.shared.metadata;
 
-public interface I_AbstractTestRunInfo {
+public interface I_TestRunInfo {
 
 	public abstract boolean hasRecordedCoverage();
-
-	public abstract I_TrialMetadata getTrialMetadata();
 
 	public abstract long getUniqueAssertions();
 

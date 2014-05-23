@@ -25,7 +25,14 @@ public class SourceFileCoverageMutant extends CoverageUnitContinerMutant impleme
 		if (cloneRelations) {
 			int lineCount = p.getLastLine();
 			for (int i = 0; i < lineCount; i++) {
-				lines.add(new LineCoverageMutant(p.getLineCoverage(i)));
+				I_LineCoverage cover = p.getLineCoverage(i);
+				if (cover == null) {
+					LineCoverageMutant lcm = new LineCoverageMutant();
+					lcm.setCovered(true);
+					lines.add(lcm);
+				} else {
+					lines.add(new LineCoverageMutant(cover));
+				}
 			}
 		}
 		
