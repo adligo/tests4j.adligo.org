@@ -300,4 +300,14 @@ public abstract class AbstractTrial implements I_AbstractTrial {
 	public void log(String p) {
 		reporter.log(p);
 	}
+
+	@Override
+	public void log(Throwable p) {
+		reporter.onError(p);
+	}
+
+	@Override
+	public boolean isLogEnabled(Class<?> c) {
+		return reporter.isLogEnabled(c);
+	}
 }

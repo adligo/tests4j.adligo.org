@@ -8,6 +8,11 @@ import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 /**
  * the summary result of a trial run
  * @author scott
+ *  
+ *  //TODO extract TimeFormat
+ *    for getRunTimeSecs()
+ *    and methods to it getRunTimeMintues(), getRunTimeHours(), getRunTimeDays()
+ *    
  *
  */
 public interface I_TrialRunResult {

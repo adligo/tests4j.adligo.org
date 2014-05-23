@@ -12,20 +12,20 @@ import java.io.InputStream;
  * @author scott
  *
  */
-public class UTF8_InputStream {
+public class UTF8_InputStream implements I_CharacterInputStream {
 	private InputStream in;
 	
 	public UTF8_InputStream(InputStream p) {
 		in = p;
 	}
 	
-	/**
-	 * 
-	 * @return null at the end of the InputStream
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.remote.nio.I_CharacterInputStream#read()
 	 */
+	@Override
 	public Character read() throws IOException {
 		byte [] bytes = new byte[1];
-		UTF8_CharacterReader cr = new UTF8_CharacterReader();
+		UTF8_CharacterBuilder cr = new UTF8_CharacterBuilder();
 		int index = 0;
 		while (in.read(bytes) != -1) {
 			cr.addByte(index, bytes[0]);
@@ -37,6 +37,10 @@ public class UTF8_InputStream {
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.remote.nio.I_CharacterInputStream#close()
+	 */
+	@Override
 	public void close() {
 		try {
 			in.close();

@@ -8,10 +8,10 @@ import java.util.Arrays;
  * @author scott
  *
  */
-public class BitReader {
+public class Bits {
 	private boolean [] bits;
 	
-	public BitReader(String binString) {
+	public Bits(String binString) {
 		bits = new boolean[binString.length()];
 		char [] chars = binString.toCharArray();
 		for (int i = 0; i < chars.length; i++) {

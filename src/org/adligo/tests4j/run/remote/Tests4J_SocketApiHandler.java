@@ -17,6 +17,7 @@ import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 import org.adligo.tests4j.run.helpers.Tests4J_ThreadFactory;
+import org.adligo.tests4j.run.remote.nio.I_CharacterInputStream;
 import org.adligo.tests4j.run.remote.nio.UTF8_InputStream;
 import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
@@ -35,7 +36,7 @@ public abstract class Tests4J_SocketApiHandler {
 	protected AtomicBoolean connected = new AtomicBoolean(false);
 	private int port;
 	private String threadName;
-	private UTF8_InputStream utf8In;
+	private I_CharacterInputStream utf8In;
 
 	public Tests4J_SocketApiHandler() {}
 	

@@ -8,10 +8,12 @@ import java.io.UnsupportedEncodingException;
  * useful for socket programming (could be reused in aws_client).
  * Something like this should be added to the JSE standard.
  * 
+ * Not thread safe, please use one per thread.
+ * 
  * @author scott
  *
  */
-public class UTF8_CharacterReader {
+public class UTF8_CharacterBuilder {
 
 	private Byte [] bytes = new Byte[6];
 	

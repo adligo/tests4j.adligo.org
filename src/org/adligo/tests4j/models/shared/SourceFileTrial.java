@@ -7,6 +7,16 @@ import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 public abstract class SourceFileTrial extends AbstractTrial {
 	
 	/**
+	 * //TODO this should probably take 
+	 * a SourceFileTrial_TestRunInfo parameter which includes;
+	 *     I_SourceFileCoverage 
+	 *     Trial Metadata
+	 *     # of assertions
+	 *     # of unique assertions
+	 *     hasRecorededCoverage()
+	 *     
+	 * 
+	 * 
 	 * Override this method if you want to make
 	 * assertions about code coverage;
 	 * ie
