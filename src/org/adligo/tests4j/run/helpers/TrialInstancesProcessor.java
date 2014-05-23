@@ -20,6 +20,7 @@ import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.metadata.SourceFileTrial_TestRunInfoMutant;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
@@ -416,19 +417,24 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				if (clazzMethod != null) {
 					hadAfterTrialTests = true;
 				}
-				if (trialCoverageRecorder == null) {
-					return;
+				SourceFileTrial_TestRunInfoMutant infoMut = new SourceFileTrial_TestRunInfoMutant();
+				
+				if (trialCoverageRecorder != null) {
+					coverage = trialCoverageRecorder.endRecording();
+					I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
+					infoMut.setCoverage(cover);
 				}
-				coverage = trialCoverageRecorder.endRecording();
+				infoMut.setAssertions(trialResultMutant.getAssertionCount());
+				infoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
+				
 				ranAfterTrialTests = true;
-				I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
 				AssertionHelperInfo atm = new AssertionHelperInfo();
 				atm.setCoveragePlugin(memory.getPlugin());
 				atm.setListener(this);
 				trial.setRuntime(atm, reporter);
 				try {
 					if (trial instanceof SourceFileTrial) {
-						((SourceFileTrial) trial).afterTrialTests(cover);
+						((SourceFileTrial) trial).afterTrialTests(infoMut);
 					}
 				} catch (Exception x) {
 					failTestOnException(x.getMessage(), x, type);
