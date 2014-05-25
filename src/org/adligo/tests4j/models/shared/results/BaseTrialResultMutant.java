@@ -56,6 +56,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 			setResults(results);
 		}
 		ignored = p.isIgnored();
+		passed = p.isPassed();
 		beforeTestOutput = p.getBeforeTrialOutput();
 		afterTestOutput = p.getAfterTrialOutput();
 		I_TrialFailure pFailure = p.getFailure();

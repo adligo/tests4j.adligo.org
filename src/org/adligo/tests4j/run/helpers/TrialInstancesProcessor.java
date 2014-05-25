@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
@@ -59,7 +60,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	private TestRunable testsRunner;
 	private boolean ranAfterTrialTests;
 	private boolean hadAfterTrialTests;
-	private List<Integer> afterTrialTestsAssertionHashes = new ArrayList<Integer>(); 
+	private List<Integer> afterTrialTestsAssertionHashes = new CopyOnWriteArrayList<Integer>(); 
 	private TestResultMutant afterTrialTestsResultMutant;
 	private boolean finished = false;
 	/**
@@ -117,7 +118,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			testRunService.shutdownNow();
 			notifier.checkDoneRunningTrials();
 		} catch (RejectedExecutionException x) {
-				//do nothing
+			memory.getReporter().onError(x);
 		} catch (Exception x) {
 			memory.getReporter().onError(x);
 		} catch (Error x) {
@@ -218,7 +219,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		return trialCoverageRecorder;
 	}
 	
-	private void failTestOnException(String message, Throwable p, TrialTypeEnum type) {
+	private void failTrialOnException(String message, Throwable p, TrialTypeEnum type) {
 		trialResultMutant.setPassed(false);
 		TrialFailure failure = new TrialFailure(message, p);
 		trialResultMutant.setFailure(failure);
@@ -316,7 +317,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			try {
 				beforeTrial.invoke(trial, new Object[] {});
 			} catch (Exception e) {
-				failTestOnException(UNEXPECTED_EXCEPTION_THROWN_FROM + 
+				failTrialOnException(UNEXPECTED_EXCEPTION_THROWN_FROM + 
 						trialDescription.getTrialName() + 
 						"." + beforeTrial.getName(), e, null);
 			}
@@ -436,7 +437,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 						((SourceFileTrial) trial).afterTrialTests(infoMut);
 					}
 				} catch (Exception x) {
-					failTestOnException(x.getMessage(), x, type);
+					failTrialOnException(x.getMessage(), x, type);
 				}
 				break;
 			case ApiTrial:
@@ -473,7 +474,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 						((ApiTrial) trial).afterTrialTests(apiInfoMut);
 					}
 				} catch (Exception x) {
-					failTestOnException(x.getMessage(), x, type);
+					failTrialOnException(x.getMessage(), x, type);
 				}
 				break;
 			default:
@@ -487,7 +488,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 			try {
 				afterTrial.invoke(trial, new Object[] {});
 			} catch (Exception e) {
-				failTestOnException(UNEXPECTED_EXCEPTION_THROWN_FROM + 
+				failTrialOnException(UNEXPECTED_EXCEPTION_THROWN_FROM + 
 						trialDescription.getTrialName() + 
 						"." + afterTrial.getName(), e, null);
 			}

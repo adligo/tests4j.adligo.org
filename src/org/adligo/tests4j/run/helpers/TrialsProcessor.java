@@ -55,13 +55,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 	public void run(I_TrialRunListener pListener, I_Tests4J_Params pParams) {
 		
 		Tests4J_Params params = new Tests4J_Params(pParams);
-		I_CoveragePlugin plugin = params.getCoveragePlugin();
-		if (plugin != null) {
-			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(params);
-			params.setTrials(instrumentedTrials);
-			plugin = new CoveragePluginWrapper(plugin);
-		}
-		
+		//set up logging first
 		I_Tests4J_Reporter reporter = params.getReporter();
 		if (reporter == null) {
 			reporter = new ConsoleReporter();
@@ -71,6 +65,16 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		for (Class<?> clazz: reportingClasses) {
 			reporter.setLogOn(clazz);
 		}
+		
+		
+		I_CoveragePlugin plugin = params.getCoveragePlugin();
+		if (plugin != null) {
+			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(params);
+			params.setTrials(instrumentedTrials);
+			plugin = new CoveragePluginWrapper(plugin);
+		}
+		
+		
 		
 		if (reporter.isRedirect()) {
 			if (reporter.isSnare()) {
