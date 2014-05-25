@@ -6,11 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.ApiTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
@@ -20,7 +18,6 @@ import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.metadata.SourceFileTrial_TestRunInfoMutant;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
@@ -36,6 +33,8 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
+import org.adligo.tests4j.models.shared.results.feedback.ApiTrial_TestsResultsMutant;
+import org.adligo.tests4j.models.shared.results.feedback.SourceFileTrial_TestsResultsMutant;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -417,7 +416,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				if (clazzMethod != null) {
 					hadAfterTrialTests = true;
 				}
-				SourceFileTrial_TestRunInfoMutant infoMut = new SourceFileTrial_TestRunInfoMutant();
+				SourceFileTrial_TestsResultsMutant infoMut = new SourceFileTrial_TestsResultsMutant();
 				
 				if (trialCoverageRecorder != null) {
 					coverage = trialCoverageRecorder.endRecording();
@@ -452,9 +451,16 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				if (clazzMethod != null) {
 					hadAfterTrialTests = true;
 				}
-				if (trialCoverageRecorder == null) {
-					return;
+				ApiTrial_TestsResultsMutant apiInfoMut = new ApiTrial_TestsResultsMutant();
+				
+				if (trialCoverageRecorder != null) {
+					coverage = trialCoverageRecorder.endRecording();
+					I_PackageCoverage cover = trialDescription.findPackageCoverage(coverage);
+					apiInfoMut.setCoverage(cover);
 				}
+				apiInfoMut.setAssertions(trialResultMutant.getAssertionCount());
+				apiInfoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
+				
 				atm = new AssertionHelperInfo();
 				atm.setCoveragePlugin(memory.getPlugin());
 				atm.setListener(this);
@@ -464,7 +470,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);
 				try {
 					if (trial instanceof ApiTrial) {
-						((ApiTrial) trial).afterTrialTests(pkgCover);
+						((ApiTrial) trial).afterTrialTests(apiInfoMut);
 					}
 				} catch (Exception x) {
 					failTestOnException(x.getMessage(), x, type);

@@ -1,6 +1,6 @@
-package org.adligo.tests4j.models.shared.metadata;
+package org.adligo.tests4j.models.shared.results.feedback;
 
-public interface I_TestRunInfo {
+public interface I_TestsResults {
 
 	public abstract boolean hasRecordedCoverage();
 

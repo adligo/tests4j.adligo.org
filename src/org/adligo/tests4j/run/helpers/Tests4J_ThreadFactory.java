@@ -29,15 +29,15 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	
 	private List<Thread> threads = new CopyOnWriteArrayList<Thread>();
 	private AtomicInteger id = new AtomicInteger();
-	private String name = "";
+	private String threadGroupName = "";
 	private ThreadGroup group;
 	
-	public Tests4J_ThreadFactory(String pName, ThreadGroup parent) {
-		if (pName.contains(TRIAL_THREAD_NAME) || 
-			pName.contains(TEST_THREAD_NAME) ||
-			pName.contains(REMOTE_RUNNER_THREAD_NAME) ||
-			pName.contains(REMOTE_LISTENER_THREAD_NAME)) {
-			name = pName;
+	public Tests4J_ThreadFactory(String pThreadGroupName, ThreadGroup parent) {
+		if (pThreadGroupName.contains(TRIAL_THREAD_NAME) || 
+			pThreadGroupName.contains(TEST_THREAD_NAME) ||
+			pThreadGroupName.contains(REMOTE_RUNNER_THREAD_NAME) ||
+			pThreadGroupName.contains(REMOTE_LISTENER_THREAD_NAME)) {
+			threadGroupName = pThreadGroupName;
 		} else {
 			throw new IllegalArgumentException("Tests4J threads must start"
 					+ "with one of the pre defined name prefixes in " + 
@@ -68,7 +68,7 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	 * @return
 	 */
 	private void createNewThreadGroup(ThreadGroup parent) {
-		group = new ThreadGroup(parent, name);
+		group = new ThreadGroup(parent, threadGroupName);
 	}
 	
 	/**
@@ -79,7 +79,7 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	 * @return
 	 */
 	private Thread createNewThread(Runnable r, int newId) {
-		Thread t = new Thread(group, r, name + "-" + newId);
+		Thread t = new Thread(group, r, threadGroupName + "-" + newId);
 		return t;
 	}
 

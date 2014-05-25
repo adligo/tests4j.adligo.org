@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared;
 
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.results.feedback.I_ApiTrial_TestsResults;
 
 @TrialType(type = TrialTypeEnum.ApiTrial)
 public abstract class ApiTrial extends AbstractTrial {
@@ -21,5 +21,5 @@ public abstract class ApiTrial extends AbstractTrial {
 	 * assertGreaterThanOrEquals(50.00, p.getPercentageCoveredDouble());
 	 * @param p
 	 */
-	public void afterTrialTests(I_PackageCoverage p) {}
+	public void afterTrialTests(I_ApiTrial_TestsResults p) {}
 }

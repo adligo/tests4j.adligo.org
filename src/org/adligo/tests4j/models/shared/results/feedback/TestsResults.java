@@ -1,12 +1,13 @@
-package org.adligo.tests4j.models.shared.metadata;
+package org.adligo.tests4j.models.shared.results.feedback;
 
-public class TestRunInfo {
-	private TestRunInfoMutant mutant;
 
-	public TestRunInfo() {}
+public class TestsResults {
+	private TestsResultsMutant mutant;
+
+	public TestsResults() {}
 	
-	public TestRunInfo(I_TestRunInfo p) {
-		mutant = new TestRunInfoMutant(p);
+	public TestsResults(I_TestsResults p) {
+		mutant = new TestsResultsMutant(p);
 	}
 	public boolean hasRecordedCoverage() {
 		return mutant.hasRecordedCoverage();

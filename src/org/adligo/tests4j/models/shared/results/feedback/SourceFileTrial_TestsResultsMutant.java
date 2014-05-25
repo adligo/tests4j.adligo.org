@@ -1,14 +1,14 @@
-package org.adligo.tests4j.models.shared.metadata;
+package org.adligo.tests4j.models.shared.results.feedback;
 
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageMutant;
 
-public class SourceFileTrial_TestRunInfoMutant extends TestRunInfoMutant implements I_SourceFileTrial_TestRunInfo {
+public class SourceFileTrial_TestsResultsMutant extends TestsResultsMutant implements I_SourceFileTrial_TestsResults {
 	private SourceFileCoverageMutant coverage;
 
-	public SourceFileTrial_TestRunInfoMutant() {}
+	public SourceFileTrial_TestsResultsMutant() {}
 	
-	public SourceFileTrial_TestRunInfoMutant(I_SourceFileTrial_TestRunInfo p) {
+	public SourceFileTrial_TestsResultsMutant(I_SourceFileTrial_TestsResults p) {
 		super(p);
 		setCoverage(p.getCoverage());
 	}
