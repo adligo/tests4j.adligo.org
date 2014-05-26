@@ -1,7 +1,6 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -14,8 +13,9 @@ import java.util.concurrent.TimeUnit;
 import org.adligo.tests4j.models.shared.ApiTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.SourceFileTrial;
-import org.adligo.tests4j.models.shared.asserts.AssertionHelperInfo;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
+import org.adligo.tests4j.models.shared.bindings.I_MetaTrialProcessorBindings;
+import org.adligo.tests4j.models.shared.bindings.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -42,7 +42,8 @@ import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
-public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener, I_AssertListener {
+public class TrialInstancesProcessor implements Runnable, 
+I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
 	
@@ -242,11 +243,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 		
 		
 		trial = trialDescription.getTrial();
-		AssertionHelperInfo atm = new AssertionHelperInfo();
-		atm.setCoveragePlugin(memory.getPlugin());
-		atm.setListener(testsRunner);
-		
-		trial.setRuntime(atm, reporter);
+		trial.setBindings(testsRunner);
 		
 		trialResultMutant = new BaseTrialResultMutant();
 			
@@ -428,10 +425,8 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				infoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
 				
 				ranAfterTrialTests = true;
-				AssertionHelperInfo atm = new AssertionHelperInfo();
-				atm.setCoveragePlugin(memory.getPlugin());
-				atm.setListener(this);
-				trial.setRuntime(atm, reporter);
+				
+				trial.setBindings(this);
 				try {
 					if (trial instanceof SourceFileTrial) {
 						((SourceFileTrial) trial).afterTrialTests(infoMut);
@@ -462,10 +457,7 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 				apiInfoMut.setAssertions(trialResultMutant.getAssertionCount());
 				apiInfoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
 				
-				atm = new AssertionHelperInfo();
-				atm.setCoveragePlugin(memory.getPlugin());
-				atm.setListener(this);
-				trial.setRuntime(atm, reporter);
+				trial.setBindings(this);
 				coverage = trialCoverageRecorder.endRecording();
 				ranAfterTrialTests = true;
 				I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);
@@ -538,4 +530,15 @@ public class TrialInstancesProcessor implements Runnable, I_TestFinishedListener
 	public synchronized TrialDescription getTrialDescription() {
 		return trialDescription;
 	}
+
+	@Override
+	public I_AssertListener getAssertionListener() {
+		return this;
+	}
+
+	@Override
+	public I_Tests4J_Reporter getReporter() {
+		return reporter;
+	}
+
 }

@@ -9,14 +9,14 @@ public class TrialRunMetadataMutant implements I_TrialRunMetadata {
 	public TrialRunMetadataMutant() {}
 
 	public TrialRunMetadataMutant(I_TrialRunMetadata other) {
-		setTrials(other.getTrials());
+		setTrials(other.getAllTrialMetadata());
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata#getTrials()
 	 */
 	@Override
-	public List<I_TrialMetadata> getTrials() {
+	public List<I_TrialMetadata> getAllTrialMetadata() {
 		List<I_TrialMetadata> toRet = new ArrayList<I_TrialMetadata>();
 		toRet.addAll(trials);
 		return toRet;
@@ -34,12 +34,12 @@ public class TrialRunMetadataMutant implements I_TrialRunMetadata {
 	}
 
 	@Override
-	public int getTrialCount() {
+	public int getAllTrialsCount() {
 		return trials.size();
 	}
 
 	@Override
-	public int getTestCount() {
+	public int getAllTestsCount() {
 		int toRet = 0;
 		for (I_TrialMetadata trial: trials) {
 			toRet = toRet + trial.getTestCount();

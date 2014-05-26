@@ -1,16 +1,12 @@
 package org.adligo.tests4j.models.shared.asserts;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.AbstractTrial;
-import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 
 public class AssertionFailureLocation extends Exception {
 	/**
@@ -19,7 +15,7 @@ public class AssertionFailureLocation extends Exception {
 	private static final long serialVersionUID = 1L;
 	private static final Set<String> NON_LOCATION_STACK_CLASSES = getNonLocationStackClasses();
 	
-	public AssertionFailureLocation(I_AssertionHelperInfo info) {
+	public AssertionFailureLocation() {
 		Exception stack = new Exception();
 		stack.fillInStackTrace();
 		StackTraceElement [] elements = stack.getStackTrace();

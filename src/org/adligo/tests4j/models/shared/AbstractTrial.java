@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared;
 
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertEquals;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertFalse;
+import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertGreaterThanOrEquals;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertNotEquals;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertNotNull;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertNotUniform;
@@ -10,7 +11,6 @@ import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertSame;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertThrown;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertTrue;
 import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertUniform;
-import static org.adligo.tests4j.models.shared.asserts.AssertType.AssertGreaterThanOrEquals;
 
 import java.util.Collection;
 
@@ -20,7 +20,6 @@ import org.adligo.tests4j.models.shared.asserts.CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.DoubleAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
-import org.adligo.tests4j.models.shared.asserts.I_AssertionHelperInfo;
 import org.adligo.tests4j.models.shared.asserts.I_BasicAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.I_ThrownAssertCommand;
@@ -29,7 +28,9 @@ import org.adligo.tests4j.models.shared.asserts.StringUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrowableAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrowableUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
+import org.adligo.tests4j.models.shared.bindings.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
+import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 /**
@@ -57,27 +58,34 @@ public abstract class AbstractTrial implements I_AbstractTrial {
 	public static final String THE_VALUE_SHOULD_BE_FALSE = "The value should be false.";
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
-	private I_AssertionHelperInfo runtime;
+	private I_AssertListener listener;
 	private I_Tests4J_Reporter reporter;
 	/**
 	 * Set the memory of the AbstractTrial
 	 * @param p
 	 */
 	@Override
-	public void setRuntime(I_AssertionHelperInfo pMemory, I_Tests4J_Reporter pReporter) {
-		runtime = pMemory;
-		reporter = pReporter;
+	public void setBindings(I_TrialProcessorBindings bindings) {
+		//throw npe for nulls
+		bindings.hashCode();
+		listener = bindings.getAssertionListener();
+		//throw npe for nulls
+		listener.hashCode();
+		
+		reporter = bindings.getReporter();
+		//throw npe for nulls
+		reporter.hashCode();
 	}
 	
 	/**
 	 * @param cmd
 	 */
 	public void evaluate(I_BasicAssertCommand cmd) {
-		AssertionProcessor.evaluate(runtime, cmd);
+		AssertionProcessor.evaluate(listener, cmd);
 	}
 	
 	public void evaluate(I_ThrownAssertCommand cmd, I_Thrower p) {
-		AssertionProcessor.evaluate(runtime, cmd, p);
+		AssertionProcessor.evaluate(listener, cmd, p);
 	}
 	
 	@Override

@@ -9,14 +9,19 @@ import java.util.Collections;
  */
 public class LineSeperator {
 	private static String lineSeperator;
-	
+	private static String callingClass = "org.adligo.tests4j.run.Tests4J";
+			
 	public static void setLineSeperator(String p) {
 		new MethodBlocker(LineSeperator.class, "setLineSeperator", 
-				Collections.singletonList("org.adligo.tests4j.run.Tests4J"));
+				Collections.singletonList(callingClass));
 		lineSeperator = p;
 	}
 	
 	public static String getLineSeperator() {
 		return lineSeperator;
+	}
+	
+	protected static void setAllowedCallingClass(String p) {
+		callingClass = p;
 	}
 }

@@ -4,12 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicLong;
 
-import org.adligo.tests4j.models.shared.AbstractTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
+import org.adligo.tests4j.models.shared.bindings.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
@@ -18,7 +16,8 @@ import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
-public class TestRunable implements Runnable, I_AssertListener {
+public class TestRunable implements Runnable, I_AssertListener,
+I_TrialProcessorBindings {
 
 	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
 	private Method testMethod;
@@ -116,4 +115,13 @@ public class TestRunable implements Runnable, I_AssertListener {
 		return testResult;
 	}
 
+	@Override
+	public I_AssertListener getAssertionListener() {
+		return this;
+	}
+
+	@Override
+	public I_Tests4J_Reporter getReporter() {
+		return reporter;
+	}
 }

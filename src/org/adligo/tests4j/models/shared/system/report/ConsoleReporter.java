@@ -46,8 +46,8 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 	@Override
 	public void onMetadataCalculated(I_TrialRunMetadata metadata) {
 		if (isLogEnabled(ConsoleReporter.class)) {
-			log("Metadata Calculated: " + metadata.getTrialCount() + " trials with " +
-					metadata.getTestCount() + " tests.");
+			log("Metadata Calculated: " + metadata.getAllTrialsCount() + " trials with " +
+					metadata.getAllTestsCount() + " tests.");
 		}
 	}
 

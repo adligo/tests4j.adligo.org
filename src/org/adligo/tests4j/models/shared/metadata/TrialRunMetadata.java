@@ -10,24 +10,24 @@ public class TrialRunMetadata implements I_TrialRunMetadata {
 	public TrialRunMetadata() {}
 	
 	public TrialRunMetadata(I_TrialRunMetadata p) {
-		List<? extends I_TrialMetadata> others = p.getTrials();
+		List<? extends I_TrialMetadata> others = p.getAllTrialMetadata();
 		for (I_TrialMetadata trialMd: others) {
 			trials.add(new TrialMetadata(trialMd));
 		}
 		trials = Collections.unmodifiableList(trials);
 	}
 
-	public List<? extends I_TrialMetadata> getTrials() {
+	public List<? extends I_TrialMetadata> getAllTrialMetadata() {
 		return trials;
 	}
 	
 	@Override
-	public int getTrialCount() {
+	public int getAllTrialsCount() {
 		return trials.size();
 	}
 
 	@Override
-	public int getTestCount() {
+	public int getAllTestsCount() {
 		int toRet = 0;
 		for (I_TrialMetadata trial: trials) {
 			toRet = toRet + trial.getTestCount();
