@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.bindings;
+package org.adligo.tests4j.models.shared;
 
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;

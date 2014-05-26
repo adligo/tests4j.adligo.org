@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.results;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 

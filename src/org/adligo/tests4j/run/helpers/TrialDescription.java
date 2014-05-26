@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
 import org.adligo.tests4j.models.shared.SourceFileScope;
@@ -35,9 +35,9 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 public class TrialDescription implements I_TrialDescription {
 
 
-	private Class<? extends I_AbstractTrial> trialClass;
+	private Class<? extends I_Trial> trialClass;
 	
-	private I_AbstractTrial trial;
+	private I_Trial trial;
 	
 	private Method beforeTrialMethod;
 	private Method afterTrialTestsMethod;
@@ -55,7 +55,7 @@ public class TrialDescription implements I_TrialDescription {
 	private UseCaseScope useCaseScope;
 	private PackageScope packageScope;
 	
-	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
+	public TrialDescription(Class<? extends I_Trial> pTrialClass,
 			I_Tests4J_Reporter pLog) {
 		long start = System.currentTimeMillis();
 		reporter = pLog;
@@ -242,11 +242,11 @@ public class TrialDescription implements I_TrialDescription {
 
 	private boolean createInstance() {
 		try {
-			Constructor<? extends I_AbstractTrial> constructor =
+			Constructor<? extends I_Trial> constructor =
 					trialClass.getConstructor(new Class[] {});
 			constructor.setAccessible(true);
 			Object o = constructor.newInstance(new Object[] {});
-			trial = (I_AbstractTrial) o;
+			trial = (I_Trial) o;
 		} catch (Exception x) {
 			I_Tests4J_TrialDescriptionMessages messages = 
 					Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
@@ -331,7 +331,7 @@ public class TrialDescription implements I_TrialDescription {
 	public String getTrialName() {
 		return trialClass.getName();
 	}
-	public I_AbstractTrial getTrial() {
+	public I_Trial getTrial() {
 		return trial;
 	}
 
@@ -351,7 +351,7 @@ public class TrialDescription implements I_TrialDescription {
 		return testMethods.iterator();
 	}
 
-	public Class<? extends I_AbstractTrial> getTrialClass() {
+	public Class<? extends I_Trial> getTrialClass() {
 		return trialClass;
 	}
 

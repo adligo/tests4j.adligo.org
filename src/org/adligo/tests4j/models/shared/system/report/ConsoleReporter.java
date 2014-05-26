@@ -142,8 +142,6 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 		if (coverage.size() >= 1) {
 			log("\t\tPackage Coverage;");
 		}
-		double cus = 0;
-		double covered_cus = 0;
 		Map<String, I_PackageCoverage> treeMap = new TreeMap<String, I_PackageCoverage>();
 		for (I_PackageCoverage cover: coverage) {
 			treeMap.put(cover.getPackageName(), cover);
@@ -157,16 +155,9 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 						cover.getChildPackageCoverage().size() + " child packages and " +
 						cover.getTotalCoveredCoverageUnits().get() + "/" +
 						cover.getTotalCoverageUnits().get() + " coverage units.");
-			I_CoverageUnits cu = cover.getCoverageUnits();
-			cus = cus + cu.get();
-			I_CoverageUnits ccu = cover.getCoveredCoverageUnits();
-			covered_cus = covered_cus + ccu.get();
+			
 		}
-		if (cus == 0.0) {
-			return new BigDecimal("0.00");
-		}
-		double pct = covered_cus/cus * 100;
-		return new BigDecimal(pct).round(new MathContext(2));
+		return new BigDecimal(result.getCoveragePercentage()).round(new MathContext(2));
 	}
 
 	private void logTestFailure(I_TrialResult trial) {

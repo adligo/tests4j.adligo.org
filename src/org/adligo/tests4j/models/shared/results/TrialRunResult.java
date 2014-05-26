@@ -70,4 +70,12 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getTestsIgnored();
 	}
 
+	public boolean hasCoverage() {
+		return mutant.hasCoverage();
+	}
+
+	public double getCoveragePercentage() {
+		return mutant.getCoveragePercentage();
+	}
+
 }

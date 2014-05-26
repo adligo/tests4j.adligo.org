@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.AfterTrial;
 import org.adligo.tests4j.models.shared.BeforeTrial;
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.IgnoreTest;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
@@ -54,8 +54,8 @@ public class Tests4J_Memory {
 	 */
 	public static List<Class<?>> COMMON_CLASSES;
 	
-	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
-			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
+	private ConcurrentLinkedQueue<Class<? extends I_Trial>> trialClasses = 
+			new ConcurrentLinkedQueue<Class<? extends I_Trial>>();
 	private Set<String> tests;
 	
 	private ConcurrentLinkedQueue<TrialDescription> trialDescriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
@@ -159,7 +159,7 @@ public class Tests4J_Memory {
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public Class<? extends I_AbstractTrial> pollTrialClasses() {
+	public Class<? extends I_Trial> pollTrialClasses() {
 		return trialClasses.poll();
 	}
 	
@@ -210,7 +210,7 @@ public class Tests4J_Memory {
 		return resultsBeforeMetadata.size();
 	}
 
-	public ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> getTrialClasses() {
+	public ConcurrentLinkedQueue<Class<? extends I_Trial>> getTrialClasses() {
 		return trialClasses;
 	}
 

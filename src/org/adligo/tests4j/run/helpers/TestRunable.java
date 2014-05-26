@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
+import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
-import org.adligo.tests4j.models.shared.bindings.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
@@ -21,7 +21,7 @@ I_TrialProcessorBindings {
 
 	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
 	private Method testMethod;
-	private I_AbstractTrial trial;
+	private I_Trial trial;
 	private I_TestFinishedListener listener;
 	private TestResult testResult;
 	private CopyOnWriteArrayList<Integer> assertionHashes = new CopyOnWriteArrayList<Integer>(); 
@@ -73,7 +73,7 @@ I_TrialProcessorBindings {
 		return testMethod;
 	}
 
-	public I_AbstractTrial getTrial() {
+	public I_Trial getTrial() {
 		return trial;
 	}
 
@@ -85,7 +85,7 @@ I_TrialProcessorBindings {
 		this.testMethod = testMethod;
 	}
 
-	public void setTrial(I_AbstractTrial trial) {
+	public void setTrial(I_Trial trial) {
 		this.trial = trial;
 	}
 

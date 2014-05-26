@@ -1,9 +1,15 @@
 package org.adligo.tests4j.models.shared.results;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
+import org.adligo.tests4j.models.shared.coverage.I_CoverageUnits;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 
 public class TrialRunResultMutant implements I_TrialRunResult {
@@ -163,5 +169,31 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 
 	public void setIgnoredTests(long testIgnored) {
 		this.testsIgnored = testIgnored;
+	}
+
+	@Override
+	public boolean hasCoverage() {
+		if (coverage.isEmpty()) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public double getCoveragePercentage() {
+		double cus = 0;
+		double covered_cus = 0;
+		
+		for (I_PackageCoverage cover: coverage) {
+			I_CoverageUnits cu = cover.getCoverageUnits();
+			cus = cus + cu.get();
+			I_CoverageUnits ccu = cover.getCoveredCoverageUnits();
+			covered_cus = covered_cus + ccu.get();
+		}
+		if (cus == 0.0) {
+			return new BigDecimal("0.00").doubleValue();
+		}
+		double pct = covered_cus/cus * 100;
+		return new BigDecimal(pct).round(new MathContext(2)).doubleValue();
 	}
 }

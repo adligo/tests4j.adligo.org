@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
@@ -37,8 +37,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	/**
 	 * @see I_Tests4J_Params#getTrials()
 	 */
-	private List<Class<? extends I_AbstractTrial>> trials = 
-				new ArrayList<Class<? extends I_AbstractTrial>>();
+	private List<Class<? extends I_Trial>> trials = 
+				new ArrayList<Class<? extends I_Trial>>();
 	
 	private Set<String> tests = new HashSet<String>();
 	/**
@@ -100,14 +100,14 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		exitor = p.getExitor();
 	}
 	
-	public List<Class<? extends I_AbstractTrial>> getTrials() {
+	public List<Class<? extends I_Trial>> getTrials() {
 		return trials;
 	}
-	public void setTrials(List<Class<? extends I_AbstractTrial>> p) {
+	public void setTrials(List<Class<? extends I_Trial>> p) {
 		trials.clear();
 		trials.addAll(p);
 	}
-	public void addTrial(Class<? extends I_AbstractTrial> p) {
+	public void addTrial(Class<? extends I_Trial> p) {
 		trials.add(p);
 	}
 	
@@ -270,7 +270,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			sb.append("\t");
 			sb.append(TRIALS_XML_START);
 			sb.append("\n");
-			for (Class<? extends I_AbstractTrial> c: trials) {
+			for (Class<? extends I_Trial> c: trials) {
 				if (c != null) {
 					sb.append("\t");
 					sb.append("\t");

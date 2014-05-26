@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.system;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 /**
@@ -20,7 +20,7 @@ public interface I_Tests4J_Params {
 	 * 
 	 * @return
 	 */
-	public List<Class<? extends I_AbstractTrial>> getTrials();
+	public List<Class<? extends I_Trial>> getTrials();
 	
 	/**
 	 * The specific tests to run, if this set is empty

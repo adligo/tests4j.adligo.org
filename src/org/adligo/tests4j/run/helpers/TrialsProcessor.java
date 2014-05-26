@@ -8,7 +8,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.system.CoveragePluginWrapper;
 import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
@@ -69,7 +69,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		
 		I_CoveragePlugin plugin = params.getCoveragePlugin();
 		if (plugin != null) {
-			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(params);
+			List<Class<? extends I_Trial>> instrumentedTrials = plugin.instrumentClasses(params);
 			params.setTrials(instrumentedTrials);
 			plugin = new CoveragePluginWrapper(plugin);
 		}

@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.system;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
 
 /**
  * a pluggable interface for a this integrating testing api 
@@ -20,7 +20,7 @@ public interface I_CoveragePlugin {
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public List<Class<? extends I_AbstractTrial>> instrumentClasses(I_Tests4J_Params params);
+	public List<Class<? extends I_Trial>> instrumentClasses(I_Tests4J_Params params);
 	
 	/**
 	 *

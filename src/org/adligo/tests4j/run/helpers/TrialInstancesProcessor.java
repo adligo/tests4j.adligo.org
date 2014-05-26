@@ -11,11 +11,10 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.adligo.tests4j.models.shared.ApiTrial;
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
+import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.SourceFileTrial;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
-import org.adligo.tests4j.models.shared.bindings.I_MetaTrialProcessorBindings;
-import org.adligo.tests4j.models.shared.bindings.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -52,7 +51,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
 	private I_Tests4J_Reporter reporter;
-	private I_AbstractTrial trial;
+	private I_Trial trial;
 	private BaseTrialResultMutant trialResultMutant;
 	
 	private ExecutorService testRunService;
@@ -92,7 +91,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	@Override
 	public void run() {
 		try {
-			Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClasses();
+			Class<? extends I_Trial> trialClazz = memory.pollTrialClasses();
 			while (trialClazz != null) {
 				
 				addTrialDescription(trialClazz);
@@ -134,7 +133,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	 *    
 	 * @param trialClazz
 	 */
-	private void addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
+	private void addTrialDescription(Class<? extends I_Trial> trialClazz) {
 		
 		I_CoverageRecorder trialCoverageRecorder = startRecordingTrial(trialClazz);
 		
@@ -203,7 +202,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	 * @param trialClazz
 	 */
 	private I_CoverageRecorder startRecordingTrial(
-			Class<? extends I_AbstractTrial> trialClazz) {
+			Class<? extends I_Trial> trialClazz) {
 		I_CoveragePlugin plugin = memory.getPlugin();
 		I_CoverageRecorder trialCoverageRecorder = null;
 		if (plugin != null) {
@@ -237,7 +236,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		afterTrialTestsResultMutant = null;
 		
 		String trialName = trialDescription.getTrialName();
-		Class<? extends I_AbstractTrial> trialClazz = trialDescription.getTrialClass();
+		Class<? extends I_Trial> trialClazz = trialDescription.getTrialClass();
 		notifier.startingTrial(trialName);
 		I_CoverageRecorder trialCoverageRecorder =  startRecordingTrial(trialClazz);
 		
@@ -402,7 +401,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		Method clazzMethod = null;
 		switch (type) {
 			case SourceFileTrial:
-				Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();
+				Class<? extends I_Trial> trialClass = trialDescription.getTrialClass();
 				
 				try {
 					clazzMethod = trialClass.getDeclaredMethod("afterTrialTests", I_SourceFileCoverage.class);

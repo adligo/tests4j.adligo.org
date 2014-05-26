@@ -37,6 +37,19 @@ public interface I_TrialRunResult {
 	 * @return
 	 */
 	public List<I_PackageCoverage> getCoverage();
+	
+	/**
+	 * @return true if any coverage was recorded.
+	 */
+	public boolean hasCoverage();
+	
+	/**
+	 * the total percentage of all
+	 * coverage units which were
+	 * covered by the trial run. 
+	 * @return
+	 */
+	public double getCoveragePercentage();
 	/**
 	 * all of the trials including ignored trials.
 	 * @return
@@ -74,7 +87,7 @@ public interface I_TrialRunResult {
 	 */
 	public long getTestsPassed();
 	/**
-	 * the numbe of test failures.
+	 * the number of test failures.
 	 * @return
 	 */
 	public long getTestFailures();
