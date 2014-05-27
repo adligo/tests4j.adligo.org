@@ -7,16 +7,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.AfterTrial;
 import org.adligo.tests4j.models.shared.BeforeTrial;
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.IgnoreTest;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
@@ -26,6 +26,7 @@ import org.adligo.tests4j.models.shared.TrialType;
 import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -54,8 +55,8 @@ public class Tests4J_Memory {
 	 */
 	public static List<Class<?>> COMMON_CLASSES;
 	
-	private ConcurrentLinkedQueue<Class<? extends I_Trial>> trialClasses = 
-			new ConcurrentLinkedQueue<Class<? extends I_Trial>>();
+	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
+			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private Set<String> tests;
 	
 	private ConcurrentLinkedQueue<TrialDescription> trialDescriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
@@ -71,6 +72,8 @@ public class Tests4J_Memory {
 			new CopyOnWriteArrayList<TrialInstancesProcessor>();
 	private I_TrialRunListener listener;
 	private Tests4J_ThreadManager threadManager;
+	private ArrayBlockingQueue<I_TrialRunMetadata> metaTrialDataBlock = new ArrayBlockingQueue<I_TrialRunMetadata>(1);
+	
 	/**
 	 * 
 	 * @param params
@@ -159,7 +162,7 @@ public class Tests4J_Memory {
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public Class<? extends I_Trial> pollTrialClasses() {
+	public Class<? extends I_AbstractTrial> pollTrialClasses() {
 		return trialClasses.poll();
 	}
 	
@@ -210,7 +213,7 @@ public class Tests4J_Memory {
 		return resultsBeforeMetadata.size();
 	}
 
-	public ConcurrentLinkedQueue<Class<? extends I_Trial>> getTrialClasses() {
+	public ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> getTrialClasses() {
 		return trialClasses;
 	}
 
@@ -260,7 +263,7 @@ public class Tests4J_Memory {
 	 * @return the recorder that is recording all of the coverage
 	 * for the various trials/tests.
 	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
+	 * @diagram Overview.seq sync on 5/26/2014
 	 */
 	public I_CoverageRecorder getMainRecorder() {
 		return recorders.get(mainRecorderScope);
@@ -336,4 +339,15 @@ public class Tests4J_Memory {
 		return threadManager;
 	}
 
+	/**
+	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 * @param md
+	 */
+	public void setMetaTrialData(I_TrialRunMetadata md) {
+		metaTrialDataBlock.add(md);
+	}
+	
+	public I_TrialRunMetadata takeMetaTrialData() throws InterruptedException {
+		return metaTrialDataBlock.take();
+	}
 }

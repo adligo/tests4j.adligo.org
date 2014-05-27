@@ -3,6 +3,7 @@ package org.adligo.tests4j.models.shared.system;
 import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
@@ -21,6 +22,14 @@ public interface I_Tests4J_Params {
 	 * @return
 	 */
 	public List<Class<? extends I_Trial>> getTrials();
+	
+	/**
+	 * may return null or a 
+	 * class that implements I_MetaTrial
+	 * which is run after all of the regular trials,
+	 * since it can assert things about the trial run.
+	 */
+	public Class<? extends I_MetaTrial> getMetaTrialClass();
 	
 	/**
 	 * The specific tests to run, if this set is empty

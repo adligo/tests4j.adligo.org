@@ -1,14 +1,17 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.system.CoveragePluginWrapper;
 import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
@@ -52,6 +55,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 	 * @diagram Overview.seq sync on 5/19/2014
 	 * 
 	 */
+	@SuppressWarnings("unchecked")
 	public void run(I_TrialRunListener pListener, I_Tests4J_Params pParams) {
 		
 		Tests4J_Params params = new Tests4J_Params(pParams);
@@ -69,8 +73,24 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		
 		I_CoveragePlugin plugin = params.getCoveragePlugin();
 		if (plugin != null) {
-			List<Class<? extends I_Trial>> instrumentedTrials = plugin.instrumentClasses(params);
-			params.setTrials(instrumentedTrials);
+			List<Class<? extends I_AbstractTrial>> allTrialClasses = new ArrayList<Class<? extends I_AbstractTrial>>();
+			allTrialClasses.addAll(pParams.getTrials());
+			Class<? extends I_MetaTrial> metaTrialClass = pParams.getMetaTrialClass();
+			if (metaTrialClass != null) {
+				allTrialClasses.add(metaTrialClass);
+			}
+			List<Class< ? extends I_Trial>> instrumentedNonMetaTrials = new ArrayList<Class< ? extends I_Trial>>();
+			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(allTrialClasses);
+			for (Class<? extends I_AbstractTrial> trialClass: instrumentedTrials) {
+				TrialTypeEnum type = TrialTypeFinder.getTypeInternal(trialClass);
+				if (type == TrialTypeEnum.MetaTrial) {
+					params.setMetaTrialClass((Class<? extends I_MetaTrial>) trialClass);
+				} else {
+					instrumentedNonMetaTrials.add((Class<? extends I_Trial>) trialClass);
+				}
+			}
+			params.setTrials(instrumentedNonMetaTrials);
+			
 			plugin = new CoveragePluginWrapper(plugin);
 		}
 		

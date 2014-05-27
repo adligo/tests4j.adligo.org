@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
@@ -35,7 +36,7 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 public class TrialDescription implements I_TrialDescription {
 
 
-	private Class<? extends I_Trial> trialClass;
+	private Class<? extends I_AbstractTrial> trialClass;
 	
 	private I_Trial trial;
 	
@@ -55,7 +56,7 @@ public class TrialDescription implements I_TrialDescription {
 	private UseCaseScope useCaseScope;
 	private PackageScope packageScope;
 	
-	public TrialDescription(Class<? extends I_Trial> pTrialClass,
+	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
 			I_Tests4J_Reporter pLog) {
 		long start = System.currentTimeMillis();
 		reporter = pLog;
@@ -69,12 +70,13 @@ public class TrialDescription implements I_TrialDescription {
 		duration = end - start;
 	}
 
-
-
-
 	private boolean checkTestClass() {
-		
-		type = getTypeInternal();
+		try {
+			type = TrialTypeFinder.getTypeInternal(trialClass);
+		} catch (IllegalArgumentException x) {
+			resultException = x;
+			resultFailureMessage = x.getMessage();
+		}
 		if (!checkTypeAnnotations()) {
 			return false;
 		}
@@ -150,7 +152,7 @@ public class TrialDescription implements I_TrialDescription {
 				} 
 				
 				break;
-			default:
+			case UseCaseTrial:
 				useCaseScope = trialClass.getAnnotation(UseCaseScope.class);
 				if (useCaseScope == null) {
 					resultFailureMessage = 
@@ -189,6 +191,8 @@ public class TrialDescription implements I_TrialDescription {
 									messages.getWasAnnotatedIncorrectly());
 					return false;
 				} 
+			default:
+				//MetaTrial
 		}
 		return true;
 	}
@@ -242,7 +246,7 @@ public class TrialDescription implements I_TrialDescription {
 
 	private boolean createInstance() {
 		try {
-			Constructor<? extends I_Trial> constructor =
+			Constructor<? extends I_AbstractTrial> constructor =
 					trialClass.getConstructor(new Class[] {});
 			constructor.setAccessible(true);
 			Object o = constructor.newInstance(new Object[] {});
@@ -265,32 +269,6 @@ public class TrialDescription implements I_TrialDescription {
 		return type;
 	}
 	
-	private TrialTypeEnum getTypeInternal() {
-		TrialType type = trialClass.getAnnotation(TrialType.class);
-		if (type == null)  {
-			Class<?> checking = trialClass.getSuperclass();
-			while (!Object.class.equals(checking)) {
-				type = checking.getAnnotation(TrialType.class);
-				if (type != null) {
-					break;
-				}
-				checking = checking.getSuperclass();
-			}
-		}
-		I_Tests4J_TrialDescriptionMessages messages = 
-				Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
-		
-		if (type == null) {
-			resultFailureMessage = messages.getMissingTypeAnnotationPre() + 
-						trialClass.getName() + 
-					messages.getMissingTypeAnnotationPost();
-			resultException	= new IllegalArgumentException(resultFailureMessage);
-			return null;
-		}
-		TrialTypeEnum typeEnum = type.type();
-		return typeEnum;
-	}
-
 	public boolean isTrialCanRun() {
 		return trialCanRun;
 	}
@@ -351,7 +329,7 @@ public class TrialDescription implements I_TrialDescription {
 		return testMethods.iterator();
 	}
 
-	public Class<? extends I_Trial> getTrialClass() {
+	public Class<? extends I_AbstractTrial> getTrialClass() {
 		return trialClass;
 	}
 

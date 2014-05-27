@@ -16,25 +16,21 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
  */
 public interface I_MetaTrial extends I_AbstractTrial {
 	
+	
 	/**
-	 * asserts the percent passed in 
-	 * is less than or equal to 
-	 * the actual percentage of
-	 * source file classes with trials
-	 * to source file classes.
-	 * 
-	 * @param pct
-	 */
-	public void assertPercentOfSourceFileClassesWithSouceFileTrials(double pct);
-
-	/**
-	 * assert thing about the metadata ie
+	 * this method can assert thing about the metadata ie
 	 * the above assertPercentOfSourceFileClassesWithSouceFileTrials(double pct)
 	 * override to change the default logic.
 	 * @param metadata
 	 */
-	@Test
 	public void testMetadata(I_TrialRunMetadata metadata);
 
+	/**
+	 * this method can assert things about
+	 * the trial run results, ie total percentage covered.
+	 * that nothing was ignored exc.
+	 * 
+	 * @param results
+	 */
 	public void testResults(I_TrialRunResult results);
 }

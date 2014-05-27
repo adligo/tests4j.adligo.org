@@ -2,7 +2,8 @@ package org.adligo.tests4j.models.shared.system;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.I_Trial;
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 public class CoveragePluginWrapper implements I_CoveragePlugin {
 	private I_CoveragePlugin delegate;
@@ -11,9 +12,9 @@ public class CoveragePluginWrapper implements I_CoveragePlugin {
 		delegate = p;
 	}
 	
-	public List<Class<? extends I_Trial>> instrumentClasses(
-			I_Tests4J_Params params) {
-		return delegate.instrumentClasses(params);
+	public List<Class<? extends I_AbstractTrial>> instrumentClasses(
+			List<Class<? extends I_AbstractTrial>> trials) {
+		return delegate.instrumentClasses(trials);
 	}
 
 	public boolean canSubRecord() {
@@ -22,6 +23,11 @@ public class CoveragePluginWrapper implements I_CoveragePlugin {
 
 	public I_CoverageRecorder createRecorder(String scope) {
 		return new SynchronizedCoverageRecorder(delegate.createRecorder(scope));
+	}
+
+	@Override
+	public void setReporter(I_Tests4J_Reporter p) {
+		delegate.setReporter(p);
 	}
 	
 }

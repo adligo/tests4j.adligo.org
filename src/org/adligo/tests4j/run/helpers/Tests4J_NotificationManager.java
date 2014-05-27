@@ -20,6 +20,7 @@ import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadataMutant;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -73,7 +74,7 @@ public class Tests4J_NotificationManager {
 	}
 	
 	/**
-	 * in diagram Overview.seq
+	 * @digram_sync on 5/26/2014 with Overview.seq
 	 */
 	public void checkDoneDescribingTrials() {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
@@ -178,6 +179,8 @@ public class Tests4J_NotificationManager {
 		}
 		TrialRunMetadata toSend = new TrialRunMetadata(trmm);
 		
+		// @diagram_sync on 5/26/2014 with Overview.seq
+		memory.setMetaTrialData(toSend);
 		reporter.onMetadataCalculated(toSend);
 		if (listener != null) {
 			listener.onMetadataCalculated(toSend);
@@ -248,14 +251,16 @@ public class Tests4J_NotificationManager {
 
 	
 	/**
-	 * Check to see if all of the trials are done running
+	 * Check to see if all of the I_Trials are done running
 	 * by comparing the trialsWhichCanRun 
 	 * from the memory's RunnableTrialDescriptions 
 	 * and the count of trials from the trialDone method calls.
 	 * 
-	 * diagrammed in Overview.seq
+	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 * @return a trial run result
+	 * 		
 	 */
-	public  void checkDoneRunningTrials() {
+	public TrialRunResultMutant checkDoneRunningNonMetaTrials() {
 		if (doneDescribeingTrials.get()) {
 			int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
 			int trialsRan = trials.get();
@@ -263,7 +268,7 @@ public class Tests4J_NotificationManager {
 			int ignoredTrials = memory.getAllTrialCount() - trialsWhichCanRun;
 			
 			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-				reporter.log("checkDoneRunningTrials " + trialsRan + " =? " +
+				reporter.log("checkDoneRunningNonMetaTrials " + trialsRan + " =? " +
 						trialsWhichCanRun + " + " + trialClazzFails + " + " +
 						ignoredTrials);
 			}
@@ -271,7 +276,7 @@ public class Tests4J_NotificationManager {
 				synchronized (doneRunningTrials) {
 					if (!doneRunningTrials.get()) {
 						doneRunningTrials.set(true);
-						onDoneRunningTrials();
+						return onDoneRunningNonMetaTrials();
 					}
 				}
 			} else {
@@ -288,17 +293,18 @@ public class Tests4J_NotificationManager {
 				}
 			}
 		}
+		return null;
 	}
 
 	/**
 	 * All the trials are finished running,
 	 * so notify the listener and cleanup.
 	 * 
-	 * diagrammed in Overview.seq
+	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 */
-	private void onDoneRunningTrials() {
+	private TrialRunResultMutant onDoneRunningNonMetaTrials() {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("DoneRunningTrials.");
+			reporter.log("onDoneRunningNonMetaTrials()");
 		}
 		TrialRunResultMutant runResult = new TrialRunResultMutant();
 		runResult.setStartTime(startTime.get());
@@ -313,8 +319,11 @@ public class Tests4J_NotificationManager {
 		
 		long end = System.currentTimeMillis();
 		runResult.setRunTime(end - runResult.getStartTime());
-		
-		TrialRunResult endResult = new TrialRunResult(runResult);
+		return runResult;
+	}
+	
+	public void onAllTrialsDone(I_TrialRunResult p) {
+		TrialRunResult endResult = new TrialRunResult(p);
 		reporter.onRunCompleted(endResult);
 		if (listener != null) {
 			listener.onRunCompleted(endResult);
@@ -323,7 +332,7 @@ public class Tests4J_NotificationManager {
 	}
 
 	/**
-	 * @diagram on 5/8/2014 to Overview.seq 
+	 * @diagram_sync on 5/8/2014 to Overview.seq 
 	 * @param runResult
 	 */
 	private void stopRecordingTrialsRun(TrialRunResultMutant runResult) {

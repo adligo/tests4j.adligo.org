@@ -2,7 +2,8 @@ package org.adligo.tests4j.models.shared.system;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.I_Trial;
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 /**
  * a pluggable interface for a this integrating testing api 
@@ -18,10 +19,11 @@ public interface I_CoveragePlugin {
 	 * this instruments the classes so that
 	 * they notify the recorder
 	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
+	 * @diagram Overview.seq sync on 5/26/2014
 	 */
-	public List<Class<? extends I_Trial>> instrumentClasses(I_Tests4J_Params params);
+	public List<Class<? extends I_AbstractTrial>> instrumentClasses(List<Class<? extends I_AbstractTrial>> trials);
 	
+	public void setReporter(I_Tests4J_Reporter p);
 	/**
 	 *
 	 * @return

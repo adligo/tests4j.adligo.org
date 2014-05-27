@@ -7,12 +7,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {
+	public static final String META_TRIAL_XML_END = "</meta_trial>";
+	public static final String META_TRIAL_XML_START = "<meta_trial>";
 	public static final String TRIAL_XML_END = "</trial>";
 	public static final String TRIAL_XML_START = "<trial>";
 	public static final String TRIALS_XML_END = "</trials>";
@@ -39,6 +42,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 */
 	private List<Class<? extends I_Trial>> trials = 
 				new ArrayList<Class<? extends I_Trial>>();
+	/**
+	 * @see I_Tests4J_Params#getMetaTrialClass()
+	 */
+	private Class<? extends I_MetaTrial>  metaTrialClass;
 	
 	private Set<String> tests = new HashSet<String>();
 	/**
@@ -87,6 +94,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	
 	public Tests4J_Params(I_Tests4J_Params p) {
 		trials.addAll(p.getTrials());
+		metaTrialClass = p.getMetaTrialClass();
 		tests.addAll(p.getTests());
 		reporter = p.getReporter();
 		minTrials = p.getMinTrials();
@@ -266,10 +274,21 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			sb.append(minTrials);
 		}
 		sb.append("\" >\n");
-		if (trials.size() >= 1) {
+		if (trials.size() >= 1 || metaTrialClass != null) {
+			
 			sb.append("\t");
 			sb.append(TRIALS_XML_START);
 			sb.append("\n");
+			if (metaTrialClass != null) {
+				sb.append("\t");
+				sb.append(META_TRIAL_XML_START);
+				sb.append("\n");
+				sb.append("\t");
+				sb.append("\t");
+				sb.append(metaTrialClass.getName());
+				sb.append(META_TRIAL_XML_END);
+				sb.append("\n");
+			}
 			for (Class<? extends I_Trial> c: trials) {
 				if (c != null) {
 					sb.append("\t");
@@ -340,5 +359,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 	public void setExitor(I_SystemExit exitor) {
 		this.exitor = exitor;
+	}
+
+	public Class<? extends I_MetaTrial> getMetaTrialClass() {
+		return metaTrialClass;
+	}
+
+	public void setMetaTrialClass(Class<? extends I_MetaTrial> metaTrialClass) {
+		this.metaTrialClass = metaTrialClass;
 	}
 }
