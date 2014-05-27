@@ -68,7 +68,7 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 	@Override
 	public synchronized void onTestCompleted(String trialName, String testName,
 			boolean passed) {
-		if (isLogEnabled(SystemOut.class)) {
+		if (isLogEnabled(ConsoleReporter.class)) {
 			String passedString = " passed!";
 			if (!passed) {
 				passedString = " failed!";

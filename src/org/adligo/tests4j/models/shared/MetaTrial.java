@@ -55,7 +55,7 @@ public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 	 * so that this class had a @Test method
 	 */
 	@Test
-	public void testTests() {
+	public void testAftersCalled() {
 		assertTrue(calledTestMetadata);
 		assertTrue(calledTestResults);
 	}
