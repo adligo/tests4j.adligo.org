@@ -23,7 +23,7 @@ public interface I_MetaTrial extends I_AbstractTrial {
 	 * override to change the default logic.
 	 * @param metadata
 	 */
-	public void testMetadata(I_TrialRunMetadata metadata);
+	public void afterMetadataCalculated(I_TrialRunMetadata metadata);
 
 	/**
 	 * this method can assert things about
@@ -32,5 +32,5 @@ public interface I_MetaTrial extends I_AbstractTrial {
 	 * 
 	 * @param results
 	 */
-	public void testResults(I_TrialRunResult results);
+	public void afterNonMetaTrialsRun(I_TrialRunResult results);
 }

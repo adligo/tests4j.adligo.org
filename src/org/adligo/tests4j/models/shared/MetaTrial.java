@@ -34,18 +34,19 @@ public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 
 	
 	@Override
-	public void testMetadata(I_TrialRunMetadata metadata) {
+	public void afterMetadataCalculated(I_TrialRunMetadata metadata) {
 		calledTestMetadata = true;
 		
 	}
 
 	@Override
-	public void testResults(I_TrialRunResult results) {
+	public void afterNonMetaTrialsRun(I_TrialRunResult results) {
 		calledTestResults = true;
 		//allow to run with out coverage plugin,
 		//you may want to require this for your project.
 		if (results.hasCoverage()) {
-			assertGreaterThanOrEquals(minPercentCodeCoverage, results.getCoveragePercentage());
+			double actual = results.getCoveragePercentage();
+			assertGreaterThanOrEquals(minPercentCodeCoverage, actual);
 		}
 	}
 	

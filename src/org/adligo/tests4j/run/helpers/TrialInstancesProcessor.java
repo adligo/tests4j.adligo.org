@@ -1,8 +1,11 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
@@ -13,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 import org.adligo.tests4j.models.shared.ApiTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.I_MetaTrial;
-import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.SourceFileTrial;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
@@ -69,6 +71,10 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private TestResultMutant afterTrialTestsResultMutant;
 	private boolean finished = false;
 	private TrialRunResultMutant runResultMutant;
+	private boolean inAfterTrialTests = false;
+	private boolean inRunMetaTrialMethods = false;
+	private TestResultMutant metaTrialTestResultMutant;
+	private Set<Integer> metaTrialAssertionHashes = new HashSet<Integer>();
 	/**
 	 * 
 	 * @param p
@@ -321,7 +327,6 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			reporter.log("notifying trial finished " + trialDescription.getTrialName());
 		}
 		notifier.onTrialCompleted(result);
-		trialResultMutant = null;
 	}
 	
 	private void setAfterTrialTestsState(BaseTrialResultMutant mutant) {
@@ -418,6 +423,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private void runAfterTrialTests(I_CoverageRecorder trialCoverageRecorder) {
 		ranAfterTrialTests = false;
 		hadAfterTrialTests = false;
+		inAfterTrialTests = true;
 		
 		TrialTypeEnum type = trialDescription.getType();
 		
@@ -433,6 +439,8 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			default:
 				//do nothing
 		}
+		
+		inAfterTrialTests = false;
 	}
 
 	private void afterApiTrialTests(I_CoverageRecorder trialCoverageRecorder,
@@ -474,6 +482,12 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		} catch (Exception x) {
 			failTrialOnException(x.getMessage(), x, type);
 		}
+		afterTrialTestsResultMutant = new TestResultMutant();
+		afterTrialTestsResultMutant.setPassed(true);
+		flushAssertionHashes(afterTrialTestsResultMutant, afterTrialTestsAssertionHashes);
+		afterTrialTestsResultMutant.setName("afterTrialTests(I_PackageCoverage p");
+		
+		trialResultMutant.addResult(afterTrialTestsResultMutant);
 	}
 
 	private void afterSourceFileTrialTests(
@@ -512,10 +526,16 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		} catch (Exception x) {
 			failTrialOnException(x.getMessage(), x, type);
 		}
+		afterTrialTestsResultMutant = new TestResultMutant();
+		afterTrialTestsResultMutant.setPassed(true);
+		flushAssertionHashes(afterTrialTestsResultMutant, afterTrialTestsAssertionHashes);
+		afterTrialTestsResultMutant.setName("afterTrialTests(I_SourceFileCoverage p");
+		
+		trialResultMutant.addResult(afterTrialTestsResultMutant);
 	}
 	
 	private void runMetaTrialMethods() {
-		
+		inRunMetaTrialMethods = true;
 		
 		TrialTypeEnum type = trialDescription.getType();
 		
@@ -523,19 +543,50 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		try {
 			if (trial instanceof I_MetaTrial) {
 				I_TrialRunMetadata metadata = memory.takeMetaTrialData();
-				((I_MetaTrial) trial).testMetadata(metadata);
+				((I_MetaTrial) trial).afterMetadataCalculated(metadata);
+			}
+			if (metaTrialTestResultMutant == null) {
+				metaTrialTestResultMutant = new TestResultMutant();
+				metaTrialTestResultMutant.setPassed(true);
+				flushAssertionHashes(metaTrialTestResultMutant, metaTrialAssertionHashes);
+				metaTrialTestResultMutant.setName("afterTrialTests(I_SourceFileCoverage p");
 			}
 		} catch (Exception x) {
-			failTrialOnException(x.getMessage(), x, type);
+			onMetaTrialAfterMethodException(x);
 		}
+		trialResultMutant.addResult(metaTrialTestResultMutant);
+		metaTrialAssertionHashes.clear();
+		metaTrialTestResultMutant = null;
 		
 		try {
 			if (trial instanceof I_MetaTrial) {
-				((I_MetaTrial) trial).testResults(runResultMutant);
+				((I_MetaTrial) trial).afterNonMetaTrialsRun(runResultMutant);
 			}
+			if (metaTrialTestResultMutant == null) {
+				metaTrialTestResultMutant = new TestResultMutant();
+				metaTrialTestResultMutant.setPassed(true);
+				flushAssertionHashes(metaTrialTestResultMutant, metaTrialAssertionHashes);
+				metaTrialTestResultMutant.setName("afterTrialTests(I_SourceFileCoverage p");
+			}
+			trialResultMutant.addResult(metaTrialTestResultMutant);
 		} catch (Exception x) {
-			failTrialOnException(x.getMessage(), x, type);
+			onMetaTrialAfterMethodException(x);
 		}
+		trialResultMutant.addResult(metaTrialTestResultMutant);
+		
+		inRunMetaTrialMethods = true;
+		
+	}
+
+	private void onMetaTrialAfterMethodException(Exception x) {
+		metaTrialTestResultMutant = new TestResultMutant();
+		metaTrialTestResultMutant.setPassed(false);
+		flushAssertionHashes(metaTrialTestResultMutant, metaTrialAssertionHashes);
+		metaTrialTestResultMutant.setName("afterTrialTests(I_SourceFileCoverage p");
+		TestFailureMutant tfm = new TestFailureMutant();
+		tfm.setException(x);
+		tfm.setMessage(x.getMessage());
+		metaTrialTestResultMutant.setFailure(tfm);
 	}
 	
 	private void runAfterTrial() {
@@ -569,19 +620,30 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 
 	@Override
 	public void assertCompleted(I_AssertCommand cmd) {
-		afterTrialTestsAssertionHashes.add(cmd.hashCode());
+		if (inAfterTrialTests) {
+			afterTrialTestsAssertionHashes.add(cmd.hashCode());
+		} else if (inRunMetaTrialMethods) {
+			metaTrialAssertionHashes.add(cmd.hashCode());
+		}
 	}
 
 	@Override
 	public void assertFailed(I_TestFailure failure) {
-		afterTrialTestsResultMutant = new TestResultMutant();
-		afterTrialTestsResultMutant.setFailure(failure);
-		afterTrialTestsResultMutant.setName("afterTrialTests");
-		flushAssertionHashes(afterTrialTestsResultMutant);
+		if (inAfterTrialTests) {
+			afterTrialTestsResultMutant = new TestResultMutant();
+			afterTrialTestsResultMutant.setFailure(failure);
+			afterTrialTestsResultMutant.setName("afterTrialTests");
+			flushAssertionHashes(afterTrialTestsResultMutant,afterTrialTestsAssertionHashes);
+		} else if (inRunMetaTrialMethods) {
+			metaTrialTestResultMutant = new TestResultMutant();
+			metaTrialTestResultMutant.setFailure(failure);
+			metaTrialTestResultMutant.setName("afterTrialTests");
+			flushAssertionHashes(metaTrialTestResultMutant,metaTrialAssertionHashes);
+		}
 	}
 
-	private void flushAssertionHashes(TestResultMutant trm) {
-		Iterator<Integer> it = afterTrialTestsAssertionHashes.iterator();
+	private void flushAssertionHashes(TestResultMutant trm, Collection<Integer> hashes) {
+		Iterator<Integer> it = hashes.iterator();
 		while (it.hasNext()) {
 			trm.incrementAssertionCount(it.next());
 		}
@@ -614,6 +676,16 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			//@diagram_sync on 5/26/2014 with Overview.seq
 			trialDescription = memory.getMetaTrialDescription();
 			runTrialDescription(trialDescription);
+			int assertionCount = trialResultMutant.getAssertionCount();
+			runResultMutant.addAsserts(assertionCount);
+			runResultMutant.addTestFailures(trialResultMutant.getTestFailureCount());
+			//I_MetaTrial currently has two additional test methods
+			runResultMutant.addTests(trialResultMutant.getTestCount() + 2);
+			if (!trialResultMutant.isPassed()) {
+				runResultMutant.addTrialFailures(1);
+			}
+			runResultMutant.addTrials(1);
+			runResultMutant.addUniqueAsserts(trialResultMutant.getUniqueAssertionCount());
 		} 
 		notifier.onAllTrialsDone(new TrialRunResult(runResultMutant));
 	}

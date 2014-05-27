@@ -279,17 +279,17 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 
 	@Override
-	public void assertGreaterThanOrEquals(Double p, Double a) {
+	public void assertGreaterThanOrEquals(Double expected, Double actual) {
 		evaluate(new DoubleAssertCommand(
 				AssertGreaterThanOrEquals, THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE, 
-				new CompareAssertionData<Double>(p, a)));
+				new CompareAssertionData<Double>(expected, actual)));
 	}
 
 	@Override
-	public void assertGreaterThanOrEquals(String message, Double p, Double a) {
+	public void assertGreaterThanOrEquals(String message, Double expected, Double actual) {
 		evaluate(new DoubleAssertCommand(
 				AssertGreaterThanOrEquals, message, 
-				new CompareAssertionData<Double>(p, a)));
+				new CompareAssertionData<Double>(expected, actual)));
 	}
 
 	@Override
