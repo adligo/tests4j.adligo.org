@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.adligo.tests4j.models.shared.AfterTrial;
 import org.adligo.tests4j.models.shared.BeforeTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.I_Trial;
+import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.IgnoreTest;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
@@ -28,6 +28,7 @@ import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
@@ -57,6 +58,7 @@ public class Tests4J_Memory {
 	
 	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
+	private AtomicBoolean metaTrial = new AtomicBoolean(false);
 	private Set<String> tests;
 	
 	private ConcurrentLinkedQueue<TrialDescription> trialDescriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
@@ -73,7 +75,7 @@ public class Tests4J_Memory {
 	private I_TrialRunListener listener;
 	private Tests4J_ThreadManager threadManager;
 	private ArrayBlockingQueue<I_TrialRunMetadata> metaTrialDataBlock = new ArrayBlockingQueue<I_TrialRunMetadata>(1);
-	
+	private TrialDescription metaTrialDescription;
 	/**
 	 * 
 	 * @param params
@@ -85,6 +87,11 @@ public class Tests4J_Memory {
 		out = pOut;
 		listener = pListener;
 		trialClasses.addAll(params.getTrials());
+		Class<? extends I_MetaTrial> metaTrialClass = params.getMetaTrialClass();
+		if (metaTrialClass != null) {
+			trialClasses.add(metaTrialClass);
+			metaTrial.set(true);
+		}
 		reporter = params.getReporter();
 		
 		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
@@ -182,7 +189,11 @@ public class Tests4J_Memory {
 					" has " + p.getTestMethodsSize());
 		}
 		if (p.isTrialCanRun()) {
-			trialDescriptionsToRun.add(p);
+			if (p.getType() != TrialTypeEnum.MetaTrial) {
+				trialDescriptionsToRun.add(p);
+			} else {
+				metaTrialDescription = p;
+			}
 		}
 		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
 			reporter.log("TrialDescriptions counts " + trialDescriptionsToRun.size() +
@@ -346,8 +357,35 @@ public class Tests4J_Memory {
 	public void setMetaTrialData(I_TrialRunMetadata md) {
 		metaTrialDataBlock.add(md);
 	}
-	
+	/**
+	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 * @param md
+	 */
 	public I_TrialRunMetadata takeMetaTrialData() throws InterruptedException {
 		return metaTrialDataBlock.take();
+	}
+	
+	/**
+	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 */
+	public boolean hasMetaTrial() {
+		return metaTrial.get();
+	}
+	/**
+	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 * @return
+	 */
+	public TrialDescription getMetaTrialDescription() {
+		return metaTrialDescription;
+	}
+	
+	public int getIgnoredTrialDescriptions() {
+		int toRet = 0;
+		for (TrialDescription td: allTrialDescriptions) {
+			if (td.isIgnored()) {
+				toRet++;
+			}
+		}
+		return toRet;
 	}
 }

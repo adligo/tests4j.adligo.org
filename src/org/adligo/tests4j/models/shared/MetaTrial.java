@@ -8,6 +8,8 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 	private double minPercentCodeCoverage;
 	private double minPercentSourceFileClassesWithTrials;
+	private boolean calledTestMetadata = false;
+	private boolean calledTestResults = false;
 	
 	public MetaTrial() {}
 	
@@ -33,17 +35,28 @@ public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 	
 	@Override
 	public void testMetadata(I_TrialRunMetadata metadata) {
-		// TODO Auto-generated method stub
+		calledTestMetadata = true;
 		
 	}
 
 	@Override
 	public void testResults(I_TrialRunResult results) {
+		calledTestResults = true;
 		//allow to run with out coverage plugin,
 		//you may want to require this for your project.
 		if (results.hasCoverage()) {
 			assertGreaterThanOrEquals(minPercentCodeCoverage, results.getCoveragePercentage());
 		}
+	}
+	
+	/**
+	 * this method was mostly added
+	 * so that this class had a @Test method
+	 */
+	@Test
+	public void testTests() {
+		assertTrue(calledTestMetadata);
+		assertTrue(calledTestResults);
 	}
 
 }

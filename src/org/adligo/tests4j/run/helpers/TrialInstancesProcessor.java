@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.adligo.tests4j.models.shared.ApiTrial;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.SourceFileTrial;
@@ -19,6 +20,7 @@ import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
@@ -32,6 +34,8 @@ import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
+import org.adligo.tests4j.models.shared.results.TrialRunResult;
+import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.feedback.ApiTrial_TestsResultsMutant;
@@ -52,7 +56,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
 	private I_Tests4J_Reporter reporter;
-	private I_Trial trial;
+	private I_AbstractTrial trial;
 	private BaseTrialResultMutant trialResultMutant;
 	
 	private ExecutorService testRunService;
@@ -64,6 +68,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private List<Integer> afterTrialTestsAssertionHashes = new CopyOnWriteArrayList<Integer>(); 
 	private TestResultMutant afterTrialTestsResultMutant;
 	private boolean finished = false;
+	private TrialRunResultMutant runResultMutant;
 	/**
 	 * 
 	 * @param p
@@ -110,16 +115,15 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		}
 		
 		try {
-			
-			trialDescription = memory.pollDescriptions();
-			while (trialDescription != null) {
-				if (trialDescription.getType() != TrialTypeEnum.MetaTrial) {
-					runTrial();
-				}
-				trialDescription = memory.pollDescriptions();
+			//@diagram_sync on 5/26/2014 with Overview.seq
+			TrialDescription td = memory.pollDescriptions();
+			//@diagram_sync on 5/26/2014 with Overview.seq
+			runTrialDescription(td);
+			//@diagram_sync on 5/26/2014 with Overview.seq
+			runResultMutant = notifier.checkDoneRunningNonMetaTrials();
+			if (runResultMutant != null) {
+				afterNonMetaTrials();
 			}
-			testRunService.shutdownNow();
-			notifier.checkDoneRunningNonMetaTrials();
 		} catch (RejectedExecutionException x) {
 			memory.getReporter().onError(x);
 		} catch (Exception x) {
@@ -127,7 +131,20 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		} catch (Error x) {
 			memory.getReporter().onError(x);
 		} 
+		testRunService.shutdownNow();
 		finished = true;
+	}
+
+	/**
+	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 * @param p
+	 */
+	private void runTrialDescription(TrialDescription p) {
+		trialDescription = p;
+		while (trialDescription != null) {
+			runTrial();
+			trialDescription = memory.pollDescriptions();
+		}
 	}
 
 	/**
@@ -138,6 +155,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	 */
 	private void addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
 		
+		TrialTypeEnum type = TrialTypeFinder.getTypeInternal(trialClazz);
 		I_CoverageRecorder trialCoverageRecorder = startRecordingTrial(trialClazz);
 		
 		TrialDescription desc = new TrialDescription(trialClazz, memory.getReporter());
@@ -153,7 +171,6 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 				}
 				
 				trm.setPassed(false);
-				TrialTypeEnum type = desc.getType();
 				trm.setType(type);
 				
 				switch (type) {
@@ -249,7 +266,8 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		
 		trialResultMutant = new BaseTrialResultMutant();
 			
-		trialResultMutant.setType(trialDescription.getType());
+		TrialTypeEnum type = trialDescription.getType();
+		trialResultMutant.setType(type);
 		trialResultMutant.setTrialName(trialDescription.getTrialName());
 		runBeforeTrial();
 		if (this.trialResultMutant.getFailure() == null) {
@@ -257,6 +275,9 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			testsRunner.setTrial(trial);
 			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
 				reporter.log("running trial tests " + trialDescription.getTrialName());
+			}
+			if (type == TrialTypeEnum.MetaTrial) {
+				runMetaTrialMethods();
 			}
 			runTests();
 			
@@ -271,7 +292,6 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
 			reporter.log("calculating trial results " + trialDescription.getTrialName());
 		}
-		TrialTypeEnum type = trialDescription.getType();
 		I_TrialResult result;
 		switch (type) {
 			case UseCaseTrial:
@@ -287,13 +307,15 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 					setAfterTrialTestsState(api);
 					result = new ApiTrialResult(api);
 				break;
-			default:
+			case SourceFileTrial:
 					SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trialResultMutant);
 					Class<?> clazz = trialDescription.getSourceFileClass();
 					src.setSourceFileName(clazz.getSimpleName());
 					setAfterTrialTestsState(src);
 					result = new SourceFileTrialResult(src);
 				break;
+			default:
+				result = new BaseTrialResult(trialResultMutant);
 		}
 		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
 			reporter.log("notifying trial finished " + trialDescription.getTrialName());
@@ -334,7 +356,6 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		while (methods.hasNext()) {
 			runTest(methods.next());
 		}
-		
 	}
 
 	private void runTest(TestDescription tm) throws RejectedExecutionException {
@@ -404,75 +425,116 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		Method clazzMethod = null;
 		switch (type) {
 			case SourceFileTrial:
-				Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();
-				
-				try {
-					clazzMethod = trialClass.getDeclaredMethod("afterTrialTests", I_SourceFileCoverage.class);
-				} catch (NoSuchMethodException e) {
-					//do nothing
-				} catch (SecurityException e) {
-					//do nothing
-				}
-				if (clazzMethod != null) {
-					hadAfterTrialTests = true;
-				}
-				SourceFileTrial_TestsResultsMutant infoMut = new SourceFileTrial_TestsResultsMutant();
-				
-				if (trialCoverageRecorder != null) {
-					coverage = trialCoverageRecorder.endRecording();
-					I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
-					infoMut.setCoverage(cover);
-				}
-				infoMut.setAssertions(trialResultMutant.getAssertionCount());
-				infoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
-				
-				ranAfterTrialTests = true;
-				
-				trial.setBindings(this);
-				try {
-					if (trial instanceof SourceFileTrial) {
-						((SourceFileTrial) trial).afterTrialTests(infoMut);
-					}
-				} catch (Exception x) {
-					failTrialOnException(x.getMessage(), x, type);
-				}
+				afterSourceFileTrialTests(trialCoverageRecorder, type, clazzMethod);
 				break;
 			case ApiTrial:
-				trialClass = trialDescription.getTrialClass();
-				try {
-					clazzMethod = trialClass.getDeclaredMethod("afterTrialTests", I_PackageCoverage.class);
-				} catch (NoSuchMethodException e) {
-					//do nothing
-				} catch (SecurityException e) {
-					//do nothing
-				}
-				if (clazzMethod != null) {
-					hadAfterTrialTests = true;
-				}
-				ApiTrial_TestsResultsMutant apiInfoMut = new ApiTrial_TestsResultsMutant();
-				
-				if (trialCoverageRecorder != null) {
-					coverage = trialCoverageRecorder.endRecording();
-					I_PackageCoverage cover = trialDescription.findPackageCoverage(coverage);
-					apiInfoMut.setCoverage(cover);
-				}
-				apiInfoMut.setAssertions(trialResultMutant.getAssertionCount());
-				apiInfoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
-				
-				trial.setBindings(this);
-				coverage = trialCoverageRecorder.endRecording();
-				ranAfterTrialTests = true;
-				I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);
-				try {
-					if (trial instanceof ApiTrial) {
-						((ApiTrial) trial).afterTrialTests(apiInfoMut);
-					}
-				} catch (Exception x) {
-					failTrialOnException(x.getMessage(), x, type);
-				}
+				afterApiTrialTests(trialCoverageRecorder, type, clazzMethod);
 				break;
 			default:
 				//do nothing
+		}
+	}
+
+	private void afterApiTrialTests(I_CoverageRecorder trialCoverageRecorder,
+			TrialTypeEnum type, Method clazzMethod) {
+		List<I_PackageCoverage> coverage;
+		Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();
+		try {
+			clazzMethod = trialClass.getDeclaredMethod("afterTrialTests", I_PackageCoverage.class);
+		} catch (NoSuchMethodException e) {
+			//do nothing
+		} catch (SecurityException e) {
+			//do nothing
+		}
+		if (clazzMethod != null) {
+			hadAfterTrialTests = true;
+		}
+		ApiTrial_TestsResultsMutant apiInfoMut = new ApiTrial_TestsResultsMutant();
+		
+		if (trialCoverageRecorder != null) {
+			coverage = trialCoverageRecorder.endRecording();
+			I_PackageCoverage cover = trialDescription.findPackageCoverage(coverage);
+			apiInfoMut.setCoverage(cover);
+		}
+		apiInfoMut.setAssertions(trialResultMutant.getAssertionCount());
+		apiInfoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
+		
+		trial.setBindings(this);
+		if (trialCoverageRecorder != null) {
+			coverage = trialCoverageRecorder.endRecording();
+			I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);
+			apiInfoMut.setCoverage(pkgCover);
+		}
+		ranAfterTrialTests = true;
+		
+		try {
+			if (trial instanceof ApiTrial) {
+				((ApiTrial) trial).afterTrialTests(apiInfoMut);
+			}
+		} catch (Exception x) {
+			failTrialOnException(x.getMessage(), x, type);
+		}
+	}
+
+	private void afterSourceFileTrialTests(
+			I_CoverageRecorder trialCoverageRecorder, TrialTypeEnum type,
+			Method clazzMethod) {
+		List<I_PackageCoverage> coverage;
+		Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();
+		
+		try {
+			clazzMethod = trialClass.getDeclaredMethod("afterTrialTests", I_SourceFileCoverage.class);
+		} catch (NoSuchMethodException e) {
+			//do nothing
+		} catch (SecurityException e) {
+			//do nothing
+		}
+		if (clazzMethod != null) {
+			hadAfterTrialTests = true;
+		}
+		SourceFileTrial_TestsResultsMutant infoMut = new SourceFileTrial_TestsResultsMutant();
+		
+		if (trialCoverageRecorder != null) {
+			coverage = trialCoverageRecorder.endRecording();
+			I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
+			infoMut.setCoverage(cover);
+		}
+		infoMut.setAssertions(trialResultMutant.getAssertionCount());
+		infoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
+		
+		ranAfterTrialTests = true;
+		
+		trial.setBindings(this);
+		try {
+			if (trial instanceof SourceFileTrial) {
+				((SourceFileTrial) trial).afterTrialTests(infoMut);
+			}
+		} catch (Exception x) {
+			failTrialOnException(x.getMessage(), x, type);
+		}
+	}
+	
+	private void runMetaTrialMethods() {
+		
+		
+		TrialTypeEnum type = trialDescription.getType();
+		
+		trial.setBindings(this);
+		try {
+			if (trial instanceof I_MetaTrial) {
+				I_TrialRunMetadata metadata = memory.takeMetaTrialData();
+				((I_MetaTrial) trial).testMetadata(metadata);
+			}
+		} catch (Exception x) {
+			failTrialOnException(x.getMessage(), x, type);
+		}
+		
+		try {
+			if (trial instanceof I_MetaTrial) {
+				((I_MetaTrial) trial).testResults(runResultMutant);
+			}
+		} catch (Exception x) {
+			failTrialOnException(x.getMessage(), x, type);
 		}
 	}
 	
@@ -543,4 +605,16 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		return reporter;
 	}
 
+	private void afterNonMetaTrials() {
+		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+			reporter.log("afterTrials()");
+		}
+		//@diagram_sync on 5/26/2014 with Overview.seq
+		if (memory.hasMetaTrial()) {
+			//@diagram_sync on 5/26/2014 with Overview.seq
+			trialDescription = memory.getMetaTrialDescription();
+			runTrialDescription(trialDescription);
+		} 
+		notifier.onAllTrialsDone(new TrialRunResult(runResultMutant));
+	}
 }

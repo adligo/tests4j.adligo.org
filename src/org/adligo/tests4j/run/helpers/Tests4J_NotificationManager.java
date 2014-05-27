@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
 import org.adligo.tests4j.models.shared.metadata.I_TestMetadata;
+import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadata;
@@ -59,6 +60,7 @@ public class Tests4J_NotificationManager {
 	private AtomicInteger trialClassDefFailures = new AtomicInteger();
 	private Set<String> trialPackageNames = new CopyOnWriteArraySet<String>();
 	private AtomicBoolean running = new AtomicBoolean(true);
+	private volatile I_TrialRunMetadata metadata = null;
 	
 	public Tests4J_NotificationManager(Tests4J_Memory pMem) {
 		memory = pMem;
@@ -78,7 +80,7 @@ public class Tests4J_NotificationManager {
 	 */
 	public void checkDoneDescribingTrials() {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("checking if done describing trials.");
+			reporter.log("checkDoneDescribingTrials()");
 		}
 		if (doneDescribeingTrials.get()) {
 			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
@@ -104,9 +106,12 @@ public class Tests4J_NotificationManager {
 	}
 
 	/**
-	 * in diagram Overview.seq
+	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 */
 	private void onTrialDefinitionsDone() {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("onTrialDefinitionsDone()");
+		}
 		sendMetadata();
 		
 		int defFailures = memory.getFailureResultsSize();
@@ -131,7 +136,7 @@ public class Tests4J_NotificationManager {
 
 
 	/**
-	 * in diagram Overview.seq
+	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 */
 	public void sendMetadata() {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
@@ -177,13 +182,13 @@ public class Tests4J_NotificationManager {
 			}
 			trmm.addTrial(tmm);
 		}
-		TrialRunMetadata toSend = new TrialRunMetadata(trmm);
+		metadata = new TrialRunMetadata(trmm);
 		
 		// @diagram_sync on 5/26/2014 with Overview.seq
-		memory.setMetaTrialData(toSend);
-		reporter.onMetadataCalculated(toSend);
+		memory.setMetaTrialData(metadata);
+		reporter.onMetadataCalculated(metadata);
 		if (listener != null) {
-			listener.onMetadataCalculated(toSend);
+			listener.onMetadataCalculated(metadata);
 		}
 	}
 
@@ -263,13 +268,17 @@ public class Tests4J_NotificationManager {
 	public TrialRunResultMutant checkDoneRunningNonMetaTrials() {
 		if (doneDescribeingTrials.get()) {
 			int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
+			if (memory.hasMetaTrial()) {
+				trialsWhichCanRun --;
+			}
 			int trialsRan = trials.get();
 			int trialClazzFails = trialClassDefFailures.get();
-			int ignoredTrials = memory.getAllTrialCount() - trialsWhichCanRun;
+			int ignoredTrials = memory.getIgnoredTrialDescriptions();
 			
 			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 				reporter.log("checkDoneRunningNonMetaTrials " + trialsRan + " =? " +
-						trialsWhichCanRun + " + " + trialClazzFails + " + " +
+						trialsWhichCanRun + 
+						"\n trialClazzFails=" + trialClazzFails + " ignoredTrials=" +
 						ignoredTrials);
 			}
 			if (trialsRan == trialsWhichCanRun + trialClazzFails + ignoredTrials) {

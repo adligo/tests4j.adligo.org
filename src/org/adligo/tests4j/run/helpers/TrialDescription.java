@@ -3,17 +3,17 @@ package org.adligo.tests4j.run.helpers;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.IgnoreTrial;
 import org.adligo.tests4j.models.shared.PackageScope;
 import org.adligo.tests4j.models.shared.SourceFileScope;
 import org.adligo.tests4j.models.shared.TrialTimeout;
-import org.adligo.tests4j.models.shared.TrialType;
 import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
@@ -38,7 +38,7 @@ public class TrialDescription implements I_TrialDescription {
 
 	private Class<? extends I_AbstractTrial> trialClass;
 	
-	private I_Trial trial;
+	private I_AbstractTrial trial;
 	
 	private Method beforeTrialMethod;
 	private Method afterTrialTestsMethod;
@@ -199,7 +199,19 @@ public class TrialDescription implements I_TrialDescription {
 
 	private List<TrialVerificationFailure> locateTestMethods() {
 		List<TrialVerificationFailure> failures = new ArrayList<TrialVerificationFailure>();
-		Method [] methods = trialClass.getDeclaredMethods();
+		/**
+		 * since all tests must take 
+		 * no params, we can rely on it's hashCode
+		 */
+		Set<Method> methods = new HashSet<Method>();
+		Method [] dm = trialClass.getDeclaredMethods();
+		for (int i = 0; i < dm.length; i++) {
+			methods.add(dm[i]);
+		}
+		Method [] ms = trialClass.getMethods();
+		for (int i = 0; i < ms.length; i++) {
+			methods.add(ms[i]);
+		}
 		
 		I_Tests4J_TrialDescriptionMessages messages = 
 				Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
@@ -250,7 +262,7 @@ public class TrialDescription implements I_TrialDescription {
 					trialClass.getConstructor(new Class[] {});
 			constructor.setAccessible(true);
 			Object o = constructor.newInstance(new Object[] {});
-			trial = (I_Trial) o;
+			trial = (I_AbstractTrial) o;
 		} catch (Exception x) {
 			I_Tests4J_TrialDescriptionMessages messages = 
 					Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
@@ -309,7 +321,7 @@ public class TrialDescription implements I_TrialDescription {
 	public String getTrialName() {
 		return trialClass.getName();
 	}
-	public I_Trial getTrial() {
+	public I_AbstractTrial getTrial() {
 		return trial;
 	}
 
