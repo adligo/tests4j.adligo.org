@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
 import org.adligo.tests4j.models.shared.metadata.I_TestMetadata;
@@ -24,6 +26,8 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
+import org.adligo.tests4j.models.shared.results.feedback.I_ApiTrial_TestsResults;
+import org.adligo.tests4j.models.shared.results.feedback.I_SourceFileTrial_TestsResults;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegate;
@@ -173,6 +177,44 @@ public class Tests4J_NotificationManager {
 						testMeta.setTimeout(testTimeout);
 						testMetas.add(testMeta);
 					}
+					TrialTypeEnum type = td.getType();
+					Class<? extends I_AbstractTrial> trialClass = td.getTrialClass();
+					switch (type) {
+						case SourceFileTrial:
+							try {
+								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_SourceFileTrial_TestsResults.class);
+								TestMetadataMutant testMeta = new TestMetadataMutant();
+								testMeta.setTestName(m.getName());
+								testMetas.add(testMeta);
+							} catch (NoSuchMethodException e) {
+								//do noting
+							}
+								
+							break;
+						case ApiTrial:
+							try {
+								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_ApiTrial_TestsResults.class);
+								TestMetadataMutant testMeta = new TestMetadataMutant();
+								testMeta.setTestName(m.getName());
+								testMetas.add(testMeta);
+							} catch (NoSuchMethodException e) {
+								//do noting
+							}
+							break;
+						case MetaTrial:
+							TestMetadataMutant testMeta = new TestMetadataMutant();
+							testMeta.setTestName("afterMetadataCalculated(I_TrialRunMetadata metadata)");
+							testMetas.add(testMeta);
+							
+							testMeta = new TestMetadataMutant();
+							testMeta.setTestName("afterNonMetaTrialsRun(I_TrialRunResult results)");
+							testMetas.add(testMeta);
+							
+							testMeta = new TestMetadataMutant();
+							testMeta.setTestName("testAftersCalled()");
+							testMetas.add(testMeta);
+							break;
+					}
 					tmm.setTests(testMetas);
 				}
 			}
@@ -250,7 +292,7 @@ public class Tests4J_NotificationManager {
 		trials.addAndGet(1);
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("trialFinished " + result.getName() + " " + trials.get() + 
-					" trials completed ");
+					" trials completed " + testCount.get() + " tests completed.");
 		}
 	}
 

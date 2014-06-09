@@ -212,7 +212,7 @@ public class Tests4J_Memory {
 		return trialDescriptionsToRun.poll();
 	}
 	
-	public synchronized void add(I_TrialResult p) {
+	public synchronized void addResultBeforeMetadata(I_TrialResult p) {
 		resultsBeforeMetadata.add(p);
 	}
 	
