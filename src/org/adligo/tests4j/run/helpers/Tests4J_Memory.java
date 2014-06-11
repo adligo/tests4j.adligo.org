@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.adligo.tests4j.models.shared.AfterTrial;
 import org.adligo.tests4j.models.shared.BeforeTrial;
@@ -67,6 +68,7 @@ public class Tests4J_Memory {
 	 */
 	private ConcurrentHashMap<String,TrialDescription> trialDescriptions = new ConcurrentHashMap<String,TrialDescription>();
 	private CopyOnWriteArraySet<String> trialNames = new CopyOnWriteArraySet<String>();
+	private ConcurrentHashMap<String,AtomicInteger> trialRuns = new ConcurrentHashMap<String,AtomicInteger>();
 	
 	private ConcurrentLinkedQueue<TrialDescription> trialDescriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
 	private List<TrialDescription> allTrialDescriptions = new CopyOnWriteArrayList<TrialDescription>();
@@ -187,12 +189,18 @@ public class Tests4J_Memory {
 	}
 	public synchronized void setTrialDescription(String name, TrialDescription p) {
 		trialDescriptions.put(name, p);
+		trialRuns.put(name, new AtomicInteger(1));
 	}
 	public synchronized boolean hasStartedDescribingTrial(String name) {
 		return trialNames.contains(name);
 	}
 	public synchronized TrialDescription getTrialDescription(String name) {
 		return trialDescriptions.get(name);
+	}
+	
+	public int incrementTrialRun(String trialName) {
+		AtomicInteger next = trialRuns.get(trialName);
+		return next.getAndAdd(1);
 	}
 	
 	/**

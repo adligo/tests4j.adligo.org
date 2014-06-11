@@ -88,6 +88,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private TestResultMutant metaTrialTestResultMutant;
 	private Set<Integer> metaTrialAssertionHashes = new HashSet<Integer>();
 	private String runMetaTrialMethod;
+	private String trialName;
 	
 	/**
 	 * 
@@ -295,12 +296,14 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private void runTrial() throws RejectedExecutionException  {
 		
 		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
-			reporter.log("running trial " + trialDescription.getTrialName());
+			reporter.log("running trial " + trialName);
 		}
 		afterTrialTestsAssertionHashes.clear();
 		afterTrialTestsResultMutant = null;
 		
-		String trialName = trialDescription.getTrialName();
+		trialName = trialDescription.getTrialName();
+		int id = memory.incrementTrialRun(trialName);
+		trialName = trialName + "[" + id + "]";
 		Class<? extends I_AbstractTrial> trialClazz = trialDescription.getTrialClass();
 		notifier.startingTrial(trialName);
 		I_CoverageRecorder trialCoverageRecorder =  startRecordingTrial(trialClazz);
@@ -313,13 +316,13 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			
 		TrialTypeEnum type = trialDescription.getType();
 		trialResultMutant.setType(type);
-		trialResultMutant.setTrialName(trialDescription.getTrialName());
+		trialResultMutant.setTrialName(trialName);
 		runBeforeTrial();
 		if (this.trialResultMutant.getFailure() == null) {
 		
 			testsRunner.setTrial(trial);
 			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
-				reporter.log("running trial tests " + trialDescription.getTrialName());
+				reporter.log("running trial tests " + trialName);
 			}
 			if (type == TrialTypeEnum.MetaTrial) {
 				runMetaTrialMethods();
@@ -327,7 +330,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			runTests();
 			
 			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
-				reporter.log("finished trial tests" + trialDescription.getTrialName());
+				reporter.log("finished trial tests" + trialName);
 			}
 			
 			runAfterTrialTests(trialCoverageRecorder);
@@ -335,7 +338,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		}
 		
 		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
-			reporter.log("calculating trial results " + trialDescription.getTrialName());
+			reporter.log("calculating trial results " + trialName);
 		}
 		I_TrialResult result;
 		switch (type) {
@@ -363,7 +366,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 				result = new BaseTrialResult(trialResultMutant);
 		}
 		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
-			reporter.log("notifying trial finished " + trialDescription.getTrialName());
+			reporter.log("notifying trial finished " + trialName);
 		}
 		notifier.onTrialCompleted(result);
 	}
@@ -413,7 +416,6 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			}
 		}
 
-		String trialName = trialDescription.getTrialName();
 		if (tm.isIgnore()) {
 			TestResultMutant trm = new TestResultMutant();
 			trm.setName(method.getName());
@@ -664,7 +666,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 				afterTrial.invoke(trial, new Object[] {});
 			} catch (Exception e) {
 				failTrialOnException(UNEXPECTED_EXCEPTION_THROWN_FROM + 
-						trialDescription.getTrialName() + 
+						trialName + 
 						"." + afterTrial.getName(), e, null);
 			}
 			trialResultMutant.setAfterTestOutput(memory.getThreadLocalOutput());
