@@ -119,8 +119,24 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		try {
 			Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClasses();
 			while (trialClazz != null) {
-				
-				addTrialDescription(trialClazz);
+				String trialName = trialClazz.getName();
+				if (!memory.hasStartedDescribingTrial(trialName)) {
+					memory.startDescribingTrial(trialName);
+					addTrialDescription(trialClazz);
+				} else {
+					//another thread has already created a trial description
+					// for this trial, we want to make sure only
+					// one is in memory so we can make sure only one
+					// trial of any trial class is running at a time
+					//when the api is passed multiple instance of the 
+					// same trial class in the trials list
+					TrialDescription td =  memory.getTrialDescription(trialName);
+					while (td == null) {
+						Thread.sleep(500);
+						td =  memory.getTrialDescription(trialName);
+					}
+					memory.add(td);
+				}
 				trialClazz = memory.pollTrialClasses();
 			}
 			notifier.checkDoneDescribingTrials();
@@ -138,12 +154,19 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			//@diagram_sync on 5/26/2014 with Overview.seq
 			TrialDescription td = memory.pollDescriptions();
 			//@diagram_sync on 5/26/2014 with Overview.seq
-			runTrialDescription(td);
-			//@diagram_sync on 5/26/2014 with Overview.seq
-			runResultMutant = notifier.checkDoneRunningNonMetaTrials();
-			if (runResultMutant != null) {
-				afterNonMetaTrials();
+			if (td != null) {
+				synchronized(td) {
+					//make sure any specific trial is only running once 
+					// in the api, when it is passed into the api more than once
+					runTrialDescription(td);
+				}
+				//@diagram_sync on 5/26/2014 with Overview.seq
+				runResultMutant = notifier.checkDoneRunningNonMetaTrials();
+				if (runResultMutant != null) {
+					afterNonMetaTrials();
+				}
 			}
+			
 		} catch (RejectedExecutionException x) {
 			memory.getReporter().onError(x);
 		} catch (Exception x) {
@@ -179,6 +202,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		I_CoverageRecorder trialCoverageRecorder = startRecordingTrial(trialClazz);
 		
 		TrialDescription desc = new TrialDescription(trialClazz, memory.getReporter());
+		memory.setTrialDescription(trialClazz.getName(), desc);
 		memory.add(desc);
 		if (!desc.isIgnored()) {
 			if (!desc.isTrialCanRun()) {
@@ -607,7 +631,6 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		trialResultMutant.addResult(metaTrialTestResultMutant);
 		
 		inRunMetaTrialMethods = false;
-		
 	}
 
 	private void onMetaTrialAfterMethodException(Exception x, String method) {
@@ -718,19 +741,27 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		}
 		//@diagram_sync on 5/26/2014 with Overview.seq
 		if (memory.hasMetaTrial()) {
-			//@diagram_sync on 5/26/2014 with Overview.seq
-			trialDescription = memory.getMetaTrialDescription();
-			runTrialDescription(trialDescription);
-			int assertionCount = trialResultMutant.getAssertionCount();
-			runResultMutant.addAsserts(assertionCount);
-			runResultMutant.addTestFailures(trialResultMutant.getTestFailureCount());
-			//I_MetaTrial currently has two additional test methods
-			runResultMutant.addTests(trialResultMutant.getTestCount() + 2);
-			if (!trialResultMutant.isPassed()) {
-				runResultMutant.addTrialFailures(1);
+			synchronized (memory) {
+				if (!memory.hasRanMetaTrial()) {
+					memory.setRanMetaTrial();
+				
+					//@diagram_sync on 5/26/2014 with Overview.seq
+					trialDescription = memory.getMetaTrialDescription();
+					runTrialDescription(trialDescription);
+					
+					int assertionCount = trialResultMutant.getAssertionCount();
+					runResultMutant.addAsserts(assertionCount);
+					runResultMutant.addTestFailures(trialResultMutant.getTestFailureCount());
+					//I_MetaTrial currently has two additional test methods
+					runResultMutant.addTests(trialResultMutant.getTestCount());
+					if (!trialResultMutant.isPassed()) {
+						runResultMutant.addTrialFailures(1);
+					}
+					runResultMutant.addTrials(1);
+					runResultMutant.addUniqueAsserts(trialResultMutant.getUniqueAssertionCount());
+					
+				}
 			}
-			runResultMutant.addTrials(1);
-			runResultMutant.addUniqueAsserts(trialResultMutant.getUniqueAssertionCount());
 		} 
 		notifier.onAllTrialsDone(new TrialRunResult(runResultMutant));
 	}

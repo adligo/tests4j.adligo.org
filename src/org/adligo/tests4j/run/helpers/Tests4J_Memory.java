@@ -60,6 +60,13 @@ public class Tests4J_Memory {
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private AtomicBoolean metaTrial = new AtomicBoolean(false);
 	private Set<String> tests;
+	/**
+	 * keeps track of the trials between threads,
+	 * so when a trial is sent twice, synchronization occurs
+	 * so that it the runs of it do NOT overlap
+	 */
+	private ConcurrentHashMap<String,TrialDescription> trialDescriptions = new ConcurrentHashMap<String,TrialDescription>();
+	private CopyOnWriteArraySet<String> trialNames = new CopyOnWriteArraySet<String>();
 	
 	private ConcurrentLinkedQueue<TrialDescription> trialDescriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
 	private List<TrialDescription> allTrialDescriptions = new CopyOnWriteArrayList<TrialDescription>();
@@ -76,6 +83,8 @@ public class Tests4J_Memory {
 	private Tests4J_ThreadManager threadManager;
 	private ArrayBlockingQueue<I_TrialRunMetadata> metaTrialDataBlock = new ArrayBlockingQueue<I_TrialRunMetadata>(1);
 	private TrialDescription metaTrialDescription;
+	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
+	
 	/**
 	 * 
 	 * @param params
@@ -171,6 +180,19 @@ public class Tests4J_Memory {
 	 */
 	public Class<? extends I_AbstractTrial> pollTrialClasses() {
 		return trialClasses.poll();
+	}
+	
+	public synchronized void startDescribingTrial(String name) {
+		trialNames.add(name);
+	}
+	public synchronized void setTrialDescription(String name, TrialDescription p) {
+		trialDescriptions.put(name, p);
+	}
+	public synchronized boolean hasStartedDescribingTrial(String name) {
+		return trialNames.contains(name);
+	}
+	public synchronized TrialDescription getTrialDescription(String name) {
+		return trialDescriptions.get(name);
 	}
 	
 	/**
@@ -387,5 +409,13 @@ public class Tests4J_Memory {
 			}
 		}
 		return toRet;
+	}
+	
+	public void setRanMetaTrial() {
+		ranMetaTrial.set(true);
+	}
+	
+	public boolean hasRanMetaTrial() {
+		return ranMetaTrial.get();
 	}
 }
