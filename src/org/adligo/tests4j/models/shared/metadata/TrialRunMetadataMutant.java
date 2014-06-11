@@ -1,15 +1,23 @@
 package org.adligo.tests4j.models.shared.metadata;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TrialRunMetadataMutant implements I_TrialRunMetadata {
 	private List<TrialMetadataMutant> trials = new ArrayList<TrialMetadataMutant>();
-
+	private Map<String, SourceInfoMutant> sourceInfoMap = new HashMap<String, SourceInfoMutant>();
+	
 	public TrialRunMetadataMutant() {}
 
 	public TrialRunMetadataMutant(I_TrialRunMetadata other) {
 		setTrials(other.getAllTrialMetadata());
+		Collection<String> clazzNames = other.getAllSourceInfo();
+		for (String s: clazzNames) {
+			setSourceInfo(s, other.getSourceInfo(s));
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -47,4 +55,19 @@ public class TrialRunMetadataMutant implements I_TrialRunMetadata {
 		return toRet;
 	}
 	
+	public I_SourceInfo getSourceInfo(String name) {
+		return sourceInfoMap.get(name);
+	}
+	
+	public void setSourceInfo(String name, I_SourceInfo p) {
+		sourceInfoMap.put(name, new SourceInfoMutant(p));
+	}
+	
+	public void setSourceInfo(String name, SourceInfoMutant p) {
+		sourceInfoMap.put(name, p);
+	}
+	
+	public Collection<String> getAllSourceInfo() {
+		return sourceInfoMap.keySet();
+	}
 }

@@ -20,10 +20,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public static final String TRIAL_XML_START = "<trial>";
 	public static final String TRIALS_XML_END = "</trials>";
 	public static final String TRIALS_XML_START = "<trials>";
-	public static final String MIN_TRIALS_XML_KEY = "\" minTrials=\"";
-	public static final String MIN_TESTS_XML_KEY = "\" minTests=\"";
-	public static final String MIN_ASSERTS_XML_KEY = "\" minAsserts=\"";
-	public static final String MIN_UNIQUE_ASSERTS_XML_KEY = "\" minUniqueAsserts=\"";
 	public static final String COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY = "\" coveragePluginConfigurator=\"";
 	public static final String COVERAGE_PLUGIN_XML_KEY = "\" coveragePlugin=\"";
 	public static final String TEST_XML_END = "</test>";
@@ -58,22 +54,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 */
 	private boolean exitAfterLastNotification = true;
 	
-	/**
-	 * @see I_Tests4J_Params#getMinTrials()
-	 */
-	private Integer minTrials = null;
-	/**
-	 * @see I_Tests4J_Params#getMinTests()
-	 */
-	private Integer minTests = null;
-	/**
-	 *  a null value means don\"t check it
-	 */
-	private Integer minAsserts = null;
-	/**
-	 *  a null value means don\"t check it
-	 */
-	private Integer minUniqueAsserts = null;
 	private int trialThreads = 32;
 	/**
 	 * All coverage is always recorded if there is a plugin,
@@ -97,10 +77,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		metaTrialClass = p.getMetaTrialClass();
 		tests.addAll(p.getTests());
 		reporter = p.getReporter();
-		minTrials = p.getMinTrials();
-		minTests = p.getMinTests();
-		minAsserts = p.getMinAsserts();
-		minUniqueAsserts = p.getMinUniqueAssertions();
 		coveragePluginClass = p.getCoveragePluginClass();
 		trialThreads = p.getTrialThreadCount();
 		exitAfterLastNotification = p.isExitAfterLastNotification();
@@ -155,24 +131,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public void setCoveragePluginClass(Class<? extends I_CoveragePlugin> coverageRecorder) {
 		this.coveragePluginClass = coverageRecorder;
 	}
-	public Integer getMinTests() {
-		return minTests;
-	}
-	public Integer getMinAsserts() {
-		return minAsserts;
-	}
-	public Integer getMinUniqueAssertions() {
-		return minUniqueAsserts;
-	}
-	public void setMinTests(int minTests) {
-		this.minTests = minTests;
-	}
-	public void setMinAsserts(int minAsserts) {
-		this.minAsserts = minAsserts;
-	}
-	public void setMinUniqueAssertions(int minUniqueAssertions) {
-		this.minUniqueAsserts = minUniqueAssertions;
-	}
 	
 	public void addTrials(I_TrialList p) {
 		trials.addAll(p.getTrials());
@@ -196,14 +154,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 	public void setReporter(I_Tests4J_Reporter p) {
 		this.reporter = p;
-	}
-
-	public Integer getMinTrials() {
-		return minTrials;
-	}
-
-	public void setMinTrials(Integer minTrials) {
-		this.minTrials = minTrials;
 	}
 
 	public Set<String> getTests() {
@@ -256,23 +206,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			sb.append(COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY);
 			sb.append(coveragePluginConfiguratorClass.getName());
 		}
-		//don\"t include exitAfterLastNotification
-		if (minUniqueAsserts != null) {
-			sb.append(MIN_UNIQUE_ASSERTS_XML_KEY);
-			sb.append(minUniqueAsserts);
-		}
-		if (minAsserts != null) {
-			sb.append(MIN_ASSERTS_XML_KEY);
-			sb.append(minAsserts);
-		}
-		if (minTests != null) {
-			sb.append(MIN_TESTS_XML_KEY);
-			sb.append(minTests);
-		}
-		if (minTrials != null) {
-			sb.append(MIN_TRIALS_XML_KEY);
-			sb.append(minTrials);
-		}
+
 		sb.append("\" >\n");
 		if (trials.size() >= 1 || metaTrialClass != null) {
 			

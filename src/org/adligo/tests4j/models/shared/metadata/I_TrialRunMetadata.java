@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.metadata;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -41,59 +42,17 @@ public interface I_TrialRunMetadata {
 	public int getAllTestsCount();
 	
 	/**
-	 * this should return the trials which test 
-	 * a specific java package
-	 * through a @PackageScope annotation 
-	 * or a @SourceFileScope annotation.
-	 * 
-	 * 
-	 * @param testedPackage
-	 *   if null or empty return all I_TrialM
+	 * return the source file for a .java file name
+	 * i.e.  "org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata"
+	 * @param name
 	 * @return
 	 */
-	//public List<? extends I_TrialMetadata> getSourceFileTrials(String testedPackage);
-	/**
-	 * return all of the classes 
-	 * (without interfaces) in the package
-	 * with corresponding source files.
-	 * 
-	 * @param pTestedPackage
-	 * @return
-	 */
-	//public List<Class<?>> getPackageSourceFiles(String pTestedPackage);
-
-	/**
-	 * 
-	 * @param pTestedPackage
-	 * @return the number of 
-	 * source file trials in the 
-	 * tested exact (non sub) 
-	 * package with source file trials.
-	 *  
-	 */
-	//public Integer getSourceFilesWithSourceFileTrials(String pTestedPackage);
-	/**
-	 * 
-	 * @param pTestedPackage
-	 *   the package which may have had
-	 *   classes which could be tested by a 
-	 *   SourceFileTrial.
-	 *   
-	 * @return the number of SourceFileTrials
-	 * in the which test classes in the testedPackage.
-	 *    
-	 */
-	//public Integer getSourceFileTrialCount(String pTestedPackage);
+	public I_SourceInfo getSourceInfo(String name);
 	
 	/**
-	 * @param pTestedPackage
-	 *    the package you want to test for
+	 * All of the names of all of the .java files that 
 	 * @return
-	 *    the percentage of SourceFileTrials
-	 *    to ClassSourceFiles in the pTestedPackage.
-	 *    this can be asserted against with a MetadataTrial
-	 *    @Test method.
 	 */
-	//public Double getSourceFileTrialToClassSourceFilePercentage(String pTestedPackage);
-
+	public Collection<String> getAllSourceInfo();
+	
 }

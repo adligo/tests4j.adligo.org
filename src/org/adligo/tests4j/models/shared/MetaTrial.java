@@ -28,7 +28,7 @@ public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 	 * 
 	 * @param pct
 	 */
-	public void assertPercentOfSourceFileClassesWithSouceFileTrials(I_TrialRunMetadata metadata,double pct) {
+	public void assertPercentOfNonInterfaceSourceFilesWithTrials(I_TrialRunMetadata metadata,double pct) {
 		
 	}
 

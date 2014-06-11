@@ -77,34 +77,6 @@ public interface I_Tests4J_Params {
 	public boolean isExitAfterLastNotification();
 	
 	/**
-	 * This is the minimum number of passing trials
-	 * required for a passing run result.
-	 * A null value means don't fail the run.
-	 * @return
-	 */
-	public Integer getMinTrials();
-	/**
-	 * This is the minimum number of passing tests
-	 * required for a passing run result.
-	 * A null value means don't fail the run.
-	 * @return
-	 */
-	public Integer getMinTests();
-	/**
-	 * This is the minimum number of passing asserts
-	 * required for a passing run result.
-	 * A null value means don't fail the run.
-	 * @return
-	 */
-	public Integer getMinAsserts() ;
-	/**
-	 * This is the minimum number of unique passing asserts
-	 * required for a passing run result.
-	 * A null value means don't fail the run.
-	 * @return
-	 */
-	public Integer getMinUniqueAssertions();
-	/**
 	 * the list of classes to report for 
 	 * reporting really is just Tests4J internal logging
 	 * @return

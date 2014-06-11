@@ -12,9 +12,19 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-
+/**
+ * this class discovers .class files
+ * that are on the classpath in folders or .jar files.
+ * Note .class files may contain java classes, interfaces and enums.
+ * Use the SourceFileParser in this package to discover
+ * if a particular .java file exists and if it has 
+ * class, interface or enum content.
+ * 
+ * @author scott
+ *
+ */
 public class ClassDiscovery  {
-	private String name;
+	private String packageName;
 	private List<String> classNames = new ArrayList<String>();
 	private List<ClassDiscovery> subpackages = new ArrayList<ClassDiscovery>();
 	/**
@@ -25,14 +35,14 @@ public class ClassDiscovery  {
 	public ClassDiscovery() {}
 	
 	public ClassDiscovery(ClassDiscovery pkg) {
-		setName(pkg.getName());
+		setPackageName(pkg.getPackageName());
 		setClassNames(pkg.getClassNames());
 		setSubpackages(pkg.getSubPackages());
 	}
 	
-	public ClassDiscovery(String pkg) throws IOException {
-		setName(pkg);
-		classNames = getPackageClasses(pkg);
+	public ClassDiscovery(String pkgName) throws IOException {
+		setPackageName(pkgName);
+		classNames = getPackageClasses(pkgName);
 		
 	}
 	
@@ -117,7 +127,7 @@ public class ClassDiscovery  {
 	        jf.close();
 	    }
 	    
-	    List<String> topSubs = getSubPackages(name, subPackages);
+	    List<String> topSubs = getSubPackages(packageName, subPackages);
 	    for (String topSub: topSubs) {
 	    	this.subpackages.add(new ClassDiscovery(topSub));
 	    }
@@ -161,8 +171,8 @@ public class ClassDiscovery  {
 		}
 	}
     
-	public String getName() {
-		return name;
+	public String getPackageName() {
+		return packageName;
 	}
 	public List<String> getClassNames() {
 		return classNames;
@@ -170,8 +180,8 @@ public class ClassDiscovery  {
 	public List<ClassDiscovery> getSubPackages() {
 		return subpackages;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setPackageName(String name) {
+		this.packageName = name;
 	}
 	public void setClassNames(List<String> p) {
 		classNames.clear();
@@ -189,7 +199,7 @@ public class ClassDiscovery  {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((packageName == null) ? 0 : packageName.hashCode());
 		return result;
 	}
 
@@ -202,10 +212,10 @@ public class ClassDiscovery  {
 		if (getClass() != obj.getClass())
 			return false;
 		ClassDiscovery other = (ClassDiscovery) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (packageName == null) {
+			if (other.packageName != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!packageName.equals(other.packageName))
 			return false;
 		return true;
 	}
