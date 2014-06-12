@@ -3,6 +3,7 @@ package org.adligo.tests4j.models.shared.system;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 public class CoveragePluginWrapper implements I_CoveragePlugin {
@@ -12,6 +13,7 @@ public class CoveragePluginWrapper implements I_CoveragePlugin {
 		delegate = p;
 	}
 	
+	@Override
 	public List<Class<? extends I_AbstractTrial>> instrumentClasses(
 			List<Class<? extends I_AbstractTrial>> trials) {
 		return delegate.instrumentClasses(trials);
@@ -29,5 +31,7 @@ public class CoveragePluginWrapper implements I_CoveragePlugin {
 	public void setReporter(I_Tests4J_Reporter p) {
 		delegate.setReporter(p);
 	}
+
+	
 	
 }

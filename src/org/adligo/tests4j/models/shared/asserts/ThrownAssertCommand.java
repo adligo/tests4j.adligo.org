@@ -32,6 +32,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		if (!AssertType.THROWN_TYPES.contains(pType)) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
+		type = (AssertType) pType;
 		data = pData;
 		if (data == null) {
 			throw new IllegalArgumentException(THROWABLE_ASSERTION_COMMAND_REQUIRES_DATA);

@@ -19,6 +19,9 @@ public interface I_CoveragePlugin {
 	 * this instruments the classes so that
 	 * they notify the recorder
 	 * 
+	 * Note this is a I_AbstractTrial because it allows instrumentation
+	 * of the MetaTrial which isn't a I_Trial.
+	 * 
 	 * @diagram Overview.seq sync on 5/26/2014
 	 */
 	public List<Class<? extends I_AbstractTrial>> instrumentClasses(List<Class<? extends I_AbstractTrial>> trials);

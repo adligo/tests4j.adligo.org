@@ -75,7 +75,9 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		
 		
 		I_CoveragePlugin plugin = params.getCoveragePlugin();
+		
 		if (plugin != null) {
+			plugin.setReporter(reporter);
 			List<Class<? extends I_AbstractTrial>> allTrialClasses = new ArrayList<Class<? extends I_AbstractTrial>>();
 			allTrialClasses.addAll(pParams.getTrials());
 			Class<? extends I_MetaTrial> metaTrialClass = pParams.getMetaTrialClass();
