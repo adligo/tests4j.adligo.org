@@ -17,16 +17,21 @@ public class Tests4J_SocketMessage {
 	public static final String MESSAGE_START = "tests4j_socketMessage;command='";
 	public static final String VERSION = "1.0";
 	public static final String VERSION_KEY = "version='";
-	public static final String CONNECTION_ID = "connection_id='";
-	public static final String PAYLOAD = "payload=;";
+	public static final String AUTH_CODE = "authCode='";
+	public static final String PAYLOAD = "payload=";
 	public static final String MESSAGE_END = "/tests4j_socketMessage;";
 	public static int MIN_LENGTH = MESSAGE_START.length() +
 			PAYLOAD.length() + MESSAGE_END.length();
 	
 	private Tests4J_Commands command;
 	private String version = VERSION;
-	private String connectionId;
+	private String authCode;
 	private String payload;
+	
+	public Tests4J_SocketMessage(Tests4J_Commands pCommand, Tests4J_Commands ackCommand) {
+		command = pCommand;
+		payload = ackCommand.toString();
+	}
 	
 	public Tests4J_SocketMessage(Tests4J_Commands pCommand, String pPayload) {
 		command = pCommand;
@@ -35,7 +40,7 @@ public class Tests4J_SocketMessage {
 
 	public Tests4J_SocketMessage(Tests4J_Commands pCommand, String pConnectionId, String pPayload) {
 		command = pCommand;
-		connectionId = pConnectionId;
+		authCode = pConnectionId;
 		payload = pPayload;
 	}
 	
@@ -58,10 +63,10 @@ public class Tests4J_SocketMessage {
 			int endIndex = afterSocketMessage.indexOf(END_SECTION);
 			version = afterSocketMessage.substring(VERSION_KEY.length(), endIndex);
 		}
-		index = afterSocketMessage.indexOf(CONNECTION_ID);
+		index = afterSocketMessage.indexOf(AUTH_CODE);
 		if (index != -1) {
 			int endIndex = afterSocketMessage.indexOf(END_SECTION, index);
-			connectionId = afterSocketMessage.substring(CONNECTION_ID.length() - 1, endIndex);
+			authCode = afterSocketMessage.substring(AUTH_CODE.length(), endIndex);
 		}
 		
 		
@@ -83,18 +88,17 @@ public class Tests4J_SocketMessage {
 			sb.append(END_SECTION);
 		} else if (command == Tests4J_Commands.RUN ||
 				command == Tests4J_Commands.SHUTDOWN) {
-			if (IsEmpty.isEmpty(connectionId)) {
+			if (IsEmpty.isEmpty(authCode)) {
 				throw new IllegalArgumentException("Run and Shutdown require a connectionId");
 			}
-			sb.append(CONNECTION_ID);
-			sb.append(connectionId);
+			sb.append(AUTH_CODE);
+			sb.append(authCode);
 			sb.append(END_SECTION);
 		}
 		if (payload != null) {
 			sb.append(PAYLOAD);
 			sb.append(payload);
 		}
-		sb.append("\n");
 		sb.append(MESSAGE_END);
 		return sb.toString();
 	}
@@ -111,8 +115,8 @@ public class Tests4J_SocketMessage {
 		return payload;
 	}
 
-	public String getConnectionId() {
-		return connectionId;
+	public String getAuthCode() {
+		return authCode;
 	}
 
 	@Override
@@ -121,7 +125,7 @@ public class Tests4J_SocketMessage {
 		int result = 1;
 		result = prime * result + ((command == null) ? 0 : command.hashCode());
 		result = prime * result
-				+ ((connectionId == null) ? 0 : connectionId.hashCode());
+				+ ((authCode == null) ? 0 : authCode.hashCode());
 		result = prime * result + ((payload == null) ? 0 : payload.hashCode());
 		result = prime * result + ((version == null) ? 0 : version.hashCode());
 		return result;
@@ -138,10 +142,10 @@ public class Tests4J_SocketMessage {
 		Tests4J_SocketMessage other = (Tests4J_SocketMessage) obj;
 		if (command != other.command)
 			return false;
-		if (connectionId == null) {
-			if (other.connectionId != null)
+		if (authCode == null) {
+			if (other.authCode != null)
 				return false;
-		} else if (!connectionId.equals(other.connectionId))
+		} else if (!authCode.equals(other.authCode))
 			return false;
 		if (payload == null) {
 			if (other.payload != null)

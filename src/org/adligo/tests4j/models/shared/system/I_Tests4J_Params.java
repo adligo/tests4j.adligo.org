@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.system;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -10,11 +11,12 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 /**
  * This class encapsulates parameters
  * to pass into the Tests4J run method.
+ * @see Tests4J_Params
  * 
  * @author scott
  *
  */
-public interface I_Tests4J_Params {
+public interface I_Tests4J_Params extends I_XML_IO {
 
 	/**
 	 * The trials to run.
@@ -95,4 +97,21 @@ public interface I_Tests4J_Params {
 	 * @return
 	 */
 	public I_SystemExit getExitor();
+	
+	/**
+	 * 
+	 * @return a collection of 
+	 * remote tests4j servers which may be called
+	 * from tests4j, to delegate running of trials.
+	 * Note each remote install delegate creates a new
+	 * thread locally.
+	 */
+	public Collection<I_Tests4J_RemoteInfo> getRemoteInfo();
+	
+	/**
+	 * the params to send to the remote tests4j server.
+	 * @param p
+	 * @return
+	 */
+	public I_Tests4J_Params getRemoteParams(I_Tests4J_RemoteInfo p);
 }

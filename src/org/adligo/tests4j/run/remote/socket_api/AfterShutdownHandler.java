@@ -21,7 +21,7 @@ public class AfterShutdownHandler implements I_AfterMessageHandler {
 	public void afterMessageTransported() {
 		if (controls != null) {
 			try {
-				controls.cancel();
+				controls.shutdown();
 			} catch (Exception x) {
 				x.printStackTrace();
 			}

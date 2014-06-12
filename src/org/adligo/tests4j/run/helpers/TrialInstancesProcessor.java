@@ -19,6 +19,7 @@ import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.SourceFileTrial;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
+import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -54,9 +55,9 @@ public class TrialInstancesProcessor implements Runnable,
 I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	public static final String AFTER_TRIAL_TESTS = "afterTrialTests";
 	private static final String AFTER_API_TRIAL_TESTS_METHOD = 
-			"afterTrialTests(I_PackageCoverage p)";
+			"afterTrialTests(I_ApiTrial_TestsResults p)";
 	private static final String AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD =
-			"afterTrialTests(I_SourceFileCoverage p)";
+			"afterTrialTests(I_SourceFileTrial_TestsResults p)";
 	private static final String AFTER_METADATA_CALCULATED_METHOD = 
 			"afterMetadataCalculated(I_TrialRunMetadata p)";
 	private static final String AFTER_NON_META_TRIALS_RUN_METHOD = 
@@ -66,7 +67,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			"Unexpected exception thrown from ";
 	
 	private Tests4J_Memory memory;
-	private Tests4J_ThreadManager threadManager;
+	private Tests4J_Manager threadManager;
 	private Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
 	private I_Tests4J_Reporter reporter;
@@ -655,7 +656,11 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		afterTrialTestsResultMutant.setName(method);
 		TestFailureMutant tfm = new TestFailureMutant();
 		tfm.setException(x);
-		tfm.setMessage(x.getMessage());
+		String message = x.getMessage();
+		if (IsEmpty.isEmpty(message)) {
+			message = "Unknown Error message.";
+		}
+		tfm.setMessage(message);
 		afterTrialTestsResultMutant.setFailure(tfm);
 	}
 	

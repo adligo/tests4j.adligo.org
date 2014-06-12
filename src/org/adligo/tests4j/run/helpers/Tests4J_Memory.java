@@ -29,12 +29,13 @@ import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 
 /**
  * Instances of this class represent the main
@@ -81,12 +82,13 @@ public class Tests4J_Memory {
 	private ThreadLocalOutputStream out;
 	private CopyOnWriteArrayList<TrialInstancesProcessor> trialInstancesProcessors = 
 			new CopyOnWriteArrayList<TrialInstancesProcessor>();
+
 	private I_TrialRunListener listener;
-	private Tests4J_ThreadManager threadManager;
+	private Tests4J_Manager threadManager;
 	private ArrayBlockingQueue<I_TrialRunMetadata> metaTrialDataBlock = new ArrayBlockingQueue<I_TrialRunMetadata>(1);
 	private TrialDescription metaTrialDescription;
 	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
-	
+	private boolean hasRemoteDelegation = false;
 	/**
 	 * 
 	 * @param params
@@ -111,9 +113,15 @@ public class Tests4J_Memory {
 		/**
 		 * @diagram sync //TODO
 		 */
-		threadManager = new Tests4J_ThreadManager(
+		int threads = params.getTrialThreadCount();
+		Collection<I_Tests4J_RemoteInfo> remoteInfo = params.getRemoteInfo();
+		if (remoteInfo.size() >= 1) {
+			hasRemoteDelegation = true;
+		}
+		threads = threads + remoteInfo.size();
+		threadManager = new Tests4J_Manager(
 				params.isExitAfterLastNotification(), 
-				params.getTrialThreadCount(),
+				threads,
 				params.getExitor());
 		
 		Set<String> pTests = params.getTests();
@@ -136,6 +144,8 @@ public class Tests4J_Memory {
 
 		long now = System.currentTimeMillis();
 		mainRecorderScope = I_CoverageRecorder.TESTS4J_ + now + I_CoverageRecorder.RECORDER;
+		
+		
 	}
 	
 	/**
@@ -357,6 +367,7 @@ public class Tests4J_Memory {
 		trialInstancesProcessors.add(p);
 	}
 	
+	
 	public boolean hasTestsFilter() {
 		if (tests != null) {
 			return true;
@@ -376,7 +387,7 @@ public class Tests4J_Memory {
 		return listener;
 	}
 
-	public Tests4J_ThreadManager getThreadManager() {
+	public Tests4J_Manager getThreadManager() {
 		return threadManager;
 	}
 
@@ -425,5 +436,9 @@ public class Tests4J_Memory {
 	
 	public boolean hasRanMetaTrial() {
 		return ranMetaTrial.get();
+	}
+
+	public boolean hasRemoteDelegation() {
+		return hasRemoteDelegation;
 	}
 }

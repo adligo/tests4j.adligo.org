@@ -4,13 +4,13 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 public class TrialProcessorControls implements I_Tests4J_Controls {
-	private Tests4J_ThreadManager threadManager;
+	private Tests4J_Manager threadManager;
 	private I_Tests4J_Reporter reporter;
 	private Tests4J_NotificationManager notificationManager;
 	
 	
 	public TrialProcessorControls(I_Tests4J_Reporter pReporter,
-			Tests4J_ThreadManager pThreadManager,
+			Tests4J_Manager pThreadManager,
 			Tests4J_NotificationManager pNotificationManager) {
 		
 		reporter = pReporter;
@@ -18,7 +18,7 @@ public class TrialProcessorControls implements I_Tests4J_Controls {
 		notificationManager = pNotificationManager;
 	}
 	@Override
-	public void cancel() {
+	public void shutdown() {
 		threadManager.shutdown();
 	}
 
@@ -33,7 +33,7 @@ public class TrialProcessorControls implements I_Tests4J_Controls {
 	}
 
 
-	public Tests4J_ThreadManager getThreadManager() {
+	public Tests4J_Manager getThreadManager() {
 		return threadManager;
 	}
 

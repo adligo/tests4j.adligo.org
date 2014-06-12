@@ -50,7 +50,7 @@ public class Tests4J_NotificationManager {
 	private AtomicBoolean doneDescribeingTrials = new AtomicBoolean(false);
 	private AtomicBoolean doneRunningTrials = new AtomicBoolean(false);
 	private Tests4J_Memory memory;
-	private Tests4J_ThreadManager threadManager;
+	private Tests4J_Manager threadManager;
 	/**
 	 * always call reporter first then call listener
 	 */

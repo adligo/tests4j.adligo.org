@@ -3,8 +3,11 @@ package org.adligo.tests4j.models.shared.system;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.I_MetaTrial;
@@ -48,12 +51,12 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	/**
 	 * @see I_Tests4J_Params#getReporter()
 	 */
-	private I_Tests4J_Reporter reporter = new ConsoleReporter();
+	private transient I_Tests4J_Reporter reporter = new ConsoleReporter();
 	
 	/**
 	 * this flaggs a jvm exit
 	 */
-	private boolean exitAfterLastNotification = true;
+	private transient boolean exitAfterLastNotification = true;
 	
 	private I_ThreadCount trialThreads = new SimpleThreadCount();
 	/**
@@ -68,9 +71,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	/**
 	 * these classes get reporting turned on 
 	 */
-	private List<Class<?>> loggingClasses = new ArrayList<Class<?>>();
-	private I_SystemExit exitor = new DefaultSystemExitor();
-	
+	private transient List<Class<?>> loggingClasses = new ArrayList<Class<?>>();
+	private transient I_SystemExit exitor = new DefaultSystemExitor();
+	private Map<I_Tests4J_RemoteInfo, I_Tests4J_Params> remoteParams = 
+			new HashMap<I_Tests4J_RemoteInfo, I_Tests4J_Params>();
 	public Tests4J_Params() {}
 	
 	public Tests4J_Params(I_Tests4J_Params p) {
@@ -83,9 +87,17 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		exitAfterLastNotification = p.isExitAfterLastNotification();
 		loggingClasses.addAll(p.getLoggingClasses());
 		exitor = p.getExitor();
+		Collection<I_Tests4J_RemoteInfo> remotes = p.getRemoteInfo();
+		for (I_Tests4J_RemoteInfo remote: remotes){
+			remoteParams.put(remote, p.getRemoteParams(remote));
+		}
 	}
 	
 	public Tests4J_Params(String p) {
+		fromXml(p);
+	}
+
+	public void fromXml(String p) {
 		int start =  p.indexOf(XML_START);
 		int tagEnd = p.indexOf(">", start);
 		String tag = p.substring(start, tagEnd);
@@ -199,22 +211,16 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			return null;
 		}
 		try {
-			Constructor<? extends I_CoveragePlugin> con =
-					coveragePluginClass.getConstructor(new Class[] {});
-			I_CoveragePlugin plugin = con.newInstance(new Object[] {});
+			I_CoveragePlugin plugin = coveragePluginClass.newInstance();
 			
 			if (coveragePluginConfiguratorClass != null) {
-				Constructor<? extends I_CoveragePluginConfigurator> con2
-						= coveragePluginConfiguratorClass.getConstructor(new Class[] {});
-				I_CoveragePluginConfigurator configurator = con2.newInstance(new Object[] {});
+				I_CoveragePluginConfigurator configurator = coveragePluginConfiguratorClass.newInstance();
 				configurator.configure(plugin);
 			}
 			return plugin;
-		} catch (NoSuchMethodException | 
-				InstantiationException |
+		} catch (InstantiationException |
 				IllegalAccessException |
-				IllegalArgumentException |
-				InvocationTargetException e) {
+				IllegalArgumentException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}
@@ -281,7 +287,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		loggingClasses.add(p);
 	}
 
-	public String toXmlString() {
+	public String toXml() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(XML_START);
 		if (trialThreads != null) {
@@ -292,13 +298,15 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		if (coveragePluginClass != null) {
 			sb.append(COVERAGE_PLUGIN_XML_KEY);
 			sb.append(coveragePluginClass.getName());
+			sb.append("\"");
 		}
 		if (coveragePluginConfiguratorClass != null) {
 			sb.append(COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY);
 			sb.append(coveragePluginConfiguratorClass.getName());
+			sb.append("\"");
 		}
 
-		sb.append("\" >\n");
+		sb.append(" >\n");
 		if (trialThreads != null) {
 			sb.append(trialThreads.toXml());
 			sb.append("\n");
@@ -405,5 +413,19 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			threadCount = trials.size();
 		}
 		return threadCount;
+	}
+
+	@Override
+	public Collection<I_Tests4J_RemoteInfo> getRemoteInfo() {
+		return remoteParams.keySet();
+	}
+
+	@Override
+	public I_Tests4J_Params getRemoteParams(I_Tests4J_RemoteInfo p) {
+		return remoteParams.get(p);
+	}
+	
+	public void putRemoteParams(I_Tests4J_RemoteInfo info,I_Tests4J_Params p) {
+		remoteParams.put(info, p);
 	}
 }

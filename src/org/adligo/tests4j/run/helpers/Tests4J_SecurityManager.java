@@ -78,8 +78,8 @@ public class Tests4J_SecurityManager extends SecurityManager {
 						if (reporter.isLogEnabled(Tests4J_SecurityManager.class)) {
 							reporter.log("Throwing thread creation exception" + names + " .");
 						}
-						throw new SecurityException("During tests (beforeTest(), @Tests and afterTests()), "
-					      		+ "we do not allow thread creation.");
+						throw new SecurityException("During @Tests methods, "
+					      		+ "we do not allow thread creation. " + names);
 					}
 				}
 			}

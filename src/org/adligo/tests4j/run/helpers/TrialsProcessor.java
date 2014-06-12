@@ -2,6 +2,7 @@ package org.adligo.tests4j.run.helpers;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -19,10 +20,12 @@ import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 
 /**
  * ok this is the main processing class which does this;
@@ -110,7 +113,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			System.setSecurityManager(new Tests4J_SecurityManager(reporter));
 		}
 		memory = new Tests4J_Memory(params,OUT, pListener, plugin);
-		Tests4J_ThreadManager threadManager = memory.getThreadManager();
+		Tests4J_Manager threadManager = memory.getThreadManager();
 		
 		
 		notifier = new Tests4J_NotificationManager(memory);
@@ -137,6 +140,14 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			memory.addTrialInstancesProcessors(tip);
 		}
 		
+		Collection<I_Tests4J_RemoteInfo> remotes = params.getRemoteInfo();
+		for (I_Tests4J_RemoteInfo remote: remotes) {
+			I_Tests4J_Params remoteParams = params.getRemoteParams(remote);
+			Tests4J_RemoteRunner remoteRunner = new Tests4J_RemoteRunner(remote, remoteParams, reporter);
+			Future<?> future = runService.submit(remoteRunner);
+			threadManager.addRemoteFuture(future);
+			threadManager.addRemoteRunner(remoteRunner);
+		}
 		if (runService instanceof ThreadPoolExecutor) {
 			ThreadPoolExecutor tpe = (ThreadPoolExecutor) runService;
 			tpe.setKeepAliveTime(1000, TimeUnit.MILLISECONDS);

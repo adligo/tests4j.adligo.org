@@ -20,12 +20,8 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	/**
 	 * for the testRunner which runs the TestRunable runnables
 	 */
-	public static final String REMOTE_RUNNER_THREAD_NAME = BASE_THREAD_NAME + "runner";
+	public static final String SERVER_THREAD_NAME = BASE_THREAD_NAME + "runner";
 	
-	/**
-	 * for the testRunner which runs the TestRunable runnables
-	 */
-	public static final String REMOTE_LISTENER_THREAD_NAME = BASE_THREAD_NAME + "listener";
 	
 	private List<Thread> threads = new CopyOnWriteArrayList<Thread>();
 	private AtomicInteger id = new AtomicInteger();
@@ -35,8 +31,7 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	public Tests4J_ThreadFactory(String pThreadGroupName, ThreadGroup parent) {
 		if (pThreadGroupName.contains(TRIAL_THREAD_NAME) || 
 			pThreadGroupName.contains(TEST_THREAD_NAME) ||
-			pThreadGroupName.contains(REMOTE_RUNNER_THREAD_NAME) ||
-			pThreadGroupName.contains(REMOTE_LISTENER_THREAD_NAME)) {
+			pThreadGroupName.contains(SERVER_THREAD_NAME)) {
 			threadGroupName = pThreadGroupName;
 		} else {
 			throw new IllegalArgumentException("Tests4J threads must start"
