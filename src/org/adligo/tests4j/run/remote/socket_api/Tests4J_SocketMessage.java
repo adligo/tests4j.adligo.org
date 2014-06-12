@@ -1,6 +1,8 @@
 package org.adligo.tests4j.run.remote.socket_api;
 
-import org.adligo.tests4j.models.shared.common.IsEmpty;
+import org.adligo.tests4j.models.shared.system.I_XML_IO;
+
+import com.sun.xml.internal.ws.util.StringUtils;
 
 /**
  * the socket message is a builder class
@@ -12,94 +14,115 @@ import org.adligo.tests4j.models.shared.common.IsEmpty;
  * @author scott
  *
  */
-public class Tests4J_SocketMessage {
-	public static final String END_SECTION = "';";
-	public static final String MESSAGE_START = "tests4j_socketMessage;command='";
-	public static final String VERSION = "1.0";
-	public static final String VERSION_KEY = "version='";
-	public static final String AUTH_CODE = "authCode='";
-	public static final String PAYLOAD = "payload=";
-	public static final String MESSAGE_END = "/tests4j_socketMessage;";
+public class Tests4J_SocketMessage implements I_XML_IO {
+	
+	public static final String REQUIRES_AUTH_CODE_ATTRIBUTE_ERROR = "Requires AuthCode Attribute.";
+	public static final String REQUIRES_COMMAND_KEY_ATTRIBUTE_ERROR = "Requires Command Key Attribute.";
+	public static final String TAG_NAME ="tests4j_socket_message";
+	public static final String VERSION_KEY = "version" + EQUALS_QUOTE;
+	public static final String MESSAGE_START = START + TAG_NAME + " " + VERSION_KEY;
+	public static final String VERSION_1_0 = "1.0";
+	
+	public static final String COMMAND_KEY = "command" + EQUALS_QUOTE;
+	public static final String AUTH_CODE_KEY = "authCode" + EQUALS_QUOTE;
+	public static final String TAG_PAIR_END = END_START + TAG_NAME + END;
 	public static int MIN_LENGTH = MESSAGE_START.length() +
-			PAYLOAD.length() + MESSAGE_END.length();
+			VERSION_KEY.length() + VERSION_1_0.length() + ATTRIBUTE_END.length() +
+			COMMAND_KEY.length() + Tests4J_Commands.getMinLength() + ATTRIBUTE_END.length() + 
+			AUTH_CODE_KEY.length() + ATTRIBUTE_END.length() +
+			START_END.length();
+	public static final String REQUIRES_ERROR = "Requires a " + TAG_NAME + " tag.";
+	public static final String UNKNOWN_VERSION_ERROR_START = "Unknown Version ";
+	public static final String UNKNOWN_VERSION_ERROR_END = " expecting "+ VERSION_1_0 +".";
 	
 	private Tests4J_Commands command;
-	private String version = VERSION;
+	private Tests4J_Commands ack;
+	private String version = VERSION_1_0;
 	private String authCode;
 	private String payload;
 	
 	public Tests4J_SocketMessage(Tests4J_Commands pCommand, Tests4J_Commands ackCommand) {
 		command = pCommand;
-		payload = ackCommand.toString();
+		ack = ackCommand;
 	}
 	
-	public Tests4J_SocketMessage(Tests4J_Commands pCommand, String pPayload) {
+	public Tests4J_SocketMessage(Tests4J_Commands pCommand, String pAuthCode) {
 		command = pCommand;
-		payload = pPayload;
+		authCode = pAuthCode;
 	}
 
-	public Tests4J_SocketMessage(Tests4J_Commands pCommand, String pConnectionId, String pPayload) {
+	public Tests4J_SocketMessage(Tests4J_Commands pCommand, String pAuthCode, String pPayload) {
 		command = pCommand;
-		authCode = pConnectionId;
+		authCode = pAuthCode;
 		payload = pPayload;
 	}
 	
-	public Tests4J_SocketMessage(String socketMessage) {
-		if (socketMessage.length() < MESSAGE_START.length()) {
-			throw new IllegalArgumentException("Requires " + MESSAGE_START);
+	public Tests4J_SocketMessage(String xml) {
+		if (xml == null) {
+			throw new IllegalArgumentException(REQUIRES_ERROR);
 		}
-		String afterSocketMessage = socketMessage.substring(MESSAGE_START.length() - 1, socketMessage.length());
-		int index = afterSocketMessage.indexOf(END_SECTION);
+		int startIndex = xml.indexOf(MESSAGE_START);
+		if (startIndex == -1) {
+			throw new IllegalArgumentException(REQUIRES_ERROR);
+		}
+		int startLastIndex = startIndex + MESSAGE_START.length();
+		int versionEnd = xml.indexOf(ATTRIBUTE_END, startLastIndex);
 		
-		if (index == -1) {
-			throw new IllegalArgumentException("Requires " + MESSAGE_START + "XXX" + END_SECTION);
+		version = xml.substring(startLastIndex, versionEnd);
+		if (!VERSION_1_0.equals(version)) {
+			throw new IllegalArgumentException(UNKNOWN_VERSION_ERROR_START + version + 
+					UNKNOWN_VERSION_ERROR_END);
 		}
-		String commandString = afterSocketMessage.substring(1, index);
+		
+		int startCommandIndex = xml.indexOf(COMMAND_KEY, versionEnd);
+		if (startCommandIndex == -1) {
+			throw new IllegalArgumentException(REQUIRES_COMMAND_KEY_ATTRIBUTE_ERROR);
+		}
+		int startCommandEndIndex = startCommandIndex + COMMAND_KEY.length();
+		int endCommandIndex = xml.indexOf(ATTRIBUTE_END, startCommandEndIndex);
+		if (endCommandIndex == -1) {
+			throw new IllegalArgumentException(REQUIRES_COMMAND_KEY_ATTRIBUTE_ERROR);
+		}
+		String commandString = xml.substring(startCommandEndIndex, endCommandIndex);
 		command = Tests4J_Commands.valueOf(commandString);
-		afterSocketMessage = afterSocketMessage.substring(index + END_SECTION.length(), afterSocketMessage.length());
 		
-		index = afterSocketMessage.indexOf(VERSION_KEY);
-		if (index != -1) {
-			int endIndex = afterSocketMessage.indexOf(END_SECTION);
-			version = afterSocketMessage.substring(VERSION_KEY.length(), endIndex);
+		int startAuthIndex = xml.indexOf(AUTH_CODE_KEY, endCommandIndex);
+		if (startAuthIndex == -1) {
+			throw new IllegalArgumentException(REQUIRES_AUTH_CODE_ATTRIBUTE_ERROR);
 		}
-		index = afterSocketMessage.indexOf(AUTH_CODE);
-		if (index != -1) {
-			int endIndex = afterSocketMessage.indexOf(END_SECTION, index);
-			authCode = afterSocketMessage.substring(AUTH_CODE.length(), endIndex);
+		int startAuthEndIndex = startAuthIndex + AUTH_CODE_KEY.length();
+		int endAuthIndex = xml.indexOf(ATTRIBUTE_END, startAuthEndIndex);
+		if (endAuthIndex == -1) {
+			throw new IllegalArgumentException(REQUIRES_AUTH_CODE_ATTRIBUTE_ERROR);
 		}
-		
-		
-		index = afterSocketMessage.indexOf(PAYLOAD);
-		if (index == -1) {
-			throw new IllegalArgumentException("Requires " + PAYLOAD);
-		}
-		payload = afterSocketMessage.substring(index + PAYLOAD.length(), afterSocketMessage.length() - MESSAGE_END.length());
+		authCode = xml.substring(startAuthEndIndex, endAuthIndex);
 	}
 	
-	public String toSocketMessage() {
+	public String toXml() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(MESSAGE_START);
+		sb.append(VERSION_1_0);
+		sb.append(ATTRIBUTE_END);
+		
+		sb.append(COMMAND_KEY);
 		sb.append(command);
-		sb.append(END_SECTION);
-		if (command == Tests4J_Commands.CONNECT) {
-			sb.append(VERSION_KEY);
-			sb.append(version);
-			sb.append(END_SECTION);
-		} else if (command == Tests4J_Commands.RUN ||
-				command == Tests4J_Commands.SHUTDOWN) {
-			if (IsEmpty.isEmpty(authCode)) {
-				throw new IllegalArgumentException("Run and Shutdown require a connectionId");
-			}
-			sb.append(AUTH_CODE);
-			sb.append(authCode);
-			sb.append(END_SECTION);
-		}
-		if (payload != null) {
-			sb.append(PAYLOAD);
+		sb.append(ATTRIBUTE_END);
+		
+		sb.append(AUTH_CODE_KEY);
+		sb.append(authCode);
+		sb.append(ATTRIBUTE_END);
+		
+		if (payload == null) {
+			sb.append(START_END);
+		} else {
+			sb.append(END);
+			sb.append(NEW_LINE);
+			sb.append(TAB);
 			sb.append(payload);
-		}
-		sb.append(MESSAGE_END);
+			sb.append(NEW_LINE);
+			sb.append(TAG_PAIR_END);
+		} 
+		
 		return sb.toString();
 	}
 

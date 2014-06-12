@@ -130,7 +130,7 @@ public class Tests4J_RemoteRunner implements Runnable {
 			reporter.log("Tests4J_RemoteRunner sending command " + p.getCommand());
 		}
 		lastCommnadSent = p.getCommand();
-		String message = p.toSocketMessage();
+		String message = p.toXml();
 		out.write(message.getBytes());
 		out.flush();
 	}

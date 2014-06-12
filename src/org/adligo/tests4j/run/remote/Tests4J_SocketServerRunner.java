@@ -355,7 +355,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 			reporter.log("sending command " + p.getCommand());
 		}
 		lastCommnadSent = p.getCommand();
-		String message = p.toSocketMessage();
+		String message = p.toXml();
 		out.write(message.getBytes());
 		out.flush();
 		I_AfterMessageHandler handler = afterMessageTransportHandlers.get(message);
