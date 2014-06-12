@@ -5,17 +5,21 @@ import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_CompareAssertionData;
-import org.adligo.tests4j.models.shared.coverage.I_CoverageUnits;
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.metadata.I_SourceInfo;
+import org.adligo.tests4j.models.shared.metadata.I_TrialMetadata;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
@@ -33,6 +37,8 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 	private List<I_TrialResult> failedTrials = new ArrayList<I_TrialResult>();
 	private boolean hadTrialTestsWhichDidNOTRun = false;
 	private I_LineOut out = new SystemOut();
+	private boolean listRelevantClassesWithoutTrials = false;
+	private I_TrialRunMetadata metadata;
 	
 	public ConsoleReporter() {
 		setLogOn(ConsoleReporter.class);
@@ -44,11 +50,12 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 	}
 	
 	@Override
-	public void onMetadataCalculated(I_TrialRunMetadata metadata) {
+	public void onMetadataCalculated(I_TrialRunMetadata p) {
 		if (isLogEnabled(ConsoleReporter.class)) {
-			log("Metadata Calculated: " + metadata.getAllTrialsCount() + " trials with " +
-					metadata.getAllTestsCount() + " tests.");
+			log("Metadata Calculated: " + p.getAllTrialsCount() + " trials with " +
+					p.getAllTestsCount() + " tests.");
 		}
+		metadata = p;
 	}
 
 	@Override
@@ -100,6 +107,12 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 			log("------------------------Test Results-------------------------");
 			log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds.");
 			DecimalFormat formatter = new DecimalFormat("###.##");
+			
+			double pctD = calculateRelevantSourceFilesWithOutTrials();
+			
+			log("\t\t" + formatter.format(pctD) + 
+					"% of relevant classes have corresponding trials.");
+		
 			BigDecimal pct = logCoverage(result,  formatter );
 			
 			
@@ -133,8 +146,44 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 				log("");
 				
 			}
+			
 			log("------------------------Test Results End---------------------");
 		}
+	}
+
+	private double calculateRelevantSourceFilesWithOutTrials() {
+		List<? extends I_TrialMetadata> trialMetas =  metadata.getAllTrialMetadata();
+		Map<String,I_TrialMetadata> relevantClassesToTrials = new HashMap<String, I_TrialMetadata>();
+		for (I_TrialMetadata tm: trialMetas) {
+			TrialTypeEnum type =  tm.getType();
+			if (type == TrialTypeEnum.SourceFileTrial) {
+				relevantClassesToTrials.put(tm.getTestedClass(), tm);
+			}
+		}
+		Collection<String> allClasses = metadata.getAllSourceInfo();
+		Set<String> classesWithOutTrials = new TreeSet<String>();
+		
+		double allRelevantClasses = 0;
+		for (String clazzName: allClasses) {
+			I_SourceInfo si = metadata.getSourceInfo(clazzName);
+			if (!si.hasInterface()) {
+				allRelevantClasses++;
+				if (!relevantClassesToTrials.containsKey(clazzName)) {
+					classesWithOutTrials.add(clazzName);
+				}
+			}
+		}
+		if (listRelevantClassesWithoutTrials) {
+			if (classesWithOutTrials.size() >= 1) {
+				log("\t\tThe following relevant classes do NOT have trials.");
+				for (String clazzName: classesWithOutTrials) {
+					log("\t\t\t" + clazzName);
+				}
+			}
+		}
+		double sourceFileTrials = relevantClassesToTrials.size();
+		double pct = 100 * (sourceFileTrials/allRelevantClasses);
+		return pct;
 	}
 
 	private BigDecimal logCoverage(I_TrialRunResult result, DecimalFormat formatter) {
@@ -267,5 +316,10 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 
 	public void setRedirect(boolean redirect) {
 		this.redirect = redirect;
+	}
+
+	@Override
+	public void setListRelevantClassesWithoutTrials(boolean p) {
+		listRelevantClassesWithoutTrials = p;
 	}
 }

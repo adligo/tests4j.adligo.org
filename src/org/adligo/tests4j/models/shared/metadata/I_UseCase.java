@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.results;
+package org.adligo.tests4j.models.shared.metadata;
 
 /**
  * a in memory representation of a use case

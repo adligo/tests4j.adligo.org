@@ -19,8 +19,8 @@ import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.results.I_UseCase;
-import org.adligo.tests4j.models.shared.results.UseCase;
+import org.adligo.tests4j.models.shared.metadata.I_UseCase;
+import org.adligo.tests4j.models.shared.metadata.UseCase;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TrialDescriptionMessages;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
@@ -360,8 +360,23 @@ public class TrialDescription implements I_TrialDescription {
 		return sourceFileScope.sourceClass();
 	}
 	
+	/**
+	 * return the packageName from the package scope if it
+	 * is present, or the package from the sourceFileScope's
+	 * class package if present
+	 * @return
+	 */
 	public String getPackageName() {
 		if (packageScope == null) {
+			if (sourceFileScope != null) {
+				Class<?> claz = sourceFileScope.getClass();
+				if (claz != null) {
+					Package pkg = claz.getPackage();
+					if (pkg != null) {
+						return pkg.getName();
+					}
+				}
+			}
 			return null;
 		}
 		return packageScope.packageName();

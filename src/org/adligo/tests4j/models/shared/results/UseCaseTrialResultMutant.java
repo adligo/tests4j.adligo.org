@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.results;
 
+import org.adligo.tests4j.models.shared.metadata.I_UseCase;
+
 public class UseCaseTrialResultMutant extends BaseTrialResultMutant implements I_UseCaseTrialResult {
 	private I_UseCase useCase;
 	private String system;

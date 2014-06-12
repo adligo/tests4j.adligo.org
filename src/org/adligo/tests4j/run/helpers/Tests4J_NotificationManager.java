@@ -1,7 +1,9 @@
 package org.adligo.tests4j.run.helpers;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -13,11 +15,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
 import org.adligo.tests4j.models.shared.metadata.I_TestMetadata;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.metadata.SourceInfoMutant;
 import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadata;
@@ -33,6 +37,7 @@ import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegate;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.report.Tests4jReporterDelegate;
+import org.adligo.tests4j.run.discovery.ClassDiscovery;
 
 /**
  * This class handles event notification
@@ -150,8 +155,14 @@ public class Tests4J_NotificationManager {
 		Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
 		TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
 		
+		Set<String> packages = new HashSet<String>();
+		
 		while (it.hasNext()) {
 			TrialDescription td = it.next();
+			String packageName = td.getPackageName();
+			if (!IsEmpty.isEmpty(packageName)) {
+				packages.add(packageName);
+			}
 			TrialMetadataMutant tmm = new TrialMetadataMutant();
 			tmm.setTrialName(td.getTrialName());
 			Method before = td.getBeforeTrialMethod();
@@ -163,6 +174,24 @@ public class Tests4J_NotificationManager {
 			long timeout = td.getTimeout();
 			tmm.setTimeout(timeout);
 			
+			TrialTypeEnum type = td.getType();
+			tmm.setType(type);
+
+			switch (type) {
+				case SourceFileTrial:
+					Class<?> clazz = td.getSourceFileClass();
+					if (clazz != null) {
+						tmm.setTestedClass(clazz.getName());
+					}
+					break;
+				case ApiTrial:
+						tmm.setTestedPackage(td.getPackageName());
+					break;
+				case UseCaseTrial:
+						tmm.setSystem(td.getSystemName());
+						tmm.setUseCase(td.getUseCase());
+					break;
+			}
 			if (td.getTestMethodsSize() >= 1) {
 				Iterator<TestDescription> iit = td.getTestMethods();
 				
@@ -177,7 +206,7 @@ public class Tests4J_NotificationManager {
 						testMeta.setTimeout(testTimeout);
 						testMetas.add(testMeta);
 					}
-					TrialTypeEnum type = td.getType();
+					
 					Class<? extends I_AbstractTrial> trialClass = td.getTrialClass();
 					switch (type) {
 						case SourceFileTrial:
@@ -193,14 +222,17 @@ public class Tests4J_NotificationManager {
 							break;
 						case ApiTrial:
 							try {
+								
 								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_ApiTrial_TestsResults.class);
 								TestMetadataMutant testMeta = new TestMetadataMutant();
 								testMeta.setTestName(m.getName());
 								testMetas.add(testMeta);
+								
 							} catch (NoSuchMethodException e) {
 								//do noting
 							}
 							break;
+						
 						case MetaTrial:
 							TestMetadataMutant testMeta = new TestMetadataMutant();
 							testMeta.setTestName("afterMetadataCalculated(I_TrialRunMetadata metadata)");
@@ -224,6 +256,16 @@ public class Tests4J_NotificationManager {
 			}
 			trmm.addTrial(tmm);
 		}
+		for (String packageName: packages) {
+			try {
+				ClassDiscovery classDiscovery = new ClassDiscovery(packageName);
+				addClasses(trmm, classDiscovery);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		metadata = new TrialRunMetadata(trmm);
 		
 		// @diagram_sync on 5/26/2014 with Overview.seq
@@ -231,6 +273,36 @@ public class Tests4J_NotificationManager {
 		reporter.onMetadataCalculated(metadata);
 		if (listener != null) {
 			listener.onMetadataCalculated(metadata);
+		}
+	}
+
+	private void addClasses(TrialRunMetadataMutant trmm,
+			ClassDiscovery classDiscovery) {
+		List<String> classes = classDiscovery.getClassNames();
+		for (String clazz: classes) {
+			if (clazz.indexOf("$") == -1) {
+				SourceInfoMutant sim = new SourceInfoMutant();
+				sim.setName(clazz);
+				try {
+					Class<?> czx = Class.forName(clazz);
+					//TODO this would be better done with a .java
+					//source file parser, but this is good enough for now
+					if (czx.isInterface()) {
+						sim.setHasInterface(true);
+					}
+					if (czx.isEnum()) {
+						sim.setHasEnum(true);
+					}
+					sim.setHasClass(true);
+				} catch (ClassNotFoundException x) {
+					reporter.onError(x);
+				}
+				trmm.setSourceInfo(clazz, sim);
+			}
+		}
+		List<ClassDiscovery> subs =  classDiscovery.getSubPackages();
+		for (ClassDiscovery sub: subs) {
+			addClasses(trmm, sub);
 		}
 	}
 

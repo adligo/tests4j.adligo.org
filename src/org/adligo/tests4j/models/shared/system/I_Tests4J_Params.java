@@ -62,9 +62,15 @@ public interface I_Tests4J_Params {
 	/**
 	 * The number of threads which to process 
 	 * Trials concurrently, the thread pool size
-	 * defaults to 32, but is automatically
-	 * reduced to the number of trials if it is smaller.
+	 * defaults to 32, 
 	 * 
+	 * @return
+	 */
+	public I_ThreadCount getThreadCount();
+	/**
+	 * the number of theads from the trial count
+	 * but is automatically
+	 * reduced to the number of trials if it is smaller.
 	 * @return
 	 */
 	public int getTrialThreadCount();
@@ -85,7 +91,7 @@ public interface I_Tests4J_Params {
 	
 	/**
 	 * return the delegate for System.exit(int status)
-	 * mosty for stubbing
+	 * mostly for stubbing
 	 * @return
 	 */
 	public I_SystemExit getExitor();

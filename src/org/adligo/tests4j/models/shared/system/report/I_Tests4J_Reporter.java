@@ -68,4 +68,10 @@ public interface I_Tests4J_Reporter extends I_TrialRunListener {
 	 * @return
 	 */
 	public boolean isRedirect();
+	
+	/**
+	 * this lists the classes (which arn't meerly interfaces)
+	 * that don't have trials
+	 */
+	public void setListRelevantClassesWithoutTrials(boolean p);
 }

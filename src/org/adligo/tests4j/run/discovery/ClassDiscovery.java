@@ -25,6 +25,9 @@ import java.util.jar.JarFile;
  */
 public class ClassDiscovery  {
 	private String packageName;
+	/**
+	 * the full class name including the package
+	 */
 	private List<String> classNames = new ArrayList<String>();
 	private List<ClassDiscovery> subpackages = new ArrayList<ClassDiscovery>();
 	/**
@@ -174,6 +177,9 @@ public class ClassDiscovery  {
 	public String getPackageName() {
 		return packageName;
 	}
+	/**
+	 * the full class name including the package
+	 */
 	public List<String> getClassNames() {
 		return classNames;
 	}

@@ -38,4 +38,9 @@ public class Tests4jReporterDelegate extends TrialRunListenerDelegate implements
 		delegate.setLogOff(clazz);
 	}
 
+	@Override
+	public void setListRelevantClassesWithoutTrials(boolean p) {
+		delegate.setListRelevantClassesWithoutTrials(p);
+	}
+
 }

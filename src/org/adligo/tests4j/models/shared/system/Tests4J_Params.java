@@ -21,7 +21,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public static final String TRIALS_XML_END = "</trials>";
 	public static final String TRIALS_XML_START = "<trials>";
 	public static final String COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY = "\" coveragePluginConfigurator=\"";
-	public static final String COVERAGE_PLUGIN_XML_KEY = "\" coveragePlugin=\"";
+	public static final String COVERAGE_PLUGIN_XML_KEY = " coveragePlugin=\"";
+	public static final String THREAD_COUNT_XML_KEY = "threadCount=\"";
 	public static final String TEST_XML_END = "</test>";
 	public static final String TEST_XML_START = "<test>";
 	public static final String TESTS_XML_START = "<tests>";
@@ -31,7 +32,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public static final String LOG_XML_END = "</log>";
 	public static final String LOGS_XML_END = "</logs>";
 	public static final String XML_END = "</Tests4J_Params>";
-	public static final String XML_START = "<Tests4J_Params trialThreadCount=\"";
+	public static final String XML_START = "<Tests4J_Params ";
 
 	/**
 	 * @see I_Tests4J_Params#getTrials()
@@ -54,7 +55,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 */
 	private boolean exitAfterLastNotification = true;
 	
-	private int trialThreads = 32;
+	private I_ThreadCount trialThreads = new SimpleThreadCount();
 	/**
 	 * All coverage is always recorded if there is a plugin,
 	 * more fine grained coverage may be recorded if the 
@@ -78,10 +79,104 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		tests.addAll(p.getTests());
 		reporter = p.getReporter();
 		coveragePluginClass = p.getCoveragePluginClass();
-		trialThreads = p.getTrialThreadCount();
+		trialThreads = p.getThreadCount();
 		exitAfterLastNotification = p.isExitAfterLastNotification();
 		loggingClasses.addAll(p.getLoggingClasses());
 		exitor = p.getExitor();
+	}
+	
+	public Tests4J_Params(String p) {
+		int start =  p.indexOf(XML_START);
+		int tagEnd = p.indexOf(">", start);
+		String tag = p.substring(start, tagEnd);
+		
+		int threadCountIndex = tag.indexOf(THREAD_COUNT_XML_KEY);
+		trialThreads = null;
+		if (threadCountIndex != -1) {
+			threadCountIndex = threadCountIndex + THREAD_COUNT_XML_KEY.length();
+			int end = tag.indexOf("\"", threadCountIndex);
+			String clazz = tag.substring(threadCountIndex, end);
+			try {
+				Class<?> clazzInst = Class.forName(clazz);
+				trialThreads = (I_ThreadCount) clazzInst.newInstance();
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException x) {
+				throw new IllegalArgumentException(x);
+			}
+		}
+		if (trialThreads != null) {
+			trialThreads.fromXml(p);
+		}
+		
+		int coveragePluginIndex = tag.indexOf(COVERAGE_PLUGIN_XML_KEY);
+		if (coveragePluginIndex != -1) {
+			coveragePluginIndex = coveragePluginIndex + COVERAGE_PLUGIN_XML_KEY.length();
+			int end = tag.indexOf("\"", coveragePluginIndex);
+			String clazz = tag.substring(coveragePluginIndex,end);
+			try {
+				coveragePluginClass = (Class<? extends I_CoveragePlugin>) Class.forName(clazz);
+			} catch (ClassNotFoundException x) {
+				throw new IllegalArgumentException(x);
+			}
+		}
+		
+		int coveragePluginConfigIndex = tag.indexOf(COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY);
+		if (coveragePluginConfigIndex != -1) {
+			coveragePluginConfigIndex = coveragePluginConfigIndex  + COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY.length(); 
+			int end = tag.indexOf("\"", coveragePluginConfigIndex);
+			String clazz = tag.substring(coveragePluginIndex,end);
+			try {
+				coveragePluginConfiguratorClass = (Class<? extends I_CoveragePluginConfigurator>) Class.forName(clazz);
+			} catch (ClassNotFoundException x) {
+				throw new IllegalArgumentException(x);
+			}
+		}
+		int metaTrialStart = p.indexOf(META_TRIAL_XML_START);
+		int metaTrialEnd = p.indexOf(META_TRIAL_XML_END);
+		if (metaTrialStart != -1 && metaTrialEnd != -1) {
+			String metaTrial = p.substring(metaTrialStart + META_TRIAL_XML_START.length(),
+					metaTrialEnd);
+			try {
+				Class<? extends I_MetaTrial> trialClazz = (Class<? extends I_MetaTrial>) Class.forName(metaTrial);
+				metaTrialClass = trialClazz;
+			} catch (ClassNotFoundException x) {
+				throw new IllegalArgumentException(x);
+			}
+		}
+		
+		int trialsStart = p.indexOf(TRIALS_XML_START);
+		int trialsEnd = p.indexOf(TRIALS_XML_END);
+		if (trialsStart != -1 && trialsEnd != -1) {
+			String trialsPart = p.substring(trialsStart, trialsEnd);
+			int trialIndex = trialsPart.indexOf(TRIAL_XML_START);
+			while (trialIndex != -1) {
+				int trialEnd = trialsPart.indexOf(TRIAL_XML_END, trialIndex);
+				String trial = trialsPart.substring(trialIndex + TRIAL_XML_START.length(),
+						trialEnd);
+				try {
+					Class<? extends I_Trial> trialClazz = (Class<? extends I_Trial>) Class.forName(trial);
+					trials.add(trialClazz);
+				} catch (ClassNotFoundException x) {
+					throw new IllegalArgumentException(x);
+				}
+				trialsPart = trialsPart.substring(trialEnd, trialsPart.length());
+				trialIndex = trialsPart.indexOf(TRIAL_XML_START);
+			}
+		}
+		
+		int testsStart = p.indexOf(TESTS_XML_START);
+		int testsEnd = p.indexOf(TESTS_XML_END);
+		if (testsStart != -1 && testsEnd != -1) {
+			String testsPart = p.substring(testsStart, testsEnd);
+			int testIndex = testsPart.indexOf(TEST_XML_START);
+			while (testIndex != -1) {
+				int testEnd = testsPart.indexOf(TEST_XML_END, testIndex);
+				String test = testsPart.substring(testIndex + TRIAL_XML_START.length(),
+						testEnd);
+				tests.add(test);
+				testsPart = testsPart.substring(testEnd, testsPart.length());
+				testIndex = testsPart.indexOf(TEST_XML_START);
+			}
+		}
 	}
 	
 	public List<Class<? extends I_Trial>> getTrials() {
@@ -115,18 +210,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 				configurator.configure(plugin);
 			}
 			return plugin;
-		} catch (NoSuchMethodException x) {
-			x.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+		} catch (NoSuchMethodException | 
+				InstantiationException |
+				IllegalAccessException |
+				IllegalArgumentException |
+				InvocationTargetException e) {
+			throw new IllegalArgumentException(e);
 		}
-		return null;
 	}
 	public void setCoveragePluginClass(Class<? extends I_CoveragePlugin> coverageRecorder) {
 		this.coveragePluginClass = coverageRecorder;
@@ -140,13 +230,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		minUniqueAssertions = minUniqueAssertions + p.getMinUniqueAssertions();
 		*/
 	}
-	public int getTrialThreadCount() {
-		if (trials.size() < trialThreads) {
-			return trials.size();
-		}
+	public I_ThreadCount getThreadCount() {
 		return trialThreads;
 	}
-	public void setTrialThreads(int p) {
+	public void setThreadCount(I_ThreadCount p) {
 		this.trialThreads = p;
 	}
 	public I_Tests4J_Reporter getReporter() {
@@ -197,7 +284,11 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public String toXmlString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(XML_START);
-		sb.append(trialThreads);
+		if (trialThreads != null) {
+			sb.append(THREAD_COUNT_XML_KEY);
+			sb.append(trialThreads.getClass().getName());
+			sb.append("\"");
+		}
 		if (coveragePluginClass != null) {
 			sb.append(COVERAGE_PLUGIN_XML_KEY);
 			sb.append(coveragePluginClass.getName());
@@ -208,6 +299,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		}
 
 		sb.append("\" >\n");
+		if (trialThreads != null) {
+			sb.append(trialThreads.toXml());
+			sb.append("\n");
+		}
 		if (trials.size() >= 1 || metaTrialClass != null) {
 			
 			sb.append("\t");
@@ -301,5 +396,14 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 	public void setMetaTrialClass(Class<? extends I_MetaTrial> metaTrialClass) {
 		this.metaTrialClass = metaTrialClass;
+	}
+
+	@Override
+	public int getTrialThreadCount() {
+		int threadCount = trialThreads.getThreadCount();
+		if (trials.size() < threadCount) {
+			threadCount = trials.size();
+		}
+		return threadCount;
 	}
 }

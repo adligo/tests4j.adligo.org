@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+
 public class TrialMetadata implements I_TrialMetadata {
 	private TrialMetadataMutant mutant;
 	private List<I_TestMetadata> tests;
@@ -66,5 +68,25 @@ public class TrialMetadata implements I_TrialMetadata {
 
 	public boolean equals(Object obj) {
 		return mutant.equals(obj);
+	}
+
+	public TrialTypeEnum getType() {
+		return mutant.getType();
+	}
+
+	public String getTestedClass() {
+		return mutant.getTestedClass();
+	}
+
+	public String getTestedPackage() {
+		return mutant.getTestedPackage();
+	}
+
+	public String getSystem() {
+		return mutant.getSystem();
+	}
+
+	public I_UseCase getUseCase() {
+		return mutant.getUseCase();
 	}
 }

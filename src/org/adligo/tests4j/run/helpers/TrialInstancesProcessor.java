@@ -161,13 +161,13 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 					// in the api, when it is passed into the api more than once
 					runTrialDescription(td);
 				}
-				//@diagram_sync on 5/26/2014 with Overview.seq
-				runResultMutant = notifier.checkDoneRunningNonMetaTrials();
-				if (runResultMutant != null) {
-					afterNonMetaTrials();
-				}
+				
 			}
-			
+			//@diagram_sync on 5/26/2014 with Overview.seq
+			runResultMutant = notifier.checkDoneRunningNonMetaTrials();
+			if (runResultMutant != null) {
+				afterNonMetaTrials();
+			}
 		} catch (RejectedExecutionException x) {
 			memory.getReporter().onError(x);
 		} catch (Exception x) {

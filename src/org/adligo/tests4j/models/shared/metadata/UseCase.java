@@ -1,4 +1,5 @@
-package org.adligo.tests4j.models.shared.results;
+package org.adligo.tests4j.models.shared.metadata;
+
 
 /**
  * @see I_UseCase
