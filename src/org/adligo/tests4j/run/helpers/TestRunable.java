@@ -24,9 +24,10 @@ I_TrialProcessorBindings {
 	private Method testMethod;
 	private I_AbstractTrial trial;
 	private I_TestFinishedListener listener;
-	private TestResult testResult;
 	private CopyOnWriteArrayList<Integer> assertionHashes = new CopyOnWriteArrayList<Integer>(); 
 	private I_Tests4J_Reporter reporter;
+	private TestResultMutant testResultMutant;
+	private boolean assertFailed = false;
 	
 	public TestRunable(I_Tests4J_Reporter pReporter) {
 		reporter = pReporter;
@@ -34,7 +35,7 @@ I_TrialProcessorBindings {
 	
 	@Override
 	public void run() {
-		TestResultMutant testResultMutant = new TestResultMutant();
+		testResultMutant = new TestResultMutant();
 		assertionHashes.clear();
 		
 		if (reporter.isLogEnabled(TestRunable.class)) {
@@ -45,9 +46,11 @@ I_TrialProcessorBindings {
 			
 			testResultMutant.setName(testMethod.getName());
 			
-			testResult = new TestResult(testResultMutant);
+			assertFailed = false;
 			testMethod.invoke(trial, new Object[] {});
-			testResultMutant.setPassed(true);
+			if (!assertFailed) {
+				testResultMutant.setPassed(true);
+			}
 		} catch (InvocationTargetException e) {
 			unexpected = e.getCause();
 		} catch (Exception x) {
@@ -99,10 +102,11 @@ I_TrialProcessorBindings {
 	}
 
 	public synchronized void assertFailed(I_TestFailure failure) {
-		TestResultMutant trm = new TestResultMutant(testResult);
-		trm.setFailure(failure);
-		flushAssertionHashes(trm);
-		listener.testFinished(new TestResult(trm));
+		testResultMutant.setFailure(failure);
+		flushAssertionHashes(testResultMutant);
+		TestResult tr = new TestResult(testResultMutant);
+		listener.testFinished(tr);
+		assertFailed = true;
 	}
 
 	private void flushAssertionHashes(TestResultMutant trm) {
@@ -113,7 +117,7 @@ I_TrialProcessorBindings {
 	}
 
 	public TestResult getTestResult() {
-		return testResult;
+		return new TestResult(testResultMutant);
 	}
 
 	@Override

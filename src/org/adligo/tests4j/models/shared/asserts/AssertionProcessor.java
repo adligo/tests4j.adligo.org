@@ -20,7 +20,8 @@ public class AssertionProcessor {
 				fm.setMessage(cmd.getFailureMessage());
 				fm.setLocationFailed(new AssertionFailureLocation());
 				fm.setData(cmd.getData());
-				listener.assertFailed(new TestFailure(fm));
+				TestFailure tf = new TestFailure(fm);
+				listener.assertFailed(tf);
 			}
 		}
 	}
@@ -36,7 +37,8 @@ public class AssertionProcessor {
 				fm.setMessage(cmd.getFailureMessage());
 				fm.setLocationFailed(new AssertionFailureLocation());
 				fm.setData(cmd.getData());
-				listener.assertFailed(new TestFailure(fm));
+				TestFailure tf = new TestFailure(fm);
+				listener.assertFailed(tf);
 			}
 		}
 	}

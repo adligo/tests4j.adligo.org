@@ -7,7 +7,9 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TrialDescriptionMessages;
 
 public class TrialTypeFinder {
-
+	private static final I_Tests4J_TrialDescriptionMessages MESSAGES = 
+			Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
+	
 	public static TrialTypeEnum getTypeInternal(Class<? extends I_AbstractTrial> trialClass) 
 	throws IllegalArgumentException {
 		TrialType type = trialClass.getAnnotation(TrialType.class);
@@ -22,13 +24,11 @@ public class TrialTypeFinder {
 				checking = checking.getSuperclass();
 			}
 		}
-		I_Tests4J_TrialDescriptionMessages messages = 
-				Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
 		
 		if (type == null) {
-			String resultFailureMessage = messages.getMissingTypeAnnotationPre() + 
+			String resultFailureMessage = MESSAGES.getMissingTypeAnnotationPre() + 
 						trialClass.getName() + 
-					messages.getMissingTypeAnnotationPost();
+					MESSAGES.getMissingTypeAnnotationPost();
 			throw new IllegalArgumentException(resultFailureMessage);
 		}
 		TrialTypeEnum typeEnum = type.type();

@@ -3,6 +3,8 @@ package org.adligo.tests4j.models.shared.system;
 import org.adligo.tests4j.models.shared.system.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.i18n.eclipse.I_EclipseErrors;
 import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TrialDescriptionMessages;
+import org.adligo.tests4j.models.shared.system.i18n.trials.asserts.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.models.shared.system.i18n.trials.asserts.I_Tests4J_AssertionResultMessages;
 
 public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	I_Tests4J_Constants delegate;
@@ -17,5 +19,15 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 
 	public I_EclipseErrors getEclipseErrors() {
 		return delegate.getEclipseErrors();
+	}
+
+	@Override
+	public I_Tests4J_AssertionInputMessages getAssertionInputMessages() {
+		return delegate.getAssertionInputMessages();
+	}
+
+	@Override
+	public I_Tests4J_AssertionResultMessages getAssertionResultMessages() {
+		return delegate.getAssertionResultMessages();
 	}
 }

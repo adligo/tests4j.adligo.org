@@ -16,6 +16,8 @@ import java.util.TreeSet;
 import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_CompareAssertionData;
+import org.adligo.tests4j.models.shared.asserts.ThrowableAssertCommand;
+import org.adligo.tests4j.models.shared.asserts.ThrownAssertionData;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.metadata.I_SourceInfo;
@@ -132,7 +134,7 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 				log("");
 			} else {
 				for (I_TrialResult trial: failedTrials) {
-					logTestFailure(trial);
+					logTrialFailure(trial);
 				}
 				log("\t\tTests: " + result.getTestsPassed() + "/" +
 						result.getTests());
@@ -209,8 +211,9 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 		return new BigDecimal(result.getCoveragePercentage()).round(new MathContext(2));
 	}
 
-	private void logTestFailure(I_TrialResult trial) {
+	private void logTrialFailure(I_TrialResult trial) {
 		log("" + trial + " failed!");
+		String trialName = trial.getName();
 		I_TrialFailure failure =  trial.getFailure();
 		if (failure != null) {
 			log("\t" + failure.getMessage());
@@ -222,27 +225,61 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 		List<I_TestResult> testResults = trial.getResults();
 		for (I_TestResult tr: testResults) {
 			if (!tr.isPassed() && !tr.isIgnored()) {
-				log("\t" + tr + " failed!");
+				String testName = tr.getName();
+				log("\t" + trialName + "."  + testName + " failed!");
 				I_TestFailure tf = tr.getFailure();
 				log("\t" + tf.getMessage());
 				Throwable t = tf.getLocationFailed();
 				I_AssertionData ad =  tf.getData();
-				if (ad instanceof I_CompareAssertionData) {
-					I_CompareAssertionData<?> cad = (I_CompareAssertionData<?>) ad;
-					log("\tExpected;");
-					log("\t" + cad.getExpected());
-					log("\tActual;");
-					log("\t" + cad.getActual());
-				} else if (ad instanceof ContainsAssertCommand) {
+				
+				if (ad instanceof ContainsAssertCommand) {
 					log("\tExpected;");
 					log("\t" + ad.getData(ContainsAssertCommand.VALUE));
-				}
+				} else if (ad instanceof ThrownAssertionData) {
+					logThrowableFailure((ThrownAssertionData) ad);
+				} else if (ad instanceof I_CompareAssertionData) {
+					logCompareFailure((I_CompareAssertionData<?>) ad);
+				} 
 				if (t == null) {
 					log("\tUnknown Location a Test4J error please try to reproduce and report it;");
 				} else {
 					logThrowable("\t",t);
 				}
 			}
+		}
+	}
+
+	private void logCompareFailure(I_CompareAssertionData<?> ad) {
+		log("\tExpected;");
+		Object expected = ad.getExpected();
+		if (expected != null) {
+			log("\t\tClass: " + expected.getClass());
+		}
+		log("\t\t" + expected);
+		log("\tActual;");
+		Object actual = ad.getActual();
+		if (actual != null) {
+			log("\t\tClass: " + actual.getClass());
+		}
+		log("\t\t" + actual);
+	}
+	
+	private void logThrowableFailure(ThrownAssertionData ad) {
+		Class<? extends Throwable> actualThrow = ad.getActualThrowable();
+		Class<? extends Throwable> expectedThrow = ad.getExpectedThrowable();
+		if (!expectedThrow.equals(actualThrow)) {
+			log("\tExpected;");
+			log("\t" + expectedThrow);
+			log("\tActual;");
+			log("\t" + actualThrow);
+		} else {
+			String expectedMessage = ad.getExpectedMessage();
+			String actualMessage = ad.getActualMessage();
+			log("\tThrowable classes matched: " + expectedThrow);
+			log("\tExpected;");
+			log("\t" + expectedMessage);
+			log("\tActual;");
+			log("\t" + actualMessage);
 		}
 	}
 

@@ -67,7 +67,10 @@ public class Tests4J_SocketMessage implements I_XML_IO {
 		}
 		int startLastIndex = startIndex + MESSAGE_START.length();
 		int versionEnd = xml.indexOf(ATTRIBUTE_END, startLastIndex);
-		
+		if (versionEnd == -1) {
+			throw new IllegalArgumentException(UNKNOWN_VERSION_ERROR_START + "null" + 
+					UNKNOWN_VERSION_ERROR_END);
+		}
 		version = xml.substring(startLastIndex, versionEnd);
 		if (!VERSION_1_0.equals(version)) {
 			throw new IllegalArgumentException(UNKNOWN_VERSION_ERROR_START + version + 

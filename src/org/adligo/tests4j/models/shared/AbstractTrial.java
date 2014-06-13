@@ -19,8 +19,8 @@ import org.adligo.tests4j.models.shared.asserts.BooleanAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.DoubleAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.I_BasicAssertCommand;
+import org.adligo.tests4j.models.shared.asserts.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.asserts.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.I_ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.IdenticalAssertCommand;
@@ -30,6 +30,9 @@ import org.adligo.tests4j.models.shared.asserts.ThrowableUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.system.i18n.trials.asserts.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.models.shared.system.i18n.trials.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 /**
@@ -38,6 +41,9 @@ import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
  *
  */
 public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
+	private static final I_Tests4J_AssertionResultMessages MESSAGES = 
+			Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+	
 	public static final String THE_COLLECTION_SHOULD_CONTAIN_THE_VALUE = "The collection should contain the value";
 	public static final String THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE = "The actual value should be greater than or equal to the expected value.";
 	public static final String THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE = "The first Byte should NOT be less than the second Byte.";
@@ -46,7 +52,6 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	private static final String GREATER_THAN_BYTE = "The first Byte should be greater than the second Byte.";
 	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM = "The two objects should not be uniform.";
 	public static final String THE_TWO_OBJECTS_SHOULD_BE_UNIFORM = "The two objects should be uniform.";
-	public static final String A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN = "A instance of the Throwable Class should have been thrown.";
 	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_THE_SAME = "The Two Objects should Not be the same.";
 	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_EQUAL = "The two objects should Not be Equal.";
 	public static final String THE_TWO_OBJECTS_SHOULD_BE_THE_SAME = "The two objects should be the same.";
@@ -239,23 +244,23 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	
 	@Override
-	public void assertThrown(I_AssertionData pData, I_Thrower pThrower) {
-		assertThrown(A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN, pData, pThrower);
+	public void assertThrown(I_ExpectedThrownData pData, I_Thrower pThrower) {
+		assertThrown(MESSAGES.getTheExpectedThrowableDataDidNotMatchTheActual(), pData, pThrower);
 	}
 
 	@Override
-	public void assertThrown(String pMessage, I_AssertionData pData, I_Thrower pThrower) {
+	public void assertThrown(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
 		evaluate(new ThrownAssertCommand(
 				AssertThrown, pMessage, pData), pThrower);
 	}
 	
 	@Override
-	public void assertThrownUniform(I_AssertionData pData, I_Thrower pThrower) {
-		assertThrownUniform(A_INSTANCE_OF_THE_THROWABLE_CLASS_SHOULD_HAVE_BEEN_THROWN, pData, pThrower);
+	public void assertThrownUniform(I_ExpectedThrownData pData, I_Thrower pThrower) {
+		assertThrownUniform(MESSAGES.getTheExpectedThrowableDataDidNotMatchTheActual(), pData, pThrower);
 	}
 
 	@Override
-	public void assertThrownUniform(String pMessage, I_AssertionData pData, I_Thrower pThrower) {
+	public void assertThrownUniform(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
 		evaluate(new ThrownAssertCommand(
 				AssertThrown, pMessage, pData), pThrower);
 	}
@@ -279,14 +284,14 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 
 	@Override
-	public void assertGreaterThanOrEquals(Double expected, Double actual) {
+	public void assertGreaterThanOrEquals(double expected, double actual) {
 		evaluate(new DoubleAssertCommand(
 				AssertGreaterThanOrEquals, THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE, 
 				new CompareAssertionData<Double>(expected, actual)));
 	}
 
 	@Override
-	public void assertGreaterThanOrEquals(String message, Double expected, Double actual) {
+	public void assertGreaterThanOrEquals(String message, double expected, double actual) {
 		evaluate(new DoubleAssertCommand(
 				AssertGreaterThanOrEquals, message, 
 				new CompareAssertionData<Double>(expected, actual)));
@@ -316,5 +321,45 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	@Override
 	public boolean isLogEnabled(Class<?> c) {
 		return reporter.isLogEnabled(c);
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(double p, float a) {
+		assertGreaterThanOrEquals(p, 0.0 + a);
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(String message, double p, float a) {
+		assertGreaterThanOrEquals(message, p, 0.0 + a);
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(double p, int a) {
+		assertGreaterThanOrEquals(p, 0.0 + a);
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(String message, double p, int a) {
+		assertGreaterThanOrEquals(message, p, 0.0 + a);
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(double p, long a) {
+		assertGreaterThanOrEquals(p, 0.0 + a);
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(String message, double p, long a) {
+		assertGreaterThanOrEquals(message, p, 0.0 + a);
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(double p, short a) {
+		assertGreaterThanOrEquals(p, 0.0 + a);
+	}
+
+	@Override
+	public void assertGreaterThanOrEquals(String message, double p, short a) {
+		assertGreaterThanOrEquals(message, p, 0.0 + a);
 	}
 }

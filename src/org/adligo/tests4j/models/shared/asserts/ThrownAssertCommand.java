@@ -1,20 +1,21 @@
 package org.adligo.tests4j.models.shared.asserts;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompare;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 
 public class ThrownAssertCommand extends AbstractAssertCommand 
 	implements I_Immutable, I_ThrownAssertCommand {
+	/**
+	 * should only show up to a developer of tests4j
+	 */
 	public static final String THROWABLE_ASSERTION_COMMAND_REQUIRES_DATA = "ThrowableAssertionCommand requires data.";
+	/**
+	 * should only show up to a developer of tests4j
+	 */
 	private static final String BAD_TYPE = "ThrowableAssertionCommand requires a type in AssertType.THROWN_TYPES.";
-	private static final String CAUGHT = "caught";
 	
-	private I_AssertionData data;
+	private I_ExpectedThrownData data;
 	private AssertType type;
 	private Throwable caught;
 	private I_LineTextCompareResult lineTextResult;
@@ -27,7 +28,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	}
 	
 	public ThrownAssertCommand(I_AssertType pType, 
-			String pFailureMessage, I_AssertionData pData) {
+			String pFailureMessage, I_ExpectedThrownData pData) {
 		super(pType, pFailureMessage);
 		if (!AssertType.THROWN_TYPES.contains(pType)) {
 			throw new IllegalArgumentException(BAD_TYPE);
@@ -43,10 +44,9 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	@Override
 	public boolean evaluate(I_Thrower thrower) {
 		Class<? extends Throwable> throwableClazz = 
-				(Class<? extends Throwable>) 
-				data.getData(ThrownAssertionData.THROWABLE_CLASS);
+				data.getThrowableClass();
 		String expected_message = 
-				(String) data.getData(ThrownAssertionData.EXPECTED_MESSAGE);
+				data.getMessage();
 		
 		switch (type) {
 			case AssertThrown:
@@ -99,7 +99,16 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 
 	@Override
 	public I_AssertionData getData() {
-		return data;
+		ThrownAssertionDataMutant tadm = new ThrownAssertionDataMutant();
+		tadm.setExpectedMessage(data.getMessage());
+		tadm.setExpectedThrowable(data.getThrowableClass());
+		
+		//there may not have been a caught exception
+		if (caught != null) {
+			tadm.setActualThrowable(caught.getClass());
+			tadm.setActualMessage(caught.getMessage());
+		}
+		return new ThrownAssertionData(tadm);
 	}
 
 }

@@ -519,16 +519,20 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		}
 		ranAfterTrialTests = true;
 		
+		boolean passed = false;
 		try {
 			if (trial instanceof ApiTrial) {
 				((ApiTrial) trial).afterTrialTests(apiInfoMut);
 			}
+			passed = true;
+		} catch (AfterTrialTestsAssertionFailure x) {
+			//the test failed, in one of it's asserts
 		} catch (Exception x) {
 			onAfterTrialTestsMethodException(x, AFTER_API_TRIAL_TESTS_METHOD);
 		}
 		if (afterTrialTestsResultMutant == null) {
 			afterTrialTestsResultMutant = new TestResultMutant();
-			afterTrialTestsResultMutant.setPassed(true);
+			afterTrialTestsResultMutant.setPassed(passed);
 			flushAssertionHashes(afterTrialTestsResultMutant, afterTrialTestsAssertionHashes);
 			afterTrialTestsResultMutant.setName(AFTER_API_TRIAL_TESTS_METHOD);
 		}
@@ -569,16 +573,20 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		ranAfterTrialTests = true;
 		
 		trial.setBindings(this);
+		boolean passed = false;
 		try {
 			if (trial instanceof SourceFileTrial) {
 				((SourceFileTrial) trial).afterTrialTests(infoMut);
 			}
+			passed = true;
+		} catch (AfterTrialTestsAssertionFailure x) {
+			//the test failed, in one of it's asserts
 		} catch (Exception x) {
 			onAfterTrialTestsMethodException(x, AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD);
 		}
 		if (afterTrialTestsResultMutant == null) {
 			afterTrialTestsResultMutant = new TestResultMutant();
-			afterTrialTestsResultMutant.setPassed(true);
+			afterTrialTestsResultMutant.setPassed(passed);
 			flushAssertionHashes(afterTrialTestsResultMutant, afterTrialTestsAssertionHashes);
 			afterTrialTestsResultMutant.setName(AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD);
 		}
@@ -595,15 +603,19 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		
 		trial.setBindings(this);
 		runMetaTrialMethod = AFTER_METADATA_CALCULATED_METHOD;
+		boolean passed = false;
 		try {
 			I_TrialRunMetadata metadata = memory.takeMetaTrialData();
 			imt.afterMetadataCalculated(metadata);
+			passed = true;
+		} catch (MetaTrialAssertionFailure p) {
+			//an assertion failed
 		} catch (Exception x) {
 			onMetaTrialAfterMethodException(x, AFTER_METADATA_CALCULATED_METHOD);
 		}
 		if (metaTrialTestResultMutant == null) {
 			metaTrialTestResultMutant = new TestResultMutant();
-			metaTrialTestResultMutant.setPassed(true);
+			metaTrialTestResultMutant.setPassed(passed);
 			flushAssertionHashes(metaTrialTestResultMutant, metaTrialAssertionHashes);
 			metaTrialTestResultMutant.setName(AFTER_METADATA_CALCULATED_METHOD);
 		}
@@ -617,14 +629,18 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		
 		
 		runMetaTrialMethod = AFTER_NON_META_TRIALS_RUN_METHOD;
+		passed = false;
 		try {
 			imt.afterNonMetaTrialsRun(runResultMutant);
+			passed = true;
+		} catch (MetaTrialAssertionFailure p) {
+			//an assertion failed
 		} catch (Exception x) {
 			onMetaTrialAfterMethodException(x, AFTER_NON_META_TRIALS_RUN_METHOD);
 		}
 		if (metaTrialTestResultMutant == null) {
 			metaTrialTestResultMutant = new TestResultMutant();
-			metaTrialTestResultMutant.setPassed(true);
+			metaTrialTestResultMutant.setPassed(passed);
 			flushAssertionHashes(metaTrialTestResultMutant, metaTrialAssertionHashes);
 			metaTrialTestResultMutant.setName(AFTER_NON_META_TRIALS_RUN_METHOD);
 		}
@@ -686,7 +702,13 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		
 		try {
 			blocking.put(result);
-			blocking.notify();
+			if (p.isPassed()) {
+				blocking.notify();
+			} else {
+				synchronized (blocking) {
+					blocking.notify();
+				}
+			}
 			testResultFuture.cancel(false);
 		} catch (InterruptedException e) {
 			//do nothing
@@ -709,11 +731,13 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			metaTrialTestResultMutant.setFailure(failure);
 			metaTrialTestResultMutant.setName(runMetaTrialMethod);
 			flushAssertionHashes(metaTrialTestResultMutant,metaTrialAssertionHashes);
+			throw new MetaTrialAssertionFailure();
 		} else if (inAfterTrialTests) {
 			afterTrialTestsResultMutant = new TestResultMutant();
 			afterTrialTestsResultMutant.setFailure(failure);
 			afterTrialTestsResultMutant.setName(AFTER_TRIAL_TESTS);
 			flushAssertionHashes(afterTrialTestsResultMutant,afterTrialTestsAssertionHashes);
+			throw new AfterTrialTestsAssertionFailure();
 		} 
 	}
 

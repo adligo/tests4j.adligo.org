@@ -1,9 +1,11 @@
 package org.adligo.tests4j.models.shared.results;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.common.IsEmpty;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 
@@ -23,8 +25,8 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	private String trialName;
 	
 	private TrialTypeEnum testType;
-	private List<TestResultMutant> results = 
-			new ArrayList<TestResultMutant> ();
+	private Map<String, TestResultMutant> results = 
+			new HashMap<String,TestResultMutant> ();
 	private boolean ignored;
 	//skip packageCoverage because there is no PackageCoverageMutant yet
 	//skip classCoverage because there is no ClassCoverageMutant yet
@@ -88,7 +90,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	@Override
 	public List<I_TestResult> getResults() {
 		List<I_TestResult> toRet = new ArrayList<I_TestResult>();
-		toRet.addAll(results);
+		toRet.addAll(results.values());
 		return toRet;
 	}
 	/* (non-Javadoc)
@@ -121,11 +123,13 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	public void setResults(List<I_TestResult> p) {
 		results.clear();
 		for (I_TestResult result: p) {
-			results.add(new TestResultMutant(result));
+			String name = result.getName();
+			results.put(name, new TestResultMutant(result));
 		}
 	}
 	public void addResult(I_TestResult p) {
-		results.add(new TestResultMutant(p));
+		String name = p.getName();
+		results.put(name, new TestResultMutant(p));
 	}
 	public void setIgnored(boolean ignored) {
 		this.ignored = ignored;
@@ -187,7 +191,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		if (results.size() == 0) {
 			return false;
 		}
-		for (I_TestResult result: results) {
+		for (I_TestResult result: results.values()) {
 			if (!result.isIgnored()) {
 				if (!result.isPassed()) {
 					return false;
@@ -206,10 +210,10 @@ public class BaseTrialResultMutant implements I_TrialResult {
 
 	@Override
 	public int getTestFailureCount() {
-		return getTestFailureCount(results);
+		return getTestFailureCount(results.values());
 	}
 	
-	public static int getTestFailureCount(List<? extends I_TestResult> p) {
+	public static int getTestFailureCount(Collection<? extends I_TestResult> p) {
 		int toRet = 0;
 		for (I_TestResult tr: p) {
 			if (!tr.isPassed()) {
@@ -221,10 +225,10 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	
 	@Override
 	public int getAssertionCount() {
-		return getAssertionCount(results);
+		return getAssertionCount(results.values());
 	}
 	
-	public static int getAssertionCount(List<? extends I_TestResult> p) {
+	public static int getAssertionCount(Collection<? extends I_TestResult> p) {
 		int toRet = 0;
 		for (I_TestResult result: p) {
 			toRet = toRet + result.getAssertionCount();
@@ -234,10 +238,10 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	
 	@Override
 	public int getUniqueAssertionCount() {
-		return getUniqueAssertionCount(results);
+		return getUniqueAssertionCount(results.values());
 	}
 	
-	public static int getUniqueAssertionCount(List<? extends I_TestResult> p) {
+	public static int getUniqueAssertionCount(Collection<? extends I_TestResult> p) {
 		int toRet = 0;
 		for (I_TestResult result: p) {
 			toRet = toRet + result.getUniqueAssertionCount();

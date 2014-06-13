@@ -14,8 +14,16 @@ public interface I_Asserts {
 	public void assertFalse(boolean p);
 	public void assertFalse(String message, boolean p);	
 	
-	public void assertGreaterThanOrEquals(Double p, Double a);
-	public void assertGreaterThanOrEquals(String message, Double p, Double a);	
+	public void assertGreaterThanOrEquals(double p, double a);
+	public void assertGreaterThanOrEquals(String message, double p, double a);	
+	public void assertGreaterThanOrEquals(double p, float a);
+	public void assertGreaterThanOrEquals(String message, double p, float a);	
+	public void assertGreaterThanOrEquals(double p, int a);
+	public void assertGreaterThanOrEquals(String message, double p, int a);	
+	public void assertGreaterThanOrEquals(double p, long a);
+	public void assertGreaterThanOrEquals(String message, double p, long a);	
+	public void assertGreaterThanOrEquals(double p, short a);
+	public void assertGreaterThanOrEquals(String message, double p, short a);	
 	
 	public void assertNull(Object p);
 	public void assertNull(String message, Object p);
@@ -41,10 +49,10 @@ public interface I_Asserts {
 	public void assertTrue(String message, boolean p);
 
 	
-	public void assertThrown(I_AssertionData p, I_Thrower thrower);
-	public void assertThrown(String message, I_AssertionData p, I_Thrower thrower);	
-	public void assertThrownUniform(I_AssertionData p, I_Thrower thrower);
-	public void assertThrownUniform(String message, I_AssertionData p, I_Thrower thrower);	
+	public void assertThrown(I_ExpectedThrownData p, I_Thrower thrower);
+	public void assertThrown(String message, I_ExpectedThrownData p, I_Thrower thrower);	
+	public void assertThrownUniform(I_ExpectedThrownData p, I_Thrower thrower);
+	public void assertThrownUniform(String message, I_ExpectedThrownData p, I_Thrower thrower);	
 	
 	public void assertUniform(String p, String a);
 	public void assertUniform(String message, String p, String a);	
