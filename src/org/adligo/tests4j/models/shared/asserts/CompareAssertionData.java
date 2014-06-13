@@ -76,19 +76,21 @@ public class CompareAssertionData<T> implements I_Immutable, I_CompareAssertionD
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CompareAssertionData other = (CompareAssertionData) obj;
-		if (actual == null) {
-			if (other.actual != null)
+		try {
+			I_CompareAssertionData<T> other = (I_CompareAssertionData<T>) obj;
+			if (actual == null) {
+				if (other.getActual() != null)
+					return false;
+			} else if (!actual.equals(other.getActual()))
 				return false;
-		} else if (!actual.equals(other.actual))
-			return false;
-		if (expected == null) {
-			if (other.expected != null)
+			if (expected == null) {
+				if (other.getExpected() != null)
+					return false;
+			} else if (!expected.equals(other.getExpected()))
 				return false;
-		} else if (!expected.equals(other.expected))
+		} catch (ClassCastException x) {
 			return false;
+		}
 		return true;
 	}
 

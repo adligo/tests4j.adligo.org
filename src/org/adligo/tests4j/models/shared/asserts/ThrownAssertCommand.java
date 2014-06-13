@@ -111,4 +111,16 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		return new ThrownAssertionData(tadm);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((caught == null) ? 0 : caught.hashCode());
+		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result
+				+ ((lineTextResult == null) ? 0 : lineTextResult.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
 }
