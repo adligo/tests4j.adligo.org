@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -137,11 +138,13 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		//@diagram Overview.seq sync on 5/1/2014 'loop theadPoolSize'
 		for (int i = 0; i < threads; i++) {
 			TrialInstancesProcessor tip = new TrialInstancesProcessor(memory, notifier, reporter); 
-			if (!runService.isShutdown()) {
-				//I am getting a java.util.concurrent.RejectedExecutionException sometimes here
+			try {
 				Future<?> future = runService.submit(tip);
 				threadManager.addTrialFuture(future);
 				memory.addTrialInstancesProcessors(tip);
+			} catch (RejectedExecutionException x) {
+				//do nothing, not sure why this exception is happening for me
+				// it must have to do with shutdown, but it happens intermittently.
 			}
 		}
 		

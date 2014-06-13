@@ -23,6 +23,7 @@ import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.metadata.I_SourceInfo;
 import org.adligo.tests4j.models.shared.metadata.I_TrialMetadata;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.metadata.RelevantClassesWithTrialsCalculator;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
@@ -110,11 +111,18 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 			log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds.");
 			DecimalFormat formatter = new DecimalFormat("###.##");
 			
-			double pctD = calculateRelevantSourceFilesWithOutTrials();
+			RelevantClassesWithTrialsCalculator calc = new RelevantClassesWithTrialsCalculator(metadata);
+			
+			double pctD = calc.getPct();
 			
 			log("\t\t" + formatter.format(pctD) + 
 					"% of relevant classes have corresponding trials.");
-		
+			if (listRelevantClassesWithoutTrials) {
+				Set<String> classes = calc.getClassesWithOutTrials();
+				for (String clazz: classes) {
+					log("\t\t" + clazz);
+				}
+			}
 			BigDecimal pct = logCoverage(result,  formatter );
 			
 			
@@ -153,40 +161,7 @@ public class ConsoleReporter implements I_Tests4J_Reporter {
 		}
 	}
 
-	private double calculateRelevantSourceFilesWithOutTrials() {
-		List<? extends I_TrialMetadata> trialMetas =  metadata.getAllTrialMetadata();
-		Map<String,I_TrialMetadata> relevantClassesToTrials = new HashMap<String, I_TrialMetadata>();
-		for (I_TrialMetadata tm: trialMetas) {
-			TrialTypeEnum type =  tm.getType();
-			if (type == TrialTypeEnum.SourceFileTrial) {
-				relevantClassesToTrials.put(tm.getTestedClass(), tm);
-			}
-		}
-		Collection<String> allClasses = metadata.getAllSourceInfo();
-		Set<String> classesWithOutTrials = new TreeSet<String>();
-		
-		double allRelevantClasses = 0;
-		for (String clazzName: allClasses) {
-			I_SourceInfo si = metadata.getSourceInfo(clazzName);
-			if (!si.hasInterface()) {
-				allRelevantClasses++;
-				if (!relevantClassesToTrials.containsKey(clazzName)) {
-					classesWithOutTrials.add(clazzName);
-				}
-			}
-		}
-		if (listRelevantClassesWithoutTrials) {
-			if (classesWithOutTrials.size() >= 1) {
-				log("\t\tThe following relevant classes do NOT have trials.");
-				for (String clazzName: classesWithOutTrials) {
-					log("\t\t\t" + clazzName);
-				}
-			}
-		}
-		double sourceFileTrials = relevantClassesToTrials.size();
-		double pct = 100 * (sourceFileTrials/allRelevantClasses);
-		return pct;
-	}
+	
 
 	private BigDecimal logCoverage(I_TrialRunResult result, DecimalFormat formatter) {
 		List<I_PackageCoverage> coverage = result.getCoverage();
