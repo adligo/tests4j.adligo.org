@@ -68,6 +68,7 @@ public class Tests4J_NotificationManager {
 	private AtomicInteger trials = new AtomicInteger();
 	private AtomicInteger trialClassDefFailures = new AtomicInteger();
 	private Set<String> trialPackageNames = new CopyOnWriteArraySet<String>();
+	private Set<String> passingTrialNames = new CopyOnWriteArraySet<String>();
 	private AtomicBoolean running = new AtomicBoolean(true);
 	private volatile I_TrialRunMetadata metadata = null;
 	
@@ -360,12 +361,20 @@ public class Tests4J_NotificationManager {
 		testFailureCount.addAndGet(result.getTestFailureCount());
 		if (!result.isPassed()) {
 			trialFailures.addAndGet(1);
+		} else {
+			String name = result.getName();
+			int bracketIndex = name.indexOf("[");
+			if (bracketIndex != -1) {
+				name = name .substring(0, bracketIndex);
+			}
+			passingTrialNames.add(name);
 		}
 		trials.addAndGet(1);
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("trialFinished " + result.getName() + " " + trials.get() + 
 					" trials completed " + testCount.get() + " tests completed.");
 		}
+		
 	}
 
 	
@@ -437,6 +446,7 @@ public class Tests4J_NotificationManager {
 		runResult.setTests(testCount.get());
 		runResult.setTrialFailures(trialFailures.get());
 		runResult.setTrials(trials.get());
+		runResult.setPassingTrials(passingTrialNames);
 		
 		stopRecordingTrialsRun(runResult);
 		
@@ -484,6 +494,7 @@ public class Tests4J_NotificationManager {
 			}
 			runResult.setCoverage(toAdd);
 		}
+		runResult.setPassingTrials(passingTrialNames);
 	}
 	
 	public synchronized void onDescibeTrialError() {

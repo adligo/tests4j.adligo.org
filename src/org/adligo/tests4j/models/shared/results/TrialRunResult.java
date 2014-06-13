@@ -3,6 +3,7 @@ package org.adligo.tests4j.models.shared.results;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 
@@ -76,6 +77,10 @@ public class TrialRunResult implements I_TrialRunResult {
 
 	public double getCoveragePercentage() {
 		return mutant.getCoveragePercentage();
+	}
+
+	public Set<String> getPassingTrials() {
+		return Collections.unmodifiableSet(mutant.getPassingTrials());
 	}
 
 }

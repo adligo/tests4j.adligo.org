@@ -3,11 +3,9 @@ package org.adligo.tests4j.models.shared.results;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.adligo.tests4j.models.shared.coverage.I_CoverageUnits;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
@@ -24,6 +22,7 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 	private long testFailures;
 	private long asserts;
 	private long uniqueAsserts;
+	private Set<String> passingTrials = new HashSet<String>();
 	
 	public TrialRunResultMutant() {}
 	
@@ -42,6 +41,7 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		
 		asserts = p.getAsserts();
 		uniqueAsserts = p.getUniqueAsserts();
+		passingTrials.addAll(p.getPassingTrials());
 	}
 
 	public long getStartTime() {
@@ -195,5 +195,18 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		}
 		double pct = covered_cus/cus * 100;
 		return new BigDecimal(pct).round(new MathContext(2)).doubleValue();
+	}
+
+	public Set<String> getPassingTrials() {
+		return passingTrials;
+	}
+
+	public void setPassingTrials(Set<String> p) {
+		passingTrials.clear();
+		passingTrials.addAll(p);
+	}
+	
+	public void addPassingTrial(String p) {
+		passingTrials.add(p);
 	}
 }

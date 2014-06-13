@@ -30,7 +30,7 @@ public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 
 	
 	@Override
-	public void afterMetadataCalculated(I_TrialRunMetadata pMetadata) {
+	public void afterMetadataCalculated(I_TrialRunMetadata pMetadata) throws Exception {
 		calledTestMetadata = true;
 		RelevantClassesWithTrialsCalculator calc = new RelevantClassesWithTrialsCalculator(pMetadata);
 		assertGreaterThanOrEquals(minPercentSourceFileClassesWithTrials, calc.getPct());
@@ -39,7 +39,7 @@ public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 	
 	
 	@Override
-	public void afterNonMetaTrialsRun(I_TrialRunResult results) {
+	public void afterNonMetaTrialsRun(I_TrialRunResult results) throws Exception {
 		calledTestResults = true;
 		//allow to run with out coverage plugin,
 		//you may want to require this for your project.

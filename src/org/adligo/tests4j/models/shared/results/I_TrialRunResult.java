@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared.results;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 
@@ -110,6 +111,14 @@ public interface I_TrialRunResult {
 	 */
 	public long getUniqueAsserts();
 	
+	/**
+	 * 
+	 * @return the names of the passing trials,
+	 * so we can make sure all trials were ran for
+	 * a specific package.
+	 * 
+	 */
+	public Set<String> getPassingTrials();
 
 
 }

@@ -11,6 +11,13 @@ public class StringMethods {
 		return false;
 	}
 	
+	/**
+	 * Throws a IllegalArgumentException
+	 * when the parameter p isEmpty(p); 
+	 * 
+	 * @param p
+	 * @param message
+	 */
 	public static void isEmpty(String p, String message) {
 		if (isEmpty(p)) {
 			throw new IllegalArgumentException(message);

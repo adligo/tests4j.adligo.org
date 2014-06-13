@@ -369,7 +369,7 @@ public class TrialDescription implements I_TrialDescription {
 	public String getPackageName() {
 		if (packageScope == null) {
 			if (sourceFileScope != null) {
-				Class<?> claz = sourceFileScope.getClass();
+				Class<?> claz = sourceFileScope.sourceClass();
 				if (claz != null) {
 					Package pkg = claz.getPackage();
 					if (pkg != null) {

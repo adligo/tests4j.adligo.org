@@ -1,6 +1,8 @@
 package org.adligo.tests4j.models.shared.common;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * for GWT bridge Windows, Unix
@@ -8,20 +10,23 @@ import java.util.Collections;
  *
  */
 public class LineSeperator {
-	private static String lineSeperator;
-	private static String callingClass = "org.adligo.tests4j.run.Tests4J";
+	private static String LINE_SEPERATOR;
+	private static List<String> CALLING_CLASSES = getCallingClasses();
+	
+	private static List<String> getCallingClasses() {
+		List<String> toRet = new ArrayList<String>();
+		toRet.add("org.adligo.tests4j.run.Tests4J");
+		toRet.add("org.adligo.tests4j_tests.models.shared.common.LineSeperatorTrial");
+		return Collections.unmodifiableList(toRet);
+	}
 			
 	public static void setLineSeperator(String p) {
-		new MethodBlocker(LineSeperator.class, "setLineSeperator", 
-				Collections.singletonList(callingClass));
-		lineSeperator = p;
+		new MethodBlocker(LineSeperator.class, "setLineSeperator", CALLING_CLASSES);
+		LINE_SEPERATOR = p;
 	}
 	
 	public static String getLineSeperator() {
-		return lineSeperator;
+		return LINE_SEPERATOR;
 	}
 	
-	protected static void setAllowedCallingClass(String p) {
-		callingClass = p;
-	}
 }

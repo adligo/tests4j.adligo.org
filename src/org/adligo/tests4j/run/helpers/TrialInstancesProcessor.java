@@ -565,7 +565,9 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		if (trialCoverageRecorder != null) {
 			coverage = trialCoverageRecorder.endRecording();
 			I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
-			infoMut.setCoverage(cover);
+			if (cover != null) {
+				infoMut.setCoverage(cover);
+			}
 		}
 		infoMut.setAssertions(trialResultMutant.getAssertionCount());
 		infoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
@@ -659,7 +661,12 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		metaTrialTestResultMutant.setName(method);
 		TestFailureMutant tfm = new TestFailureMutant();
 		tfm.setException(x);
-		tfm.setMessage(x.getMessage());
+		String message = x.getMessage();
+		if (StringMethods.isEmpty(message)) {
+			tfm.setMessage("Unknown exception message in onMetaTrialAfterMethodException.");
+		} else {
+			tfm.setMessage(x.getMessage());
+		}
 		metaTrialTestResultMutant.setFailure(tfm);
 	}
 	
