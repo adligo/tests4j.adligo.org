@@ -44,22 +44,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	private static final I_Tests4J_AssertionResultMessages MESSAGES = 
 			Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
 	
-	public static final String THE_COLLECTION_SHOULD_CONTAIN_THE_VALUE = "The collection should contain the value";
-	public static final String THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE = "The actual value should be greater than or equal to the expected value.";
-	public static final String THE_FIRST_BYTE_SHOULD_NOT_BE_LESS_THAN_THE_SECOND_BYTE = "The first Byte should NOT be less than the second Byte.";
-	public static final String NOT_GREATER_THAN_BYTE = "The first byte should NOT be greater than the last byte";
-	public static final String THE_EXPECTED_BYTE_SHOULD_BE_LESS_THAN_THE_ACTUAL_BYTE = "The first Byte should be less than the second byte";
-	private static final String GREATER_THAN_BYTE = "The first Byte should be greater than the second Byte.";
-	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM = "The two objects should not be uniform.";
-	public static final String THE_TWO_OBJECTS_SHOULD_BE_UNIFORM = "The two objects should be uniform.";
-	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_THE_SAME = "The Two Objects should Not be the same.";
-	public static final String THE_TWO_OBJECTS_SHOULD_NOT_BE_EQUAL = "The two objects should Not be Equal.";
-	public static final String THE_TWO_OBJECTS_SHOULD_BE_THE_SAME = "The two objects should be the same.";
-	public static final String THESE_OBJECT_SHOULD_EQUALS = "These object should equals.";
-	public static final String THE_VALUE_SHOULD_NOT_BE_NULL = "The value should not be null.";
-	public static final String THE_VALUE_SHOULD_BE_NULL = "The value should be null.";
-	public static final String THE_VALUE_SHOULD_BE_TRUE = "The value should be true.";
-	public static final String THE_VALUE_SHOULD_BE_FALSE = "The value should be false.";
+
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
 	private I_AssertListener listener;
@@ -94,83 +79,67 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertEquals(Object p, Object a) {
-		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
+		assertEquals(MESSAGES.getTheTwoObjectsShouldBeEqual(), p, a);
 	}
 
 	@Override
 	public void assertEquals(String message, Object p, Object a) {
 		evaluate(new IdenticalAssertCommand(
-				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
+				AssertEquals, message, 
 				new CompareAssertionData<Object>(p, a)));
 	}
 	
 	
 	@Override
 	public void assertEquals(Throwable p, Throwable a) {
-		assertEquals(THESE_OBJECT_SHOULD_EQUALS, p, a);
+		assertEquals(MESSAGES.getTheTwoObjectsShouldBeEqual(), p, a);
 	}
 
 	@Override
 	public void assertEquals(String message, Throwable p, Throwable a) {
 		evaluate(new ThrowableAssertCommand(
-				AssertEquals, THESE_OBJECT_SHOULD_EQUALS, 
+				AssertEquals, message, 
 				new CompareAssertionData<Throwable>(p, a)));
 	}
 	
 	@Override
 	public void assertTrue(boolean p) {
-		assertTrue(THE_VALUE_SHOULD_BE_TRUE, p);
+		assertTrue(MESSAGES.getTheValueShouldBeTrue(), p);
 	}
 
 	@Override
 	public void assertTrue(String message, boolean p) {
-		if (IsEmpty.isEmpty(message)) {
-			evaluate(new BooleanAssertCommand(AssertTrue, THE_VALUE_SHOULD_BE_TRUE, p));
-		} else {
-			evaluate(new BooleanAssertCommand(AssertTrue, message, p));
-		}
+		evaluate(new BooleanAssertCommand(AssertTrue, message, p));
 	}
 
 	@Override
 	public void assertFalse(boolean p) {
-		assertFalse(THE_VALUE_SHOULD_BE_FALSE, p);
+		assertFalse(MESSAGES.getTheValueShouldBeFalse(), p);
 	}
 
 	@Override
 	public void assertFalse(String message, boolean p) {
-		if (IsEmpty.isEmpty(message)) {
-			evaluate(new BooleanAssertCommand(AssertFalse, THE_VALUE_SHOULD_BE_FALSE, p));
-		} else {
-			evaluate(new BooleanAssertCommand(AssertFalse, message, p));
-		}
+		evaluate(new BooleanAssertCommand(AssertFalse, message, p));
 	}
 	
 	@Override
 	public void assertNull(Object p) {
-		assertNull(THE_VALUE_SHOULD_BE_NULL, p);
+		assertNull(MESSAGES.getTheValueShouldBeNull(), p);
 	}
 
 	@Override
 	public void assertNull(String message, Object p) {
-		if (IsEmpty.isEmpty(message)) {
-			evaluate(new BooleanAssertCommand(AssertNull, THE_VALUE_SHOULD_BE_NULL, p));
-		} else {
-			evaluate(new BooleanAssertCommand(AssertNull, message, p));
-		}
+		evaluate(new BooleanAssertCommand(AssertNull, message, p));
 	}
 
 	@Override
 	public void assertNotNull(Object p) {
-		assertNotNull(THE_VALUE_SHOULD_NOT_BE_NULL, p);
+		assertNotNull(MESSAGES.getTheValueShould_NOT_BeNull(), p);
 	}
 
 	@Override
 	public void assertNotNull(String message, Object p) {
-		if (IsEmpty.isEmpty(message)) {
-			evaluate(new BooleanAssertCommand(AssertNotNull, THE_VALUE_SHOULD_NOT_BE_NULL, p));
-		} else {
-			evaluate(new BooleanAssertCommand(AssertNotNull, message, p));
-		}
+		evaluate(new BooleanAssertCommand(AssertNotNull, message, p));
 	}
 
 
@@ -185,7 +154,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertNotEquals(Object p, Object a) {
-		assertNotEquals(THE_TWO_OBJECTS_SHOULD_NOT_BE_EQUAL,p, a);
+		assertNotEquals(MESSAGES.getTheTwoObjectsShould_NOT_BeEqual(),p, a);
 	}
 
 	@Override
@@ -197,7 +166,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertSame(Object p, Object a) {
-		assertSame(THE_TWO_OBJECTS_SHOULD_BE_THE_SAME, p,  a);
+		assertSame(MESSAGES.getTheTwoObjectsShouldBeTheSame(), p,  a);
 	}
 
 	@Override
@@ -209,7 +178,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertNotUniform(String p, String a) {
-		assertNotUniform(THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM, p, a);
+		assertNotUniform(MESSAGES.getTheTwoObjectsShould_NOT_BeUniform(), p, a);
 	}
 	
 	@Override
@@ -221,7 +190,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertNotUniform(Throwable p, Throwable a) {
-		assertNotUniform(THE_TWO_OBJECTS_SHOULD_NOT_BE_UNIFORM, p, a);
+		assertNotUniform(MESSAGES.getTheTwoObjectsShould_NOT_BeUniform(), p, a);
 	}
 	
 	@Override
@@ -233,7 +202,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 				
 	@Override
 	public void assertNotSame(Object p, Object a) {
-		assertSame(THE_TWO_OBJECTS_SHOULD_NOT_BE_THE_SAME, p,  a);
+		assertSame(MESSAGES.getTheTwoObjectsShould_NOT_BeTheSame(), p,  a);
 	}
 
 	@Override
@@ -266,7 +235,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	
 	public void assertUniform(String p, String a) {
-		assertUniform(THE_TWO_OBJECTS_SHOULD_BE_UNIFORM, p, a);
+		assertUniform(MESSAGES.getTheTwoObjectsShouldBeUniform(), p, a);
 	}
 	public void assertUniform(String message, String p, String a) {
 		evaluate(new StringUniformAssertCommand(
@@ -275,7 +244,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	
 	public void assertUniform(Throwable p, Throwable a) {
-		assertUniform(THE_TWO_OBJECTS_SHOULD_BE_UNIFORM, p, a);
+		assertUniform(MESSAGES.getTheTwoObjectsShouldBeUniform(), p, a);
 	}
 	public void assertUniform(String message, Throwable p, Throwable a) {
 		evaluate(new ThrowableUniformAssertCommand(
@@ -286,7 +255,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	@Override
 	public void assertGreaterThanOrEquals(double expected, double actual) {
 		evaluate(new DoubleAssertCommand(
-				AssertGreaterThanOrEquals, THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE, 
+				AssertGreaterThanOrEquals, MESSAGES.getTheActualShouldBeGreaterThanOrEqualToTheExpected(), 
 				new CompareAssertionData<Double>(expected, actual)));
 	}
 
@@ -300,7 +269,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	@Override
 	public void assertContains(Collection<?> p, Object a) {
 		evaluate(new ContainsAssertCommand(
-				THE_COLLECTION_SHOULD_CONTAIN_THE_VALUE, p, a));
+				MESSAGES.getTheCollectionShouldContainTheValue(), p, a));
 	}
 
 	@Override

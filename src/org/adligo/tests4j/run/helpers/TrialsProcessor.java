@@ -137,9 +137,12 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		//@diagram Overview.seq sync on 5/1/2014 'loop theadPoolSize'
 		for (int i = 0; i < threads; i++) {
 			TrialInstancesProcessor tip = new TrialInstancesProcessor(memory, notifier, reporter); 
-			Future<?> future = runService.submit(tip);
-			threadManager.addTrialFuture(future);
-			memory.addTrialInstancesProcessors(tip);
+			if (!runService.isShutdown()) {
+				//I am getting a java.util.concurrent.RejectedExecutionException sometimes here
+				Future<?> future = runService.submit(tip);
+				threadManager.addTrialFuture(future);
+				memory.addTrialInstancesProcessors(tip);
+			}
 		}
 		
 		Collection<I_Tests4J_RemoteInfo> remotes = params.getRemoteInfo();
