@@ -79,7 +79,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertEquals(Object p, Object a) {
-		assertEquals(MESSAGES.getTheTwoObjectsShouldBeEqual(), p, a);
+		assertEquals(MESSAGES.getTheObjectsShouldBeEqual(), p, a);
 	}
 
 	@Override
@@ -92,7 +92,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertEquals(Throwable p, Throwable a) {
-		assertEquals(MESSAGES.getTheTwoObjectsShouldBeEqual(), p, a);
+		assertEquals(MESSAGES.getTheObjectsShouldBeEqual(), p, a);
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertNotEquals(Object p, Object a) {
-		assertNotEquals(MESSAGES.getTheTwoObjectsShould_NOT_BeEqual(),p, a);
+		assertNotEquals(MESSAGES.getTheObjectsShould_NOT_BeEqual(),p, a);
 	}
 
 	@Override
@@ -166,7 +166,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertSame(Object p, Object a) {
-		assertSame(MESSAGES.getTheTwoObjectsShouldBeTheSame(), p,  a);
+		assertSame(MESSAGES.getTheObjectsShouldBeTheSame(), p,  a);
 	}
 
 	@Override
@@ -178,7 +178,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertNotUniform(String p, String a) {
-		assertNotUniform(MESSAGES.getTheTwoObjectsShould_NOT_BeUniform(), p, a);
+		assertNotUniform(MESSAGES.getTheObjectsShould_NOT_BeUniform(), p, a);
 	}
 	
 	@Override
@@ -190,7 +190,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertNotUniform(Throwable p, Throwable a) {
-		assertNotUniform(MESSAGES.getTheTwoObjectsShould_NOT_BeUniform(), p, a);
+		assertNotUniform(MESSAGES.getTheObjectsShould_NOT_BeUniform(), p, a);
 	}
 	
 	@Override
@@ -202,7 +202,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 				
 	@Override
 	public void assertNotSame(Object p, Object a) {
-		assertSame(MESSAGES.getTheTwoObjectsShould_NOT_BeTheSame(), p,  a);
+		assertSame(MESSAGES.getTheObjectsShould_NOT_BeTheSame(), p,  a);
 	}
 
 	@Override
@@ -235,7 +235,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	
 	public void assertUniform(String p, String a) {
-		assertUniform(MESSAGES.getTheTwoObjectsShouldBeUniform(), p, a);
+		assertUniform(MESSAGES.getTheObjectsShouldBeUniform(), p, a);
 	}
 	public void assertUniform(String message, String p, String a) {
 		evaluate(new StringUniformAssertCommand(
@@ -244,7 +244,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	
 	public void assertUniform(Throwable p, Throwable a) {
-		assertUniform(MESSAGES.getTheTwoObjectsShouldBeUniform(), p, a);
+		assertUniform(MESSAGES.getTheObjectsShouldBeUniform(), p, a);
 	}
 	public void assertUniform(String message, Throwable p, Throwable a) {
 		evaluate(new ThrowableUniformAssertCommand(
