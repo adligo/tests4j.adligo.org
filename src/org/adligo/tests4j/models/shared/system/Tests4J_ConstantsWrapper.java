@@ -30,4 +30,17 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	public I_Tests4J_AssertionResultMessages getAssertionResultMessages() {
 		return delegate.getAssertionResultMessages();
 	}
+
+	public String getTheMethodCanOnlyBeCalledBy_PartOne() {
+		return delegate.getTheMethodCanOnlyBeCalledBy_PartOne();
+	}
+
+	public String getTheMethodCanOnlyBeCalledBy_PartTwo() {
+		return delegate.getTheMethodCanOnlyBeCalledBy_PartTwo();
+	}
+
+	public String getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames() {
+		return delegate
+				.getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames();
+	}
 }

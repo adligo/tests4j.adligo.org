@@ -9,7 +9,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.adligo.tests4j.models.shared.common.IsEmpty;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
@@ -73,7 +73,7 @@ public class Tests4J_RemoteRunner implements Runnable {
 
 	void acceptMessage() throws IOException {
 		String content = reader.read();
-		if (!IsEmpty.isEmpty(content)) {
+		if (!StringMethods.isEmpty(content)) {
 			if (reporter.isLogEnabled(Tests4J_RemoteRunner.class)) {
 				reporter.log("Tests4J_RemoteRunner in acceptMessage read line with message;\n" + content);
 			}

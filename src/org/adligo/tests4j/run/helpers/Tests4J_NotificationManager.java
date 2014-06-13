@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.common.IsEmpty;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
@@ -160,7 +160,7 @@ public class Tests4J_NotificationManager {
 		while (it.hasNext()) {
 			TrialDescription td = it.next();
 			String packageName = td.getPackageName();
-			if (!IsEmpty.isEmpty(packageName)) {
+			if (!StringMethods.isEmpty(packageName)) {
 				packages.add(packageName);
 			}
 			TrialMetadataMutant tmm = new TrialMetadataMutant();

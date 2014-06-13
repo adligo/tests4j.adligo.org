@@ -19,7 +19,7 @@ import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.SourceFileTrial;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
-import org.adligo.tests4j.models.shared.common.IsEmpty;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -673,7 +673,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		TestFailureMutant tfm = new TestFailureMutant();
 		tfm.setException(x);
 		String message = x.getMessage();
-		if (IsEmpty.isEmpty(message)) {
+		if (StringMethods.isEmpty(message)) {
 			message = "Unknown Error message.";
 		}
 		tfm.setMessage(message);

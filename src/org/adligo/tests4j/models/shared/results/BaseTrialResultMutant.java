@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.adligo.tests4j.models.shared.common.IsEmpty;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 
 public class BaseTrialResultMutant implements I_TrialResult {
@@ -45,7 +45,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	
 	public BaseTrialResultMutant(I_TrialResult p, boolean cloneRelations) {
 		trialName = p.getName();
-		IsEmpty.isEmpty(trialName,
+		StringMethods.isEmpty(trialName,
 				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME);
 		testType = p.getType();
 		if (testType == null) {

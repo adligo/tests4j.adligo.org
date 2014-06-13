@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.common;
 
-public class IsEmpty {
+public class StringMethods {
 	public static boolean isEmpty(String p) {
 		if (p == null) {
 			return true;

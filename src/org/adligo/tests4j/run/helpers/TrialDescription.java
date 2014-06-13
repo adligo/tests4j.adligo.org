@@ -15,7 +15,7 @@ import org.adligo.tests4j.models.shared.PackageScope;
 import org.adligo.tests4j.models.shared.SourceFileScope;
 import org.adligo.tests4j.models.shared.TrialTimeout;
 import org.adligo.tests4j.models.shared.UseCaseScope;
-import org.adligo.tests4j.models.shared.common.IsEmpty;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -142,7 +142,7 @@ public class TrialDescription implements I_TrialDescription {
 					return false;
 				}
 				String testedPackageName = packageScope.packageName();
-				if (IsEmpty.isEmpty(testedPackageName)) {
+				if (StringMethods.isEmpty(testedPackageName)) {
 					resultFailureMessage = 
 							messages.getPackageScopeEmptyName();
 					resultException	 =
@@ -163,7 +163,7 @@ public class TrialDescription implements I_TrialDescription {
 					return false;
 				}
 				String system = useCaseScope.system();
-				if (IsEmpty.isEmpty(system)) {
+				if (StringMethods.isEmpty(system)) {
 					resultFailureMessage = 
 							messages.getUseCaseScopeEmptySystem();
 					resultException	 =
@@ -173,7 +173,7 @@ public class TrialDescription implements I_TrialDescription {
 				} 
 				
 				String nown = useCaseScope.nown();
-				if (IsEmpty.isEmpty(nown)) {
+				if (StringMethods.isEmpty(nown)) {
 					resultFailureMessage = 
 							messages.getUseCaseScopeEmptyNown();
 					resultException	 =
@@ -183,7 +183,7 @@ public class TrialDescription implements I_TrialDescription {
 				} 
 				
 				String verb = useCaseScope.verb();
-				if (IsEmpty.isEmpty(verb)) {
+				if (StringMethods.isEmpty(verb)) {
 					resultFailureMessage = 
 							messages.getUseCaseScopeEmptyVerb();
 					resultException	 =
@@ -395,10 +395,10 @@ public class TrialDescription implements I_TrialDescription {
 		}
 		String nown = useCaseScope.nown();
 		String verb = useCaseScope.verb();
-		if (IsEmpty.isEmpty(nown)) {
+		if (StringMethods.isEmpty(nown)) {
 			return null;
 		}
-		if (IsEmpty.isEmpty(verb)) {
+		if (StringMethods.isEmpty(verb)) {
 			return null;
 		}
 		return new UseCase(nown, verb);

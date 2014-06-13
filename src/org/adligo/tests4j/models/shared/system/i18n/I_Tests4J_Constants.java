@@ -10,4 +10,8 @@ public interface I_Tests4J_Constants {
 	public I_Tests4J_AssertionInputMessages getAssertionInputMessages();
 	public I_Tests4J_AssertionResultMessages getAssertionResultMessages();
 	public I_EclipseErrors getEclipseErrors();
+	
+	public String getTheMethodCanOnlyBeCalledBy_PartOne();
+	public String getTheMethodCanOnlyBeCalledBy_PartTwo();
+	public String getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames();
 }

@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.asserts;
 
-import org.adligo.tests4j.models.shared.common.IsEmpty;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 
 public abstract class AbstractAssertCommand implements I_AssertCommand {
 	public static final String ASSERT_COMMANDS_REQURES_A_NON_EMPTY_FAILUE_MESSAGE = "AssertCommands requres a non empty failue message.";
@@ -16,7 +16,7 @@ public abstract class AbstractAssertCommand implements I_AssertCommand {
 					ASSERT_COMMANDS_REQURES_A_NON_EMPTY_FAILUE_MESSAGE);
 		}
 		failureMessage = pFailureMessage;
-		IsEmpty.isEmpty(failureMessage, 
+		StringMethods.isEmpty(failureMessage, 
 				ASSERT_COMMANDS_REQURES_A_NON_EMPTY_FAILUE_MESSAGE);
 	}
 
@@ -33,29 +33,6 @@ public abstract class AbstractAssertCommand implements I_AssertCommand {
 				+ ((failureMessage == null) ? 0 : failureMessage.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		try {
-			AbstractAssertCommand other = (AbstractAssertCommand) obj;
-			if (failureMessage == null) {
-				if (other.failureMessage != null)
-					return false;
-			} else if (!failureMessage.equals(other.failureMessage))
-				return false;
-			if (type != other.type)
-				return false;
-		} catch (ClassCastException x) {
-			return false;
-		}
-		return true;
 	}
 
 	@Override
