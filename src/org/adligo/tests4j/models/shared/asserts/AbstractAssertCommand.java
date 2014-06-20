@@ -4,16 +4,16 @@ import org.adligo.tests4j.models.shared.common.StringMethods;
 
 public abstract class AbstractAssertCommand implements I_AssertCommand {
 	public static final String ASSERT_COMMANDS_REQURES_A_NON_EMPTY_FAILUE_MESSAGE = "AssertCommands requres a non empty failue message.";
-	public static final String ASSERT_COMMANDS_REQUIRES_A_TYPE = "AssertCommands requires a boolean type.";
+	public static final String ASSERT_COMMANDS_REQUIRES_A_TYPE = "AssertCommands requires a type.";
 	
 	private String failureMessage;
 	private I_AssertType type;
 	
-	AbstractAssertCommand(I_AssertType pType, String pFailureMessage) {
+	protected AbstractAssertCommand(I_AssertType pType, String pFailureMessage) {
 		type = pType;
 		if (type == null) {
 			throw new IllegalArgumentException(
-					ASSERT_COMMANDS_REQURES_A_NON_EMPTY_FAILUE_MESSAGE);
+					ASSERT_COMMANDS_REQUIRES_A_TYPE);
 		}
 		failureMessage = pFailureMessage;
 		StringMethods.isEmpty(failureMessage, 
