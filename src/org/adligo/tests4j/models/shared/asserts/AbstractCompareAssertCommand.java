@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.asserts;
 
-import java.util.Set;
 
 
 public abstract class AbstractCompareAssertCommand extends AbstractAssertCommand implements I_CompareAssertCommand {
