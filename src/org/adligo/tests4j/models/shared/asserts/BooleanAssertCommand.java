@@ -6,8 +6,14 @@ import java.util.Set;
 
 public class BooleanAssertCommand extends AbstractAssertCommand 
 	implements I_BasicAssertCommand, I_AssertionData {
-	
+	/**
+	 * the expected value ie 
+	 * true if this is a {@link AssertType#AssertTrue}
+	 * false if this is a {@link AssertType#AssertFalse}
+	 */
+	public static final String EXPECTED_VALUE = "expected_value";
 	public static final String VALUE = "value";
+	
 	public static final String BOOLEAN_ASSERT_COMMAND_REQUIRES_A_BOOLEAN_TYPE = "BooleanAssertCommand requires a boolean type.";
 	private Object value;
 	AssertType type;
@@ -85,6 +91,17 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 	public Object getData(String key) {
 		if (VALUE.equals(key)) {
 			return value;
+		} else if (EXPECTED_VALUE.equals(key)) {
+			switch (type) {
+				case AssertTrue:
+					return true;
+				case AssertFalse:
+					return false;
+				case AssertNull:
+					return null;
+				case AssertNotNull:
+					return this;
+			}
 		}
 		return null;
 	}

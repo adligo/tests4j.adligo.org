@@ -106,8 +106,8 @@ I_TrialProcessorBindings {
 		testResultMutant.setFailure(failure);
 		flushAssertionHashes(testResultMutant);
 		TestResult tr = new TestResult(testResultMutant);
-		listener.testFinished(tr);
 		assertFailed = true;
+		listener.testFinished(tr);
 	}
 
 	private void flushAssertionHashes(TestResultMutant trm) {
