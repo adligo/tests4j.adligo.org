@@ -1,70 +1,30 @@
 Other projects that will complement tests4j which 
 need to be implemented at some point;
 
-1) tests4j_4gwt (target tests4j_v0_3) 
+1) tests4j_4gwt (target tests4j_v0_2) 
 			This will contain some abstract code that will help
         run tests4j tests in a web browser from a javascript runtime.
         This will contain a server so that the tests from the browser
         can upload the results to a real JSE java environment, which 
         can then be sent elsewhere (i.e. a intellegence4j server)
-2) tests4j_gwt_generator (target tests4j_v0_3)
+2) tests4j_gwt_generator (target tests4j_v0_2)
 			This will contain java code which will generate .java source 
 		code to actually run a project's tests in javascript.  This is 
 		the basic solution to the lack of reflection in gwt client code.
 
 Code in the tests4j project that needs to be implemented 
 at some point.
-1) Tests4j remote testing control (target tests4j_v0_2)
-       This will allow tests4j to run tests on remote machines
-       (somewhat like selenium grid https://code.google.com/p/selenium/wiki/Grid2)
-       So if you have 3 machines setup for a load test where;
-       Box A (a jetty server and postgres db)
-       Box B (a tests4j_server)
-       Box C a tests4j runner
-       
-       Box C can send test names to Box B and receive results of 
-       the tests so they can be aggregated in a single location.
-       Of course any number of tests4j_servers can be run on any
-       number of machines.
-        Test4J_Params will get some new fields;
-        /**
-         * The key is the url of the remote tests4j_server
-         * ie "rt4j://192.168.1.1:9999"
-         * The value is a queue of names of trials
-         */
-        Map<String,Queue<String>> remoteTrials
-        
-        This method of remote delegation was chosen so that 
-        trial execution would not overlap for specific trials;
-        Consider the following trial DepositJoesFunds
-        which does the following testDeposit;
-        
-         get joes balance from the db
-         authenticate joe through a web page
-         deposit $100 through a web page
-         check the balance through a web page
-         check db for a new balance
-         
-        If machine B and C were to run this test so that it overlapped, 
-        it may intermittently fail, as one of the trials may see $200 
-        added to the account.
-         
-         Through the remoteTrials api we can make sure only one 
-         machine is running trials which mimic actions by Joe.
-         ie
-         LinkedList<String> dotOneTrials = new LinkedList<String>();
-         dotOneTrials.add(DepositJoesFunds.class.getName());
-         dotOneTrials.add(ViewJanesFunds.class.getName());
-         dotOneTrials.add(WithdrawJanesFunds.class.getName());
-         remoteTrials.add("rt4j://192.168.1.1:9999", dotOneTrials);
-         
-         LinkedList<String> dotTwoTrials = new LinkedList<String>();
-         dotTwoTrials.add(DepositAbesFunds.class.getName());
-         dotTwoTrials.add(ViewSamsFunds.class.getName());
-         dotTwoTrials.add(WithdrawSamsFunds.class.getName());
-         remoteTrials.add("rt4j://192.168.1.2:9999", dotTwoTrials);
-2) SourceInfo needs a .java file parser to correctly 
+
+3) SourceInfo needs a .java file parser to correctly (target tests4j_v0_3)
   determine if a .class file hasInterface and hasClass/hasEnum
   for code bases which allow inner classes in .java files where 
   the primary class is a interface.
   
+4) Running the tests4j trials on a android or ios (mac) device (target tests4j_v0_3)
+using the ADF mobile framework
+
+5) Running the tests4j trials on a android device using the native android api (target tests4j_v0_4)
+		This will only be done by adligo if ADF doesn't seem like a good platform
+		for video games.
+		
+		

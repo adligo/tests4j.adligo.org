@@ -28,6 +28,8 @@ import org.adligo.tests4j.models.shared.asserts.StringUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrowableAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrowableUniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
+import org.adligo.tests4j.models.shared.common.I_Platform;
+import org.adligo.tests4j.models.shared.common.PlatformEnum;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -49,6 +51,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
 	private I_AssertListener listener;
 	private I_Tests4J_Reporter reporter;
+	private I_Platform platform;
 	/**
 	 * Set the memory of the AbstractTrial
 	 * @param p
@@ -57,6 +60,8 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	public void setBindings(I_TrialProcessorBindings bindings) {
 		//throw npe for nulls
 		bindings.hashCode();
+		platform = bindings;
+		
 		listener = bindings.getAssertionListener();
 		//throw npe for nulls
 		listener.hashCode();
@@ -330,5 +335,9 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	@Override
 	public void assertGreaterThanOrEquals(String message, double p, short a) {
 		assertGreaterThanOrEquals(message, p, 0.0 + a);
+	}
+	
+	public PlatformEnum getPlatform() {
+		return platform.getPlatform();
 	}
 }

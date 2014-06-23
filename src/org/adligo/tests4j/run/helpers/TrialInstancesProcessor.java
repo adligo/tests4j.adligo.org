@@ -19,6 +19,7 @@ import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.SourceFileTrial;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
+import org.adligo.tests4j.models.shared.common.PlatformEnum;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
@@ -802,5 +803,10 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			}
 		} 
 		notifier.onAllTrialsDone(new TrialRunResult(runResultMutant));
+	}
+
+	@Override
+	public PlatformEnum getPlatform() {
+		return PlatformEnum.JSE;
 	}
 }

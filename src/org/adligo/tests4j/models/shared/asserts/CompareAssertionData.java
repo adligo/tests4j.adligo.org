@@ -4,16 +4,19 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.ClassUtils;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 
+/**
+ * a immutable class to represent the comparison data (expected and actual values)
+ * for an assertion.
+ * @author scott
+ *
+ * @param <T>
+ */
 public class CompareAssertionData<T> implements I_Immutable, I_CompareAssertionData<T> {
-	public static final String THE_ACTUAL_VALUE_MUST_BE_A = "The Actual value must be a ";
-	public static final String THE_EXPECTED_VALUE_MUST_BE_A = "The expected value must be a ";
-	public static final String NULL_VALUE_NOT_ALLOWED_HERE = "Null value not allowed here.";
-	public static final String COMPARE_ASSERTION_DATA_REQUIRES_A_BASE_CLASS_IF_USING_THIS_CONSTRUCTOR = "CompareAssertionData requires a baseClass if using this constructor.";
 	public static final String EXPECTED = "expected";
 	public static final String ACTUAL = "actual";
+	
 	private T expected;
 	private T actual;
 	

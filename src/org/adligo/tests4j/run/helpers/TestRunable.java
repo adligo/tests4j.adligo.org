@@ -9,6 +9,7 @@ import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
+import org.adligo.tests4j.models.shared.common.PlatformEnum;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
@@ -128,5 +129,10 @@ I_TrialProcessorBindings {
 	@Override
 	public I_Tests4J_Reporter getReporter() {
 		return reporter;
+	}
+
+	@Override
+	public PlatformEnum getPlatform() {
+		return PlatformEnum.JSE;
 	}
 }

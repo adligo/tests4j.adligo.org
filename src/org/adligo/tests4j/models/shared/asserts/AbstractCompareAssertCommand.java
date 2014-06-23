@@ -4,10 +4,10 @@ package org.adligo.tests4j.models.shared.asserts;
 
 public abstract class AbstractCompareAssertCommand extends AbstractAssertCommand implements I_CompareAssertCommand {
 	public static final String NULL_DATA = "AbstractCompareAssertCommand requires non null data.";
-	private CompareAssertionData<?> data;
+	private I_CompareAssertionData<?> data;
 	protected AssertType type;
 	
-	public AbstractCompareAssertCommand(AssertType pType, String failureMessage, CompareAssertionData<?> pData) {
+	public AbstractCompareAssertCommand(AssertType pType, String failureMessage, I_CompareAssertionData<?> pData) {
 		super(pType, failureMessage);
 		type = (AssertType) pType;
 		data = pData;
