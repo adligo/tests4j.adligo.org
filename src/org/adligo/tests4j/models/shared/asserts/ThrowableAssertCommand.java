@@ -1,8 +1,11 @@
 package org.adligo.tests4j.models.shared.asserts;
 
+import org.adligo.tests4j.models.shared.asserts.common.AssertType;
+import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertCommand;
 
 
-public class ThrowableAssertCommand extends AbstractCompareAssertCommand implements I_CompareAssertCommand {
+
+public class ThrowableAssertCommand extends AbstractCompareAssertCommand implements I_SimpleCompareAssertCommand {
 	private static final String BAD_TYPE = 
 			"NumberAssertCommand requires it's type to be one of AssertType.IDENTICAL_TYPES";
 	private CompareAssertionData<Throwable> data;

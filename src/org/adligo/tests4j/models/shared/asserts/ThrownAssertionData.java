@@ -2,6 +2,8 @@ package org.adligo.tests4j.models.shared.asserts;
 
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertionData;
+
 public class ThrownAssertionData implements I_ThrownAssertionData {
 	private ThrownAssertionDataMutant mutant;
 	

@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts;
 
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 
 public abstract class AbstractAssertCommand implements I_AssertCommand {

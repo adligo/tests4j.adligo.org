@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.asserts;
+package org.adligo.tests4j.models.shared.asserts.common;
 
 import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
 

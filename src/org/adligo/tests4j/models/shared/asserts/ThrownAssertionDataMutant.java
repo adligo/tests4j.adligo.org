@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertionData;
+
 
 public class ThrownAssertionDataMutant implements I_ThrownAssertionData {
 	private static Set<String> KEYS = getKeysStatic();

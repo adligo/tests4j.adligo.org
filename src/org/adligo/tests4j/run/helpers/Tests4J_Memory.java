@@ -25,6 +25,7 @@ import org.adligo.tests4j.models.shared.PackageScope;
 import org.adligo.tests4j.models.shared.SourceFileScope;
 import org.adligo.tests4j.models.shared.TrialType;
 import org.adligo.tests4j.models.shared.UseCaseScope;
+import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
@@ -89,6 +90,8 @@ public class Tests4J_Memory {
 	private TrialDescription metaTrialDescription;
 	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private boolean hasRemoteDelegation = false;
+	private EvaluatorLookup evaluationLookup;
+	
 	/**
 	 * 
 	 * @param params
@@ -100,6 +103,7 @@ public class Tests4J_Memory {
 		out = pOut;
 		listener = pListener;
 		trialClasses.addAll(params.getTrials());
+		evaluationLookup = new EvaluatorLookup(params.getEvaluatorLookup());
 		Class<? extends I_MetaTrial> metaTrialClass = params.getMetaTrialClass();
 		if (metaTrialClass != null) {
 			trialClasses.add(metaTrialClass);
@@ -440,5 +444,9 @@ public class Tests4J_Memory {
 
 	public boolean hasRemoteDelegation() {
 		return hasRemoteDelegation;
+	}
+
+	public EvaluatorLookup getEvaluationLookup() {
+		return evaluationLookup;
 	}
 }

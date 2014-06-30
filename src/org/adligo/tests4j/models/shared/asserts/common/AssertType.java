@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.asserts;
+package org.adligo.tests4j.models.shared.asserts.common;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,6 +43,8 @@ public enum AssertType implements I_AssertType{
 		toRet.add(AssertFalse);
 		toRet.add(AssertNull);
 		toRet.add(AssertNotNull);
+		toRet.add(AssertSame);
+		toRet.add(AssertNotSame);
 		return Collections.unmodifiableSet(toRet);
 	}
 	

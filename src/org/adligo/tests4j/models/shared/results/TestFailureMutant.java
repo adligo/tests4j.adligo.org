@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.results;
 
-import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 
 public class TestFailureMutant implements I_TestFailure {
 	public static final String TEST_FAILURE_MUTANT_REQURIES_ASSERTION_DATA = "TestFailureMutant requries assertion data.";

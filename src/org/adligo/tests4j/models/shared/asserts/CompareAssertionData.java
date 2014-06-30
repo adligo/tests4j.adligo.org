@@ -4,11 +4,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 
 /**
  * a immutable class to represent the comparison data (expected and actual values)
- * for an assertion.
+ * for an assertion. Allows nulls in both expected and actual.
+ * 
  * @author scott
  *
  * @param <T>

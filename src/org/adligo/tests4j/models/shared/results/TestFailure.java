@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.results;
 
-import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 
 public class TestFailure implements I_TestFailure, I_Immutable {

@@ -3,9 +3,14 @@ package org.adligo.tests4j.models.shared.asserts;
 import java.util.Collections;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.asserts.common.AssertType;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
+import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
+
 
 public class BooleanAssertCommand extends AbstractAssertCommand 
-	implements I_BasicAssertCommand, I_AssertionData {
+	implements I_SimpleAssertCommand, I_AssertionData {
 	/**
 	 * the expected value ie 
 	 * true if this is a {@link AssertType#AssertTrue}

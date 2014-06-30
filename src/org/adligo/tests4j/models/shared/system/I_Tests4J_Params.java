@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
+import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
 /**
@@ -114,4 +115,11 @@ public interface I_Tests4J_Params extends I_XML_IO {
 	 * @return
 	 */
 	public I_Tests4J_Params getRemoteParams(I_Tests4J_RemoteInfo p);
+	
+	/**
+	 * 
+	 * @return a evaluator lookup 
+	 * for plug-able assertion framework.
+	 */
+	public I_EvaluatorLookup getEvaluatorLookup();
 }

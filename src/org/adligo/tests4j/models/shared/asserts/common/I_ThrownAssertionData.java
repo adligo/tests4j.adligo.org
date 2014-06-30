@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.asserts;
+package org.adligo.tests4j.models.shared.asserts.common;
 
 public interface I_ThrownAssertionData extends I_AssertionData {
 	public static final String EXPECTED_THROWABLE_CLASS = "expected_throwable_class";

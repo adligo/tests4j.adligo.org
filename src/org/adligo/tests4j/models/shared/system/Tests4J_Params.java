@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
+import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
+import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
 import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 
@@ -75,6 +77,9 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private transient I_SystemExit exitor = new DefaultSystemExitor();
 	private Map<I_Tests4J_RemoteInfo, I_Tests4J_Params> remoteParams = 
 			new HashMap<I_Tests4J_RemoteInfo, I_Tests4J_Params>();
+			
+	private I_EvaluatorLookup evaluatorLookup = EvaluatorLookup.DEFAULT_LOOKUP;
+	
 	public Tests4J_Params() {}
 	
 	public Tests4J_Params(I_Tests4J_Params p) {
@@ -427,5 +432,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	
 	public void putRemoteParams(I_Tests4J_RemoteInfo info,I_Tests4J_Params p) {
 		remoteParams.put(info, p);
+	}
+
+	public I_EvaluatorLookup getEvaluatorLookup() {
+		return evaluatorLookup;
+	}
+
+	public void setEvaluatorLookup(I_EvaluatorLookup evaluatorLookup) {
+		this.evaluatorLookup = evaluatorLookup;
 	}
 }

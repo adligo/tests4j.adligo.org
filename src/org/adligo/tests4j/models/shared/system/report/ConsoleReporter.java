@@ -14,10 +14,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.I_AssertionData;
-import org.adligo.tests4j.models.shared.asserts.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.ThrowableAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertionData;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
+import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.metadata.I_SourceInfo;

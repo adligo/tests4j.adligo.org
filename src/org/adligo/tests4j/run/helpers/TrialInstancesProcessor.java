@@ -18,7 +18,8 @@ import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.I_MetaTrial;
 import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.SourceFileTrial;
-import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
+import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.PlatformEnum;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
@@ -108,7 +109,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		reporter = pReporter;
 		threadManager = p.getThreadManager();
 		
-		testsRunner = new TestRunable(pReporter);
+		testsRunner = new TestRunable(memory, pReporter);
 		testsRunner.setListener(this);
 		testRunService = threadManager.createNewTestRunService();
 	}
@@ -808,5 +809,10 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	@Override
 	public PlatformEnum getPlatform() {
 		return PlatformEnum.JSE;
+	}
+
+	@Override
+	public I_EvaluatorLookup getDefalutEvaluatorLookup() {
+		return memory.getEvaluationLookup();
 	}
 }

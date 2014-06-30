@@ -5,7 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * A Threadsafe class to compare strings.
+ * @author scott
+ *
+ */
 public class LineTextCompare  {
 	
 	public static I_LineTextCompareResult compare(String example, String actual) {

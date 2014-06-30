@@ -4,8 +4,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.asserts.common.AssertType;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
+import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
+
 public class ContainsAssertCommand extends AbstractAssertCommand 
-implements I_BasicAssertCommand, I_AssertionData {
+implements I_SimpleAssertCommand, I_AssertionData {
 		
 	public static final String VALUE = "value";
 	public static final String BOOLEAN_ASSERT_COMMAND_REQUIRES_A_BOOLEAN_TYPE = "BooleanAssertCommand requires a boolean type.";

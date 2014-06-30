@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared;
 
-import org.adligo.tests4j.models.shared.asserts.I_Asserts;
+import org.adligo.tests4j.models.shared.asserts.common.I_Asserts;
 
 /**
  * classes that implement this class must also contain the

@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.asserts;
+package org.adligo.tests4j.models.shared.asserts.common;
 
 /**
  * The common Interface of AssertCommands @see Command Pattern.

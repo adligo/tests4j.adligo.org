@@ -8,7 +8,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
-import org.adligo.tests4j.models.shared.asserts.I_AssertCommand;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
+import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.PlatformEnum;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
@@ -29,8 +30,10 @@ I_TrialProcessorBindings {
 	private I_Tests4J_Reporter reporter;
 	private TestResultMutant testResultMutant;
 	private boolean assertFailed = false;
+	private Tests4J_Memory memory;
 	
-	public TestRunable(I_Tests4J_Reporter pReporter) {
+	public TestRunable(Tests4J_Memory pMemory, I_Tests4J_Reporter pReporter) {
+		memory = pMemory;
 		reporter = pReporter;
 	}
 	
@@ -134,5 +137,10 @@ I_TrialProcessorBindings {
 	@Override
 	public PlatformEnum getPlatform() {
 		return PlatformEnum.JSE;
+	}
+
+	@Override
+	public I_EvaluatorLookup getDefalutEvaluatorLookup() {
+		return memory.getEvaluationLookup();
 	}
 }
