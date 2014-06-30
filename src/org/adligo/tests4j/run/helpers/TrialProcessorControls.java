@@ -1,7 +1,7 @@
 package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 
 public class TrialProcessorControls implements I_Tests4J_Controls {
 	private Tests4J_Manager threadManager;

@@ -2,8 +2,7 @@ package org.adligo.tests4j.models.shared.system;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
 /**
  * a pluggable interface for a this integrating testing api 

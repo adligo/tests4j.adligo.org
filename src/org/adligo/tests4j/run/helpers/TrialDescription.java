@@ -9,21 +9,21 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.IgnoreTrial;
-import org.adligo.tests4j.models.shared.PackageScope;
-import org.adligo.tests4j.models.shared.SourceFileScope;
-import org.adligo.tests4j.models.shared.TrialTimeout;
-import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TrialDescriptionMessages;
 import org.adligo.tests4j.models.shared.metadata.I_UseCase;
 import org.adligo.tests4j.models.shared.metadata.UseCase;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TrialDescriptionMessages;
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
+import org.adligo.tests4j.models.shared.trials.PackageScope;
+import org.adligo.tests4j.models.shared.trials.SourceFileScope;
+import org.adligo.tests4j.models.shared.trials.TrialTimeout;
+import org.adligo.tests4j.models.shared.trials.UseCaseScope;
 
 /**
  * a generally immutable class that represents/wrapps

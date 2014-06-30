@@ -4,7 +4,7 @@ import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 
 /**
  * This class helps block thread creation at inappropriate

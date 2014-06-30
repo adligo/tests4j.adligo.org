@@ -10,12 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.I_MetaTrial;
-import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {
@@ -53,7 +52,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	/**
 	 * @see I_Tests4J_Params#getReporter()
 	 */
-	private transient I_Tests4J_Reporter reporter = new ConsoleReporter();
+	private transient I_Tests4J_Reporter reporter = new SummaryReporter();
 	
 	/**
 	 * this flaggs a jvm exit

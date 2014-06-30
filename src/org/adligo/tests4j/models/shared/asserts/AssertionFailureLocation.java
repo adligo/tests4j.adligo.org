@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.AbstractTrial;
 
 public class AssertionFailureLocation extends Exception {
 	/**

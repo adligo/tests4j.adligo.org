@@ -1,6 +1,6 @@
 package org.adligo.tests4j.run.remote.socket_api;
 
-import org.adligo.tests4j.models.shared.system.I_XML_IO;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_XML_IO;
 
 import com.sun.xml.internal.ws.util.StringUtils;
 
@@ -14,7 +14,7 @@ import com.sun.xml.internal.ws.util.StringUtils;
  * @author scott
  *
  */
-public class Tests4J_SocketMessage implements I_XML_IO {
+public class Tests4J_SocketMessage implements I_Tests4J_XML_IO {
 	
 	public static final String REQUIRES_AUTH_CODE_ATTRIBUTE_ERROR = "Requires AuthCode Attribute.";
 	public static final String REQUIRES_COMMAND_KEY_ATTRIBUTE_ERROR = "Requires Command Key Attribute.";

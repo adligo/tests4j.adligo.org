@@ -4,10 +4,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.IgnoreTest;
-import org.adligo.tests4j.models.shared.Test;
+import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TestMethodErrors;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TestMethodErrors;
+import org.adligo.tests4j.models.shared.trials.IgnoreTest;
+import org.adligo.tests4j.models.shared.trials.Test;
 
 /**
  * audits a method to make sure it conforms to the @Test annotation.

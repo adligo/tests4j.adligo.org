@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
-import org.adligo.tests4j.models.shared.system.i18n.I_Tests4J_Constants;
-import org.adligo.tests4j.models.shared.system.i18n.en.Tests4J_EnglishConstants;
+import org.adligo.tests4j.models.shared.en.Tests4J_EnglishConstants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 
 /**
  * this is where the tests4j framework 

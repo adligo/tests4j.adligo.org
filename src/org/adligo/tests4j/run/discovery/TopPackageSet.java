@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.adligo.tests4j.models.shared.AdditionalInstrumentation;
-import org.adligo.tests4j.models.shared.I_Trial;
-import org.adligo.tests4j.models.shared.PackageScope;
-import org.adligo.tests4j.models.shared.SourceFileScope;
+import org.adligo.tests4j.models.shared.trials.AdditionalInstrumentation;
+import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.models.shared.trials.PackageScope;
+import org.adligo.tests4j.models.shared.trials.SourceFileScope;
 
 public class TopPackageSet {
 	private Set<String> packages = new HashSet<String>();

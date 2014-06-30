@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 
 public class ThreadStateHelper {
 	private I_Tests4J_Reporter reporter;

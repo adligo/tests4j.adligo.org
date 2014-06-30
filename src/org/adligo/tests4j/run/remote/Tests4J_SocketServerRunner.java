@@ -23,25 +23,25 @@ import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
 import org.adligo.tests4j.models.shared.system.I_SystemExit;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
-import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
 import org.adligo.tests4j.run.Tests4J;
 import org.adligo.tests4j.run.helpers.Tests4J_ThreadFactory;
-import org.adligo.tests4j.run.remote.nio.I_CharacterInputStream;
-import org.adligo.tests4j.run.remote.nio.UTF8_InputStream;
+import org.adligo.tests4j.run.remote.io.I_CharacterInputStream;
+import org.adligo.tests4j.run.remote.io.UTF8_InputStream;
 import org.adligo.tests4j.run.remote.socket_api.AfterShutdownHandler;
 import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
+import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
 public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 	private BlockingQueue<Tests4J_SocketMessage> messages = new ArrayBlockingQueue<>(100);
 	private Map<Tests4J_SocketMessage, I_AfterMessageHandler> afterMessageTransportHandlers =
 			new ConcurrentHashMap<Tests4J_SocketMessage, I_AfterMessageHandler>();
-	private I_Tests4J_Reporter reporter = new ConsoleReporter();
+	private I_Tests4J_Reporter reporter = new SummaryReporter();
 	private OutputStream out;
 	private InputStream in;
 	private Tests4J_Commands lastCommnadSent;
@@ -61,7 +61,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 		//note these lines will never be testable as it runs System.exit(0);
 		Tests4J_SocketServerRunner runner = new Tests4J_SocketServerRunner();
 		
-		ConsoleReporter reporter = new ConsoleReporter();
+		SummaryReporter reporter = new SummaryReporter();
 		reporter.setLogOn(Tests4J_SocketServerRunner.class);
 		runner.setReporter(reporter);
 		

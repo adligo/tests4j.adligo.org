@@ -4,9 +4,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.BeforeTrial;
+import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4j_BeforeTrialErrors;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4j_BeforeTrialErrors;
+import org.adligo.tests4j.models.shared.trials.BeforeTrial;
 /**
  * audits a method to see if it conforms to @BeforeTrial
  * 

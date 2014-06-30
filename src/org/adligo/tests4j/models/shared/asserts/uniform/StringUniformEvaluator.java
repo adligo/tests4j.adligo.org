@@ -1,14 +1,10 @@
 package org.adligo.tests4j.models.shared.asserts.uniform;
 
-import java.util.Collections;
-
-import org.adligo.tests4j.models.shared.asserts.CompareAssertionData;
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompare;
+import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.system.i18n.trials.asserts.I_Tests4J_AssertionResultMessages;
 
 public class StringUniformEvaluator implements I_UniformAssertionEvaluator<String> {
 	

@@ -15,16 +15,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.adligo.tests4j.models.shared.AfterTrial;
-import org.adligo.tests4j.models.shared.BeforeTrial;
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.I_MetaTrial;
-import org.adligo.tests4j.models.shared.IgnoreTest;
-import org.adligo.tests4j.models.shared.IgnoreTrial;
-import org.adligo.tests4j.models.shared.PackageScope;
-import org.adligo.tests4j.models.shared.SourceFileScope;
-import org.adligo.tests4j.models.shared.TrialType;
-import org.adligo.tests4j.models.shared.UseCaseScope;
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
@@ -33,9 +23,19 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.trials.AfterTrial;
+import org.adligo.tests4j.models.shared.trials.BeforeTrial;
+import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.IgnoreTest;
+import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
+import org.adligo.tests4j.models.shared.trials.PackageScope;
+import org.adligo.tests4j.models.shared.trials.SourceFileScope;
+import org.adligo.tests4j.models.shared.trials.TrialType;
+import org.adligo.tests4j.models.shared.trials.UseCaseScope;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 
 /**

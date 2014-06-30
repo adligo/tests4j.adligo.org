@@ -5,9 +5,6 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.I_Trial;
-import org.adligo.tests4j.models.shared.I_TrialProcessorBindings;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.PlatformEnum;
@@ -17,7 +14,10 @@ import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.models.shared.trials.I_TrialProcessorBindings;
 
 public class TestRunable implements Runnable, I_AssertListener,
 I_TrialProcessorBindings {

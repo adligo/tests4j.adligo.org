@@ -2,8 +2,8 @@ package org.adligo.tests4j.models.shared.common;
 
 import java.util.Collection;
 
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.system.i18n.I_Tests4J_Constants;
 
 /**
  * This class will block method calls based on the stack.

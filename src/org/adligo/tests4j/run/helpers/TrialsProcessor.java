@@ -10,9 +10,6 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.I_MetaTrial;
-import org.adligo.tests4j.models.shared.I_Trial;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.system.CoveragePluginWrapper;
 import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
@@ -22,11 +19,14 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
-import org.adligo.tests4j.models.shared.system.report.ConsoleReporter;
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
+import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
 /**
  * ok this is the main processing class which does this;
@@ -66,7 +66,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		//set up logging first
 		I_Tests4J_Reporter reporter = params.getReporter();
 		if (reporter == null) {
-			reporter = new ConsoleReporter();
+			reporter = new SummaryReporter();
 			params.setReporter(reporter);
 		} 
 		List<Class<?>> reportingClasses = pParams.getLoggingClasses();

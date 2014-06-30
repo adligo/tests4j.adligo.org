@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.adligo.tests4j.models.shared.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
@@ -33,10 +32,11 @@ import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.results.feedback.I_ApiTrial_TestsResults;
 import org.adligo.tests4j.models.shared.results.feedback.I_SourceFileTrial_TestsResults;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
+import org.adligo.tests4j.models.shared.system.Tests4jReporterDelegate;
 import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegate;
-import org.adligo.tests4j.models.shared.system.report.I_Tests4J_Reporter;
-import org.adligo.tests4j.models.shared.system.report.Tests4jReporterDelegate;
+import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.run.discovery.ClassDiscovery;
 
 /**

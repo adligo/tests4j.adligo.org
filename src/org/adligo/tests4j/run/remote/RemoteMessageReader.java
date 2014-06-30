@@ -2,8 +2,8 @@ package org.adligo.tests4j.run.remote;
 
 import java.io.IOException;
 
-import org.adligo.tests4j.models.shared.system.I_XML_IO;
-import org.adligo.tests4j.run.remote.nio.I_CharacterInputStream;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_XML_IO;
+import org.adligo.tests4j.run.remote.io.I_CharacterInputStream;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
 
 public class RemoteMessageReader {

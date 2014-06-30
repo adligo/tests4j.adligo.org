@@ -1,10 +1,10 @@
 package org.adligo.tests4j.models.shared.system;
 
-import org.adligo.tests4j.models.shared.system.i18n.I_Tests4J_Constants;
-import org.adligo.tests4j.models.shared.system.i18n.eclipse.I_EclipseErrors;
-import org.adligo.tests4j.models.shared.system.i18n.trials.I_Tests4J_TrialDescriptionMessages;
-import org.adligo.tests4j.models.shared.system.i18n.trials.asserts.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.system.i18n.trials.asserts.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.eclipse.I_EclipseErrors;
+import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TrialDescriptionMessages;
 
 public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	I_Tests4J_Constants delegate;
