@@ -24,7 +24,6 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	private I_ExpectedThrownData data;
 	private AssertType type;
 	private Throwable caught;
-	private I_LineTextCompareResult lineTextResult;
 	
 	public ThrownAssertCommand(I_AssertType pType, String pFailureMessage) {
 		super(pType, pFailureMessage);
@@ -58,7 +57,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 			case AssertThrown:
 				try {
 					thrower.run();
-				} catch (Exception x) {
+				} catch (Throwable x) {
 					caught = x;
 				}
 				if (caught == null) {
@@ -93,9 +92,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 				if ( !throwableClazz.equals(caught.getClass())) {
 					return false;
 				}
-				lineTextResult =
-						LineTextCompare.compare(expected_message, caught.getMessage());
-				if (lineTextResult.isMatched()) {
+				if (expected_message.equals(caught.getMessage())) {
 					return true;
 				}
 				return false;
@@ -123,8 +120,6 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		int result = super.hashCode();
 		result = prime * result + ((caught == null) ? 0 : caught.hashCode());
 		result = prime * result + ((data == null) ? 0 : data.hashCode());
-		result = prime * result
-				+ ((lineTextResult == null) ? 0 : lineTextResult.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}

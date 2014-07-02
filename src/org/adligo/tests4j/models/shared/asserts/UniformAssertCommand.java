@@ -1,6 +1,9 @@
-package org.adligo.tests4j.models.shared.asserts.common;
+package org.adligo.tests4j.models.shared.asserts;
 
-import org.adligo.tests4j.models.shared.asserts.AbstractAssertCommand;
+import org.adligo.tests4j.models.shared.asserts.common.AssertType;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
+import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_Evaluation;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;

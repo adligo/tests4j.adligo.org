@@ -23,5 +23,11 @@ public interface I_ExpectedThrownData {
 	 * @return
 	 */
 	public abstract Class<? extends Throwable> getThrowableClass();
+	
+	/**
+	 * The actual instance of the throwable.
+	 * @return
+	 */
+	public Throwable getInstance();
 
 }

@@ -4,6 +4,7 @@ import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMe
 
 public class Tests4J_AssertionResultMessages implements I_Tests4J_AssertionResultMessages {
 
+	public static final String NO_THROWABLES_WERE_THROWN_FROM_THE_I_THROWER = "No Throwables were thrown from the I_Thrower.";
 	public static final String THE_TEXT_WAS_UNIFORM = "The text was uniform.";
 	public static final String THE_TEXT_WAS_NOT_UNIFORM = "The text was NOT uniform.";
 	public static final String NO_EVALUATOR_COULD_BE_FOUND_FOR_THE_FOLLOWING_CLASS = "No Evaluator could be found for the following class; ";
@@ -89,5 +90,9 @@ public class Tests4J_AssertionResultMessages implements I_Tests4J_AssertionResul
 	
 	public String getTheTextWasUniform() {
 		return THE_TEXT_WAS_UNIFORM;
+	}
+	
+	public String getNothingWasThrown() {
+		return NO_THROWABLES_WERE_THROWN_FROM_THE_I_THROWER;
 	}
 }

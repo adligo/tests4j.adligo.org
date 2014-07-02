@@ -41,6 +41,7 @@ public class StringUniformEvaluator implements I_UniformAssertionEvaluator<Strin
 	public I_Evaluation isNotUniform(I_CompareAssertionData<?> p) {
 		String expected = (String) p.getExpected();
 		String actual = (String) p.getActual();
+	
 		
 		I_LineTextCompareResult lineTextResult =  LineTextCompare.compare(expected, actual);
 		if (!lineTextResult.isMatched()) {

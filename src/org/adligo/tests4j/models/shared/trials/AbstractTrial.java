@@ -23,16 +23,18 @@ import org.adligo.tests4j.models.shared.asserts.DoubleAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.IdenticalAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrowableAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
+import org.adligo.tests4j.models.shared.asserts.UniformAssertCommand;
+import org.adligo.tests4j.models.shared.asserts.UniformThrownAssertCommand;
+import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.common.UniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookupMutant;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
-import org.adligo.tests4j.models.shared.asserts.uniform.StringUniformEvaluator;
+import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionCommand;
 import org.adligo.tests4j.models.shared.common.I_Platform;
 import org.adligo.tests4j.models.shared.common.PlatformEnum;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
@@ -113,6 +115,12 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		}
 	}
 	
+	public void evaluate(I_UniformThrownAssertionCommand cmd, I_Thrower p, I_ExpectedThrownData data) {
+		I_UniformAssertionEvaluator<?> eval = getEvaluator(data.getThrowableClass(), null, null);
+		if (eval != null) {
+			AssertionProcessor.evaluate(listener, cmd, eval, p);
+		}
+	}
 	@Override
 	public void assertEquals(Object p, Object a) {
 		assertEquals(MESSAGES.getTheObjectsShouldBeEqual(), p, a);
@@ -226,13 +234,13 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 				
 	@Override
 	public void assertNotSame(Object p, Object a) {
-		assertSame(MESSAGES.getTheObjectsShould_NOT_BeTheSame(), p,  a);
+		assertNotSame(MESSAGES.getTheObjectsShould_NOT_BeTheSame(), p,  a);
 	}
 
 	@Override
 	public void assertNotSame(String message, Object p, Object a) {
 		evaluate(new IdenticalAssertCommand(
-				AssertSame, message, 
+				AssertType.AssertNotSame, message, 
 				new CompareAssertionData<Object>(p, a)));
 	}
 	
@@ -254,8 +262,8 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertThrownUniform(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
-		evaluate(new ThrownAssertCommand(
-				AssertThrown, pMessage, pData), pThrower);
+		evaluate(new UniformThrownAssertCommand(
+				AssertType.AssertThrownUniform, pMessage, pData), pThrower, pData);
 	}
 	
 	public void assertUniform(String p, String a) {
@@ -270,18 +278,22 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 				new CompareAssertionData<Object>(p, a)));
 	}
 
-	private I_UniformAssertionEvaluator<?> getEvaluator(Object p, Object a) {
-		if (p == null) {
+	private I_UniformAssertionEvaluator<?> getEvaluator(Object expected, Object actual) {
+		if (expected == null) {
 			synchronized (listener) {
 				I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
 				TestFailureMutant tfm = new TestFailureMutant();
 				tfm.setMessage(messages.getTheExpectedValueShouldNeverBeNull());
 				tfm.setLocationFailed(new AssertionFailureLocation());
-				tfm.setData(new CompareAssertionData<Object>(p, a));
+				tfm.setData(new CompareAssertionData<Object>(expected, actual));
 				listener.assertFailed(new TestFailure(tfm));
 			}
 		}
-		Class<?> expectedClass = p.getClass();
+		Class<?> expectedClass = expected.getClass();
+		return getEvaluator(expectedClass, expected, actual);
+	}
+
+	private I_UniformAssertionEvaluator<?> getEvaluator(Class<?> expectedClass, Object expected, Object actual) {
 		I_UniformAssertionEvaluator<?> eval = evaluationLookupOverrides.findEvaluator(expectedClass);
 		if (eval == null) {
 			eval = evaluationLookup.findEvaluator(expectedClass);
@@ -292,13 +304,13 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 				TestFailureMutant tfm = new TestFailureMutant();
 				tfm.setMessage(messages.getNoEvaluatorFoundForClass());
 				tfm.setLocationFailed(new AssertionFailureLocation());
-				tfm.setData(new CompareAssertionData<Object>(p, a));
+				tfm.setData(new CompareAssertionData<Object>(expected, actual));
 				listener.assertFailed(new TestFailure(tfm));
 			}
 		}
 		return eval;
 	}
-
+	
 	@Override
 	public void assertGreaterThanOrEquals(double expected, double actual) {
 		evaluate(new DoubleAssertCommand(

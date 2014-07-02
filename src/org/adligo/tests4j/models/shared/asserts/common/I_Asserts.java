@@ -51,6 +51,7 @@ public interface I_Asserts extends I_Platform {
 	
 	public void assertThrown(I_ExpectedThrownData p, I_Thrower thrower);
 	public void assertThrown(String message, I_ExpectedThrownData p, I_Thrower thrower);	
+	
 	public void assertThrownUniform(I_ExpectedThrownData p, I_Thrower thrower);
 	public void assertThrownUniform(String message, I_ExpectedThrownData p, I_Thrower thrower);	
 	

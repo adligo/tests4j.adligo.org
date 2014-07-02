@@ -78,7 +78,7 @@ public class LineTextCompare  {
 			char c = chars[i];
 			if (c == '\r') {
 				if (!lastCharWasLineSeperator) {
-					sb.append(c);
+					sb.append('\n');
 					lastCharWasLineSeperator = true;
 				}
 			} else if (c == '\n') {

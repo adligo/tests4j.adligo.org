@@ -38,6 +38,9 @@ public class LineText {
 	}
 	
 	public String getLine(int i) {
+		if (lines.size() <= i) {
+			return "";
+		}
 		return lines.get(i);
 	}
 }

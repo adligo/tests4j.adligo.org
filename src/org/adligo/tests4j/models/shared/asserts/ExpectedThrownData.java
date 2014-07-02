@@ -9,22 +9,26 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 			Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 	private String message;
 	private Class<? extends Throwable> throwableClass;
+	private Throwable instance;
 	
 	public ExpectedThrownData() {}
 	
 	public ExpectedThrownData(I_ExpectedThrownData p) {
-		this(p.getThrowableClass(), p.getMessage());
+		this(p.getInstance());
 	}
+
 	
-	public ExpectedThrownData(Class<? extends Throwable> pThrowableClass, String pMessage) {
-		if (pThrowableClass == null) {
+	public ExpectedThrownData(Throwable t) {
+		if (t == null) {
 			throw new IllegalArgumentException(MESSAGES.getExpectedThrownDataRequiresThrowable());
 		}
-		throwableClass = pThrowableClass;
-		if (pMessage == null) {
+		instance = t;
+		throwableClass = t.getClass();
+		message = t.getMessage();
+		if (message == null) {
 			throw new IllegalArgumentException(MESSAGES.getExpectedThrownDataRequiresMessage());
 		}
-		message = pMessage;
+		
 	}
 	
 	/* (non-Javadoc)
@@ -40,6 +44,11 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 	@Override
 	public Class<? extends Throwable> getThrowableClass() {
 		return throwableClass;
+	}
+
+	@Override
+	public Throwable getInstance() {
+		return instance;
 	}
 	
 }

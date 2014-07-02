@@ -61,7 +61,6 @@ public enum AssertType implements I_AssertType{
 	private static Set<AssertType> getThrownTypes() {
 		Set<AssertType> toRet = new HashSet<AssertType>();
 		toRet.add(AssertThrown);
-		toRet.add(AssertThrownUniform);
 		return Collections.unmodifiableSet(toRet);
 	}
 	

@@ -21,4 +21,5 @@ public interface I_Tests4J_AssertionResultMessages {
 	public String getTheActualClassIsNotAssignableFromTheExpectedClass();
 	public String getTheTextWasNOT_Uniform();
 	public String getTheTextWasUniform();
+	public String getNothingWasThrown();
 }
