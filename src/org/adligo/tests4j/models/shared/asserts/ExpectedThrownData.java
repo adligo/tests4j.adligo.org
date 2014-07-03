@@ -5,8 +5,6 @@ import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionInputMes
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 public class ExpectedThrownData implements I_ExpectedThrownData {
-	private static final I_Tests4J_AssertionInputMessages MESSAGES = 
-			Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 	private String message;
 	private Class<? extends Throwable> throwableClass;
 	private Throwable instance;
@@ -20,13 +18,17 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 	
 	public ExpectedThrownData(Throwable t) {
 		if (t == null) {
-			throw new IllegalArgumentException(MESSAGES.getExpectedThrownDataRequiresThrowable());
+			I_Tests4J_AssertionInputMessages messages = 
+					Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
 		}
 		instance = t;
 		throwableClass = t.getClass();
 		message = t.getMessage();
 		if (message == null) {
-			throw new IllegalArgumentException(MESSAGES.getExpectedThrownDataRequiresMessage());
+			I_Tests4J_AssertionInputMessages messages = 
+					Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresMessage());
 		}
 		
 	}

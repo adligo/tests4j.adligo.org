@@ -10,7 +10,7 @@ import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMe
 
 public class IdenticalAssertCommand extends AbstractCompareAssertCommand 
 	implements I_SimpleCompareAssertCommand {
-	private static final String BAD_TYPE = 
+	public static final String BAD_TYPE = 
 			"IdenticalAssertCommand requires it's type to be one of AssertType.IDENTICAL_TYPES";
 	private CompareAssertionData<?> data;
 	private AssertType type;

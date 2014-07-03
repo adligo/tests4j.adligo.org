@@ -8,8 +8,8 @@ import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertComm
 
 public class DoubleAssertCommand extends AbstractCompareAssertCommand 
 	implements I_SimpleCompareAssertCommand {
-	private static final String BAD_TYPE = 
-			"IdenticalAssertCommand requires it's type to be one of AssertType.IDENTICAL_TYPES";
+	public static final String BAD_TYPE = 
+			"DoubleAssertCommand requires it's type to be one of AssertType.COMPARE_TYPES";
 	private CompareAssertionData<Double> data;
 	private AssertType type;
 	
