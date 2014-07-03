@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.run.discovery.ClassDiscovery;
 
 public class RelevantClassesWithTrialsCalculator {
@@ -23,8 +23,8 @@ public class RelevantClassesWithTrialsCalculator {
 		List<? extends I_TrialMetadata> trialMetas =  metadata.getAllTrialMetadata();
 		
 		for (I_TrialMetadata tm: trialMetas) {
-			TrialTypeEnum type =  tm.getType();
-			if (type == TrialTypeEnum.SourceFileTrial) {
+			TrialType type =  tm.getType();
+			if (type == TrialType.SourceFileTrial) {
 				relevantClassesToTrials.put(tm.getTestedClass(), tm);
 			}
 		}
@@ -84,7 +84,7 @@ public class RelevantClassesWithTrialsCalculator {
 				if (!si.hasInterface()) {
 					I_TrialMetadata tm = relevantClassesToTrials.get(clazzName);
 					if (tm != null) {
-						if (tm.getType() == TrialTypeEnum.SourceFileTrial) {
+						if (tm.getType() == TrialType.SourceFileTrial) {
 							trialNames.add(tm.getTrialName());
 						}
 					}

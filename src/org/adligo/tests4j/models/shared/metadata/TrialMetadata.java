@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 
 public class TrialMetadata implements I_TrialMetadata {
 	private TrialMetadataMutant mutant;
@@ -70,7 +70,7 @@ public class TrialMetadata implements I_TrialMetadata {
 		return mutant.equals(obj);
 	}
 
-	public TrialTypeEnum getType() {
+	public TrialType getType() {
 		return mutant.getType();
 	}
 

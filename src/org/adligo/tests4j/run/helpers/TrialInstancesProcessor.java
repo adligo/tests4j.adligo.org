@@ -17,7 +17,7 @@ import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.PlatformEnum;
 import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
@@ -202,7 +202,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	 */
 	private void addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
 		
-		TrialTypeEnum type = TrialTypeFinder.getTypeInternal(trialClazz);
+		TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
 		I_CoverageRecorder trialCoverageRecorder = startRecordingTrial(trialClazz);
 		
 		TrialDescription desc = new TrialDescription(trialClazz, memory.getReporter());
@@ -287,7 +287,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		return trialCoverageRecorder;
 	}
 	
-	private void failTrialOnException(String message, Throwable p, TrialTypeEnum type) {
+	private void failTrialOnException(String message, Throwable p, TrialType type) {
 		trialResultMutant.setPassed(false);
 		TrialFailure failure = new TrialFailure(message, p);
 		trialResultMutant.setFailure(failure);
@@ -317,7 +317,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		
 		trialResultMutant = new BaseTrialResultMutant();
 			
-		TrialTypeEnum type = trialDescription.getType();
+		TrialType type = trialDescription.getType();
 		trialResultMutant.setType(type);
 		trialResultMutant.setTrialName(trialName);
 		runBeforeTrial();
@@ -327,7 +327,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
 				reporter.log("running trial tests " + trialName);
 			}
-			if (type == TrialTypeEnum.MetaTrial) {
+			if (type == TrialType.MetaTrial) {
 				runMetaTrialMethods();
 			}
 			runTests();
@@ -472,7 +472,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		hadAfterTrialTests = false;
 		inAfterTrialTests = true;
 		
-		TrialTypeEnum type = trialDescription.getType();
+		TrialType type = trialDescription.getType();
 		
 		
 		switch (type) {
@@ -490,7 +490,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	}
 
 	private void afterApiTrialTests(I_CoverageRecorder trialCoverageRecorder,
-			TrialTypeEnum type) {
+			TrialType type) {
 		Method clazzMethod = null;
 		List<I_PackageCoverage> coverage;
 		Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();
@@ -548,7 +548,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	}
 
 	private void afterSourceFileTrialTests(
-			I_CoverageRecorder trialCoverageRecorder, TrialTypeEnum type) {
+			I_CoverageRecorder trialCoverageRecorder, TrialType type) {
 		Method clazzMethod = null;
 		List<I_PackageCoverage> coverage;
 		Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();

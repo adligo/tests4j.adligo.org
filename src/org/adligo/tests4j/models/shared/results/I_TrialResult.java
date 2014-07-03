@@ -2,14 +2,14 @@ package org.adligo.tests4j.models.shared.results;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 
 public interface I_TrialResult {
 
 	public abstract String getName();
 
 
-	public abstract TrialTypeEnum getType();
+	public abstract TrialType getType();
 
 	public abstract List<I_TestResult> getResults();
 

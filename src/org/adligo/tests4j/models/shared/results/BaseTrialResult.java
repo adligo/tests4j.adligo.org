@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 
 public class BaseTrialResult implements I_TrialResult {
 	private BaseTrialResultMutant mutant;
@@ -33,7 +33,7 @@ public class BaseTrialResult implements I_TrialResult {
 		return mutant.getName();
 	}
 
-	public TrialTypeEnum getType() {
+	public TrialType getType() {
 		return mutant.getType();
 	}
 

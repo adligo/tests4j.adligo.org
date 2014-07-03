@@ -1,9 +1,9 @@
 package org.adligo.tests4j.models.shared.trials;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.results.feedback.I_ApiTrial_TestsResults;
 
-@TrialType(type = TrialTypeEnum.ApiTrial)
+@TrialTypeAnnotation(type = TrialType.ApiTrial)
 public abstract class ApiTrial extends AbstractTrial implements I_ApiTrial  {
 	/**
 	 * //TODO this should probably take 

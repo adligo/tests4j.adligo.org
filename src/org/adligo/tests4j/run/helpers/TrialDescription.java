@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TrialDescriptionMessages;
@@ -44,7 +44,7 @@ public class TrialDescription implements I_TrialDescription {
 	private Method afterTrialTestsMethod;
 	private Method afterTrialMethod;
 	private final List<TestDescription> testMethods = new CopyOnWriteArrayList<TestDescription>();
-	private TrialTypeEnum type;
+	private TrialType type;
 	private boolean trialCanRun = false;
 	private String resultFailureMessage;
 	private Exception resultException;
@@ -274,9 +274,9 @@ public class TrialDescription implements I_TrialDescription {
 		return true;
 	}
 
-	public TrialTypeEnum getType() {
+	public TrialType getType() {
 		if (type == null) {
-			return TrialTypeEnum.UnknownTrialType;
+			return TrialType.UnknownTrialType;
 		}
 		return type;
 	}

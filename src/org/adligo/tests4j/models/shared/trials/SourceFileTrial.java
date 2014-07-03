@@ -1,9 +1,9 @@
 package org.adligo.tests4j.models.shared.trials;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.results.feedback.I_SourceFileTrial_TestsResults;
 
-@TrialType(type = TrialTypeEnum.SourceFileTrial)
+@TrialTypeAnnotation(type = TrialType.SourceFileTrial)
 public abstract class SourceFileTrial extends AbstractTrial implements I_SourceFileTrial  {
 	
 	/**

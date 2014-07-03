@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
 import org.adligo.tests4j.models.shared.metadata.I_TestMetadata;
@@ -175,7 +175,7 @@ public class Tests4J_NotificationManager {
 			long timeout = td.getTimeout();
 			tmm.setTimeout(timeout);
 			
-			TrialTypeEnum type = td.getType();
+			TrialType type = td.getType();
 			tmm.setType(type);
 
 			switch (type) {

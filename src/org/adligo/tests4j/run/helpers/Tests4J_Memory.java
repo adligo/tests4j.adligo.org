@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
@@ -34,7 +34,7 @@ import org.adligo.tests4j.models.shared.trials.IgnoreTest;
 import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
 import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
-import org.adligo.tests4j.models.shared.trials.TrialType;
+import org.adligo.tests4j.models.shared.trials.TrialTypeAnnotation;
 import org.adligo.tests4j.models.shared.trials.UseCaseScope;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 
@@ -159,7 +159,7 @@ public class Tests4J_Memory {
 	private List<Class<?>> getCommonClasses(I_Tests4J_Reporter log) {
 		List<Class<?>> toRet = new ArrayList<Class<?>>();
 		//start with common
-		toRet.add(TrialTypeEnum.class);
+		toRet.add(TrialType.class);
 		
 		toRet.add(I_Immutable.class);
 		
@@ -170,7 +170,7 @@ public class Tests4J_Memory {
 		toRet.add(IgnoreTrial.class);
 		toRet.add(PackageScope.class);
 		toRet.add(SourceFileScope.class);
-		toRet.add(TrialType.class);
+		toRet.add(TrialTypeAnnotation.class);
 		toRet.add(UseCaseScope.class);
 		
 		ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -233,7 +233,7 @@ public class Tests4J_Memory {
 					" has " + p.getTestMethodsSize());
 		}
 		if (p.isTrialCanRun()) {
-			if (p.getType() != TrialTypeEnum.MetaTrial) {
+			if (p.getType() != TrialType.MetaTrial) {
 				trialDescriptionsToRun.add(p);
 			} else {
 				metaTrialDescription = p;

@@ -1,6 +1,6 @@
 package org.adligo.tests4j.run.helpers;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 
 /**
  * this interface was added to provide easy mocking
@@ -13,5 +13,5 @@ import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
  */
 public interface I_TrialDescription {
 	public String getTrialName();
-	public TrialTypeEnum getType();
+	public TrialType getType();
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 
 public class BaseTrialResultMutant implements I_TrialResult {
 	public static final String COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS = "Coverage is not currently supported by JTests";
@@ -24,7 +24,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 			"TrialResultMutant requires a non empty trialName.";
 	private String trialName;
 	
-	private TrialTypeEnum testType;
+	private TrialType testType;
 	private Map<String, TestResultMutant> results = 
 			new HashMap<String,TestResultMutant> ();
 	private boolean ignored;
@@ -81,7 +81,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	 * @see org.adligo.jtests.base.shared.results.I_TrialResult#getTrialType()
 	 */
 	@Override
-	public TrialTypeEnum getType() {
+	public TrialType getType() {
 		return testType;
 	}
 	/* (non-Javadoc)
@@ -117,7 +117,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	public void setTrialName(String testName) {
 		this.trialName = testName;
 	}
-	public void setType(TrialTypeEnum p) {
+	public void setType(TrialType p) {
 		this.testType = p;
 	}
 	public void setResults(List<I_TestResult> p) {

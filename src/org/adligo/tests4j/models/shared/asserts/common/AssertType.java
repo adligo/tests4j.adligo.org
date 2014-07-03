@@ -32,6 +32,7 @@ public enum AssertType implements I_AssertType{
 	AssertGreaterThanOrEquals(13);
 	
 	public static Set<AssertType> BOOLEAN_TYPES = getBooleanTypes();
+	public static Set<AssertType> EQUAL_TYPES = getEqualTypes();
 	public static Set<AssertType> IDENTICAL_TYPES = getIdenticalTypes();
 	public static Set<AssertType> THROWN_TYPES = getThrownTypes();
 	public static Set<AssertType> UNIFORM_TYPES = getUniformTypes();
@@ -48,10 +49,16 @@ public enum AssertType implements I_AssertType{
 		return Collections.unmodifiableSet(toRet);
 	}
 	
-	private static Set<AssertType> getIdenticalTypes() {
+	private static Set<AssertType> getEqualTypes() {
 		Set<AssertType> toRet = new HashSet<AssertType>();
 		toRet.add(AssertEquals);
 		toRet.add(AssertNotEquals);
+		return Collections.unmodifiableSet(toRet);
+	}
+	
+	private static Set<AssertType> getIdenticalTypes() {
+		Set<AssertType> toRet = new HashSet<AssertType>();
+		toRet.addAll(EQUAL_TYPES);
 		toRet.add(AssertSame);
 		toRet.add(AssertNotSame);
 		return Collections.unmodifiableSet(toRet);

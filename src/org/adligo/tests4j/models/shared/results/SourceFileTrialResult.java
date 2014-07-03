@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.results;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverage;
 

@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.metadata;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 
 public interface I_TrialMetadata {
 
@@ -22,7 +22,7 @@ public interface I_TrialMetadata {
 	
 	public int getSkippedTestCount();
 	
-	public TrialTypeEnum getType();
+	public TrialType getType();
 
 	public String getTestedClass() ;
 

@@ -10,7 +10,7 @@ import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.system.CoveragePluginWrapper;
 import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
@@ -88,8 +88,8 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			List<Class< ? extends I_Trial>> instrumentedNonMetaTrials = new ArrayList<Class< ? extends I_Trial>>();
 			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(allTrialClasses);
 			for (Class<? extends I_AbstractTrial> trialClass: instrumentedTrials) {
-				TrialTypeEnum type = TrialTypeFinder.getTypeInternal(trialClass);
-				if (type == TrialTypeEnum.MetaTrial) {
+				TrialType type = TrialTypeFinder.getTypeInternal(trialClass);
+				if (type == TrialType.MetaTrial) {
 					params.setMetaTrialClass((Class<? extends I_MetaTrial>) trialClass);
 				} else {
 					instrumentedNonMetaTrials.add((Class<? extends I_Trial>) trialClass);

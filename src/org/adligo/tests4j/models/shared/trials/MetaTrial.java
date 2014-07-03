@@ -3,12 +3,12 @@ package org.adligo.tests4j.models.shared.trials;
 import java.io.IOException;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.RelevantClassesWithTrialsCalculator;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 
-@TrialType(type = TrialTypeEnum.MetaTrial)
+@TrialTypeAnnotation(type = TrialType.MetaTrial)
 public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 	private RelevantClassesWithTrialsCalculator calculator;
 	private double minPercentCodeCoverage;

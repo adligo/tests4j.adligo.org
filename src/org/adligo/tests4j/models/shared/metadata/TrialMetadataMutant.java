@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
+import org.adligo.tests4j.models.shared.common.TrialType;
 
 public class TrialMetadataMutant implements I_TrialMetadata {
 	private static final String TRIAL_METADATA_MUTANT_REQUIRES_A_NON_NULL_TYPE = "TrialMetadataMutant requires a non null type.";
@@ -14,7 +14,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 	private String beforeTrialMethodName;
 	private String afterTrialMethodName;
 	private List<TestMetadataMutant> tests = new ArrayList<TestMetadataMutant>();
-	private TrialTypeEnum type;
+	private TrialType type;
 	private String testedClass;
 	private String testedPackage;
 	private String system;
@@ -122,7 +122,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		return toRet;
 	}
 
-	public TrialTypeEnum getType() {
+	public TrialType getType() {
 		return type;
 	}
 
@@ -146,7 +146,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		this.tests = tests;
 	}
 
-	public void setType(TrialTypeEnum type) {
+	public void setType(TrialType type) {
 		this.type = type;
 	}
 
