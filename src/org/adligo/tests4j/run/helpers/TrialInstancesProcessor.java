@@ -47,11 +47,11 @@ import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
-import org.adligo.tests4j.models.shared.trials.ApiTrial;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.I_ApiTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
 import org.adligo.tests4j.models.shared.trials.I_TrialProcessorBindings;
-import org.adligo.tests4j.models.shared.trials.SourceFileTrial;
 
 public class TrialInstancesProcessor implements Runnable, 
 I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
@@ -523,8 +523,8 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		
 		boolean passed = false;
 		try {
-			if (trial instanceof ApiTrial) {
-				((ApiTrial) trial).afterTrialTests(apiInfoMut);
+			if (trial instanceof I_ApiTrial) {
+				((I_ApiTrial) trial).afterTrialTests(apiInfoMut);
 			}
 			passed = true;
 		} catch (AfterTrialTestsAssertionFailure x) {
@@ -579,8 +579,8 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		trial.setBindings(this);
 		boolean passed = false;
 		try {
-			if (trial instanceof SourceFileTrial) {
-				((SourceFileTrial) trial).afterTrialTests(infoMut);
+			if (trial instanceof I_SourceFileTrial) {
+				((I_SourceFileTrial) trial).afterTrialTests(infoMut);
 			}
 			passed = true;
 		} catch (AfterTrialTestsAssertionFailure x) {

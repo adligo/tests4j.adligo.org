@@ -22,5 +22,11 @@ public class ApiTrial_TestsResultsMutant extends TestsResultsMutant
 		this.coverage = coverage;
 	}
 	
-	
+	@Override
+	public boolean hasRecordedCoverage() {
+		if (coverage == null) {
+			return false;
+		}
+		return true;
+	}
 }

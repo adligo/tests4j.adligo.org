@@ -17,5 +17,13 @@ public class SourceFileTrial_TestsResults extends TestsResults
 	public I_SourceFileCoverage getCoverage() {
 		return coverage;
 	}
+
+	@Override
+	public boolean hasRecordedCoverage() {
+		if (coverage == null) {
+			return false;
+		}
+		return true;
+	}
 	
 }

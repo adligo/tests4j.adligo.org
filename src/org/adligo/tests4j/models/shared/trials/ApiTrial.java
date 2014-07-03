@@ -4,7 +4,7 @@ import org.adligo.tests4j.models.shared.common.TrialTypeEnum;
 import org.adligo.tests4j.models.shared.results.feedback.I_ApiTrial_TestsResults;
 
 @TrialType(type = TrialTypeEnum.ApiTrial)
-public abstract class ApiTrial extends AbstractTrial implements I_Trial  {
+public abstract class ApiTrial extends AbstractTrial implements I_ApiTrial  {
 	/**
 	 * //TODO this should probably take 
 	 * a AipTrial_TestRunInfo parameter which includes;

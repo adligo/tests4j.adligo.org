@@ -22,5 +22,11 @@ public class ApiTrial_TestsResults extends TestsResults
 		return coverage;
 	}
 	
-	
+	@Override
+	public boolean hasRecordedCoverage() {
+		if (coverage == null) {
+			return false;
+		}
+		return true;
+	}
 }

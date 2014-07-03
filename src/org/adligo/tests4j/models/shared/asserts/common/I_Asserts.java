@@ -10,8 +10,6 @@ public interface I_Asserts extends I_Platform {
 	
 	public void assertEquals(Object p, Object a);
 	public void assertEquals(String message, Object p, Object a);	
-	public void assertEquals(Throwable p, Throwable a);
-	public void assertEquals(String message, Throwable p, Throwable a);	
 
 	public void assertFalse(boolean p);
 	public void assertFalse(String message, boolean p);	

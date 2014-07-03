@@ -133,19 +133,6 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 				new CompareAssertionData<Object>(p, a)));
 	}
 	
-	
-	@Override
-	public void assertEquals(Throwable p, Throwable a) {
-		assertEquals(MESSAGES.getTheObjectsShouldBeEqual(), p, a);
-	}
-
-	@Override
-	public void assertEquals(String message, Throwable p, Throwable a) {
-		evaluate(new ThrowableAssertCommand(
-				AssertEquals, message, 
-				new CompareAssertionData<Throwable>(p, a)));
-	}
-	
 	@Override
 	public void assertTrue(boolean p) {
 		assertTrue(MESSAGES.getTheValueShouldBeTrue(), p);

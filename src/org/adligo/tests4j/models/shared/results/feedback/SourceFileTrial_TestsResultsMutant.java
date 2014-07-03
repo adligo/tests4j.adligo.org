@@ -27,4 +27,12 @@ public class SourceFileTrial_TestsResultsMutant extends TestsResultsMutant imple
 	public void setCoverage(I_SourceFileCoverage p) {
 		this.coverage = new SourceFileCoverageMutant(p);
 	}
+
+	@Override
+	public boolean hasRecordedCoverage() {
+		if (coverage == null) {
+			return false;
+		}
+		return true;
+	}
 }
