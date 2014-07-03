@@ -75,6 +75,7 @@ public class CompareAssertionData<T> implements I_Immutable, I_CompareAssertionD
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

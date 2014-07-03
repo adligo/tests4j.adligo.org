@@ -9,6 +9,13 @@ import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
 
 
+/**
+ * a immutable class to represent boolean asserts (assertTrue, assertFalse, assertNull, assertNotNull)
+ * with only one parameter (ie non comparison asserts).
+ * 
+ * @author scott
+ *
+ */
 public class BooleanAssertCommand extends AbstractAssertCommand 
 	implements I_SimpleAssertCommand, I_AssertionData {
 	/**
@@ -78,12 +85,11 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 				if (value == null) {
 					if (other.value != null)
 						return false;
-				} else if (!value.equals(other.value))
-					return false;
+				} else if (value.equals(other.value))
+					return true;
 			} catch (ClassCastException x) {
 				return false;
 			}
-			return true;
 		}
 		return false;
 	}

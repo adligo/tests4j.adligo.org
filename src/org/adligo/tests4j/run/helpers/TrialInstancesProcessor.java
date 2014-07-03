@@ -336,7 +336,10 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 				reporter.log("finished trial tests" + trialName);
 			}
 			
-			runAfterTrialTests(trialCoverageRecorder);
+			if (trialResultMutant.isPassed()) {
+				//skip this method unless everything passed in the trial
+				runAfterTrialTests(trialCoverageRecorder);
+			}
 			runAfterTrial();
 		}
 		

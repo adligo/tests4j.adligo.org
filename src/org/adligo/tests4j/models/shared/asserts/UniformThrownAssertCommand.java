@@ -49,7 +49,16 @@ public class UniformThrownAssertCommand extends AbstractAssertCommand
 
 	@Override
 	public I_AssertionData getData() {
-		return new CompareAssertionData<>(data,actual);
+		ThrownAssertionDataMutant tadm = new ThrownAssertionDataMutant();
+		tadm.setExpectedMessage(data.getMessage());
+		tadm.setExpectedThrowable(data.getThrowableClass());
+		
+		//there may not have been a caught exception
+		if (actual != null) {
+			tadm.setActualThrowable(actual.getClass());
+			tadm.setActualMessage(actual.getMessage());
+		}
+		return new ThrownAssertionData(tadm);
 	}
 
 	

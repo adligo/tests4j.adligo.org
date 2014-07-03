@@ -41,4 +41,26 @@ public abstract class AbstractAssertCommand implements I_AssertCommand {
 	public String getFailureMessage() {
 		return failureMessage;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractAssertCommand other = (AbstractAssertCommand) obj;
+		if (failureMessage == null) {
+			if (other.failureMessage != null)
+				return false;
+		} else if (!failureMessage.equals(other.failureMessage))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
 }
