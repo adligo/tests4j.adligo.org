@@ -7,6 +7,8 @@ import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_Evaluation;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
+import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 public class UniformAssertCommand extends AbstractAssertCommand 
 	implements I_UniformAssertionCommand {
@@ -27,6 +29,10 @@ public class UniformAssertCommand extends AbstractAssertCommand
 		data = pData;
 		if (data == null) {
 			throw new IllegalArgumentException(NULL_DATA);
+		}
+		if (data.getExpected() == null) {
+			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}
 	}
 

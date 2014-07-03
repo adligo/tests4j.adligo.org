@@ -3,6 +3,8 @@ package org.adligo.tests4j.models.shared.asserts;
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertCommand;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 
 
 
@@ -15,6 +17,10 @@ public class IdenticalAssertCommand extends AbstractCompareAssertCommand
 	
 	public IdenticalAssertCommand(AssertType pType, String failureMessage, CompareAssertionData<?> pData) {
 		super(pType, failureMessage, pData);
+		if (pData.getExpected() == null) {
+			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
+		}
 		if (!AssertType.IDENTICAL_TYPES.contains(pType)) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}

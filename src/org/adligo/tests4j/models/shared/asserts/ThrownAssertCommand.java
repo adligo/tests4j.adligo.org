@@ -9,13 +9,11 @@ import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompare;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
+import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 public class ThrownAssertCommand extends AbstractAssertCommand 
 	implements I_Immutable, I_ThrownAssertCommand {
-	/**
-	 * should only show up to a developer of tests4j
-	 */
-	public static final String THROWABLE_ASSERTION_COMMAND_REQUIRES_DATA = "ThrowableAssertionCommand requires data.";
 	/**
 	 * should only show up to a developer of tests4j
 	 */
@@ -41,13 +39,18 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		type = (AssertType) pType;
 		data = pData;
 		if (data == null) {
-			throw new IllegalArgumentException(THROWABLE_ASSERTION_COMMAND_REQUIRES_DATA);
+			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean evaluate(I_Thrower thrower) {
+		if (thrower == null) {
+			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			throw new IllegalArgumentException(messages.getIThrowerIsRequired());
+		}
 		Class<? extends Throwable> throwableClazz = 
 				data.getThrowableClass();
 		String expected_message = 

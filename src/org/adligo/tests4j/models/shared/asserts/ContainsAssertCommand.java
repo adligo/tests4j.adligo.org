@@ -7,6 +7,8 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
+import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 public class ContainsAssertCommand extends AbstractAssertCommand 
 implements I_SimpleAssertCommand, I_AssertionData {
@@ -19,6 +21,10 @@ implements I_SimpleAssertCommand, I_AssertionData {
 	public ContainsAssertCommand(String pFailureMessage,Collection<?> pCollection, Object pValue) {
 		super(AssertType.AssertContains, pFailureMessage);
 		collection = pCollection;
+		if (collection == null) {
+			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
+		}
 		value = pValue;
 	}
 	

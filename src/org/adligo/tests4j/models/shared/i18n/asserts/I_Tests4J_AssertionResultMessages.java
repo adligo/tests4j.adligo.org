@@ -23,4 +23,5 @@ public interface I_Tests4J_AssertionResultMessages {
 	public String getTheTextWasUniform();
 	public String getNothingWasThrown();
 	public String getAnUnexpectedExceptionWasThrown();
+	public String getIThrowerIsRequired();
 }
