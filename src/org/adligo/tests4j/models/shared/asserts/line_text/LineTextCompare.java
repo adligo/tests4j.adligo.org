@@ -20,6 +20,7 @@ public class LineTextCompare  {
 		LineText actualLT = new LineText(exActual);
 		
 		List<LineDiff> toRet = new ArrayList<LineDiff>();
+		boolean passed = true;
 		for (int i = 0; i < exampleLT.getLines(); i++) {
 			String exampleLine = exampleLT.getLine(i);
 			String actualLine = actualLT.getLine(i);
@@ -28,7 +29,12 @@ public class LineTextCompare  {
 			char [] actualChars = actualLine.toCharArray();
 			
 			Integer startDiff = null;
-			for (int j = 0; j < exampleChars.length; j++) {
+			int len = exampleChars.length;
+			if (actualChars.length < len) {
+				len = actualChars.length;
+				passed = false;
+			}
+			for (int j = 0; j < len; j++) {
 				char c = exampleChars[j];
 				char a = actualChars[j];
 				if (c != a) {
@@ -44,7 +50,7 @@ public class LineTextCompare  {
 				exampleChars = exampleRev.toCharArray();
 				actualChars = actualRev.toCharArray();
 				Integer fromEndDiff = null;
-				for (int j = 0; j < exampleChars.length; j++) {
+				for (int j = 0; j < len; j++) {
 					char c = exampleChars[j];
 					char a = actualChars[j];
 					if (c != a) {
@@ -56,9 +62,10 @@ public class LineTextCompare  {
 				StartEndDiff actualDiff = new StartEndDiff(startDiff, actualLine.length() - fromEndDiff);
 				toRet.add(new LineDiff(exampleLine, actualLine,
 						i, new StartEndDiffPair(exampleDiff, actualDiff)));
+				
 			}
 		}
-		boolean passed = true;
+		
 		if (toRet.size() >= 1) {
 			passed = false;
 		}

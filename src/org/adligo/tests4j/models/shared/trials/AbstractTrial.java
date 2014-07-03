@@ -229,7 +229,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertThrown(I_ExpectedThrownData pData, I_Thrower pThrower) {
-		assertThrown(MESSAGES.getTheExpectedThrowableDataDidNotMatchTheActual(), pData, pThrower);
+		assertThrown(MESSAGES.getNothingWasThrown(), pData, pThrower);
 	}
 
 	@Override
