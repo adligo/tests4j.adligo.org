@@ -14,14 +14,12 @@ import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertU
 
 import java.util.Collection;
 
-import org.adligo.tests4j.models.shared.asserts.AssertionFailureLocation;
 import org.adligo.tests4j.models.shared.asserts.AssertionProcessor;
 import org.adligo.tests4j.models.shared.asserts.BooleanAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.DoubleAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.IdenticalAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.ThrowableAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.UniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.UniformThrownAssertCommand;
@@ -38,8 +36,6 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertion
 import org.adligo.tests4j.models.shared.common.I_Platform;
 import org.adligo.tests4j.models.shared.common.PlatformEnum;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
-import org.adligo.tests4j.models.shared.results.TestFailure;
-import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -109,7 +105,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	public void evaluate(I_UniformAssertionCommand cmd) {
 		Object e = cmd.getExpected();
 		Object a = cmd.getActual();
-		I_UniformAssertionEvaluator<?> eval = getEvaluator(e, a);
+		I_UniformAssertionEvaluator<?> eval = getEvaluator(cmd.getFailureMessage(), e, a);
 		if (eval != null) {
 			AssertionProcessor.evaluate(listener, cmd, eval);
 		}
@@ -265,16 +261,9 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 				new CompareAssertionData<Object>(p, a)));
 	}
 
-	private I_UniformAssertionEvaluator<?> getEvaluator(Object expected, Object actual) {
+	private I_UniformAssertionEvaluator<?> getEvaluator(String message, Object expected, Object actual) {
 		if (expected == null) {
-			synchronized (listener) {
-				I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
-				TestFailureMutant tfm = new TestFailureMutant();
-				tfm.setMessage(messages.getTheExpectedValueShouldNeverBeNull());
-				tfm.setLocationFailed(new AssertionFailureLocation());
-				tfm.setData(new CompareAssertionData<Object>(expected, actual));
-				listener.assertFailed(new TestFailure(tfm));
-			}
+			throw new NullPointerException("The expected value is null.");
 		}
 		Class<?> expectedClass = expected.getClass();
 		return getEvaluator(expectedClass, expected, actual);
@@ -286,14 +275,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 			eval = evaluationLookup.findEvaluator(expectedClass);
 		}
 		if (eval == null) {
-			synchronized (listener) {
-				I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
-				TestFailureMutant tfm = new TestFailureMutant();
-				tfm.setMessage(messages.getNoEvaluatorFoundForClass());
-				tfm.setLocationFailed(new AssertionFailureLocation());
-				tfm.setData(new CompareAssertionData<Object>(expected, actual));
-				listener.assertFailed(new TestFailure(tfm));
-			}
+			throw new IllegalStateException(MESSAGES.getNoEvaluatorFoundForClass() + expectedClass.getName());
 		}
 		return eval;
 	}

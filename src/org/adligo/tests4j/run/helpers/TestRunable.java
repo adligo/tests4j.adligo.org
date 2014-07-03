@@ -8,6 +8,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.PlatformEnum;
+import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
@@ -15,6 +16,7 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.models.shared.trials.I_TrialProcessorBindings;
@@ -22,7 +24,6 @@ import org.adligo.tests4j.models.shared.trials.I_TrialProcessorBindings;
 public class TestRunable implements Runnable, I_AssertListener,
 I_TrialProcessorBindings {
 
-	public static final String UNEXPECTED_EXCEPTION_WAS_THROWN = "Unexpected Exception was thrown.";
 	private Method testMethod;
 	private I_AbstractTrial trial;
 	private I_TestFinishedListener listener;
@@ -65,7 +66,9 @@ I_TrialProcessorBindings {
 			TestFailureMutant failure = new TestFailureMutant();
 			failure.setException(unexpected);
 			failure.setLocationFailed(unexpected);
-			failure.setMessage(UNEXPECTED_EXCEPTION_WAS_THROWN);
+			I_Tests4J_AssertionResultMessages messages = 
+						Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			failure.setMessage(messages.getAnUnexpectedExceptionWasThrown());
 			testResultMutant.setFailure(failure);
 		
 		}
