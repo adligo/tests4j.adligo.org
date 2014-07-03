@@ -6,8 +6,6 @@ import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompare;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -17,7 +15,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	/**
 	 * should only show up to a developer of tests4j
 	 */
-	private static final String BAD_TYPE = "ThrowableAssertionCommand requires a type in AssertType.THROWN_TYPES.";
+	private static final String BAD_TYPE = "ThrownAssertCommand requires a type in AssertType.AssertThrown.";
 	
 	private I_ExpectedThrownData data;
 	private AssertType type;
@@ -25,7 +23,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	
 	public ThrownAssertCommand(I_AssertType pType, String pFailureMessage) {
 		super(pType, pFailureMessage);
-		if (!AssertType.AssertNotThrown.equals(pType)) {
+		if (!AssertType.AssertThrown.equals(pType)) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
 	}
@@ -33,7 +31,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	public ThrownAssertCommand(I_AssertType pType, 
 			String pFailureMessage, I_ExpectedThrownData pData) {
 		super(pType, pFailureMessage);
-		if (!AssertType.THROWN_TYPES.contains(pType)) {
+		if (AssertType.AssertThrown != pType) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
 		type = (AssertType) pType;
@@ -44,7 +42,6 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean evaluate(I_Thrower thrower) {
 		if (thrower == null) {
@@ -56,49 +53,20 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		String expected_message = 
 				data.getMessage();
 		
-		switch (type) {
-			case AssertThrown:
-				try {
-					thrower.run();
-				} catch (Throwable x) {
-					caught = x;
-				}
-				if (caught == null) {
-					return false;
-				}
-				if ( !throwableClazz.equals(caught.getClass())) {
-					return false;
-				}
-				if (expected_message.equals(caught.getMessage())) {
-					return true;
-				}
-				return false;
-			case AssertNotThrown:
-				try {
-					thrower.run();
-				} catch (Exception x) {
-					caught = x;
-				}
-				if (caught != null) {
-					return false;
-				}
-				return true;
-			case AssertThrownUniform:
-				try {
-					thrower.run();
-				} catch (Exception x) {
-					caught = x;
-				}
-				if (caught == null) {
-					return false;
-				}
-				if ( !throwableClazz.equals(caught.getClass())) {
-					return false;
-				}
-				if (expected_message.equals(caught.getMessage())) {
-					return true;
-				}
-				return false;
+		
+		try {
+			thrower.run();
+		} catch (Throwable x) {
+			caught = x;
+		}
+		if (caught == null) {
+			return false;
+		}
+		if ( !throwableClazz.equals(caught.getClass())) {
+			return false;
+		}
+		if (expected_message.equals(caught.getMessage())) {
+			return true;
 		}
 		return false;
 	}

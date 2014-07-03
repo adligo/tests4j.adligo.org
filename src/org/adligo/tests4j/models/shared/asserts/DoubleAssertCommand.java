@@ -9,13 +9,13 @@ import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertComm
 public class DoubleAssertCommand extends AbstractCompareAssertCommand 
 	implements I_SimpleCompareAssertCommand {
 	public static final String BAD_TYPE = 
-			"DoubleAssertCommand requires it's type to be one of AssertType.COMPARE_TYPES";
+			"DoubleAssertCommand requires it's type to be one of AssertType.AssertGreaterThanOrEquals";
 	private CompareAssertionData<Double> data;
 	private AssertType type;
 	
 	public DoubleAssertCommand(AssertType pType, String failureMessage, CompareAssertionData<Double> pData) {
 		super(pType, failureMessage, pData);
-		if (!AssertType.COMPARE_TYPES.contains(pType)) {
+		if (AssertType.AssertGreaterThanOrEquals != pType) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
 		type = (AssertType) pType;
