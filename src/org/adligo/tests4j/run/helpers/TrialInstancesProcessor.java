@@ -277,7 +277,9 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			String name = trialClazz.getName();
 			trialCoverageRecorder = memory.getRecorder(name);
 			if (trialCoverageRecorder == null) {
-				trialCoverageRecorder = plugin.createRecorder(name);
+				//@diagram sync on 7/3/2014
+				// for Overview.seq 
+				trialCoverageRecorder = memory.createRecorder(name);
 				memory.addRecorder(name, trialCoverageRecorder);
 			}
 		}
