@@ -297,7 +297,7 @@ public class Tests4J_Memory {
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public void addRecorder(String p, I_CoverageRecorder recorder) {
+	public synchronized void addRecorder(String p, I_CoverageRecorder recorder) {
 		recorders.put(p, recorder);
 	}
 	
@@ -309,7 +309,7 @@ public class Tests4J_Memory {
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public I_CoverageRecorder getRecorder(String p) {
+	public synchronized I_CoverageRecorder getRecorder(String p) {
 		return recorders.get(p);
 	}
 	
