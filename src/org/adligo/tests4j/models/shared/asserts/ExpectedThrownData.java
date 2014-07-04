@@ -4,6 +4,14 @@ import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
+/**
+ * a immutable class to represent
+ * when the author of a test expects 
+ * a Throwable to be thrown.
+ * 
+ * @author scott
+ *
+ */
 public class ExpectedThrownData implements I_ExpectedThrownData {
 	private String message;
 	private Class<? extends Throwable> throwableClass;
@@ -51,6 +59,38 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 	@Override
 	public Throwable getInstance() {
 		return instance;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((message == null) ? 0 : message.hashCode());
+		result = prime * result
+				+ ((throwableClass == null) ? 0 : throwableClass.getName().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExpectedThrownData other = (ExpectedThrownData) obj;
+		if (message == null) {
+			if (other.message != null)
+				return false;
+		} else if (!message.equals(other.message))
+			return false;
+		if (throwableClass == null) {
+			if (other.throwableClass != null)
+				return false;
+		} else if (!throwableClass.equals(other.throwableClass))
+			return false;
+		return true;
 	}
 	
 }

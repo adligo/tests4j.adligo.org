@@ -10,7 +10,8 @@ import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
 
 
 /**
- * a immutable class to represent boolean asserts (assertTrue, assertFalse, assertNull, assertNotNull)
+ * a immutable [with the exception of evaluate()] class to represent 
+ * boolean asserts (assertTrue, assertFalse, assertNull, assertNotNull)
  * with only one parameter (ie non comparison asserts).
  * 
  * @author scott

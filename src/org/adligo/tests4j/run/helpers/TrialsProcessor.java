@@ -126,6 +126,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			I_CoverageRecorder allCoverageRecorder = plugin.createRecorder(mainScope);
 			memory.addRecorder(mainScope, allCoverageRecorder);
 			//@diagram Overview.seq sync on 5/1/2014 'startRecordingTrialRun'
+			//ok so the main recording is done on the main thread.
 			allCoverageRecorder.startRecording();
 		}
 		

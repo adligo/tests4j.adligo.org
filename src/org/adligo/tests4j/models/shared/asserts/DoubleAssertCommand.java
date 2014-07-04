@@ -5,7 +5,13 @@ import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertCommand;
 
 
-
+/**
+ * a immutable class [with the exception of evaluate()] 
+ * that represents a command to compare two double values.
+ * 
+ * @author scott
+ *
+ */
 public class DoubleAssertCommand extends AbstractCompareAssertCommand 
 	implements I_SimpleCompareAssertCommand {
 	public static final String BAD_TYPE = 
@@ -13,6 +19,13 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 	private CompareAssertionData<Double> data;
 	private AssertType type;
 	
+	/**
+	 * 
+	 * @param pType this may accept types other than AssertType.AssertGreaterThanOrEquals
+	 *  in the future.
+	 * @param failureMessage
+	 * @param pData
+	 */
 	public DoubleAssertCommand(AssertType pType, String failureMessage, CompareAssertionData<Double> pData) {
 		super(pType, failureMessage, pData);
 		if (AssertType.AssertGreaterThanOrEquals != pType) {

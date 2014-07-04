@@ -1,7 +1,6 @@
 package org.adligo.tests4j.models.shared.asserts;
 
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
@@ -16,19 +15,12 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 public class UniformThrownAssertCommand extends AbstractAssertCommand 
 	implements I_UniformThrownAssertionCommand {
 	
-	public static final String BAD_TYPE = 
-			"UniformAssertCommand requires it's type to be one of AssertType.UNIFORM_TYPES";
 	private I_ExpectedThrownData data;
-	private AssertType type;
 	private I_Evaluation result;
 	private Throwable actual;
 	
-	public UniformThrownAssertCommand(I_AssertType pType, String failureMessage, I_ExpectedThrownData pData) {
-		super(pType, failureMessage);
-		if (AssertType.AssertThrownUniform != pType) {
-			throw new IllegalArgumentException(BAD_TYPE);
-		}
-		type = (AssertType) pType;
+	public UniformThrownAssertCommand(String failureMessage, I_ExpectedThrownData pData) {
+		super(AssertType.AssertThrownUniform, failureMessage);
 		data = pData;
 		if (data == null) {
 			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
@@ -85,15 +77,10 @@ public class UniformThrownAssertCommand extends AbstractAssertCommand
 			result = new Evaluation(em);
 			return false;
 		}
-		switch (type) {
-			case AssertThrownUniform:
-					result = e.isUniform(new CompareAssertionData<>(data.getInstance(),actual));
-					if (result.isSuccess()) {
-						return true;
-					} 
-				break;
-		}
-		
+		result = e.isUniform(new CompareAssertionData<>(data.getInstance(),actual));
+		if (result.isSuccess()) {
+			return true;
+		} 
 		return false;
 	}
 

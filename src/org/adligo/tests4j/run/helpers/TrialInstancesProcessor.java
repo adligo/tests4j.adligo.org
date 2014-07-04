@@ -282,6 +282,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			}
 		}
 		if (trialCoverageRecorder != null) {
+			//trial recording is done on the thread running this TrialInstancesProcessor
 			trialCoverageRecorder.startRecording();
 		}
 		return trialCoverageRecorder;

@@ -7,7 +7,14 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 
 
-
+/**
+ * a immutable class [with the exception of evaluate()] that
+ * represents the comparison of two objects to see if they are
+ * identical (equals or same).
+ * 
+ * @author scott
+ *
+ */
 public class IdenticalAssertCommand extends AbstractCompareAssertCommand 
 	implements I_SimpleCompareAssertCommand {
 	public static final String BAD_TYPE = 

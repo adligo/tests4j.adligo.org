@@ -234,8 +234,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertThrown(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
-		evaluate(new ThrownAssertCommand(
-				AssertThrown, pMessage, pData), pThrower);
+		evaluate(new ThrownAssertCommand(pMessage, pData), pThrower);
 	}
 	
 	@Override
@@ -245,8 +244,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertThrownUniform(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
-		evaluate(new UniformThrownAssertCommand(
-				AssertType.AssertThrownUniform, pMessage, pData), pThrower, pData);
+		evaluate(new UniformThrownAssertCommand( pMessage, pData), pThrower, pData);
 	}
 	
 	public void assertUniform(String p, String a) {

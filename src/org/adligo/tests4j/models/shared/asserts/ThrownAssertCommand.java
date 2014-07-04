@@ -1,7 +1,6 @@
 package org.adligo.tests4j.models.shared.asserts;
 
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
@@ -10,31 +9,24 @@ import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
+/**
+ * a immutable class [with the exception of evaluate()]
+ * that 
+ * @author scott
+ *
+ */
 public class ThrownAssertCommand extends AbstractAssertCommand 
 	implements I_Immutable, I_ThrownAssertCommand {
-	/**
-	 * should only show up to a developer of tests4j
-	 */
-	private static final String BAD_TYPE = "ThrownAssertCommand requires a type in AssertType.AssertThrown.";
-	
+
 	private I_ExpectedThrownData data;
-	private AssertType type;
 	private Throwable caught;
 	
-	public ThrownAssertCommand(I_AssertType pType, String pFailureMessage) {
-		super(pType, pFailureMessage);
-		if (!AssertType.AssertThrown.equals(pType)) {
-			throw new IllegalArgumentException(BAD_TYPE);
-		}
+	public ThrownAssertCommand( String pFailureMessage) {
+		super(AssertType.AssertThrown, pFailureMessage);
 	}
 	
-	public ThrownAssertCommand(I_AssertType pType, 
-			String pFailureMessage, I_ExpectedThrownData pData) {
-		super(pType, pFailureMessage);
-		if (AssertType.AssertThrown != pType) {
-			throw new IllegalArgumentException(BAD_TYPE);
-		}
-		type = (AssertType) pType;
+	public ThrownAssertCommand(String pFailureMessage, I_ExpectedThrownData pData) {
+		super(AssertType.AssertThrown, pFailureMessage);
 		data = pData;
 		if (data == null) {
 			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
@@ -91,8 +83,29 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		int result = super.hashCode();
 		result = prime * result + ((caught == null) ? 0 : caught.hashCode());
 		result = prime * result + ((data == null) ? 0 : data.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ThrownAssertCommand other = (ThrownAssertCommand) obj;
+		if (caught == null) {
+			if (other.caught != null)
+				return false;
+		} else if (!caught.equals(other.caught))
+			return false;
+		if (data == null) {
+			if (other.data != null)
+				return false;
+		} else if (!data.equals(other.data))
+			return false;
+		return true;
 	}
 
 }
