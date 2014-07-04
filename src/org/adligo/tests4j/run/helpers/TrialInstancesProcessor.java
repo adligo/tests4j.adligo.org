@@ -92,6 +92,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private Set<Integer> metaTrialAssertionHashes = new HashSet<Integer>();
 	private String runMetaTrialMethod;
 	private String trialName;
+	private I_CoverageRecorder trialCoverageRecorder;
 	
 	/**
 	 * 
@@ -120,79 +121,53 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	 */
 	@Override
 	public void run() {
-		try {
-			Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClasses();
-			while (trialClazz != null) {
+		Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClasses();
+		while (trialClazz != null) {
+			trialDescription = null;
+			try {
 				String trialName = trialClazz.getName();
 				if (!memory.hasStartedDescribingTrial(trialName)) {
 					memory.startDescribingTrial(trialName);
-					addTrialDescription(trialClazz);
-				} else {
-					//another thread has already created a trial description
-					// for this trial, we want to make sure only
-					// one is in memory so we can make sure only one
-					// trial of any trial class is running at a time
-					//when the api is passed multiple instance of the 
-					// same trial class in the trials list
-					TrialDescription td =  memory.getTrialDescription(trialName);
-					while (td == null) {
-						Thread.sleep(500);
-						td =  memory.getTrialDescription(trialName);
-					}
-					memory.add(td);
-				}
-				trialClazz = memory.pollTrialClasses();
+					trialDescription = addTrialDescription(trialClazz);
+				} 
+				notifier.checkDoneDescribingTrials();
+			} catch (Exception x) {
+				memory.getReporter().onError(x);
+				notifier.onDescibeTrialError();
+				return;
+			} catch (Error x) {
+				memory.getReporter().onError(x);
+				notifier.onDescibeTrialError();
+				return;
 			}
-			notifier.checkDoneDescribingTrials();
-		} catch (Exception x) {
-			memory.getReporter().onError(x);
-			notifier.onDescibeTrialError();
-			return;
-		} catch (Error x) {
-			memory.getReporter().onError(x);
-			notifier.onDescibeTrialError();
-			return;
+		
+			if (trialDescription != null) {
+				if (trialDescription.getType() != TrialType.MetaTrial) {
+					if (trialDescription.isTrialCanRun()) {
+						try {
+							runTrial();
+						} catch (RejectedExecutionException x) {
+							memory.getReporter().onError(x);
+						} catch (Exception x) {
+							memory.getReporter().onError(x);
+						} catch (Error x) {
+							memory.getReporter().onError(x);
+						} 
+					}
+				}
+			}
+			trialClazz = memory.pollTrialClasses();
+		}
+		runResultMutant = notifier.checkDoneRunningNonMetaTrials();
+		if (runResultMutant != null) {
+			afterNonMetaTrials();
 		}
 		
-		try {
-			//@diagram_sync on 5/26/2014 with Overview.seq
-			TrialDescription td = memory.pollDescriptions();
-			//@diagram_sync on 5/26/2014 with Overview.seq
-			if (td != null) {
-				synchronized(td) {
-					//make sure any specific trial is only running once 
-					// in the api, when it is passed into the api more than once
-					runTrialDescription(td);
-				}
-				
-			}
-			//@diagram_sync on 5/26/2014 with Overview.seq
-			runResultMutant = notifier.checkDoneRunningNonMetaTrials();
-			if (runResultMutant != null) {
-				afterNonMetaTrials();
-			}
-		} catch (RejectedExecutionException x) {
-			memory.getReporter().onError(x);
-		} catch (Exception x) {
-			memory.getReporter().onError(x);
-		} catch (Error x) {
-			memory.getReporter().onError(x);
-		} 
 		testRunService.shutdownNow();
 		finished = true;
 	}
 
-	/**
-	 * @diagram_sync on 5/26/2014 with Overview.seq
-	 * @param p
-	 */
-	private void runTrialDescription(TrialDescription p) {
-		trialDescription = p;
-		while (trialDescription != null) {
-			runTrial();
-			trialDescription = memory.pollDescriptions();
-		}
-	}
+
 
 	/**
 	 * @diagram sync on 5/8/2014
@@ -200,10 +175,10 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	 *    
 	 * @param trialClazz
 	 */
-	private void addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
+	private TrialDescription addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
 		
 		TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
-		I_CoverageRecorder trialCoverageRecorder = startRecordingTrial(trialClazz);
+		trialCoverageRecorder = startRecordingTrial(trialClazz);
 		
 		TrialDescription desc = new TrialDescription(trialClazz, memory.getReporter());
 		memory.setTrialDescription(trialClazz.getName(), desc);
@@ -237,7 +212,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 							SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trm);
 							Class<?> clazz = desc.getSourceFileClass();
 							if (clazz != null) {
-								src.setSourceFileName(clazz.getSimpleName());
+								src.setSourceFileName(clazz.getName());
 								memory.addResultBeforeMetadata(new SourceFileTrialResult(src));
 								break;
 							}
@@ -248,20 +223,9 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 				
 			}
 		}
-		pauseRecordingTrial(trialCoverageRecorder);
+		return desc;
 	}
 
-	/**
-	 * @diagram sync on 5/8/2014
-	 *    for Overview.seq
-	 *    
-	 * @param trialCoverageRecorder
-	 */
-	private void pauseRecordingTrial(I_CoverageRecorder trialCoverageRecorder) {
-		if (trialCoverageRecorder != null) {
-			trialCoverageRecorder.pauseRecording();
-		}
-	}
 
 	/**
 	 * @diagram sync on 5/8/2014
@@ -310,9 +274,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		trialName = trialDescription.getTrialName();
 		int id = memory.incrementTrialRun(trialName);
 		trialName = trialName + "[" + id + "]";
-		Class<? extends I_AbstractTrial> trialClazz = trialDescription.getTrialClass();
 		notifier.startingTrial(trialName);
-		I_CoverageRecorder trialCoverageRecorder =  startRecordingTrial(trialClazz);
 		
 		
 		trial = trialDescription.getTrial();
@@ -367,7 +329,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			case SourceFileTrial:
 					SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trialResultMutant);
 					Class<?> clazz = trialDescription.getSourceFileClass();
-					src.setSourceFileName(clazz.getSimpleName());
+					src.setSourceFileName(clazz.getName());
 					setAfterTrialTestsState(src);
 					result = new SourceFileTrialResult(src);
 				break;
@@ -793,7 +755,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 				
 					//@diagram_sync on 5/26/2014 with Overview.seq
 					trialDescription = memory.getMetaTrialDescription();
-					runTrialDescription(trialDescription);
+					runTrial();
 					
 					int assertionCount = trialResultMutant.getAssertionCount();
 					runResultMutant.addAsserts(assertionCount);

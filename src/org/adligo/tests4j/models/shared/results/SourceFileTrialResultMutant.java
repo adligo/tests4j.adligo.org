@@ -18,6 +18,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 		if (cloneRelations) {
 			coverage = new SourceFileCoverageMutant(p.getSourceFileCoverage());
 		}
+		sourceFileName = p.getSourceFileName();
 	}
 
 	public SourceFileTrialResultMutant(I_TrialResult p) {
