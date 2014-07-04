@@ -315,17 +315,6 @@ public class Tests4J_Memory {
 	
 	/**
 	 * 
-	 * @param scope
-	 * @return a recorder that may be specific to a 
-	 * particular trial.
-	 * 
-	 * @diagram Overview.seq sync on 7/3/2014
-	 */
-	public synchronized I_CoverageRecorder createRecorder(String scope) {
-		return plugin.createRecorder(scope);
-	}
-	/**
-	 * 
 	 * @return the recorder that is recording all of the coverage
 	 * for the various trials/tests.
 	 * 

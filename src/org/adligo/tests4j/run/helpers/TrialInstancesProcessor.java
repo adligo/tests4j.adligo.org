@@ -279,7 +279,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			if (trialCoverageRecorder == null) {
 				//@diagram sync on 7/3/2014
 				// for Overview.seq 
-				trialCoverageRecorder = memory.createRecorder(name);
+				trialCoverageRecorder = plugin.createRecorder(name);
 				memory.addRecorder(name, trialCoverageRecorder);
 			}
 		}

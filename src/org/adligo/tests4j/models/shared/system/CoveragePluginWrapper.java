@@ -13,21 +13,21 @@ public class CoveragePluginWrapper implements I_CoveragePlugin {
 	}
 	
 	@Override
-	public List<Class<? extends I_AbstractTrial>> instrumentClasses(
+	public synchronized List<Class<? extends I_AbstractTrial>> instrumentClasses(
 			List<Class<? extends I_AbstractTrial>> trials) {
 		return delegate.instrumentClasses(trials);
 	}
 
-	public boolean canSubRecord() {
+	public synchronized boolean canSubRecord() {
 		return delegate.canSubRecord();
 	}
 
-	public I_CoverageRecorder createRecorder(String scope) {
+	public synchronized I_CoverageRecorder createRecorder(String scope) {
 		return new SynchronizedCoverageRecorder(delegate.createRecorder(scope));
 	}
 
 	@Override
-	public void setReporter(I_Tests4J_Reporter p) {
+	public synchronized void setReporter(I_Tests4J_Reporter p) {
 		delegate.setReporter(p);
 	}
 
