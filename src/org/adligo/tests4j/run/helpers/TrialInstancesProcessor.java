@@ -125,11 +125,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		while (trialClazz != null) {
 			trialDescription = null;
 			try {
-				String trialName = trialClazz.getName();
-				if (!memory.hasStartedDescribingTrial(trialName)) {
-					memory.startDescribingTrial(trialName);
-					trialDescription = addTrialDescription(trialClazz);
-				} 
+				trialDescription = addTrialDescription(trialClazz);
 				notifier.checkDoneDescribingTrials();
 			} catch (Exception x) {
 				memory.getReporter().onError(x);
@@ -145,7 +141,12 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 				if (trialDescription.getType() != TrialType.MetaTrial) {
 					if (trialDescription.isTrialCanRun()) {
 						try {
-							runTrial();
+							//synchronized here so that each trial can only be running
+							//once in all of the trial threads, having a trial running
+							//in two threads at the same time would be confusing to the users
+							synchronized (trialClazz) {
+								runTrial();
+							}	
 						} catch (RejectedExecutionException x) {
 							memory.getReporter().onError(x);
 						} catch (Exception x) {
@@ -176,59 +177,67 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	 * @param trialClazz
 	 */
 	private TrialDescription addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
-		
-		TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
-		trialCoverageRecorder = startRecordingTrial(trialClazz);
-		
-		TrialDescription desc = new TrialDescription(trialClazz, memory.getReporter());
-		memory.setTrialDescription(trialClazz.getName(), desc);
-		memory.add(desc);
-		if (!desc.isIgnored()) {
-			if (!desc.isTrialCanRun()) {
-				BaseTrialResultMutant trm = new BaseTrialResultMutant();
-				trm.setTrialName(desc.getTrialName());
-				String failureMessage = desc.getResultFailureMessage();
-				if (failureMessage != null) {
-					TrialFailure tf = new TrialFailure(failureMessage, desc.getResultException());
-					trm.setFailure(tf);
-				}
-				
-				trm.setPassed(false);
-				trm.setType(type);
-				
-				switch (type) {
-					case UseCaseTrial:
-							UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trm);
-							mut.setSystem(desc.getSystemName());
-							mut.setUseCase(desc.getUseCase());
-							memory.addResultBeforeMetadata(new UseCaseTrialResult(mut));
-						break;
-					case ApiTrial:
-							ApiTrialResultMutant api = new ApiTrialResultMutant(trm);
-							api.setPackageName(desc.getPackageName());
-							memory.addResultBeforeMetadata(new ApiTrialResult(api));
-						break;
-					case SourceFileTrial:
-							SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trm);
-							Class<?> clazz = desc.getSourceFileClass();
-							if (clazz != null) {
-								src.setSourceFileName(clazz.getName());
-								memory.addResultBeforeMetadata(new SourceFileTrialResult(src));
-								break;
-							}
-					default:
-						memory.addResultBeforeMetadata(new BaseTrialResult(trm));
-				}
-				
-				
+		// synchronized on the trialClass instance to make sure
+		// that only one thread is doing this for a specific trial at a time
+		// This allows reuse of TrialDescription instances
+		synchronized (trialClazz) {
+			TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
+			trialCoverageRecorder = startRecordingTrial(trialClazz);
+			
+			//try to reuse the description if another thread already described it
+			TrialDescription desc = memory.getTrialDescription(trialClazz.getName());
+			if (desc == null) {
+				desc = new TrialDescription(trialClazz, memory.getReporter());
 			}
+			memory.addTrialDescription(trialClazz.getName(), desc);
+			
+			if (!desc.isIgnored()) {
+				if (!desc.isTrialCanRun()) {
+					BaseTrialResultMutant trm = new BaseTrialResultMutant();
+					trm.setTrialName(desc.getTrialName());
+					String failureMessage = desc.getResultFailureMessage();
+					if (failureMessage != null) {
+						TrialFailure tf = new TrialFailure(failureMessage, desc.getResultException());
+						trm.setFailure(tf);
+					}
+					
+					trm.setPassed(false);
+					trm.setType(type);
+					
+					switch (type) {
+						case UseCaseTrial:
+								UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trm);
+								mut.setSystem(desc.getSystemName());
+								mut.setUseCase(desc.getUseCase());
+								memory.addResultBeforeMetadata(new UseCaseTrialResult(mut));
+							break;
+						case ApiTrial:
+								ApiTrialResultMutant api = new ApiTrialResultMutant(trm);
+								api.setPackageName(desc.getPackageName());
+								memory.addResultBeforeMetadata(new ApiTrialResult(api));
+							break;
+						case SourceFileTrial:
+								SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trm);
+								Class<?> clazz = desc.getSourceFileClass();
+								if (clazz != null) {
+									src.setSourceFileName(clazz.getName());
+									memory.addResultBeforeMetadata(new SourceFileTrialResult(src));
+									break;
+								}
+						default:
+							memory.addResultBeforeMetadata(new BaseTrialResult(trm));
+					}
+					
+					
+				}
+			}
+			return desc;
 		}
-		return desc;
 	}
 
 
 	/**
-	 * @diagram sync on 5/8/2014
+	 * @diagram sync on 7/5/2014
 	 *    for Overview.seq
 	 *    
 	 * @param trialClazz
@@ -239,16 +248,9 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		I_CoverageRecorder trialCoverageRecorder = null;
 		if (plugin != null) {
 			String name = trialClazz.getName();
-			trialCoverageRecorder = memory.getRecorder(name);
-			if (trialCoverageRecorder == null) {
-				//@diagram sync on 7/3/2014
-				// for Overview.seq 
-				trialCoverageRecorder = plugin.createRecorder(name);
-				memory.addRecorder(name, trialCoverageRecorder);
-			}
-		}
-		if (trialCoverageRecorder != null) {
-			//trial recording is done on the thread running this TrialInstancesProcessor
+			//@diagram sync on 7/5/2014
+			// for Overview.seq 
+			trialCoverageRecorder = plugin.createRecorder(name);
 			trialCoverageRecorder.startRecording();
 		}
 		return trialCoverageRecorder;

@@ -32,6 +32,7 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.IgnoreTest;
 import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
+import org.adligo.tests4j.models.shared.trials.MetaTrial;
 import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
 import org.adligo.tests4j.models.shared.trials.TrialTypeAnnotation;
@@ -64,20 +65,26 @@ public class Tests4J_Memory {
 	private AtomicBoolean metaTrial = new AtomicBoolean(false);
 	private Set<String> tests;
 	/**
+	 * The key is the class name of the trial
+	 * 
 	 * keeps track of the trials between threads,
 	 * so when a trial is sent twice, synchronization occurs
 	 * so that it the runs of it do NOT overlap
 	 */
 	private ConcurrentHashMap<String,TrialDescription> trialDescriptions = new ConcurrentHashMap<String,TrialDescription>();
-	private CopyOnWriteArraySet<String> trialNames = new CopyOnWriteArraySet<String>();
+	/**
+	 * note the trial description may occur twice,
+	 * if the user of the api is running trials more than once
+	 */
+	private CopyOnWriteArrayList<TrialDescription> allTrialDescriptions = new CopyOnWriteArrayList<TrialDescription>();
+	
 	private ConcurrentHashMap<String,AtomicInteger> trialRuns = new ConcurrentHashMap<String,AtomicInteger>();
 	
-	private ConcurrentLinkedQueue<TrialDescription> trialDescriptionsToRun = new ConcurrentLinkedQueue<TrialDescription>();
-	private List<TrialDescription> allTrialDescriptions = new CopyOnWriteArrayList<TrialDescription>();
+	private I_CoverageRecorder mainRecorder;
+	
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
 	private int allTrialCount;
 	private I_CoveragePlugin plugin;
-	private Map<String, I_CoverageRecorder> recorders = new ConcurrentHashMap<String, I_CoverageRecorder>();
 	private I_Tests4J_Reporter reporter;
 	private final String mainRecorderScope;
 	private ThreadLocalOutputStream out;
@@ -197,16 +204,18 @@ public class Tests4J_Memory {
 	public Class<? extends I_AbstractTrial> pollTrialClasses() {
 		return trialClasses.poll();
 	}
-	
-	public synchronized void startDescribingTrial(String name) {
-		trialNames.add(name);
-	}
-	public synchronized void setTrialDescription(String name, TrialDescription p) {
+	/**
+	 * @diagram_sync with Overview.seq on 7/5/2014
+	 * @param name
+	 * @param p
+	 */
+	public synchronized void addTrialDescription(String name, TrialDescription p) {
+		allTrialDescriptions.add(p);
+		if (p.isTrialCanRun()) {
+			metaTrialDescription = p;
+		}
 		trialDescriptions.put(name, p);
 		trialRuns.put(name, new AtomicInteger(1));
-	}
-	public synchronized boolean hasStartedDescribingTrial(String name) {
-		return trialNames.contains(name);
 	}
 	public synchronized TrialDescription getTrialDescription(String name) {
 		return trialDescriptions.get(name);
@@ -216,45 +225,7 @@ public class Tests4J_Memory {
 		AtomicInteger next = trialRuns.get(trialName);
 		return next.getAndAdd(1);
 	}
-	
-	/**
-	 * Add the TrialDescription to allTrialDescriptions
-	 * as well as trialDescriptionsToRun (if the 
-	 * TrialDescription.isTrialCanRun is true).
-	 * 
-	 * @param p the description of the Trial
-	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
-	 */
-	public void add(TrialDescription p) {
-		allTrialDescriptions.add(p);
-		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
-			reporter.log("TrialDescription " + p.getTrialName() +
-					" has " + p.getTestMethodsSize());
-		}
-		if (p.isTrialCanRun()) {
-			if (p.getType() != TrialType.MetaTrial) {
-				trialDescriptionsToRun.add(p);
-			} else {
-				metaTrialDescription = p;
-			}
-		}
-		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
-			reporter.log("TrialDescriptions counts " + trialDescriptionsToRun.size() +
-					"/" + allTrialDescriptions.size());
-		}
-	}
-	
-	/**
-	 * Polling is used for thread collaboration.
-	 * 
-	 * @return the next TrialDescription in the queue.
-	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
-	 */
-	public TrialDescription pollDescriptions() {
-		return trialDescriptionsToRun.poll();
-	}
+
 	
 	public synchronized void addResultBeforeMetadata(I_TrialResult p) {
 		resultsBeforeMetadata.add(p);
@@ -295,22 +266,10 @@ public class Tests4J_Memory {
 	 * @param p
 	 * @param recorder
 	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
+	 * @diagram Overview.seq sync on 7/5/2014
 	 */
-	public synchronized void addRecorder(String p, I_CoverageRecorder recorder) {
-		recorders.put(p, recorder);
-	}
-	
-	/**
-	 * 
-	 * @param p
-	 * @return a recorder that may be specific to a 
-	 * particular trial.
-	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
-	 */
-	public synchronized I_CoverageRecorder getRecorder(String p) {
-		return recorders.get(p);
+	public synchronized void setMainRecorder(I_CoverageRecorder recorder) {
+		mainRecorder = recorder;
 	}
 	
 	/**
@@ -321,14 +280,12 @@ public class Tests4J_Memory {
 	 * @diagram Overview.seq sync on 5/26/2014
 	 */
 	public I_CoverageRecorder getMainRecorder() {
-		return recorders.get(mainRecorderScope);
+		return mainRecorder;
 	}
 	
 	public String getThreadLocalOutput() {
 		return out.get().toString();
 	}
-
-
 
 	public Iterator<TrialDescription> getAllTrialDescriptions() {
 		return allTrialDescriptions.iterator();
@@ -426,7 +383,9 @@ public class Tests4J_Memory {
 	
 	public int getIgnoredTrialDescriptions() {
 		int toRet = 0;
-		for (TrialDescription td: allTrialDescriptions) {
+		Iterator<TrialDescription> it = allTrialDescriptions.iterator();
+		while (it.hasNext()) {
+			TrialDescription td = it.next();
 			if (td.isIgnored()) {
 				toRet++;
 			}

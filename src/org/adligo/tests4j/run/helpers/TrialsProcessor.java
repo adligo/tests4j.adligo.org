@@ -122,12 +122,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		notifier = new Tests4J_NotificationManager(memory);
 		
 		if (plugin != null) {
-			String mainScope = memory.getMainRecorderScope();
-			I_CoverageRecorder allCoverageRecorder = plugin.createRecorder(mainScope);
-			memory.addRecorder(mainScope, allCoverageRecorder);
-			//@diagram Overview.seq sync on 5/1/2014 'startRecordingTrialRun'
-			//ok so the main recording is done on the main thread.
-			allCoverageRecorder.startRecording();
+			startRecordingAllTrialsRun(plugin);
 		}
 		
 		controls = new TrialProcessorControls(reporter, threadManager, notifier);
@@ -162,6 +157,20 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			tpe.setKeepAliveTime(1000, TimeUnit.MILLISECONDS);
 			tpe.allowCoreThreadTimeOut(true);
 		}
+	}
+
+	/**
+	 * @adligo.diagram_sync with Overview.seq on 7/5/2014
+	 * @param plugin
+	 */
+	private void startRecordingAllTrialsRun(I_CoveragePlugin plugin) {
+		String mainScope = memory.getMainRecorderScope();
+		//@adligo.diagram_sync with Overview.seq on 7/5/2014
+		I_CoverageRecorder allCoverageRecorder = plugin.createRecorder(mainScope);
+		//@adligo.diagram_sync with Overview.seq on 7/5/2014
+		allCoverageRecorder.startRecording();
+		//@adligo.diagram_sync with Overview.seq on 7/5/2014
+		memory.setMainRecorder(allCoverageRecorder);
 	}
 
 	@Override

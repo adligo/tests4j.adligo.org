@@ -23,7 +23,7 @@ public class CoveragePluginWrapper implements I_CoveragePlugin {
 	}
 
 	public synchronized I_CoverageRecorder createRecorder(String scope) {
-		return new SynchronizedCoverageRecorder(delegate.createRecorder(scope));
+		return delegate.createRecorder(scope);
 	}
 
 	@Override
