@@ -10,13 +10,13 @@ public interface I_LineTextCompareResult {
 	
 	public abstract boolean isMatched();
 
-	public abstract int getExampleLines();
+	public abstract int getExpectedLines();
 
 	public abstract int getActualLines();
 
 	public abstract List<LineDiff> getLineDiffs();
 
-	public abstract String getExample();
+	public abstract String getExpected();
 
 	public abstract String getActual();
 

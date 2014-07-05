@@ -164,9 +164,8 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 	 * @param plugin
 	 */
 	private void startRecordingAllTrialsRun(I_CoveragePlugin plugin) {
-		String mainScope = memory.getMainRecorderScope();
 		//@adligo.diagram_sync with Overview.seq on 7/5/2014
-		I_CoverageRecorder allCoverageRecorder = plugin.createRecorder(mainScope);
+		I_CoverageRecorder allCoverageRecorder = plugin.createRecorder();
 		//@adligo.diagram_sync with Overview.seq on 7/5/2014
 		allCoverageRecorder.startRecording();
 		//@adligo.diagram_sync with Overview.seq on 7/5/2014

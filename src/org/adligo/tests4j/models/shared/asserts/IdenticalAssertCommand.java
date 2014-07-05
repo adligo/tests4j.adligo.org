@@ -8,7 +8,7 @@ import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMe
 
 
 /**
- * a immutable class [with the exception of evaluate()] that
+ * a class that
  * represents the comparison of two objects to see if they are
  * identical (equals or same).
  * 

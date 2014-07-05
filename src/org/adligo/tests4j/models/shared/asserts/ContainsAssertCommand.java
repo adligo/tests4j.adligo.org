@@ -13,7 +13,7 @@ import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMe
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
- * a immutable class [with the exception of evaluate()]
+ * a class 
  * that contains information about
  * a assertContains or assertNotContains command.
  * @author scott

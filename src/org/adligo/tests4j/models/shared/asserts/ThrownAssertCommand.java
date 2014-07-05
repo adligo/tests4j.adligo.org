@@ -10,8 +10,9 @@ import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMe
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
- * a immutable class [with the exception of evaluate()]
- * that 
+ * a class to to help
+ * process a assertThrown assertion.
+ * 
  * @author scott
  *
  */

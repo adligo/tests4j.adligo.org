@@ -86,7 +86,6 @@ public class Tests4J_Memory {
 	private int allTrialCount;
 	private I_CoveragePlugin plugin;
 	private I_Tests4J_Reporter reporter;
-	private final String mainRecorderScope;
 	private ThreadLocalOutputStream out;
 	private CopyOnWriteArrayList<TrialInstancesProcessor> trialInstancesProcessors = 
 			new CopyOnWriteArrayList<TrialInstancesProcessor>();
@@ -154,7 +153,6 @@ public class Tests4J_Memory {
 		
 
 		long now = System.currentTimeMillis();
-		mainRecorderScope = I_CoverageRecorder.TESTS4J_ + now + I_CoverageRecorder.RECORDER;
 		
 		
 	}
@@ -221,7 +219,7 @@ public class Tests4J_Memory {
 		return trialDescriptions.get(name);
 	}
 	
-	public int incrementTrialRun(String trialName) {
+	public synchronized int incrementTrialRun(String trialName) {
 		AtomicInteger next = trialRuns.get(trialName);
 		return next.getAndAdd(1);
 	}
@@ -308,10 +306,6 @@ public class Tests4J_Memory {
 
 	public I_Tests4J_Reporter getReporter() {
 		return reporter;
-	}
-
-	public String getMainRecorderScope() {
-		return mainRecorderScope;
 	}
 
 	public List<TrialInstancesProcessor> getTrialInstancesProcessors() {

@@ -10,6 +10,17 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvalua
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
+/**
+ *  A class to represent a assertUniform or assertNotUniform
+ *  assertion.  
+ *  Note this class is NOT in the .uniform package
+ *  so that it can extend AbstractAssertCommand with out
+ *  creating a circular package dependency.  
+ *  (.asserts - - depends on - - > .asserts.uniform)
+ *  
+ * @author scott
+ *
+ */
 public class UniformAssertCommand extends AbstractAssertCommand 
 	implements I_UniformAssertionCommand {
 	
@@ -73,13 +84,6 @@ public class UniformAssertCommand extends AbstractAssertCommand
 		}
 		
 		return false;
-	}
-
-	public String getFailureSubMessage() {
-		if (result == null) {
-			return  "";
-		}
-		return result.getFailureSubMessage();
 	}
 	
 	public I_Evaluation getResult() {

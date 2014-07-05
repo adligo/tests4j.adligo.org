@@ -10,6 +10,14 @@ import org.adligo.tests4j.models.shared.results.TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 
+/**
+ * this class processes the assert commands
+ * by calling .evaluate and then notifying the I_AssertListener
+ * about the outcome.
+ * 
+ * @author scott
+ *
+ */
 public class AssertionProcessor {
 
 	/**

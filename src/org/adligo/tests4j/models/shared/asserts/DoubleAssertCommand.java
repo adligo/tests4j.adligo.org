@@ -6,7 +6,7 @@ import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertComm
 
 
 /**
- * a immutable class [with the exception of evaluate()] 
+ * a class 
  * that represents a command to compare two double values.
  * 
  * @author scott

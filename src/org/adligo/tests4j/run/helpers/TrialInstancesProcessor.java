@@ -92,7 +92,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private Set<Integer> metaTrialAssertionHashes = new HashSet<Integer>();
 	private String runMetaTrialMethod;
 	private String trialName;
-	private I_CoverageRecorder trialCoverageRecorder;
+	private I_CoverageRecorder trialThreadLocalCoverageRecorder;
 	
 	/**
 	 * 
@@ -127,6 +127,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			try {
 				trialDescription = addTrialDescription(trialClazz);
 				notifier.checkDoneDescribingTrials();
+				
 			} catch (Exception x) {
 				memory.getReporter().onError(x);
 				notifier.onDescibeTrialError();
@@ -182,7 +183,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		// This allows reuse of TrialDescription instances
 		synchronized (trialClazz) {
 			TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
-			trialCoverageRecorder = startRecordingTrial(trialClazz);
+			trialThreadLocalCoverageRecorder = startRecordingTrial(trialClazz);
 			
 			//try to reuse the description if another thread already described it
 			TrialDescription desc = memory.getTrialDescription(trialClazz.getName());
@@ -245,15 +246,15 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private I_CoverageRecorder startRecordingTrial(
 			Class<? extends I_AbstractTrial> trialClazz) {
 		I_CoveragePlugin plugin = memory.getPlugin();
-		I_CoverageRecorder trialCoverageRecorder = null;
+		I_CoverageRecorder toRet = null;
 		if (plugin != null) {
 			String name = trialClazz.getName();
 			//@diagram sync on 7/5/2014
 			// for Overview.seq 
-			trialCoverageRecorder = plugin.createRecorder(name);
-			trialCoverageRecorder.startRecording();
+			toRet = plugin.createRecorder();
+			toRet.startRecording();
 		}
-		return trialCoverageRecorder;
+		return toRet;
 	}
 	
 	private void failTrialOnException(String message, Throwable p, TrialType type) {
@@ -302,10 +303,9 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
 				reporter.log("finished trial tests" + trialName);
 			}
-			
 			if (trialResultMutant.isPassed()) {
 				//skip this method unless everything passed in the trial
-				runAfterTrialTests(trialCoverageRecorder);
+				runAfterTrialTests(trialThreadLocalCoverageRecorder);
 			}
 			runAfterTrial();
 		}

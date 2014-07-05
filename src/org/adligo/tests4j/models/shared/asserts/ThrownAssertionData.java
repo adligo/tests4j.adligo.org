@@ -4,6 +4,12 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertionData;
 
+/**
+ * a immutable class to represent 
+ * data about a thrown assertion.
+ * @author scott
+ *
+ */
 public class ThrownAssertionData implements I_ThrownAssertionData {
 	private ThrownAssertionDataMutant mutant;
 	

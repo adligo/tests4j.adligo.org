@@ -4,6 +4,11 @@ import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 
+/**
+ * a abstract class to represent 
+ * @author scott
+ *
+ */
 public abstract class AbstractAssertCommand implements I_AssertCommand {
 	public static final String ASSERT_COMMANDS_REQURES_A_NON_EMPTY_FAILUE_MESSAGE = "AssertCommands requres a non empty failue message.";
 	public static final String ASSERT_COMMANDS_REQUIRES_A_TYPE = "AssertCommands requires a type.";

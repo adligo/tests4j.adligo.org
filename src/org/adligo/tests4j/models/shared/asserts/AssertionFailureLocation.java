@@ -8,6 +8,13 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.trials.AbstractTrial;
 
+/**
+ * this class represents the location (stack trace/line number) 
+ * of a failed assertion.
+ * 
+ * @author scott
+ *
+ */
 public class AssertionFailureLocation extends Exception {
 	/**
 	 * 

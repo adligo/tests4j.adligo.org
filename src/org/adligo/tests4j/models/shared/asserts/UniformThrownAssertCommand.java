@@ -12,6 +12,16 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertion
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
+/**
+ * A class to represent a assertThrownUniform 
+ * assertion.
+ * Note this class is NOT in the .uniform package
+ *  so that it can extend AbstractAssertCommand with out
+ *  creating a circular package dependency.  
+ *  (.asserts - - depends on - - > .asserts.uniform)
+ * @author scott
+ *
+ */
 public class UniformThrownAssertCommand extends AbstractAssertCommand 
 	implements I_UniformThrownAssertionCommand {
 	
@@ -82,13 +92,6 @@ public class UniformThrownAssertCommand extends AbstractAssertCommand
 			return true;
 		} 
 		return false;
-	}
-
-	public String getFailureSubMessage() {
-		if (result == null) {
-			return  "";
-		}
-		return result.getFailureSubMessage();
 	}
 	
 	public I_Evaluation getResult() {

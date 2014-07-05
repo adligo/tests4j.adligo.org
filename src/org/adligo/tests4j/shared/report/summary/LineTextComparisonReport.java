@@ -12,7 +12,7 @@ public class LineTextComparisonReport {
 
 	public static void display(I_Tests4J_Reporter out, I_LineTextCompareResult result) {
 		out.log("Expected;");
-		out.log(result.getExample());
+		out.log(result.getExpected());
 		out.log("Actual;");
 		out.log(result.getActual());
 		

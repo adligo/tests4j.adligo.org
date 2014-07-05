@@ -6,7 +6,13 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertionData;
 
-
+/**
+ * a mutable class to represent 
+ * data for a thrown comparison.
+ *  
+ * @author scott
+ *
+ */
 public class ThrownAssertionDataMutant implements I_ThrownAssertionData {
 	private static Set<String> KEYS = getKeysStatic();
 	
@@ -115,8 +121,6 @@ public class ThrownAssertionDataMutant implements I_ThrownAssertionData {
 		if (this == obj)
 			return true;
 		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
 			return false;
 		try {
 			I_ThrownAssertionData other = (I_ThrownAssertionData) obj;

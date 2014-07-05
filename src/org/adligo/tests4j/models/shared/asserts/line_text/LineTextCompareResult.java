@@ -32,7 +32,7 @@ public class LineTextCompareResult implements I_LineTextCompareResult {
 	 * @see org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult#getExampleLines()
 	 */
 	@Override
-	public int getExampleLines() {
+	public int getExpectedLines() {
 		return exampleLines;
 	}
 	/* (non-Javadoc)
@@ -60,7 +60,7 @@ public class LineTextCompareResult implements I_LineTextCompareResult {
 	 * @see org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult#getExample()
 	 */
 	@Override
-	public String getExample() {
+	public String getExpected() {
 		return example;
 	}
 

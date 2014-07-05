@@ -29,20 +29,15 @@ public interface I_CoveragePlugin {
 	/**
 	 *
 	 * @return
-	 *    false if this coverage plugin 
-	 *    can create sub recordings at the Trial or Test level
-	 *    @see I_CoverageRecorder#getScope()
+	 *    true if this coverage plugin 
+	 *    has the ability to record code coverage local to the thread.
 	 */
-	public boolean canSubRecord();
+	public boolean canThreadLocalRecord();
 	
 	/**
-	 * for recording all coverage for a run of trials
-	 * the scope is;
-	 * @see I_CoverageRecorder#getScope()
-	 * for coverage recorders that can and want to record 
-	 * at a more detailed level the scope is;
-	 * TrialClassName for capturing the code covered by the trial
-	 * TrialClassName#TestMethodName for capturing the code covered by the @Test
+	 * Create a new recorder that records either 
+	 * all code coverage from all threads, or
+	 * code coverage for this thread only.
 	 * 
 	 * @param scope
 	 * @return
@@ -50,6 +45,6 @@ public interface I_CoveragePlugin {
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public I_CoverageRecorder createRecorder(String scope);
+	public I_CoverageRecorder createRecorder();
 	
 }
