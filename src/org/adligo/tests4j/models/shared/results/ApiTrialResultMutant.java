@@ -1,18 +1,13 @@
 package org.adligo.tests4j.models.shared.results;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageMutant;
 
 public class ApiTrialResultMutant extends BaseTrialResultMutant implements I_ApiTrialResult {
-	private List<PackageCoverageMutant> packageCoverage;
+	private PackageCoverageMutant packageCoverage;
 	private String packageName;
 	
-	public ApiTrialResultMutant() {
-		packageCoverage = new ArrayList<PackageCoverageMutant>();
-	}
+	public ApiTrialResultMutant() {}
 	
 	public ApiTrialResultMutant(I_ApiTrialResult p) {
 		this(p, true);
@@ -21,11 +16,8 @@ public class ApiTrialResultMutant extends BaseTrialResultMutant implements I_Api
 	public ApiTrialResultMutant(I_ApiTrialResult p, boolean cloneRelations) {
 		super(p, cloneRelations);
 		if (cloneRelations) {
-			
-			List<I_PackageCoverage> otherCover = p.getPackageCoverage();
-			packageCoverage = new ArrayList<PackageCoverageMutant>();
-			for (I_PackageCoverage pk: otherCover) {
-				packageCoverage.add(new PackageCoverageMutant(pk));
+			if (p.hasRecordedCoverage()) {
+				packageCoverage = new PackageCoverageMutant(p.getPackageCoverage()); 
 			}
 		}
 		packageName = p.getPackageName();
@@ -40,12 +32,8 @@ public class ApiTrialResultMutant extends BaseTrialResultMutant implements I_Api
 	}
 	
 	@Override
-	public List<I_PackageCoverage> getPackageCoverage() {
-		List<I_PackageCoverage> toRet = new ArrayList<I_PackageCoverage>();
-		if (packageCoverage != null) {
-			toRet.addAll(packageCoverage);
-		}
-		return toRet;
+	public I_PackageCoverage getPackageCoverage() {
+		return packageCoverage;
 	}
 	@Override
 	public String getPackageName() {
@@ -53,11 +41,8 @@ public class ApiTrialResultMutant extends BaseTrialResultMutant implements I_Api
 		return packageName;
 	}
 
-	public void setPackageCoverage(List<I_PackageCoverage> p) {
-		packageCoverage.clear();
-		for (I_PackageCoverage other: p) {
-			packageCoverage.add(new PackageCoverageMutant(other));
-		}
+	public void setPackageCoverage(I_PackageCoverage p) {
+		packageCoverage = new PackageCoverageMutant(p);
 	}
 
 	public void setPackageName(String packageName) {
@@ -78,5 +63,13 @@ public class ApiTrialResultMutant extends BaseTrialResultMutant implements I_Api
 		sb.append(",packageCoverage=");
 		sb.append(result.getPackageCoverage());
 		sb.append("]");
+	}
+	
+	@Override
+	public boolean hasRecordedCoverage() {
+		if (packageCoverage == null) {
+			return false;
+		}
+		return true;
 	}
 }

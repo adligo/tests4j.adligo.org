@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -25,12 +23,12 @@ import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadataMutant;
+import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
+import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
-import org.adligo.tests4j.models.shared.results.feedback.I_ApiTrial_TestsResults;
-import org.adligo.tests4j.models.shared.results.feedback.I_SourceFileTrial_TestsResults;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
@@ -212,7 +210,7 @@ public class Tests4J_NotificationManager {
 					switch (type) {
 						case SourceFileTrial:
 							try {
-								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_SourceFileTrial_TestsResults.class);
+								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_SourceFileTrialResult.class);
 								TestMetadataMutant testMeta = new TestMetadataMutant();
 								testMeta.setTestName(m.getName());
 								testMetas.add(testMeta);
@@ -224,7 +222,7 @@ public class Tests4J_NotificationManager {
 						case ApiTrial:
 							try {
 								
-								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_ApiTrial_TestsResults.class);
+								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_ApiTrialResult.class);
 								TestMetadataMutant testMeta = new TestMetadataMutant();
 								testMeta.setTestName(m.getName());
 								testMetas.add(testMeta);

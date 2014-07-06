@@ -17,9 +17,8 @@ public class SourceFileTrialResult extends BaseTrialResult implements I_SourceFi
 	public SourceFileTrialResult(I_SourceFileTrialResult p) {
 		super(p);
 		mutant = new SourceFileTrialResultMutant(p, false);
-		I_SourceFileCoverage sourceFileCoverage =  p.getSourceFileCoverage();
-		if (sourceFileCoverage != null) {
-			coverage = new SourceFileCoverage(sourceFileCoverage);
+		if (p.hasRecordedCoverage()) {
+			coverage = new SourceFileCoverage( p.getSourceFileCoverage());
 		}
 	}
 	
@@ -29,6 +28,14 @@ public class SourceFileTrialResult extends BaseTrialResult implements I_SourceFi
 
 	public String getSourceFileName() {
 		return mutant.getSourceFileName();
+	}
+	
+	@Override
+	public boolean hasRecordedCoverage() {
+		if (coverage == null) {
+			return false;
+		}
+		return true;
 	}
 
 }

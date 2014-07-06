@@ -107,4 +107,9 @@ public class BaseTrialResult implements I_TrialResult {
 	public boolean isRanAfterTrialTests() {
 		return mutant.isRanAfterTrialTests();
 	}
+
+	@Override
+	public boolean hasRecordedCoverage() {
+		return false;
+	}
 }

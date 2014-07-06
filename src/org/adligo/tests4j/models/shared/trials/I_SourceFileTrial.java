@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.trials;
 
-import org.adligo.tests4j.models.shared.results.feedback.I_SourceFileTrial_TestsResults;
+import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 
 /**
  * This class was mostly added to delegate through class loaders.
@@ -8,5 +8,5 @@ import org.adligo.tests4j.models.shared.results.feedback.I_SourceFileTrial_Tests
  *
  */
 public interface I_SourceFileTrial extends I_Trial {
-	public void afterTrialTests(I_SourceFileTrial_TestsResults p);
+	public void afterTrialTests(I_SourceFileTrialResult p);
 }

@@ -121,4 +121,13 @@ public interface I_Tests4J_Params extends I_Tests4J_XML_IO {
 	 * for plug-able assertion framework.
 	 */
 	public I_EvaluatorLookup getEvaluatorLookup();
+	
+	/**
+	 * true only when the Tests4J api is testing itself
+	 * through the Tests4J api, in a local manor.
+	 * This has nothing to do with remoteInfo or remoteParams
+	 * but is mostly only for debugging the tests4j_test project.
+	 * @return
+	 */
+	public boolean isTrialRecursion();
 }

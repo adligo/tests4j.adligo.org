@@ -57,4 +57,12 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 		sb.append("]");
 		return sb.toString();
 	}
+	
+	@Override
+	public boolean hasRecordedCoverage() {
+		if (coverage == null) {
+			return false;
+		}
+		return true;
+	}
 }

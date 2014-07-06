@@ -273,4 +273,8 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	public void setRanAfterTrialTests(boolean ranAfterTrialTests) {
 		this.ranAfterTrialTests = ranAfterTrialTests;
 	}
+	@Override
+	public boolean hasRecordedCoverage() {
+		return false;
+	}
 }

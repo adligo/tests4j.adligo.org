@@ -12,6 +12,7 @@ import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.models.shared.trials.TrialRecursion;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
 
@@ -51,7 +52,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * @see I_Tests4J_Params#getReporter()
 	 */
 	private transient I_Tests4J_Reporter reporter = new SummaryReporter();
-	
+	/**
+	 * @see TrialRecursion (tests4j is testing itself through the Tests4J api)
+	 */
+	private boolean trialRecursion = false;
 	/**
 	 * this flaggs a jvm exit
 	 */
@@ -93,6 +97,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		for (I_Tests4J_RemoteInfo remote: remotes){
 			remoteParams.put(remote, p.getRemoteParams(remote));
 		}
+		trialRecursion = p.isTrialRecursion();
 	}
 	
 	public Tests4J_Params(String p) {
@@ -437,5 +442,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 	public void setEvaluatorLookup(I_EvaluatorLookup evaluatorLookup) {
 		this.evaluatorLookup = evaluatorLookup;
+	}
+
+	public boolean isTrialRecursion() {
+		return trialRecursion;
+	}
+
+	public void setTrialRecursion(boolean trialRecursion) {
+		this.trialRecursion = trialRecursion;
 	}
 }

@@ -25,6 +25,8 @@ import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
 import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
+import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
+import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
@@ -38,10 +40,6 @@ import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
-import org.adligo.tests4j.models.shared.results.feedback.ApiTrial_TestsResultsMutant;
-import org.adligo.tests4j.models.shared.results.feedback.I_ApiTrial_TestsResults;
-import org.adligo.tests4j.models.shared.results.feedback.I_SourceFileTrial_TestsResults;
-import org.adligo.tests4j.models.shared.results.feedback.SourceFileTrial_TestsResultsMutant;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -89,6 +87,9 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private boolean inAfterTrialTests = false;
 	private boolean inRunMetaTrialMethods = false;
 	private TestResultMutant metaTrialTestResultMutant;
+	private ApiTrialResultMutant apiTrialTestResultMutant;
+	private SourceFileTrialResultMutant sourceFileTrialResultMutant;
+	
 	private Set<Integer> metaTrialAssertionHashes = new HashSet<Integer>();
 	private String runMetaTrialMethod;
 	private String trialName;
@@ -273,6 +274,8 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		}
 		afterTrialTestsAssertionHashes.clear();
 		afterTrialTestsResultMutant = null;
+		apiTrialTestResultMutant = null;
+		sourceFileTrialResultMutant = null;
 		
 		trialName = trialDescription.getTrialName();
 		int id = memory.incrementTrialRun(trialName);
@@ -305,7 +308,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			}
 			if (trialResultMutant.isPassed()) {
 				//skip this method unless everything passed in the trial
-				runAfterTrialTests(trialThreadLocalCoverageRecorder);
+				trialResultMutant = runAfterTrialTests();
 			}
 			runAfterTrial();
 		}
@@ -323,17 +326,14 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 					result = new UseCaseTrialResult(mut);
 				break;
 			case ApiTrial:
-					ApiTrialResultMutant api = new ApiTrialResultMutant(trialResultMutant);
-					api.setPackageName(trialDescription.getPackageName());
-					setAfterTrialTestsState(api);
-					result = new ApiTrialResult(api);
+					apiTrialTestResultMutant = getApiTrialResult();
+					setAfterTrialTestsState(apiTrialTestResultMutant);
+					result = new ApiTrialResult(apiTrialTestResultMutant);
 				break;
 			case SourceFileTrial:
-					SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trialResultMutant);
-					Class<?> clazz = trialDescription.getSourceFileClass();
-					src.setSourceFileName(clazz.getName());
-					setAfterTrialTestsState(src);
-					result = new SourceFileTrialResult(src);
+					sourceFileTrialResultMutant = getSourceFileTrialResult();
+					setAfterTrialTestsState(sourceFileTrialResultMutant);
+					result = new SourceFileTrialResult(sourceFileTrialResultMutant);
 				break;
 			default:
 				result = new BaseTrialResult(trialResultMutant);
@@ -342,6 +342,31 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 			reporter.log("notifying trial finished " + trialName);
 		}
 		notifier.onTrialCompleted(result);
+	}
+
+	private ApiTrialResultMutant getApiTrialResult() {
+		if (apiTrialTestResultMutant != null) {
+			return apiTrialTestResultMutant;
+		}
+		ApiTrialResultMutant apiTrialTestResultMutant = new ApiTrialResultMutant(trialResultMutant);
+		apiTrialTestResultMutant.setPackageName(trialDescription.getPackageName());
+		return apiTrialTestResultMutant;
+	}
+
+	/**
+	 * clones (copy constructor) the current
+	 * testResultMutant adds the source file class
+	 * and returns.
+	 * @return
+	 */
+	private SourceFileTrialResultMutant getSourceFileTrialResult() {
+		if (sourceFileTrialResultMutant != null) {
+			return sourceFileTrialResultMutant;
+		}
+		SourceFileTrialResultMutant sourceFileTrialResultMutant = new SourceFileTrialResultMutant(trialResultMutant);
+		Class<?> clazz = trialDescription.getSourceFileClass();
+		sourceFileTrialResultMutant.setSourceFileName(clazz.getName());
+		return sourceFileTrialResultMutant;
 	}
 	
 	private void setAfterTrialTestsState(BaseTrialResultMutant mutant) {
@@ -434,7 +459,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		}
 	}
 	
-	private void runAfterTrialTests(I_CoverageRecorder trialCoverageRecorder) {
+	private BaseTrialResultMutant runAfterTrialTests() {
 		ranAfterTrialTests = false;
 		hadAfterTrialTests = false;
 		inAfterTrialTests = true;
@@ -444,25 +469,25 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		
 		switch (type) {
 			case SourceFileTrial:
-				afterSourceFileTrialTests(trialCoverageRecorder, type);
-				break;
+				return afterSourceFileTrialTests(type);
 			case ApiTrial:
-				afterApiTrialTests(trialCoverageRecorder, type);
-				break;
+				return afterApiTrialTests(type);
 			default:
 				//do nothing
 		}
 		
 		inAfterTrialTests = false;
+		return null;
 	}
 
-	private void afterApiTrialTests(I_CoverageRecorder trialCoverageRecorder,
-			TrialType type) {
+	private ApiTrialResultMutant afterApiTrialTests(TrialType type) {
 		Method clazzMethod = null;
 		List<I_PackageCoverage> coverage;
 		Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();
+		ApiTrialResultMutant apiInfoMut = getApiTrialResult();
+		
 		try {
-			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_ApiTrial_TestsResults.class);
+			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_ApiTrialResult.class);
 		} catch (NoSuchMethodException e) {
 			//do nothing
 		} catch (SecurityException e) {
@@ -471,30 +496,23 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		if (clazzMethod != null) {
 			hadAfterTrialTests = true;
 		} else {
-			return;
+			return apiInfoMut;
 		}
-		ApiTrial_TestsResultsMutant apiInfoMut = new ApiTrial_TestsResultsMutant();
 		
-		if (trialCoverageRecorder != null) {
-			coverage = trialCoverageRecorder.endRecording();
+		if (trialThreadLocalCoverageRecorder != null) {
+			coverage = trialThreadLocalCoverageRecorder.endRecording();
 			I_PackageCoverage cover = trialDescription.findPackageCoverage(coverage);
-			apiInfoMut.setCoverage(cover);
+			apiInfoMut.setPackageCoverage(cover);
 		}
-		apiInfoMut.setAssertions(trialResultMutant.getAssertionCount());
-		apiInfoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
 		
 		trial.setBindings(this);
-		if (trialCoverageRecorder != null) {
-			coverage = trialCoverageRecorder.endRecording();
-			I_PackageCoverage pkgCover = trialDescription.findPackageCoverage(coverage);
-			apiInfoMut.setCoverage(pkgCover);
-		}
 		ranAfterTrialTests = true;
 		
 		boolean passed = false;
 		try {
 			if (trial instanceof I_ApiTrial) {
-				((I_ApiTrial) trial).afterTrialTests(apiInfoMut);
+				//send a immutable
+				((I_ApiTrial) trial).afterTrialTests(new ApiTrialResult(apiInfoMut));
 			}
 			passed = true;
 		} catch (AfterTrialTestsAssertionFailure x) {
@@ -511,17 +529,18 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		notifier.onTestCompleted(trialClass.getName(), 
 				AFTER_API_TRIAL_TESTS_METHOD, 
 				afterTrialTestsResultMutant.isPassed());
-		trialResultMutant.addResult(afterTrialTestsResultMutant);
+		apiInfoMut.addResult(afterTrialTestsResultMutant);
+		return apiInfoMut;
 	}
 
-	private void afterSourceFileTrialTests(
-			I_CoverageRecorder trialCoverageRecorder, TrialType type) {
+	private SourceFileTrialResultMutant afterSourceFileTrialTests(TrialType type) {
 		Method clazzMethod = null;
 		List<I_PackageCoverage> coverage;
 		Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();
 		
+		SourceFileTrialResultMutant infoMut = getSourceFileTrialResult();
 		try {
-			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrial_TestsResults.class);
+			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
 		} catch (NoSuchMethodException e) {
 			//do nothing
 		} catch (SecurityException e) {
@@ -530,19 +549,17 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		if (clazzMethod != null) {
 			hadAfterTrialTests = true;
 		} else {
-			return;
+			return infoMut;
 		}
-		SourceFileTrial_TestsResultsMutant infoMut = new SourceFileTrial_TestsResultsMutant();
 		
-		if (trialCoverageRecorder != null) {
-			coverage = trialCoverageRecorder.endRecording();
+		
+		if (trialThreadLocalCoverageRecorder != null) {
+			coverage = trialThreadLocalCoverageRecorder.endRecording();
 			I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
 			if (cover != null) {
-				infoMut.setCoverage(cover);
+				infoMut.setSourceFileCoverage(cover);
 			}
 		}
-		infoMut.setAssertions(trialResultMutant.getAssertionCount());
-		infoMut.setUniqueAssertions(trialResultMutant.getUniqueAssertionCount());
 		
 		ranAfterTrialTests = true;
 		
@@ -567,7 +584,8 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		notifier.onTestCompleted(trialClass.getName(), 
 				AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD, 
 				afterTrialTestsResultMutant.isPassed());
-		trialResultMutant.addResult(afterTrialTestsResultMutant);
+		infoMut.addResult(afterTrialTestsResultMutant);
+		return infoMut;
 	}
 	
 	private void runMetaTrialMethods() {

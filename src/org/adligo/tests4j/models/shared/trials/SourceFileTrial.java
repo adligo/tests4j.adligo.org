@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.trials;
 
 import org.adligo.tests4j.models.shared.common.TrialType;
-import org.adligo.tests4j.models.shared.results.feedback.I_SourceFileTrial_TestsResults;
+import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 
 @TrialTypeAnnotation(type = TrialType.SourceFileTrial)
 public abstract class SourceFileTrial extends AbstractTrial implements I_SourceFileTrial  {
@@ -16,8 +16,9 @@ public abstract class SourceFileTrial extends AbstractTrial implements I_SourceF
 	 *		assertGreaterThanOrEquals(100.00, coverage.getPercentageCoveredDouble());
 	 *	}
 	 *
-	 * assertEquals(111, p.getUniqueAssertions());
-	 * @param p
+	 * assertEquals(111, p.getUniqueAssertionCount());
+	 * @param p 
+	 *    the results of the trial with out this method.
 	 */
-	public void afterTrialTests(I_SourceFileTrial_TestsResults p) {}
+	public void afterTrialTests(I_SourceFileTrialResult p) {}
 }
