@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.models.shared.common.PlatformEnum;
+import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
@@ -49,10 +49,10 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_ApiTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
-import org.adligo.tests4j.models.shared.trials.I_TrialProcessorBindings;
+import org.adligo.tests4j.models.shared.trials.I_TrialBindings;
 
 public class TrialInstancesProcessor implements Runnable, 
-I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
+I_TestFinishedListener, I_AssertListener, I_TrialBindings {
 	public static final String AFTER_TRIAL_TESTS = "afterTrialTests";
 	private static final String AFTER_API_TRIAL_TESTS_METHOD = 
 			"afterTrialTests(I_ApiTrial_TestsResults p)";
@@ -94,7 +94,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	private String runMetaTrialMethod;
 	private String trialName;
 	private I_CoverageRecorder trialThreadLocalCoverageRecorder;
-	
+	private AfterTestsSourceFileTrialProcessor afterTestsSouceFileProcessor;
 	/**
 	 * 
 	 * @param p
@@ -114,6 +114,8 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		testsRunner = new TestRunable(memory, pReporter);
 		testsRunner.setListener(this);
 		testRunService = threadManager.createNewTestRunService();
+		
+		afterTestsSouceFileProcessor = new AfterTestsSourceFileTrialProcessor(memory);
 	}
 
 	/**
@@ -469,7 +471,14 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		
 		switch (type) {
 			case SourceFileTrial:
-				return afterSourceFileTrialTests(type);
+				afterTestsSouceFileProcessor.reset(trialDescription, 
+						trialThreadLocalCoverageRecorder, trial);
+				SourceFileTrialResultMutant result = getSourceFileTrialResult();
+				TestResultMutant trm = afterTestsSouceFileProcessor.afterSourceFileTrialTests(result);
+				if (trm != null) {
+					result.addResult(trm);
+				}
+				return result;
 			case ApiTrial:
 				return afterApiTrialTests(type);
 			default:
@@ -533,60 +542,6 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 		return apiInfoMut;
 	}
 
-	private SourceFileTrialResultMutant afterSourceFileTrialTests(TrialType type) {
-		Method clazzMethod = null;
-		List<I_PackageCoverage> coverage;
-		Class<? extends I_AbstractTrial> trialClass = trialDescription.getTrialClass();
-		
-		SourceFileTrialResultMutant infoMut = getSourceFileTrialResult();
-		try {
-			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
-		} catch (NoSuchMethodException e) {
-			//do nothing
-		} catch (SecurityException e) {
-			//do nothing
-		}
-		if (clazzMethod != null) {
-			hadAfterTrialTests = true;
-		} else {
-			return infoMut;
-		}
-		
-		
-		if (trialThreadLocalCoverageRecorder != null) {
-			coverage = trialThreadLocalCoverageRecorder.endRecording();
-			I_SourceFileCoverage cover = trialDescription.findSourceFileCoverage(coverage);
-			if (cover != null) {
-				infoMut.setSourceFileCoverage(cover);
-			}
-		}
-		
-		ranAfterTrialTests = true;
-		
-		trial.setBindings(this);
-		boolean passed = false;
-		try {
-			if (trial instanceof I_SourceFileTrial) {
-				((I_SourceFileTrial) trial).afterTrialTests(infoMut);
-			}
-			passed = true;
-		} catch (AfterTrialTestsAssertionFailure x) {
-			//the test failed, in one of it's asserts
-		} catch (Exception x) {
-			onAfterTrialTestsMethodException(x, AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD);
-		}
-		if (afterTrialTestsResultMutant == null) {
-			afterTrialTestsResultMutant = new TestResultMutant();
-			afterTrialTestsResultMutant.setPassed(passed);
-			flushAssertionHashes(afterTrialTestsResultMutant, afterTrialTestsAssertionHashes);
-			afterTrialTestsResultMutant.setName(AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD);
-		}
-		notifier.onTestCompleted(trialClass.getName(), 
-				AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD, 
-				afterTrialTestsResultMutant.isPassed());
-		infoMut.addResult(afterTrialTestsResultMutant);
-		return infoMut;
-	}
 	
 	private void runMetaTrialMethods() {
 		inRunMetaTrialMethods = true;
@@ -754,7 +709,7 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	}
 
 	@Override
-	public I_AssertListener getAssertionListener() {
+	public I_AssertListener getAssertListener() {
 		return this;
 	}
 
@@ -795,8 +750,8 @@ I_TestFinishedListener, I_AssertListener, I_TrialProcessorBindings {
 	}
 
 	@Override
-	public PlatformEnum getPlatform() {
-		return PlatformEnum.JSE;
+	public Platform getPlatform() {
+		return Platform.JSE;
 	}
 
 	@Override

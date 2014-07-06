@@ -97,7 +97,7 @@ public class Tests4J_Memory {
 	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private boolean hasRemoteDelegation = false;
 	private EvaluatorLookup evaluationLookup;
-	private boolean trialRecursion = false;
+	private boolean exitAfterLastNotification = false;
 	/**
 	 * 
 	 * @param params
@@ -115,7 +115,7 @@ public class Tests4J_Memory {
 			trialClasses.add(metaTrialClass);
 			metaTrial.set(true);
 		}
-		trialRecursion = params.isTrialRecursion();
+		exitAfterLastNotification = params.isExitAfterLastNotification();
 		reporter = params.getReporter();
 		
 		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
@@ -404,7 +404,7 @@ public class Tests4J_Memory {
 		return evaluationLookup;
 	}
 
-	public boolean isTrialRecursion() {
-		return trialRecursion;
+	public boolean isExitAfterLastNotification() {
+		return exitAfterLastNotification;
 	}
 }

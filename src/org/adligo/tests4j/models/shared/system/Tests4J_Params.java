@@ -53,10 +53,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 */
 	private transient I_Tests4J_Reporter reporter = new SummaryReporter();
 	/**
-	 * @see TrialRecursion (tests4j is testing itself through the Tests4J api)
-	 */
-	private boolean trialRecursion = false;
-	/**
 	 * this flaggs a jvm exit
 	 */
 	private transient boolean exitAfterLastNotification = true;
@@ -97,7 +93,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		for (I_Tests4J_RemoteInfo remote: remotes){
 			remoteParams.put(remote, p.getRemoteParams(remote));
 		}
-		trialRecursion = p.isTrialRecursion();
 	}
 	
 	public Tests4J_Params(String p) {
@@ -442,13 +437,5 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 	public void setEvaluatorLookup(I_EvaluatorLookup evaluatorLookup) {
 		this.evaluatorLookup = evaluatorLookup;
-	}
-
-	public boolean isTrialRecursion() {
-		return trialRecursion;
-	}
-
-	public void setTrialRecursion(boolean trialRecursion) {
-		this.trialRecursion = trialRecursion;
 	}
 }

@@ -31,7 +31,7 @@ public interface I_AbstractTrial extends I_Asserts {
 	 * 
 	 * @param bindings
 	 */
-	void setBindings(I_TrialProcessorBindings bindings);
+	void setBindings(I_TrialBindings bindings);
 	
 	/**
 	 * log to the reporter

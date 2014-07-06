@@ -13,8 +13,8 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
  * @author scott
  *
  */
-public interface I_TrialProcessorBindings extends I_Platform {
-	public I_AssertListener getAssertionListener();
+public interface I_TrialBindings extends I_Platform {
+	public I_AssertListener getAssertListener();
 	public I_Tests4J_Reporter getReporter();
 	public I_EvaluatorLookup getDefalutEvaluatorLookup();
 }

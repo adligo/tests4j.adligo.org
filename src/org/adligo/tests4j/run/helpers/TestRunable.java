@@ -2,12 +2,13 @@ package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.List;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.models.shared.common.PlatformEnum;
+import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
@@ -18,16 +19,15 @@ import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_Trial;
-import org.adligo.tests4j.models.shared.trials.I_TrialProcessorBindings;
+import org.adligo.tests4j.models.shared.trials.I_TrialBindings;
 
 public class TestRunable implements Runnable, I_AssertListener,
-I_TrialProcessorBindings {
+I_TrialBindings {
 
 	private Method testMethod;
 	private I_AbstractTrial trial;
 	private I_TestFinishedListener listener;
-	private CopyOnWriteArrayList<Integer> assertionHashes = new CopyOnWriteArrayList<Integer>(); 
+	private List<Integer> assertionHashes = new ArrayList<Integer>(); 
 	private I_Tests4J_Reporter reporter;
 	private TestResultMutant testResultMutant;
 	private boolean assertFailed = false;
@@ -128,7 +128,7 @@ I_TrialProcessorBindings {
 	}
 
 	@Override
-	public I_AssertListener getAssertionListener() {
+	public I_AssertListener getAssertListener() {
 		return this;
 	}
 
@@ -138,8 +138,8 @@ I_TrialProcessorBindings {
 	}
 
 	@Override
-	public PlatformEnum getPlatform() {
-		return PlatformEnum.JSE;
+	public Platform getPlatform() {
+		return Platform.JSE;
 	}
 
 	@Override

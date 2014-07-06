@@ -37,6 +37,7 @@ public class Tests4J_Manager {
 	private I_SystemExit exitor;
 	
 	private boolean jvmExit = false;
+	
 	public Tests4J_Manager(boolean pJvmExit, int trialThreads, I_SystemExit pExitor) {
 		jvmExit = pJvmExit;
 		exitor = pExitor;
@@ -45,10 +46,7 @@ public class Tests4J_Manager {
 		trialRunService = Executors.newFixedThreadPool(trialThreads, trialFactory);
 	}
 	
-	/**
-	 * shutdown all of the threads,
-	 * and remote runners
-	 */
+	
 	public void shutdown() {
 		for (Tests4J_RemoteRunner remote: remoteRunners) {
 			remote.shutdown();

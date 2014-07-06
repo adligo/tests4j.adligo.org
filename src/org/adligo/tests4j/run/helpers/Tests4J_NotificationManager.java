@@ -454,6 +454,11 @@ public class Tests4J_NotificationManager {
 	}
 	
 	public void onAllTrialsDone(I_TrialRunResult p) {
+		if (memory.isExitAfterLastNotification()) {
+			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+				reporter.log("Exiting JVM after this last notification.");
+			}
+		}
 		TrialRunResult endResult = new TrialRunResult(p);
 		reporter.onRunCompleted(endResult);
 		if (listener != null) {

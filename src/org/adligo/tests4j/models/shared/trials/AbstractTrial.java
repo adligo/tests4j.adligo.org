@@ -34,7 +34,7 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionComman
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionCommand;
 import org.adligo.tests4j.models.shared.common.I_Platform;
-import org.adligo.tests4j.models.shared.common.PlatformEnum;
+import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
@@ -62,12 +62,12 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	 * @param p
 	 */
 	@Override
-	public void setBindings(I_TrialProcessorBindings bindings) {
+	public void setBindings(I_TrialBindings bindings) {
 		//throw npe for nulls
 		bindings.hashCode();
 		platform = bindings;
 		
-		listener = bindings.getAssertionListener();
+		listener = bindings.getAssertListener();
 		//throw npe for nulls
 		listener.hashCode();
 		
@@ -358,7 +358,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		assertGreaterThanOrEquals(message, p, 0.0 + a);
 	}
 	
-	public PlatformEnum getPlatform() {
+	public Platform getPlatform() {
 		return platform.getPlatform();
 	}
 }

@@ -10,6 +10,6 @@ package org.adligo.tests4j.models.shared.common;
  * @author scott
  *
  */
-public enum PlatformEnum {
+public enum Platform {
 	JSE, GWTC, ADFM
 }
