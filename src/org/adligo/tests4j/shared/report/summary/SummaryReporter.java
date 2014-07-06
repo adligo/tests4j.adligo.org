@@ -171,11 +171,11 @@ public class SummaryReporter implements I_Tests4J_Reporter {
 		for (I_PackageCoverage cover: ordered) {
 			Set<String> sourceFileNames = cover.getSourceFileNames();
 			log("\t\t\t+" + cover.getPackageName() + " was covered " + 
-						formatter.format(cover.getTotalPercentageCovered()) + "% with " +
+						formatter.format(cover.getPercentageCovered()) + "% with " +
 						sourceFileNames.size() + " source files, " +
 						cover.getChildPackageCoverage().size() + " child packages and " +
-						cover.getTotalCoveredCoverageUnits().get() + "/" +
-						cover.getTotalCoverageUnits().get() + " coverage units.");
+						cover.getCoveredCoverageUnits().get() + "/" +
+						cover.getCoverageUnits().get() + " coverage units.");
 			
 		}
 		return new BigDecimal(result.getCoveragePercentage()).round(new MathContext(2));

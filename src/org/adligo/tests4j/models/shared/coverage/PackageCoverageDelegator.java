@@ -48,20 +48,4 @@ public class PackageCoverageDelegator implements I_PackageCoverage {
 	public boolean hasChildPackageCoverage() {
 		return delegate.hasChildPackageCoverage();
 	}
-
-	public I_CoverageUnits getTotalCoverageUnits() {
-		return delegate.getTotalCoverageUnits();
-	}
-
-	public I_CoverageUnits getTotalCoveredCoverageUnits() {
-		return delegate.getTotalCoveredCoverageUnits();
-	}
-
-	public BigDecimal getTotalPercentageCovered() {
-		return delegate.getTotalPercentageCovered();
-	}
-
-	public double getTotalPercentageCoveredDouble() {
-		return delegate.getTotalPercentageCoveredDouble();
-	}
 }

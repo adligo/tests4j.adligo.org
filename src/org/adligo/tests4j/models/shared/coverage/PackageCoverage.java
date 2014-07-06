@@ -68,17 +68,7 @@ public class PackageCoverage implements I_PackageCoverage {
 		return mutant.hasChildPackageCoverage();
 	}
 
-	public I_CoverageUnits getTotalCoverageUnits() {
-		return mutant.getTotalCoverageUnits();
-	}
 
-	public I_CoverageUnits getTotalCoveredCoverageUnits() {
-		return mutant.getTotalCoveredCoverageUnits();
-	}
-
-	public BigDecimal getTotalPercentageCovered() {
-		return mutant.getTotalPercentageCovered();
-	}
 
 	public String toString() {
 		return mutant.toString();
@@ -89,9 +79,4 @@ public class PackageCoverage implements I_PackageCoverage {
 		return getPercentageCovered().doubleValue();
 	}
 
-	@Override
-	public double getTotalPercentageCoveredDouble() {
-		return mutant.getTotalPercentageCoveredDouble();
-	}
-	
 }

@@ -11,6 +11,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
  * This also allows to assert a number of trials 
  * which ran, and total code coverage.
  * 
+ * 
  * @author scott
  *
  */

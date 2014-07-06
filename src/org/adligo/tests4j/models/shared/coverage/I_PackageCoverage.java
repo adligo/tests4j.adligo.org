@@ -54,41 +54,4 @@ public interface I_PackageCoverage extends I_CoverageUnitsContainer {
 	 * @return
 	 */
 	public boolean hasChildPackageCoverage();
-
-	
-	/**
-	 * Coverage Units are simply the count of all 
-	 * instructions/branches exc
-	 * NOTE this method pertains to the
-	 * coverage units from this package and
-	 * child packages.
-	 * @return
-	 */
-	public I_CoverageUnits getTotalCoverageUnits();
-	/**
-	 * Return the number of CoverageUnits that
-	 * were actually covered 
-	 * NOTE this method pertains to the
-	 * coverage units from this package and
-	 * child packages.
-	 * @return
-	 */
-	public I_CoverageUnits getTotalCoveredCoverageUnits();
-	
-	/**
-	 * Return the percentage of coverage units covered
-	 * from 0.00 to 100.00.
-	 * 
-	 * NOTE this method pertains to the
-	 * coverage units from this package and
-	 * child packages.
-	 * @return
-	 */
-	public BigDecimal getTotalPercentageCovered();
-	
-	/**
-	 * @see getTotalPercentageCovered
-	 * @return
-	 */
-	public double getTotalPercentageCoveredDouble();
 }

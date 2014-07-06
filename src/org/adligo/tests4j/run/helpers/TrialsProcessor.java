@@ -45,7 +45,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 	 */
 	private static final ThreadLocalOutputStream OUT = new ThreadLocalOutputStream();
 	private Tests4J_Memory memory;
-	private Tests4J_NotificationManager notifier;
+	private I_Tests4J_NotificationManager notifier;
 	private TrialProcessorControls controls;
 	
 	/**

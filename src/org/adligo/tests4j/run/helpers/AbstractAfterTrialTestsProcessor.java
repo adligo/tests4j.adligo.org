@@ -8,6 +8,7 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
@@ -15,6 +16,7 @@ import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
+import org.adligo.tests4j.models.shared.trials.TrialRecursion;
 
 /**
  * a abstract class to help keep the TrialInstancesProcessor
@@ -23,6 +25,7 @@ import org.adligo.tests4j.models.shared.trials.TrialBindings;
  * afterTrialTests methods
  * and MetaTrial methods
  * 
+ * This class should behave like a model (ie it Is NOT thread safe)
  * @author scott
  *
  */
@@ -30,8 +33,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 	public static final String AFTER_TRIAL_TESTS = "afterTrialTests";
 	private TrialBindings bindings;
 	private TrialDescription trialDescription;
-	private boolean hadAfterTrialTests = false;
-	private boolean ranAfterTrialTests = false;
+
 	private I_CoverageRecorder trialThreadLocalCoverageRecorder;
 	private I_AbstractTrial trial;
 	private TestResultMutant afterTrialTestsResultMutant;
@@ -43,8 +45,6 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 	}
 
 	public void reset(TrialDescription pDesc, I_CoverageRecorder pRec, I_AbstractTrial pTrial) {
-		hadAfterTrialTests = false;
-		ranAfterTrialTests = false;
 		afterTrialTestsResultMutant = null;
 		afterTrialTestsAssertionHashes = new ArrayList<Integer>();
 		
@@ -87,13 +87,6 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 		return trialDescription;
 	}
 
-	protected boolean isHadAfterTrialTests() {
-		return hadAfterTrialTests;
-	}
-
-	protected boolean isRanAfterTrialTests() {
-		return ranAfterTrialTests;
-	}
 
 	protected I_CoverageRecorder getTrialThreadLocalCoverageRecorder() {
 		return trialThreadLocalCoverageRecorder;
@@ -107,13 +100,6 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 		return afterTrialTestsResultMutant;
 	}
 
-	protected void setHadAfterTrialTests(boolean hadAfterTrialTests) {
-		this.hadAfterTrialTests = hadAfterTrialTests;
-	}
-
-	protected void setRanAfterTrialTests(boolean ranAfterTrialTests) {
-		this.ranAfterTrialTests = ranAfterTrialTests;
-	}
 
 	protected void setAfterTrialTestsResultMutant(
 			TestResultMutant afterTrialTestsResultMutant) {
@@ -134,4 +120,5 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 		tfm.setMessage(message);
 		afterTrialTestsResultMutant.setFailure(tfm);
 	}
+	
 }

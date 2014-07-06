@@ -4,13 +4,11 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
-import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
+import org.adligo.tests4j.models.shared.trials.I_UseCaseTrial;
 
 /**
  * TODO extract the method 
@@ -22,20 +20,18 @@ import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
  * @author scott
  *
  */
-public class AfterTestsSourceFileTrialProcessor extends AbstractAfterTrialTestsProcessor {
-	private static final String AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD =
-			"afterTrialTests(I_SourceFileTrial_TestsResults p)";
+public class AfterUseCaseTrialTestsProcessor extends AbstractAfterTrialTestsProcessor {
+	private static final String AFTER_USE_CASE_TRIAL_TESTS_METHOD =
+			"afterTrialTests(I_UseCaseTrialResult p)";
 	
-	public AfterTestsSourceFileTrialProcessor(Tests4J_Memory memory) {
+	public AfterUseCaseTrialTestsProcessor(Tests4J_Memory memory) {
 		super(memory);
 	}
 	
-	public TestResultMutant afterSourceFileTrialTests(SourceFileTrialResultMutant trialResultMutant) {
+	public TestResultMutant afterUseCaseTrialTests(UseCaseTrialResultMutant trialResultMutant) {
 		Method clazzMethod = null;
-		List<I_PackageCoverage> coverage;
 		I_AbstractTrial trial = super.getTrial();
 		Class<? extends I_AbstractTrial> trialClass = trial.getClass();
-		TrialDescription trialDesc = super.getTrialDescription();
 		
 		try {
 			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
@@ -44,39 +40,33 @@ public class AfterTestsSourceFileTrialProcessor extends AbstractAfterTrialTestsP
 		} catch (SecurityException e) {
 			//do nothing
 		}
+		trialResultMutant.setRanAfterTrialTests(false);
 		if (clazzMethod != null) {
-			super.setHadAfterTrialTests(true);
+			trialResultMutant.setHadAfterTrialTests(true);
 		} else {
+			trialResultMutant.setHadAfterTrialTests(false);
 			return null;
 		}
 		
-		I_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
-		if (rec != null) {
-			coverage = rec.endRecording();
-			I_SourceFileCoverage cover = trialDesc.findSourceFileCoverage(coverage);
-			if (cover != null) {
-				trialResultMutant.setSourceFileCoverage(cover);
-			}
-		}
-		super.setRanAfterTrialTests(true);
+		trialResultMutant.setRanAfterTrialTests(true);
 		
 		boolean passed = false;
 		try {
-			if (trial instanceof I_SourceFileTrial) {
-				((I_SourceFileTrial) trial).afterTrialTests(trialResultMutant);
+			if (trial instanceof I_UseCaseTrial) {
+				((I_UseCaseTrial) trial).afterTrialTests(trialResultMutant);
 			}
 			passed = true;
 		} catch (AfterTrialTestsAssertionFailure x) {
 			//the test failed, in one of it's asserts
 		} catch (Throwable x) {
-			super.onAfterTrialTestsMethodException(x, AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD);
+			super.onAfterTrialTestsMethodException(x, AFTER_USE_CASE_TRIAL_TESTS_METHOD);
 		}
 		TestResultMutant afterTrialTestsResultMutant = super.getAfterTrialTestsResultMutant();
 		if (afterTrialTestsResultMutant == null) {
 			afterTrialTestsResultMutant = new TestResultMutant();
 			afterTrialTestsResultMutant.setPassed(passed);
 			flushAssertionHashes(afterTrialTestsResultMutant);
-			afterTrialTestsResultMutant.setName(AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD);
+			afterTrialTestsResultMutant.setName(AFTER_USE_CASE_TRIAL_TESTS_METHOD);
 		}
 		return afterTrialTestsResultMutant;
 	}

@@ -244,8 +244,14 @@ public class TrialDescription implements I_TrialDescription {
 			
 		}
 
-		
-		if (testMethods.size() == 0) {
+		if (TrialType.MetaTrial == type) {
+			if (testMethods.size() >= 1) {
+				failures.add(new TrialVerificationFailure(
+						messages.getNoTests(),
+						new IllegalArgumentException(trialClass.getName() + 
+								messages.getWasAnnotatedIncorrectly())));
+			}
+		} else if (testMethods.size() == 0 ) {
 			failures.add(new TrialVerificationFailure(
 					messages.getNoTests(),
 					new IllegalArgumentException(trialClass.getName() + 

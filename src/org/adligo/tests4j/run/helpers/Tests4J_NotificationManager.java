@@ -35,6 +35,7 @@ import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4jReporterDelegate;
 import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegate;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.ClassDiscovery;
 
 /**
@@ -44,7 +45,7 @@ import org.adligo.tests4j.run.discovery.ClassDiscovery;
  * @author scott
  *
  */
-public class Tests4J_NotificationManager {
+public class Tests4J_NotificationManager implements I_Tests4J_NotificationManager {
 	private AtomicBoolean doneDescribeingTrials = new AtomicBoolean(false);
 	private AtomicBoolean doneRunningTrials = new AtomicBoolean(false);
 	private Tests4J_Memory memory;
@@ -69,6 +70,7 @@ public class Tests4J_NotificationManager {
 	private Set<String> passingTrialNames = new CopyOnWriteArraySet<String>();
 	private AtomicBoolean running = new AtomicBoolean(true);
 	private volatile I_TrialRunMetadata metadata = null;
+	private MetaTrialProcessor metaProcessor;
 	
 	public Tests4J_NotificationManager(Tests4J_Memory pMem) {
 		memory = pMem;
@@ -81,11 +83,13 @@ public class Tests4J_NotificationManager {
 		
 		long now = System.currentTimeMillis();
 		startTime.set(now);
+		metaProcessor = new MetaTrialProcessor(memory, this);
 	}
 	
-	/**
-	 * @digram_sync on 5/26/2014 with Overview.seq
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#checkDoneDescribingTrials()
 	 */
+	@Override
 	public void checkDoneDescribingTrials() {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("checkDoneDescribingTrials()");
@@ -143,9 +147,10 @@ public class Tests4J_NotificationManager {
 	}
 
 
-	/**
-	 * @diagram_sync on 5/26/2014 with Overview.seq
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#sendMetadata()
 	 */
+	@Override
 	public void sendMetadata() {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("sendingMetadata. " + memory.getDescriptionCount()
@@ -305,6 +310,10 @@ public class Tests4J_NotificationManager {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#startingTrial(java.lang.String)
+	 */
+	@Override
 	public void startingTrial(String name) {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("startingTrial " + name);
@@ -315,6 +324,10 @@ public class Tests4J_NotificationManager {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#startingTest(java.lang.String, java.lang.String)
+	 */
+	@Override
 	public void startingTest(String trialName, String testName) {
 		reporter.onStartingTest(trialName, testName);
 		if (listener != null) {
@@ -322,6 +335,10 @@ public class Tests4J_NotificationManager {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#onTestCompleted(java.lang.String, java.lang.String, boolean)
+	 */
+	@Override
 	public void onTestCompleted(String trialName, String testName, boolean passed) {
 		reporter.onTestCompleted(trialName, testName, passed);
 		if (listener != null) {
@@ -329,11 +346,10 @@ public class Tests4J_NotificationManager {
 		}
 	}
 	
-	/**
-	 * @diagram sync on 5/8/201 with  Overview.seq
-	 * 
-	 * @param result
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#onTrialCompleted(org.adligo.tests4j.models.shared.results.I_TrialResult)
 	 */
+	@Override
 	public void onTrialCompleted(I_TrialResult result) {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("trialFinished " + result.getName() + " " + result.isPassed());
@@ -347,12 +363,21 @@ public class Tests4J_NotificationManager {
 	 * @param result
 	 */
 
-	public void onTrialCompetedInternal(I_TrialResult result) {
+	private void onTrialCompetedInternal(I_TrialResult result) {
 		reporter.onTrialCompleted(result);
 		if (listener != null) {
 			listener.onTrialCompleted(result);
 		}
 		
+		incrementTrialResultCounts(result);
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("trialFinished " + result.getName() + " " + trials.get() + 
+					" trials completed " + testCount.get() + " tests completed.");
+		}
+		
+	}
+
+	private synchronized void incrementTrialResultCounts(I_TrialResult result) {
 		assertionCount.addAndGet(result.getAssertionCount());
 		uniqueAssertionCount.addAndGet(result.getUniqueAssertionCount());
 		testCount.addAndGet(result.getTestCount());
@@ -368,25 +393,14 @@ public class Tests4J_NotificationManager {
 			passingTrialNames.add(name);
 		}
 		trials.addAndGet(1);
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("trialFinished " + result.getName() + " " + trials.get() + 
-					" trials completed " + testCount.get() + " tests completed.");
-		}
-		
 	}
 
 	
-	/**
-	 * Check to see if all of the I_Trials are done running
-	 * by comparing the trialsWhichCanRun 
-	 * from the memory's RunnableTrialDescriptions 
-	 * and the count of trials from the trialDone method calls.
-	 * 
-	 * @diagram_sync on 5/26/2014 with Overview.seq
-	 * @return a trial run result
-	 * 		
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#checkDoneRunningNonMetaTrials()
 	 */
-	public TrialRunResultMutant checkDoneRunningNonMetaTrials() {
+	@Override
+	public synchronized void checkDoneRunningNonMetaTrials() {
 		if (doneDescribeingTrials.get()) {
 			int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
 			if (memory.hasMetaTrial()) {
@@ -406,7 +420,7 @@ public class Tests4J_NotificationManager {
 				synchronized (doneRunningTrials) {
 					if (!doneRunningTrials.get()) {
 						doneRunningTrials.set(true);
-						return onDoneRunningNonMetaTrials();
+						onDoneRunningNonMetaTrials();
 					}
 				}
 			} else {
@@ -423,7 +437,6 @@ public class Tests4J_NotificationManager {
 				}
 			}
 		}
-		return null;
 	}
 
 	/**
@@ -432,7 +445,7 @@ public class Tests4J_NotificationManager {
 	 * 
 	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 */
-	private TrialRunResultMutant onDoneRunningNonMetaTrials() {
+	private void onDoneRunningNonMetaTrials() {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("onDoneRunningNonMetaTrials()");
 		}
@@ -448,12 +461,63 @@ public class Tests4J_NotificationManager {
 		
 		stopRecordingTrialsRun(runResult);
 		
+		
+
+	
+		//@diagram_sync TODO
+		if (memory.hasMetaTrial()) {
+			synchronized (metaProcessor) {
+				if (!memory.hasRanMetaTrial()) {
+					memory.setRanMetaTrial();
+					boolean called = false;
+					
+					TrialDescription desc = memory.getMetaTrialDescription();
+					if (desc != null) {
+						I_AbstractTrial trial = (I_AbstractTrial) desc.getTrial();
+						if (trial instanceof I_MetaTrial) {
+							if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+								reporter.log("calling MetaTrailProcessor.runMetaTrialMethods");
+							}
+							I_TrialResult result = metaProcessor.runMetaTrialMethods(
+									(I_MetaTrial) trial, new TrialRunResult(runResult));
+							if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+								reporter.log("called MetaTrailProcessor.runMetaTrialMethods");
+							}
+							called = true;
+							
+							runResult.setTrials(trials.get() + 1);
+							if (result.isPassed()) {
+								passingTrialNames.add(trial.getClass().getName());
+							} else {
+								runResult.setTrialFailures(trialFailures.get() + 1);
+							}
+							runResult.setAsserts(assertionCount.get() + result.getAssertionCount());
+							runResult.setUniqueAsserts(uniqueAssertionCount.get() + result.getUniqueAssertionCount());
+							runResult.setTestFailures(testFailureCount.get() + result.getTestFailureCount());
+							runResult.setTests(testCount.get() + result.getTestCount());
+						}
+					} 
+					if (!called) {
+						reporter.onError(new Throwable("Some issue with the meta trial which wasn't called."));
+					}
+				}
+			}
+		} 
+		
 		long end = System.currentTimeMillis();
 		runResult.setRunTime(end - runResult.getStartTime());
-		return runResult;
+		
+		onAllTrialsDone(new TrialRunResult(runResult));
+		
 	}
 	
-	public void onAllTrialsDone(I_TrialRunResult p) {
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#onAllTrialsDone(org.adligo.tests4j.models.shared.results.I_TrialRunResult)
+	 */
+	private void onAllTrialsDone(I_TrialRunResult p) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("onAllTrialsDone(I_TrialRunResult p)");
+		}
 		if (memory.isExitAfterLastNotification()) {
 			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 				reporter.log("Exiting JVM after this last notification.");
@@ -472,6 +536,9 @@ public class Tests4J_NotificationManager {
 	 * @param runResult
 	 */
 	private void stopRecordingTrialsRun(TrialRunResultMutant runResult) {
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("stopRecordingTrialsRun(TrialRunResultMutant runResult)");
+		}
 		I_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
 		if (allCoverageRecorder != null) {
 			//
@@ -498,12 +565,23 @@ public class Tests4J_NotificationManager {
 			runResult.setCoverage(toAdd);
 		}
 		runResult.setPassingTrials(passingTrialNames);
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("stopRecordingTrialsRun(TrialRunResultMutant runResult) finished");
+		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#onDescibeTrialError()
+	 */
+	@Override
 	public synchronized void onDescibeTrialError() {
 		threadManager.shutdown();
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#isRunning()
+	 */
+	@Override
 	public boolean isRunning() {
 		return running.get();
 	}

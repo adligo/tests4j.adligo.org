@@ -53,6 +53,12 @@ public class TestResultMutant implements I_TestResult {
 		return assertionCount;
 	}
 	
+	/**
+	 * adds a assertionCount and 
+	 * potential a unique assertion 
+	 * (if the hash code is not already reserved for this trial)
+	 * @param assertionHash
+	 */
 	public void incrementAssertionCount(int assertionHash) {
 		assertionCount++;
 		uniqueAsserts.add(assertionHash);

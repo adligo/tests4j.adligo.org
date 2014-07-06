@@ -28,6 +28,7 @@ public class Tests4J_Manager {
 	private Tests4J_ThreadFactory trialFactory;
 	private Tests4J_ThreadFactory testFactory;
 	private ExecutorService trialRunService;
+	private List<ExecutorService> testExecutorServices = new CopyOnWriteArrayList<ExecutorService>();
 	private List<Future<?>> trialFutures = new CopyOnWriteArrayList<Future<?>>();
 	private List<Future<?>> remoteFutures = new CopyOnWriteArrayList<Future<?>>();
 	private CopyOnWriteArrayList<Tests4J_RemoteRunner> remoteRunners = 
@@ -51,6 +52,7 @@ public class Tests4J_Manager {
 		for (Tests4J_RemoteRunner remote: remoteRunners) {
 			remote.shutdown();
 		}
+		shutdownTestThreads();
 		Set<Entry<ExecutorService, Future<?>>> testRunEntries = testRuns.entrySet();
 		for (Entry<ExecutorService, Future<?>> e: testRunEntries) {
 			ExecutorService es =  e.getKey();
@@ -90,13 +92,21 @@ public class Tests4J_Manager {
 			exitor.doSystemExit(0);	
 		}
 	}
+
+
+	public void shutdownTestThreads() {
+		for (ExecutorService testService: testExecutorServices) {
+			testService.shutdownNow();
+		}
+	}
 	
 	public ExecutorService getTrialRunService() {
 		return trialRunService;
 	}
 	
 	public ExecutorService createNewTestRunService() {
-		ExecutorService toRet = Executors.newFixedThreadPool(1, testFactory);
+		ExecutorService toRet = Executors.newSingleThreadExecutor(testFactory);
+		testExecutorServices.add(toRet);
 		return toRet;
 	}
 	

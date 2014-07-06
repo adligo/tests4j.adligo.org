@@ -24,17 +24,14 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 	 * @return
 	 */
 	private List<PackageCoverageMutant> children = new ArrayList<PackageCoverageMutant>();
-	/**
-	 * totals delegate
-	 */
-	private CoverageUnitContinerMutant totalCoverageUnits = new CoverageUnitContinerMutant();
 
 	
 	public PackageCoverageMutant() {}
 	
 	public PackageCoverageMutant(I_PackageCoverage p) {
-		
+		this(p, true);
 	}
+	
 	public PackageCoverageMutant(I_PackageCoverage p, boolean cloneRelations) {
 		super(p);
 		packageName = p.getPackageName();
@@ -48,9 +45,6 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 				children.add(new PackageCoverageMutant(coverage));
 			}
 		}
-		totalCoverageUnits.setCoverageUnits(p.getTotalCoverageUnits());
-		totalCoverageUnits.setCoveredCoverageUnits(p.getTotalCoveredCoverageUnits());
-		
 	}
 	
 	@Override
@@ -82,22 +76,6 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 		}
 		return false;
 	}
-
-	@Override
-	public I_CoverageUnits getTotalCoverageUnits() {
-		return totalCoverageUnits.getCoverageUnits();
-	}
-
-	@Override
-	public I_CoverageUnits getTotalCoveredCoverageUnits() {
-		return totalCoverageUnits.getCoveredCoverageUnits();
-	}
-
-	@Override
-	public BigDecimal getTotalPercentageCovered() {
-		return totalCoverageUnits.getPercentageCovered();
-	}
-
 	@Override
 	public String toString() {
 		return toString(this);
@@ -105,12 +83,8 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 	
 	public String toString(I_PackageCoverage p) {
 		return p.getClass().getName() + " [packageName=" + p.getPackageName()
-				+ ", coverage=" + getTotalPercentageCovered() +
+				+ ", coverage=" + getPercentageCovered() +
 				",child_packages=" + p.getChildPackageCoverage().size() + "]";
 	}
 
-	@Override
-	public double getTotalPercentageCoveredDouble() {
-		return getTotalPercentageCovered().doubleValue();
-	}
 }

@@ -20,9 +20,9 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_TrialBindings;
+import org.adligo.tests4j.models.shared.trials.TrialBindings;
 
-public class TestRunable implements Runnable, I_AssertListener,
-I_TrialBindings {
+public class TestRunable implements Runnable, I_AssertListener {
 
 	private Method testMethod;
 	private I_AbstractTrial trial;
@@ -127,23 +127,5 @@ I_TrialBindings {
 		return new TestResult(testResultMutant);
 	}
 
-	@Override
-	public I_AssertListener getAssertListener() {
-		return this;
-	}
 
-	@Override
-	public I_Tests4J_Reporter getReporter() {
-		return reporter;
-	}
-
-	@Override
-	public Platform getPlatform() {
-		return Platform.JSE;
-	}
-
-	@Override
-	public I_EvaluatorLookup getDefalutEvaluatorLookup() {
-		return memory.getEvaluationLookup();
-	}
 }
