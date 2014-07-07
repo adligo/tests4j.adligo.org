@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.results;
 import org.adligo.tests4j.models.shared.metadata.I_UseCase;
 
 
-public class UseCaseTrialResult extends BaseTrialResult {
+public class UseCaseTrialResult extends BaseTrialResult implements I_UseCaseTrialResult {
 	private UseCaseTrialResultMutant mutant;
 	
 	public UseCaseTrialResult() {

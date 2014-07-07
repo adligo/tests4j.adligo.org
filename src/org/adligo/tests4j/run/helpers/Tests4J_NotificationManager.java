@@ -36,6 +36,7 @@ import org.adligo.tests4j.models.shared.system.Tests4jReporterDelegate;
 import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegate;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.IgnoreTest;
 import org.adligo.tests4j.run.discovery.ClassDiscovery;
 
 /**
@@ -61,8 +62,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	private AtomicLong startTime = new AtomicLong();
 	private AtomicLong assertionCount = new AtomicLong();
 	private AtomicLong uniqueAssertionCount = new AtomicLong();
-	private AtomicLong testCount = new AtomicLong();
-	private AtomicLong testFailureCount = new AtomicLong();
+	private AtomicInteger testCount = new AtomicInteger();
+	private AtomicInteger testFailureCount = new AtomicInteger();
 	private AtomicInteger trialFailures = new AtomicInteger();
 	private AtomicInteger trials = new AtomicInteger();
 	private AtomicInteger trialClassDefFailures = new AtomicInteger();
@@ -103,6 +104,10 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		int trialDescriptions = memory.getDescriptionCount();
 		int trialCount = memory.getAllTrialCount();
 		
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("checkDoneDescribingTrials() trialCount = " + trialCount + 
+					" trialDescriptions = " +trialDescriptions);
+		}
 		if (trialCount == trialDescriptions) {
 			synchronized (doneDescribeingTrials) {
 				if (!doneDescribeingTrials.get()) {
@@ -405,13 +410,16 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
 			if (memory.hasMetaTrial()) {
 				trialsWhichCanRun --;
+				
 			}
-			int trialsRan = trials.get();
-			int trialClazzFails = trialClassDefFailures.get();
 			int ignoredTrials = memory.getIgnoredTrialDescriptions();
+			trialsWhichCanRun = trialsWhichCanRun - ignoredTrials;
+			int trialsRan = trials.get() + ignoredTrials;
+			int trialClazzFails = trialClassDefFailures.get();
+			
 			
 			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-				reporter.log("checkDoneRunningNonMetaTrials " + trialsRan + " =? " +
+				reporter.log("checkDoneRunningNonMetaTrials() " + trialsRan + " =? " +
 						trialsWhichCanRun + 
 						"\n trialClazzFails=" + trialClazzFails + " ignoredTrials=" +
 						ignoredTrials);

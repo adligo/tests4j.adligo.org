@@ -6,6 +6,7 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
+import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -65,7 +66,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		boolean passed = false;
 		try {
 			if (trial instanceof I_SourceFileTrial) {
-				((I_SourceFileTrial) trial).afterTrialTests(trialResultMutant);
+				((I_SourceFileTrial) trial).afterTrialTests(new SourceFileTrialResult(trialResultMutant));
 			}
 			passed = true;
 		} catch (AfterTrialTestsAssertionFailure x) {

@@ -76,22 +76,22 @@ public interface I_TrialRunResult {
 	 * all of the tests including ignored tests.
 	 * @return
 	 */
-	public long getTests();
+	public int getTests();
 	/**
 	 * the number of tests ignored.
 	 * @return
 	 */
-	public long getTestsIgnored();
+	public int getTestsIgnored();
 	/**
 	 * the number of tests that passed.
 	 * @return
 	 */
-	public long getTestsPassed();
+	public int getTestsPassed();
 	/**
 	 * the number of test failures.
 	 * @return
 	 */
-	public long getTestFailures();
+	public int getTestFailures();
 	/**
 	 * the number of completed assertX methods.
 	 * @return

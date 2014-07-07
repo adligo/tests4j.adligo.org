@@ -35,7 +35,7 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getTrials();
 	}
 
-	public long getTests() {
+	public int getTests() {
 		return mutant.getTests();
 	}
 
@@ -43,7 +43,7 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getAsserts();
 	}
 
-	public long getTestFailures() {
+	public int getTestFailures() {
 		return mutant.getTestFailures();
 	}
 
@@ -59,7 +59,7 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getTrialsPassed();
 	}
 
-	public long getTestsPassed() {
+	public int getTestsPassed() {
 		return mutant.getTestsPassed();
 	}
 
@@ -67,7 +67,7 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getTrialsIgnored();
 	}
 
-	public long getTestsIgnored() {
+	public int getTestsIgnored() {
 		return mutant.getTestsIgnored();
 	}
 

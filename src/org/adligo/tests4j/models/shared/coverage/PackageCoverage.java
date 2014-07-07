@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.coverage;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,9 @@ public class PackageCoverage implements I_PackageCoverage {
 	
 	public PackageCoverage(I_PackageCoverage p) {
 		List<I_PackageCoverage> otherChildren =  p.getChildPackageCoverage();
+		if (otherChildren.size() >= 1) {
+			children = new ArrayList<I_PackageCoverage>();
+		}
 		for (I_PackageCoverage other: otherChildren) {
 			children.add(new PackageCoverage(other));
 		}

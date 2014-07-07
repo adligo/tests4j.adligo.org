@@ -62,6 +62,7 @@ public class TrialInstancesProcessor implements Runnable,
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
+	private TrialDescriptionProcessor trialDescriptionProcessor;
 	/**
 	 * 
 	 * @param p
@@ -88,6 +89,7 @@ public class TrialInstancesProcessor implements Runnable,
 		afterSouceFileTrialTestsProcessor = new AfterSourceFileTrialTestsProcessor(memory);
 		afterApiTrialTestsProcessor = new AfterApiTrialTestsProcessor(memory);
 		afterUseCaseTrialTestsProcessor = new AfterUseCaseTrialTestsProcessor(memory);
+		trialDescriptionProcessor = new TrialDescriptionProcessor(memory);
 	}
 
 	/**
@@ -100,7 +102,7 @@ public class TrialInstancesProcessor implements Runnable,
 		while (trialClazz != null) {
 			trialDescription = null;
 			try {
-				trialDescription = addTrialDescription(trialClazz);
+				trialDescription = trialDescriptionProcessor.addTrialDescription(trialClazz);
 				notifier.checkDoneDescribingTrials();
 				
 			} catch (Exception x) {
@@ -144,90 +146,9 @@ public class TrialInstancesProcessor implements Runnable,
 
 
 
-	/**
-	 * @diagram sync on 5/8/2014
-	 *    for Overview.seq
-	 *    
-	 * @param trialClazz
-	 */
-	private TrialDescription addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
-		// synchronized on the trialClass instance to make sure
-		// that only one thread is doing this for a specific trial at a time
-		// This allows reuse of TrialDescription instances
-		synchronized (trialClazz) {
-			TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
-			trialThreadLocalCoverageRecorder = startRecordingTrial(trialClazz);
-			
-			//try to reuse the description if another thread already described it
-			TrialDescription desc = memory.getTrialDescription(trialClazz.getName());
-			if (desc == null) {
-				desc = new TrialDescription(trialClazz, memory.getReporter());
-			}
-			memory.addTrialDescription(trialClazz.getName(), desc);
-			
-			if (!desc.isIgnored()) {
-				if (!desc.isTrialCanRun()) {
-					BaseTrialResultMutant trm = new BaseTrialResultMutant();
-					trm.setTrialName(desc.getTrialName());
-					String failureMessage = desc.getResultFailureMessage();
-					if (failureMessage != null) {
-						TrialFailure tf = new TrialFailure(failureMessage, desc.getResultException());
-						trm.setFailure(tf);
-					}
-					
-					trm.setPassed(false);
-					trm.setType(type);
-					
-					switch (type) {
-						case UseCaseTrial:
-								UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trm);
-								mut.setSystem(desc.getSystemName());
-								mut.setUseCase(desc.getUseCase());
-								memory.addResultBeforeMetadata(new UseCaseTrialResult(mut));
-							break;
-						case ApiTrial:
-								ApiTrialResultMutant api = new ApiTrialResultMutant(trm);
-								api.setPackageName(desc.getPackageName());
-								memory.addResultBeforeMetadata(new ApiTrialResult(api));
-							break;
-						case SourceFileTrial:
-								SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trm);
-								Class<?> clazz = desc.getSourceFileClass();
-								if (clazz != null) {
-									src.setSourceFileName(clazz.getName());
-									memory.addResultBeforeMetadata(new SourceFileTrialResult(src));
-									break;
-								}
-						default:
-							memory.addResultBeforeMetadata(new BaseTrialResult(trm));
-					}
-					
-					
-				}
-			}
-			return desc;
-		}
-	}
 
 
-	/**
-	 * @diagram sync on 7/5/2014
-	 *    for Overview.seq
-	 *    
-	 * @param trialClazz
-	 */
-	private I_CoverageRecorder startRecordingTrial(
-			Class<? extends I_AbstractTrial> trialClazz) {
-		I_CoveragePlugin plugin = memory.getPlugin();
-		I_CoverageRecorder toRet = null;
-		if (plugin != null) {
-			//@diagram sync on 7/5/2014
-			// for Overview.seq 
-			toRet = plugin.createRecorder();
-			toRet.startRecording();
-		}
-		return toRet;
-	}
+
 	
 	private void failTrialOnException(String message, Throwable p, TrialType type) {
 		trialResultMutant.setPassed(false);
@@ -487,19 +408,15 @@ public class TrialInstancesProcessor implements Runnable,
 		forOut.setOutput(memory.getThreadLocalOutput());
 		TestResult result = new TestResult(forOut);
 		
-		try {
-			blocking.put(result);
-			if (p.isPassed()) {
+		blocking.add(p);
+		if (p.isPassed()) {
+			blocking.notify();
+		} else {
+			synchronized (blocking) {
 				blocking.notify();
-			} else {
-				synchronized (blocking) {
-					blocking.notify();
-				}
 			}
-			testResultFuture.cancel(false);
-		} catch (InterruptedException e) {
-			//do nothing
 		}
+		testResultFuture.cancel(false);
 	}
 
 	

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,12 +31,10 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.IgnoreTest;
 import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
-import org.adligo.tests4j.models.shared.trials.MetaTrial;
 import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
 import org.adligo.tests4j.models.shared.trials.TrialTypeAnnotation;
 import org.adligo.tests4j.models.shared.trials.UseCaseScope;
-import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 
 /**
  * Instances of this class represent the main
@@ -152,6 +149,11 @@ public class Tests4J_Memory {
 			}
 		}
 		
+		metaTrialClass = params.getMetaTrialClass();
+		if (metaTrialClass != null) {
+			TrialDescriptionProcessor trialDescProcessor = new TrialDescriptionProcessor(this);
+			trialDescProcessor.addTrialDescription(metaTrialClass);
+		}
 
 		long now = System.currentTimeMillis();
 		
@@ -210,11 +212,13 @@ public class Tests4J_Memory {
 	 */
 	public synchronized void addTrialDescription(String name, TrialDescription p) {
 		allTrialDescriptions.add(p);
-		if (p.isTrialCanRun()) {
+		if (p.isTrialCanRun() && p.getType() == TrialType.MetaTrial) {
 			metaTrialDescription = p;
 		}
 		trialDescriptions.put(name, p);
-		trialRuns.put(name, new AtomicInteger(1));
+		if (!trialRuns.containsKey(name)) {
+			trialRuns.put(name, new AtomicInteger(0));
+		}
 	}
 	public synchronized TrialDescription getTrialDescription(String name) {
 		return trialDescriptions.get(name);

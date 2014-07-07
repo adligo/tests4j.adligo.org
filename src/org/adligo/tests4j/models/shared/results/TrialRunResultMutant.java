@@ -17,9 +17,9 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 	private int trials;
 	private int trialsIgnored;
 	private int trialFailures;
-	private long tests;
-	private long testsIgnored;
-	private long testFailures;
+	private int tests;
+	private int testsIgnored;
+	private int testFailures;
 	private long asserts;
 	private long uniqueAsserts;
 	private Set<String> passingTrials = new HashSet<String>();
@@ -78,7 +78,7 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		return trials;
 	}
 
-	public long getTests() {
+	public int getTests() {
 		return tests;
 	}
 
@@ -94,11 +94,11 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		this.trials = trials + p;
 	}
 	
-	public synchronized void setTests(long tests) {
+	public synchronized void setTests(int tests) {
 		this.tests = tests;
 	}
 
-	public synchronized void addTests(long p) {
+	public synchronized void addTests(int p) {
 		this.tests = tests + p;
 	}
 	
@@ -110,15 +110,15 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		this.asserts = asserts + p;
 	}
 	
-	public long getTestFailures() {
+	public int getTestFailures() {
 		return testFailures;
 	}
 
-	public synchronized void setTestFailures(long testFailures) {
+	public synchronized void setTestFailures(int testFailures) {
 		this.testFailures = testFailures;
 	}
 
-	public synchronized void addTestFailures(long p) {
+	public synchronized void addTestFailures(int p) {
 		this.testFailures = testFailures + p;
 	}
 	
@@ -126,7 +126,7 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		return trials - trialFailures;
 	}
 	
-	public long getTestsPassed() {
+	public int getTestsPassed() {
 		return tests - testFailures;
 	}
 	public int getTrialFailures() {
@@ -159,7 +159,7 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 	}
 
 	@Override
-	public long getTestsIgnored() {
+	public int getTestsIgnored() {
 		return testsIgnored;
 	}
 
@@ -167,7 +167,7 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		this.trialsIgnored = trialIgnored;
 	}
 
-	public void setIgnoredTests(long testIgnored) {
+	public void setIgnoredTests(int testIgnored) {
 		this.testsIgnored = testIgnored;
 	}
 

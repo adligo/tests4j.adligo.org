@@ -112,4 +112,8 @@ public class BaseTrialResult implements I_TrialResult {
 	public boolean hasRecordedCoverage() {
 		return false;
 	}
+
+	public String getTrialClassName() {
+		return mutant.getTrialClassName();
+	}
 }

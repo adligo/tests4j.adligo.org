@@ -1,11 +1,10 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.Method;
-import java.util.List;
 
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
+import org.adligo.tests4j.models.shared.results.I_UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
+import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_UseCaseTrial;
@@ -34,7 +33,7 @@ public class AfterUseCaseTrialTestsProcessor extends AbstractAfterTrialTestsProc
 		Class<? extends I_AbstractTrial> trialClass = trial.getClass();
 		
 		try {
-			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
+			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_UseCaseTrialResult.class);
 		} catch (NoSuchMethodException e) {
 			//do nothing
 		} catch (SecurityException e) {
@@ -53,7 +52,7 @@ public class AfterUseCaseTrialTestsProcessor extends AbstractAfterTrialTestsProc
 		boolean passed = false;
 		try {
 			if (trial instanceof I_UseCaseTrial) {
-				((I_UseCaseTrial) trial).afterTrialTests(trialResultMutant);
+				((I_UseCaseTrial) trial).afterTrialTests(new UseCaseTrialResult(trialResultMutant));
 			}
 			passed = true;
 		} catch (AfterTrialTestsAssertionFailure x) {

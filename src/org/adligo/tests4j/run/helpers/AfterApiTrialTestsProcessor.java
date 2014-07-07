@@ -4,8 +4,9 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
-import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
+import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -34,7 +35,7 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 		TrialDescription trialDesc = super.getTrialDescription();
 		
 		try {
-			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
+			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_ApiTrialResult.class);
 		} catch (NoSuchMethodException e) {
 			//do nothing
 		} catch (SecurityException e) {
@@ -62,7 +63,8 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 		boolean passed = false;
 		try {
 			if (trial instanceof I_ApiTrial) {
-				((I_ApiTrial) trial).afterTrialTests(trialResultMutant);
+				ApiTrialResult result = new ApiTrialResult(trialResultMutant);
+				((I_ApiTrial) trial).afterTrialTests(result);
 			}
 			passed = true;
 		} catch (AfterTrialTestsAssertionFailure x) {

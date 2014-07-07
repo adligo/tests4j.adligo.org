@@ -38,7 +38,10 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 		if (cloneRelations) {
 			Set<String> sfNames = p.getSourceFileNames();
 			for (String name: sfNames) {
-				sourceFiles.put(name, new SourceFileCoverageMutant(p.getCoverage(name)));
+				I_SourceFileCoverage sfc = p.getCoverage(name);
+				if (sfc != null) {
+					sourceFiles.put(name, new SourceFileCoverageMutant(sfc));
+				}
 			}
 			List<I_PackageCoverage> otherChildren =  p.getChildPackageCoverage();
 			for (I_PackageCoverage coverage: otherChildren) {

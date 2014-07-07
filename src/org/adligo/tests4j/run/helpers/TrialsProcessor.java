@@ -116,6 +116,9 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			System.setSecurityManager(new Tests4J_SecurityManager(reporter));
 		}
 		memory = new Tests4J_Memory(params,OUT, pListener, plugin);
+		
+		
+		
 		Tests4J_Manager threadManager = memory.getThreadManager();
 		
 		

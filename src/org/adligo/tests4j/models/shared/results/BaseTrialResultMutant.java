@@ -23,7 +23,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	public static final String TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME = 
 			"TrialResultMutant requires a non empty trialName.";
 	private String trialName;
-	
+	private String trialClassName;
 	private TrialType testType;
 	private Map<String, TestResultMutant> results = 
 			new HashMap<String,TestResultMutant> ();
@@ -45,6 +45,8 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	
 	public BaseTrialResultMutant(I_TrialResult p, boolean cloneRelations) {
 		trialName = p.getName();
+		trialClassName = p.getTrialClassName();
+		
 		StringMethods.isEmpty(trialName,
 				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME);
 		testType = p.getType();
@@ -276,5 +278,13 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	@Override
 	public boolean hasRecordedCoverage() {
 		return false;
+	}
+
+	public String getTrialClassName() {
+		return trialClassName;
+	}
+
+	public void setTrialClassName(String trialClassName) {
+		this.trialClassName = trialClassName;
 	}
 }

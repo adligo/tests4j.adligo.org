@@ -6,8 +6,22 @@ import org.adligo.tests4j.models.shared.common.TrialType;
 
 public interface I_TrialResult {
 
+	/**
+	 * The unique name of the trial run
+	 * ie if a trial is run more than once
+	 * org/adligo/tests4j_tests/trials_api/AssertionsFail_Trial[0]
+	 * org/adligo/tests4j_tests/trials_api/AssertionsFail_Trial[1]
+	 * org/adligo/tests4j_tests/trials_api/AssertionsFail_Trial[2]
+	 * exc
+	 * @return
+	 */
 	public abstract String getName();
-
+	/**
+	 * the name of the trial class ie
+	 * org.adligo.tests4j_tests.trials_api.AssertionsFail_Trial
+	 * @return
+	 */
+	public abstract String getTrialClassName();
 
 	public abstract TrialType getType();
 
