@@ -59,17 +59,18 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 * always call reporter first then call listener
 	 */
 	private I_TrialRunListener listener;
-	private AtomicLong startTime = new AtomicLong();
-	private AtomicLong assertionCount = new AtomicLong();
-	private AtomicLong uniqueAssertionCount = new AtomicLong();
-	private AtomicInteger testCount = new AtomicInteger();
-	private AtomicInteger testFailureCount = new AtomicInteger();
-	private AtomicInteger trialFailures = new AtomicInteger();
-	private AtomicInteger trials = new AtomicInteger();
-	private AtomicInteger trialClassDefFailures = new AtomicInteger();
+	private final AtomicLong startTime = new AtomicLong();
+	private final AtomicLong assertionCount = new AtomicLong();
+	private final AtomicLong uniqueAssertionCount = new AtomicLong();
+	private final AtomicInteger testCount = new AtomicInteger();
+	private final AtomicInteger testFailureCount = new AtomicInteger();
+	private final AtomicInteger trialFailures = new AtomicInteger();
+	private final AtomicInteger trials = new AtomicInteger();
+	private final AtomicInteger trialClassDefFailures = new AtomicInteger();
 	private Set<String> trialPackageNames = new CopyOnWriteArraySet<String>();
 	private Set<String> passingTrialNames = new CopyOnWriteArraySet<String>();
-	private AtomicBoolean running = new AtomicBoolean(true);
+	private final AtomicBoolean running = new AtomicBoolean(true);
+	private final AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private volatile I_TrialRunMetadata metadata = null;
 	private MetaTrialProcessor metaProcessor;
 	
@@ -166,6 +167,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		
 		Set<String> packages = new HashSet<String>();
 		
+		int totalTests = 0;
 		while (it.hasNext()) {
 			TrialDescription td = it.next();
 			String packageName = td.getPackageName();
@@ -201,6 +203,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 						tmm.setUseCase(td.getUseCase());
 					break;
 			}
+			
 			if (td.getTestMethodsSize() >= 1) {
 				Iterator<TestDescription> iit = td.getTestMethods();
 				
@@ -217,6 +220,9 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					}
 					
 					Class<? extends I_AbstractTrial> trialClass = td.getTrialClass();
+					
+					
+					
 					switch (type) {
 						case SourceFileTrial:
 							try {
@@ -251,12 +257,14 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 							testMeta.setTestName("afterNonMetaTrialsRun(I_TrialRunResult results)");
 							testMetas.add(testMeta);
 							
-							testMeta = new TestMetadataMutant();
-							testMeta.setTestName("testAftersCalled()");
-							testMetas.add(testMeta);
 							break;
 					}
 					tmm.setTests(testMetas);
+					if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+						reporter.log("sendingMetadata. " + trialClass.getName()
+								+ "  has " + testMetas.size() + " tests.");
+						totalTests = totalTests + testMetas.size();
+					}
 				}
 			}
 			Method after = td.getAfterTrialMethod();
@@ -276,7 +284,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		}
 		
 		metadata = new TrialRunMetadata(trmm);
-		
+		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+			reporter.log("sendingMetadata. " + memory.getDescriptionCount()
+					+ " TrialDescription " + metadata.getAllTestsCount() + " tests."
+					+ "\n total tests " + totalTests);
+		}
 		// @diagram_sync on 5/26/2014 with Overview.seq
 		memory.setMetaTrialData(metadata);
 		reporter.onMetadataCalculated(metadata);
@@ -388,7 +400,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		testCount.addAndGet(result.getTestCount());
 		testFailureCount.addAndGet(result.getTestFailureCount());
 		if (!result.isPassed()) {
-			trialFailures.addAndGet(1);
+			trialFailures.getAndIncrement();
 		} else {
 			String name = result.getName();
 			int bracketIndex = name.indexOf("[");
@@ -397,7 +409,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			}
 			passingTrialNames.add(name);
 		}
-		trials.addAndGet(1);
+		trials.getAndIncrement();
 	}
 
 	
@@ -405,7 +417,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#checkDoneRunningNonMetaTrials()
 	 */
 	@Override
-	public synchronized void checkDoneRunningNonMetaTrials() {
+	public void checkDoneRunningNonMetaTrials() {
 		if (doneDescribeingTrials.get()) {
 			int trialsWhichCanRun = memory.getRunnableTrialDescriptions();
 			if (memory.hasMetaTrial()) {
@@ -414,7 +426,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			}
 			int ignoredTrials = memory.getIgnoredTrialDescriptions();
 			trialsWhichCanRun = trialsWhichCanRun - ignoredTrials;
-			int trialsRan = trials.get() + ignoredTrials;
+			int trialsRan = trials.get();
 			int trialClazzFails = trialClassDefFailures.get();
 			
 			
@@ -425,6 +437,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 						ignoredTrials);
 			}
 			if (trialsRan == trialsWhichCanRun + trialClazzFails + ignoredTrials) {
+				if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+					if (memory.isExitAfterLastNotification()) {
+						reporter.log("debugging Tests4J_NotificationManager threads");
+					}
+				}
 				synchronized (doneRunningTrials) {
 					if (!doneRunningTrials.get()) {
 						doneRunningTrials.set(true);
@@ -453,7 +470,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 * 
 	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 */
-	private void onDoneRunningNonMetaTrials() {
+	private synchronized void onDoneRunningNonMetaTrials() {
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("onDoneRunningNonMetaTrials()");
 		}
@@ -481,28 +498,37 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					
 					TrialDescription desc = memory.getMetaTrialDescription();
 					if (desc != null) {
-						I_AbstractTrial trial = (I_AbstractTrial) desc.getTrial();
-						if (trial instanceof I_MetaTrial) {
-							if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-								reporter.log("calling MetaTrailProcessor.runMetaTrialMethods");
+						Class<? extends I_AbstractTrial> trialClass = desc.getTrialClass();
+						synchronized (trialClass) {
+							synchronized (ranMetaTrial) {
+								
+								if (!ranMetaTrial.get()) {
+									ranMetaTrial.set(true);
+									I_AbstractTrial trial = (I_AbstractTrial) desc.getTrial();
+									if (trial instanceof I_MetaTrial) {
+										if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+											reporter.log("calling MetaTrailProcessor.runMetaTrialMethods");
+										}
+										I_TrialResult result = metaProcessor.runMetaTrialMethods(
+												(I_MetaTrial) trial, new TrialRunResult(runResult));
+										if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+											reporter.log("called MetaTrailProcessor.runMetaTrialMethods");
+										}
+										called = true;
+										
+										runResult.setTrials(trials.get() + 1);
+										if (result.isPassed()) {
+											passingTrialNames.add(trial.getClass().getName());
+										} else {
+											runResult.setTrialFailures(trialFailures.get() + 1);
+										}
+										runResult.setAsserts(assertionCount.get() + result.getAssertionCount());
+										runResult.setUniqueAsserts(uniqueAssertionCount.get() + result.getUniqueAssertionCount());
+										runResult.setTestFailures(testFailureCount.get() + result.getTestFailureCount());
+										runResult.setTests(testCount.get() + result.getTestCount());
+									}
+								}
 							}
-							I_TrialResult result = metaProcessor.runMetaTrialMethods(
-									(I_MetaTrial) trial, new TrialRunResult(runResult));
-							if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-								reporter.log("called MetaTrailProcessor.runMetaTrialMethods");
-							}
-							called = true;
-							
-							runResult.setTrials(trials.get() + 1);
-							if (result.isPassed()) {
-								passingTrialNames.add(trial.getClass().getName());
-							} else {
-								runResult.setTrialFailures(trialFailures.get() + 1);
-							}
-							runResult.setAsserts(assertionCount.get() + result.getAssertionCount());
-							runResult.setUniqueAsserts(uniqueAssertionCount.get() + result.getUniqueAssertionCount());
-							runResult.setTestFailures(testFailureCount.get() + result.getTestFailureCount());
-							runResult.setTests(testCount.get() + result.getTestCount());
 						}
 					} 
 					if (!called) {

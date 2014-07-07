@@ -392,11 +392,11 @@ public class Tests4J_Memory {
 		return toRet;
 	}
 	
-	public void setRanMetaTrial() {
+	public synchronized  void setRanMetaTrial() {
 		ranMetaTrial.set(true);
 	}
 	
-	public boolean hasRanMetaTrial() {
+	public synchronized boolean hasRanMetaTrial() {
 		return ranMetaTrial.get();
 	}
 

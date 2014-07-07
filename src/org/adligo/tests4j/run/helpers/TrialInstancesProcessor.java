@@ -31,6 +31,7 @@ import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 
 public class TrialInstancesProcessor implements Runnable,  
@@ -102,8 +103,10 @@ public class TrialInstancesProcessor implements Runnable,
 		while (trialClazz != null) {
 			trialDescription = null;
 			try {
-				trialDescription = trialDescriptionProcessor.addTrialDescription(trialClazz);
-				notifier.checkDoneDescribingTrials();
+				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
+					trialDescription = trialDescriptionProcessor.addTrialDescription(trialClazz);
+					notifier.checkDoneDescribingTrials();
+				}
 				
 			} catch (Exception x) {
 				memory.getReporter().onError(x);
@@ -313,6 +316,7 @@ public class TrialInstancesProcessor implements Runnable,
 			trial.beforeTests();
 			testsRunner.setTestMethod(method);
 			testResultFuture = testRunService.submit(testsRunner);
+			
 			threadManager.setTestRunFuture(testRunService, testResultFuture);
 			
 			try {
