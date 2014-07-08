@@ -28,8 +28,8 @@ public class TextLinesCompare  {
 	
 	public I_TextLinesCompareResult compare(String example, String actual) {
 		
-		I_TextLines exampleLT = new TextLines(example);
-		I_TextLines actualLT = new TextLines(actual);
+		exampleLT = new TextLines(example);
+		actualLT = new TextLines(actual);
 		
 		findMatches(exampleLT, actualLT);
 
@@ -164,32 +164,64 @@ public class TextLinesCompare  {
 	 *    check for partial matches in actual
 	 */
 	private void compareLineChars() {
-		//do character comparisons
-		int throughExpected = -1;
-		int throughActual = -1;
-		I_LineDiff lastDiff = null;
-		List<I_LineDiff> matches = new ArrayList<I_LineDiff>(diffs);
 		
-		for (I_LineDiff ld: matches) {
-			if (lastDiff == null) {
-				lastDiff = ld;
-			} else {
-				int exp = lastDiff.getExampleLineNbr();
-				Integer act = lastDiff.getActualLineNbr();
-				if (throughExpected == -1 && exp == -1) {
-					if (throughActual < act) {
-						throughActual = act;
+		Iterator<Integer> it = exampleLinesWithoutMatch.iterator();
+		while (it.hasNext()) {
+			Integer expLineNbr = it.next();
+			int previousDiffCounter = expLineNbr - 1;
+			I_LineDiff beforeDiff = null;
+			while (beforeDiff == null && previousDiffCounter >= 0) {
+				beforeDiff = expectedToDiffs.get(previousDiffCounter--);
+			}
+			
+			int nextDiffCounter = expLineNbr + 1;
+			I_LineDiff afterDiff = null;
+			while (afterDiff == null && nextDiffCounter < exampleLT.getLines()) {
+				afterDiff = expectedToDiffs.get(nextDiffCounter++);
+			}
+			
+			if (beforeDiff != null) {
+				int startExampleLineNbr = beforeDiff.getExampleLineNbr() + 1;
+				int startActualLineNbr = beforeDiff.getActualLineNbr();
+				
+				if (expLineNbr > startExampleLineNbr) {
+					int exampleEnd = exampleLT.getLines() -1;
+					if (afterDiff != null) {
+						exampleEnd = afterDiff.getExampleLineNbr();
 					}
-				} else if (throughExpected == -1 && exp == 0) {
-					throughExpected = 0;
-				} else if (exp -1 == throughExpected) {
-					throughExpected = exp;
+					
+					int actualEnd = actualLT.getLines() -1;
+					if (afterDiff != null) {
+						actualEnd = afterDiff.getActualLineNbr();
+					}
+					//loop through the expected lines
+					for (int i = expLineNbr; i < exampleEnd; i++) {
+						String expected = exampleLT.getLine(expLineNbr);
+						//loop through the actual lines that could be a match
+						for (int j = startActualLineNbr; j < actualEnd; j++) {
+							String actual = actualLT.getLine(j);
+							DiffIndexesPair dip = new DiffIndexesPair(expected, actual);
+							if (dip != null) {
+								LineDiffMutant ldm = new LineDiffMutant();
+								ldm.setExampleLineNbr(i);
+								ldm.setActualLineNbr(j);
+								ldm.setType(LineDiffType.PARTIAL_MATCH);
+								ldm.setIndexes(dip);
+								LineDiff ld = new LineDiff(ldm);
+								diffs.add(ld);
+								exampleLinesWithoutMatch.remove(i);
+								actualLinesWithoutMatch.remove(j);
+								expectedToDiffs.put(i, ld);
+								actualToDiffs.put(j, ld);
+							}
+						}
+					}
 				}
-				lastDiff = ld;
 			}
 		}
 	}
 
+	
 
 	private void findMatches(I_TextLines exampleLT, I_TextLines actualLT) {
 		int minActualLineMatch = 0;

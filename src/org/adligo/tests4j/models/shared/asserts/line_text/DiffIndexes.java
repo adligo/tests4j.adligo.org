@@ -28,7 +28,7 @@ public class DiffIndexes implements I_DiffIndexes {
 		}
 		end = pEnd;
 		
-		if (pEnd <= pStart) {
+		if (pEnd < pStart) {
 			throw new IllegalArgumentException(START_END_DIFF_REQUIRES_THE_START_TO_BE_BEFORE_THE_END);
 		}
 	}
