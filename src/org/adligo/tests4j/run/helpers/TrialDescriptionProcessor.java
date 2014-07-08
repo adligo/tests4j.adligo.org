@@ -34,6 +34,9 @@ public class TrialDescriptionProcessor {
 		// This allows reuse of TrialDescription instances
 		synchronized (trialClazz) {
 			TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
+			if (memory.isExitAfterLastNotification()) {
+				memory.getReporter().log("debugging TrialDescriptionProcessor wheres the recorder");
+			}
 			trialThreadLocalCoverageRecorder = startRecordingTrial(trialClazz);
 			
 			//try to reuse the description if another thread already described it

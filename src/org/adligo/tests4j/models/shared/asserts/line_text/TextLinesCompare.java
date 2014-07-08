@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.asserts.line_text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -180,11 +181,39 @@ public class TextLinesCompare  {
 				afterDiff = expectedToDiffs.get(nextDiffCounter++);
 			}
 			
-			if (beforeDiff != null) {
+			if (beforeDiff == null) {
+				if (afterDiff == null) {
+					//no diffs matched
+					Iterator<Integer> ait = actualLinesWithoutMatch.iterator();
+					while (ait.hasNext()) {
+						Integer actualLineNbr = ait.next();
+						String expected = exampleLT.getLine(expLineNbr);
+						String actual = actualLT.getLine(actualLineNbr);
+						addIfPartialMatch(expLineNbr, expected, actualLineNbr, actual);
+					}
+				} else {
+					Integer lastActualNbr = afterDiff.getActualLineNbr();
+					Iterator<Integer> ait = actualLinesWithoutMatch.iterator();
+					while (ait.hasNext()) {
+						Integer actualLineNbr = ait.next();
+						if (lastActualNbr != null){
+							if (actualLineNbr < lastActualNbr) {
+								String expected = exampleLT.getLine(expLineNbr);
+								String actual = actualLT.getLine(actualLineNbr);
+								addIfPartialMatch(expLineNbr, expected, actualLineNbr, actual);
+							}
+						} else {
+							String expected = exampleLT.getLine(expLineNbr);
+							String actual = actualLT.getLine(actualLineNbr);
+							addIfPartialMatch(expLineNbr, expected, actualLineNbr, actual);
+						}
+					}
+				}
+			} else {
 				int startExampleLineNbr = beforeDiff.getExampleLineNbr() + 1;
 				int startActualLineNbr = beforeDiff.getActualLineNbr();
 				
-				if (expLineNbr > startExampleLineNbr) {
+				if (expLineNbr >= startExampleLineNbr) {
 					int exampleEnd = exampleLT.getLines() -1;
 					if (afterDiff != null) {
 						exampleEnd = afterDiff.getExampleLineNbr();
@@ -195,29 +224,41 @@ public class TextLinesCompare  {
 						actualEnd = afterDiff.getActualLineNbr();
 					}
 					//loop through the expected lines
-					for (int i = expLineNbr; i < exampleEnd; i++) {
+					for (int i = expLineNbr; i <= exampleEnd; i++) {
 						String expected = exampleLT.getLine(expLineNbr);
 						//loop through the actual lines that could be a match
-						for (int j = startActualLineNbr; j < actualEnd; j++) {
-							String actual = actualLT.getLine(j);
-							DiffIndexesPair dip = new DiffIndexesPair(expected, actual);
-							if (dip != null) {
-								LineDiffMutant ldm = new LineDiffMutant();
-								ldm.setExampleLineNbr(i);
-								ldm.setActualLineNbr(j);
-								ldm.setType(LineDiffType.PARTIAL_MATCH);
-								ldm.setIndexes(dip);
-								LineDiff ld = new LineDiff(ldm);
-								diffs.add(ld);
-								exampleLinesWithoutMatch.remove(i);
-								actualLinesWithoutMatch.remove(j);
-								expectedToDiffs.put(i, ld);
-								actualToDiffs.put(j, ld);
+						Iterator<Integer> ait = actualLinesWithoutMatch.iterator();
+						while (ait.hasNext()) {
+							Integer actualLineNbr = ait.next();
+							if (startActualLineNbr < actualLineNbr && startActualLineNbr < actualEnd) {
+								String actual = actualLT.getLine(actualLineNbr);
+								addIfPartialMatch(i, expected, actualLineNbr, actual);
 							}
 						}
 					}
 				}
 			}
+		}
+	}
+
+
+	private void addIfPartialMatch(int i, String expected, int j, String actual) {
+		try {
+			DiffIndexesPair dip = new DiffIndexesPair(expected, actual);
+			
+			LineDiffMutant ldm = new LineDiffMutant();
+			ldm.setExampleLineNbr(i);
+			ldm.setActualLineNbr(j);
+			ldm.setType(LineDiffType.PARTIAL_MATCH);
+			ldm.setIndexes(dip);
+			LineDiff ld = new LineDiff(ldm);
+			diffs.add(ld);
+			exampleLinesWithoutMatch.remove(i);
+			actualLinesWithoutMatch.remove(j);
+			expectedToDiffs.put(i, ld);
+			actualToDiffs.put(j, ld);
+		} catch (IOException x) {
+			//do nothing, actually regular program flow
 		}
 	}
 

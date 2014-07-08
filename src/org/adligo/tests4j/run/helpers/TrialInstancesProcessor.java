@@ -105,6 +105,7 @@ public class TrialInstancesProcessor implements Runnable,
 			try {
 				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
 					trialDescription = trialDescriptionProcessor.addTrialDescription(trialClazz);
+					trialThreadLocalCoverageRecorder = trialDescriptionProcessor.getTrialThreadLocalCoverageRecorder();
 					notifier.checkDoneDescribingTrials();
 				}
 				
@@ -412,7 +413,7 @@ public class TrialInstancesProcessor implements Runnable,
 		forOut.setOutput(memory.getThreadLocalOutput());
 		TestResult result = new TestResult(forOut);
 		
-		blocking.add(p);
+		blocking.add(result);
 		if (p.isPassed()) {
 			blocking.notify();
 		} else {

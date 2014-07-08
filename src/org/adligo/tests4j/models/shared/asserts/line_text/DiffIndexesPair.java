@@ -1,8 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts.line_text;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.io.IOException;
+
 
 
 /**
@@ -25,8 +24,9 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 	 * @param expectedLine
 	 * @param actualLine
 	 * @return null when there is no overlap
+	 * @throws IOException when the expectedLine and actualLine have no matching values
 	 */
-	public DiffIndexesPair(String expectedLine, String actualLine) {
+	public DiffIndexesPair(String expectedLine, String actualLine) throws IOException {
 		char [] expectedChars = expectedLine.toCharArray();
 		char [] actualChars = actualLine.toCharArray();
 		
@@ -116,7 +116,7 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 				return;
 			}
 		}
-		throw new IllegalArgumentException(NOTHING_DIFFERENT_FOUND);
+		throw new IOException(NOTHING_DIFFERENT_FOUND);
 	}
 	
 	public DiffIndexesPair(final I_DiffIndexes pExample, final I_DiffIndexes pActual) {
