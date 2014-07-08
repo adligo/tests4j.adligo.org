@@ -1,39 +1,33 @@
 package org.adligo.tests4j.models.shared.asserts.line_text;
 
+/**
+ *  a helper class to split lines
+ * @author scott
+ *
+ */
 public class LineSplitter {
-	private static String LINE_SEPERATOR = "\n";
-	private boolean lineSeperatorOneChar;
-	private Character lastChar;
+	private static final char LINE_SEPERATOR = '\n';
+	private static final char DOS_LINE_SEPERATOR = '\r';
+	private boolean lastCharIsLineFeed = false;
 	
-	public LineSplitter() {
-		if (LINE_SEPERATOR.length() == 1) {
-			lineSeperatorOneChar = true;
-		} else {
-			lineSeperatorOneChar = false;
-		}
-	}
 	
 	public boolean isLineFeedChar(char c) {
-		if (lineSeperatorOneChar) {
-			if (c == LINE_SEPERATOR.charAt(0)) {
-				return true;
-			}
-		} else {
-			if (c == LINE_SEPERATOR.charAt(0)) {
-				lastChar = c;
-				return true;
-			} else if (lastChar == LINE_SEPERATOR.charAt(0)){
-				if (LINE_SEPERATOR.length() == 2) {
-					if (c == LINE_SEPERATOR.charAt(1)) {
-						lastChar = null;
-						return true;
-					}
-				}
-				lastChar = null;
-				return false;
-			} 
+		if (c == LINE_SEPERATOR) {
+			lastCharIsLineFeed = true;
+			return true;
+		} else if (c == DOS_LINE_SEPERATOR) {
+			lastCharIsLineFeed = true;
+			return true;
 		}
+		lastCharIsLineFeed = false;
 		return false;
 	}
 	
+	public boolean isLastCharLineFeedChar() {
+		return lastCharIsLineFeed;
+	}
+	
+	public void setLastCharLineFeedChar(boolean p) {
+		lastCharIsLineFeed = p;
+	}
 }

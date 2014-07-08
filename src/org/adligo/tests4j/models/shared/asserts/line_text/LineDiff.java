@@ -1,32 +1,42 @@
 package org.adligo.tests4j.models.shared.asserts.line_text;
 
 
-public class LineDiff {
-	private String example;
-	private String actual;
-	private int lineNumber;
-	private StartEndDiffPair startEndDiffs;
+public class LineDiff implements I_LineDiff {
+	private LineDiffMutant mutant;
 	
-	public LineDiff(String pExample, String pActual, int pLineNumber, StartEndDiffPair startEnds) {
-		lineNumber = pLineNumber;
-		startEndDiffs = startEnds;
-		example = pExample;
-		actual = pActual;
+	public LineDiff() {
+		mutant = new LineDiffMutant();
 	}
-
-	public int getLineNumber() {
-		return lineNumber;
+	public LineDiff(I_LineDiff p) {
+		mutant = new LineDiffMutant(p);
 	}
-
-	public StartEndDiffPair getStartEndDiffs() {
-		return startEndDiffs;
+	public LineDiffType getType() {
+		return mutant.getType();
 	}
-
-	public String getExample() {
-		return example;
+	public int getExampleLineNbr() {
+		return mutant.getExampleLineNbr();
 	}
-
-	public String getActual() {
-		return actual;
+	public Integer getActualLineNbr() {
+		return mutant.getActualLineNbr();
 	}
+	public I_DiffIndexesPair getIndexes() {
+		return mutant.getIndexes();
+	}
+	
+	@Override
+	public int compareTo(I_LineDiff o) {
+		return mutant.compareTo(o);
+	}
+	public int hashCode() {
+		return mutant.hashCode();
+	}
+	public boolean equals(Object obj) {
+		return mutant.equals(obj);
+	}
+	
+	@Override
+	public String toString() {
+		return mutant.toString(LineDiff.class);
+	}
+	
 }

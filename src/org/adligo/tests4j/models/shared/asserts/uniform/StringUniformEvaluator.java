@@ -1,8 +1,8 @@
 package org.adligo.tests4j.models.shared.asserts.uniform;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompare;
+import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
+import org.adligo.tests4j.models.shared.asserts.line_text.TextLinesCompare;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
@@ -20,7 +20,8 @@ public class StringUniformEvaluator implements I_UniformAssertionEvaluator<Strin
 		String expected = (String) p.getExpected();
 		String actual = (String) p.getActual();
 		
-		I_LineTextCompareResult lineTextResult =  LineTextCompare.compare(expected, actual);
+		TextLinesCompare tlc = new TextLinesCompare();
+		I_TextLinesCompareResult lineTextResult =  tlc.compare(expected, actual);
 		if (lineTextResult.isMatched()) {
 		   EvaluationMutant em = new EvaluationMutant();
 		   em.setSuccess(true);
@@ -30,7 +31,7 @@ public class StringUniformEvaluator implements I_UniformAssertionEvaluator<Strin
 			
 			 EvaluationMutant em = new EvaluationMutant();
 		   em.setSuccess(false);
-		   em.addData(I_LineTextCompareResult.DATA_KEY, lineTextResult);
+		   em.addData(I_TextLinesCompareResult.DATA_KEY, lineTextResult);
 		   em.setFailureSubMessage(messages.getTheTextWasNOT_Uniform());
 		   return new Evaluation(em);
 		}
@@ -43,7 +44,8 @@ public class StringUniformEvaluator implements I_UniformAssertionEvaluator<Strin
 		String actual = (String) p.getActual();
 	
 		
-		I_LineTextCompareResult lineTextResult =  LineTextCompare.compare(expected, actual);
+		TextLinesCompare tlc = new TextLinesCompare();
+		I_TextLinesCompareResult lineTextResult =  tlc.compare(expected, actual);
 		if (!lineTextResult.isMatched()) {
 		   EvaluationMutant em = new EvaluationMutant();
 		   em.setSuccess(true);
@@ -53,7 +55,7 @@ public class StringUniformEvaluator implements I_UniformAssertionEvaluator<Strin
 			
 			EvaluationMutant em = new EvaluationMutant();
 			em.setSuccess(false);
-			em.addData(I_LineTextCompareResult.DATA_KEY, lineTextResult);
+			em.addData(I_TextLinesCompareResult.DATA_KEY, lineTextResult);
 			em.setFailureSubMessage(messages.getTheTextWasUniform());
 			return new Evaluation(em);
 		}

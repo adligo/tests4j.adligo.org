@@ -1,8 +1,8 @@
 package org.adligo.tests4j.models.shared.asserts.uniform;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_LineTextCompareResult;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineTextCompare;
+import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
+import org.adligo.tests4j.models.shared.asserts.line_text.TextLinesCompare;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
@@ -37,12 +37,13 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 			result.setFailureSubMessage(messages.getTheActualClassIsNotAssignableFromTheExpectedClass());
 			return new Evaluation(result);
 		}
-		I_LineTextCompareResult lineTextResult = 
-				LineTextCompare.compare(expected.getMessage(), actual.getMessage());
+		TextLinesCompare tlc = new TextLinesCompare();
+		I_TextLinesCompareResult lineTextResult = 
+				tlc.compare(expected.getMessage(), actual.getMessage());
 		if (!lineTextResult.isMatched()) {
 			result.setSuccess(false);
 			result.setFailureSubMessage(messages.getTheTextWasNOT_Uniform());
-			result.addData(I_LineTextCompareResult.DATA_KEY, lineTextResult);
+			result.addData(I_TextLinesCompareResult.DATA_KEY, lineTextResult);
 			return new Evaluation(result);
 		}
 		result.setSuccess(true);
@@ -72,12 +73,13 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 			result.setSuccess(true);
 			return new Evaluation(result);
 		}
-		I_LineTextCompareResult lineTextResult = 
-				LineTextCompare.compare(expected.getMessage(), actual.getMessage());
+		TextLinesCompare tlc = new TextLinesCompare();
+		I_TextLinesCompareResult lineTextResult = 
+				tlc.compare(expected.getMessage(), actual.getMessage());
 		if (lineTextResult.isMatched()) {
 			result.setSuccess(false);
 			result.setFailureSubMessage(messages.getTheTextWasUniform());
-			result.addData(I_LineTextCompareResult.DATA_KEY, lineTextResult);
+			result.addData(I_TextLinesCompareResult.DATA_KEY, lineTextResult);
 			return new Evaluation(result);
 		}
 		result.setSuccess(false);

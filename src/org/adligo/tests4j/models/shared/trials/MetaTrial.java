@@ -32,7 +32,8 @@ public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 	public void assertPackageTrialsPassed(I_TrialRunResult results, String packageName, int trials) throws IOException {
 		Set<String> passingTrials = results.getPassingTrials();
 		Set<String> trialNames = calculator.getSourceFileTrialNames(packageName);
-		assertGreaterThanOrEquals(trials, trialNames.size());
+		assertGreaterThanOrEquals("The package " + packageName +
+				" should have this many passing trials.", trials, trialNames.size());
 		for (String trialName: trialNames) {
 			assertTrue("The passing trials should include " + trialName, 
 					passingTrials.contains(trialName));
