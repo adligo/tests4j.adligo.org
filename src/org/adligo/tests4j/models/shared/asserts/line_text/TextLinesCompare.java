@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared.asserts.line_text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -65,7 +66,11 @@ public class TextLinesCompare  {
 
 
 	private void addMissingActualLines() {
-		for (Integer lineNbr: actualLinesWithoutMatch) {
+		Iterator<Integer> it = actualLinesWithoutMatch.iterator();
+		while (it.hasNext()) {
+			Integer lineNbr = it.next();
+			it.remove();
+			
 			I_LineDiff diff = actualToDiffs.get(lineNbr);
 			int i = lineNbr -1;
 			while (diff == null) {
@@ -86,7 +91,7 @@ public class TextLinesCompare  {
 			
 			LineDiff ld = new LineDiff(ldm);
 			
-			actualLinesWithoutMatch.remove(lineNbr);
+			
 			actualToDiffs.put(ld.getActualLineNbr(), ld);
 			expectedToDiffs.put(ld.getExampleLineNbr(), ld);
 			diffs.add(ld);
@@ -95,7 +100,10 @@ public class TextLinesCompare  {
 
 
 	private void addMissingExampleLines() {
-		for (Integer lineNbr: exampleLinesWithoutMatch) {
+		Iterator<Integer> it = exampleLinesWithoutMatch.iterator();
+		while (it.hasNext()) {
+			Integer lineNbr = it.next();
+			it.remove();
 			
 			LineDiffMutant ldm = new LineDiffMutant();
 			ldm.setExampleLineNbr(lineNbr);
@@ -131,7 +139,7 @@ public class TextLinesCompare  {
 			ldm.setType(LineDiffType.MISSING_EXAMPLE_LINE);
 			LineDiff ld = new LineDiff(ldm);
 			
-			exampleLinesWithoutMatch.remove(lineNbr);
+			
 			actualToDiffs.put(ld.getActualLineNbr(), ld);
 			expectedToDiffs.put(ld.getExampleLineNbr(), ld);
 			diffs.add(ld);
