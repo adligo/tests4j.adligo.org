@@ -1,9 +1,8 @@
 package org.adligo.tests4j.models.shared.asserts.uniform;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
+import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
 
 
-public interface I_UniformThrownAssertionCommand extends I_CompareAssertCommand {
-	public abstract boolean evaluate(I_Thrower thrower ,I_UniformAssertionEvaluator<?> e);
+public interface I_UniformThrownAssertionCommand<D> extends I_ThrownAssertCommand {
+	public I_Evaluation<D> getEvaluation();
 }

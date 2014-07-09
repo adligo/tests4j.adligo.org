@@ -57,39 +57,4 @@ public class AssertionProcessor {
 		}
 	}
 	
-	public static void evaluate(I_AssertListener listener, I_UniformAssertionCommand cmd, 
-			I_UniformAssertionEvaluator<?> uae) {
-		if (cmd.evaluate(uae)) {
-			synchronized (listener) {
-				listener.assertCompleted(cmd);
-			}
-		} else {
-			synchronized (listener) {
-				TestFailureMutant fm = new TestFailureMutant();
-				fm.setMessage(cmd.getFailureMessage());
-				fm.setLocationFailed(new AssertionFailureLocation());
-				fm.setData(cmd.getData());
-				TestFailure tf = new TestFailure(fm);
-				listener.assertFailed(tf);
-			}
-		}
-	}
-	
-	public static void evaluate(I_AssertListener listener, I_UniformThrownAssertionCommand cmd, 
-			I_UniformAssertionEvaluator<?> uae, I_Thrower p) {
-		if (cmd.evaluate(p, uae)) {
-			synchronized (listener) {
-				listener.assertCompleted(cmd);
-			}
-		} else {
-			synchronized (listener) {
-				TestFailureMutant fm = new TestFailureMutant();
-				fm.setMessage(cmd.getFailureMessage());
-				fm.setLocationFailed(new AssertionFailureLocation());
-				fm.setData(cmd.getData());
-				TestFailure tf = new TestFailure(fm);
-				listener.assertFailed(tf);
-			}
-		}
-	}
 }

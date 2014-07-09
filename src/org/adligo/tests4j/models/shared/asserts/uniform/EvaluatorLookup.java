@@ -76,7 +76,7 @@ public class EvaluatorLookup implements I_EvaluatorLookup {
 	 * The map of class names
 	 * to evaluators
 	 */
-	private Map<String, I_UniformAssertionEvaluator<?>> lookup;
+	private Map<String, I_UniformAssertionEvaluator<?,?>> lookup;
 	
 	@SuppressWarnings("unchecked")
 	public EvaluatorLookup() {
@@ -88,13 +88,13 @@ public class EvaluatorLookup implements I_EvaluatorLookup {
 	}
 
 	@Override
-	public I_UniformAssertionEvaluator<?> findEvaluator(Class<?> clazz) {
+	public I_UniformAssertionEvaluator<?, ?> findEvaluator(Class<?> clazz) {
 		String name = clazz.getName();
 		return lookup.get(name);
 	}
 
 	@Override
-	public Map<String, I_UniformAssertionEvaluator<?>> getLookupData() {
+	public Map<String, I_UniformAssertionEvaluator<?,?>> getLookupData() {
 		return lookup;
 	}
 }

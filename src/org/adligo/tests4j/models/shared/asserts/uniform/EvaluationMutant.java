@@ -1,46 +1,37 @@
 package org.adligo.tests4j.models.shared.asserts.uniform;
 
-import java.util.HashMap;
-import java.util.Map;
 
-public class EvaluationMutant implements I_Evaluation {
-	private boolean success;
-	private String failureSubMessage;
-	private Map<String,Object> data = new HashMap<String,Object>();
+public class EvaluationMutant<T> implements I_Evaluation<T> {
+	private boolean success = false;
+	private String failureReason;
+	private T data;
 	
 	public EvaluationMutant() {
 		
 	}
 	
-	public EvaluationMutant(I_Evaluation p) {
+	public EvaluationMutant(I_Evaluation<T> p) {
 		success = p.isSuccess();
-		failureSubMessage = p.getFailureSubMessage();
-		setData(p.getData());
+		failureReason = p.getFailureReason();
+		data = p.getData();
 	}
 	
 	public boolean isSuccess() {
 		return success;
 	}
-	public String getFailureSubMessage() {
-		return failureSubMessage;
+	public String getFailureReason() {
+		return failureReason;
 	}
-	public Map<String, Object> getData() {
-		return new HashMap<String,Object>(data);
+	public T getData() {
+		return data;
 	}
 	public void setSuccess(boolean success) {
 		this.success = success;
 	}
-	public void setFailureSubMessage(String failureSubMessage) {
-		this.failureSubMessage = failureSubMessage;
+	public void setFailureReason(String p) {
+		this.failureReason = p;
 	}
-	public void setData(Map<String, Object> p) {
-		data.clear();
-		if (p != null) {
-			data.putAll(p);
-		}
+	public void setData(T p) {
+		data = p;
 	}
-	public void addData(String key, Object p) {
-		data.put(key, p);
-	}
-	
 }

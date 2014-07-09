@@ -12,9 +12,10 @@ import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
  *   
  * @author scott
  *
- * @param <T>
+ * @param <T> the class that the uniform evaluator actually evaluates
+ * @param <D> the type of data in the I_Evaluation
  */
-public interface I_UniformAssertionEvaluator<T> {
+public interface I_UniformAssertionEvaluator<T,D> {
 	/**
 	 * the class that this uniform evaluator 
 	 * actually evaluates.
@@ -27,12 +28,12 @@ public interface I_UniformAssertionEvaluator<T> {
 	 * 	returned with getType()
 	 * @return
 	 */
-	public I_Evaluation isUniform(I_CompareAssertionData<?> p);
+	public I_Evaluation<D> isUniform(I_CompareAssertionData<?> p);
 	/**
 	 * This method should do the actual evaluation.
 	 * @param p note this should be a instance of the class
 	 * 	returned with getType()
 	 * @return
 	 */
-	public I_Evaluation isNotUniform(I_CompareAssertionData<?> p);
+	public I_Evaluation<D> isNotUniform(I_CompareAssertionData<?> p);
 }

@@ -16,12 +16,12 @@ public interface I_EvaluatorLookup {
 	 * @return a evaluator that has been mapped to a class
 	 * or null if none is available.
 	 */
-	public I_UniformAssertionEvaluator<?> findEvaluator(Class<?> clazz);  
+	public I_UniformAssertionEvaluator<?,?> findEvaluator(Class<?> clazz);  
 	/**
 	 * @return the lookup data, note the key
 	 * is the name of the class used in findEvaluator.
 	 * The name of the class is used instead of the 
 	 * class to prevent class loading conflicts.
 	 */
-	public Map<String, I_UniformAssertionEvaluator<?>> getLookupData();
+	public Map<String, I_UniformAssertionEvaluator<?,?>> getLookupData();
 }

@@ -17,8 +17,8 @@ public class EvaluatorLookupMutant implements I_EvaluatorLookup {
 	 * The map of class names
 	 * to evaluators
 	 */
-	private Map<String, I_UniformAssertionEvaluator<?>> lookup =
-			new HashMap<String,I_UniformAssertionEvaluator<?>>();
+	private Map<String, I_UniformAssertionEvaluator<?,?>> lookup =
+			new HashMap<String,I_UniformAssertionEvaluator<?,?>>();
 	
 	public EvaluatorLookupMutant() {
 	}
@@ -28,17 +28,17 @@ public class EvaluatorLookupMutant implements I_EvaluatorLookup {
 	}
 
 	@Override
-	public I_UniformAssertionEvaluator<?> findEvaluator(Class<?> clazz) {
+	public I_UniformAssertionEvaluator<?,?> findEvaluator(Class<?> clazz) {
 		String className = clazz.getName();
 		return lookup.get(className);
 	}
 
 	@Override
-	public Map<String, I_UniformAssertionEvaluator<?>> getLookupData() {
+	public Map<String, I_UniformAssertionEvaluator<?,?>> getLookupData() {
 		return Collections.unmodifiableMap(lookup);
 	}
 	
-	public void setEvaluator(Class<?> clazz, I_UniformAssertionEvaluator<?> p) {
+	public void setEvaluator(Class<?> clazz, I_UniformAssertionEvaluator<?,?> p) {
 		String className = clazz.getName();
 		Class<?> type =  p.getType();
 		if (!type.isAssignableFrom(clazz)) {

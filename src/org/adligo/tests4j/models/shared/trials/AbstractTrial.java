@@ -8,7 +8,6 @@ import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertN
 import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertNotUniform;
 import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertNull;
 import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertSame;
-import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertThrown;
 import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertTrue;
 import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertUniform;
 
@@ -30,9 +29,7 @@ import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookupMutant;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionCommand;
 import org.adligo.tests4j.models.shared.common.I_Platform;
 import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
@@ -88,7 +85,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	 * @param clazz
 	 * @param evaluator
 	 */
-	protected void setEvaluatorLookup(Class<?> clazz, I_UniformAssertionEvaluator<?> evaluator) {
+	protected void setEvaluatorLookup(Class<?> clazz, I_UniformAssertionEvaluator<?, ?> evaluator) {
 		evaluationLookupOverrides.setEvaluator(clazz, evaluator);
 	}
 	/**
@@ -102,21 +99,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		AssertionProcessor.evaluate(listener, cmd, p);
 	}
 	
-	public void evaluate(I_UniformAssertionCommand cmd) {
-		Object e = cmd.getExpected();
-		Object a = cmd.getActual();
-		I_UniformAssertionEvaluator<?> eval = getEvaluator(cmd.getFailureMessage(), e, a);
-		if (eval != null) {
-			AssertionProcessor.evaluate(listener, cmd, eval);
-		}
-	}
-	
-	public void evaluate(I_UniformThrownAssertionCommand cmd, I_Thrower p, I_ExpectedThrownData data) {
-		I_UniformAssertionEvaluator<?> eval = getEvaluator(data.getThrowableClass(), null, null);
-		if (eval != null) {
-			AssertionProcessor.evaluate(listener, cmd, eval, p);
-		}
-	}
+
 	@Override
 	public void assertEquals(Object p, Object a) {
 		assertEquals(MESSAGES.getTheObjectsShouldBeEqual(), p, a);
@@ -208,11 +191,13 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		assertNotUniform(MESSAGES.getTheObjectsShould_NOT_BeUniform(), p, a);
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void assertNotUniform(String message, Object p, Object a) {
+	public void assertNotUniform(String message, Object expected, Object actual) {
+		I_UniformAssertionEvaluator<?, ?> eval = getEvaluator(expected);
 		evaluate(new UniformAssertCommand(
 				AssertNotUniform, message, 
-				new CompareAssertionData<Object>(p, a)));
+				new CompareAssertionData<Object>(expected, actual), eval));
 	}
 				
 	@Override
@@ -242,40 +227,62 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		assertThrownUniform(MESSAGES.getTheExpectedThrowableDataDidNotMatchTheActual(), pData, pThrower);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void assertThrownUniform(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
-		evaluate(new UniformThrownAssertCommand( pMessage, pData), pThrower, pData);
+		I_UniformAssertionEvaluator<?, ?> evaluator = getEvaluator(pData);
+		evaluate(new UniformThrownAssertCommand( pMessage, pData, evaluator), pThrower);
 	}
 	
 	public void assertUniform(String p, String a) {
 		assertUniform(MESSAGES.getTheObjectsShouldBeUniform(), p, a);
 	}
 	
-	public void assertUniform(Object p, Object a) {
-		assertUniform(MESSAGES.getTheObjectsShouldBeUniform(), p, a);
+	public void assertUniform(Object expected, Object actual) {
+		assertUniform(MESSAGES.getTheObjectsShouldBeUniform(), expected, actual);
 	}
-	public void assertUniform(String message, Object p, Object a) {
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void assertUniform(String message, Object expected, Object actual) {
+		I_UniformAssertionEvaluator<?, ?> evaluator = getEvaluator(expected);
 		evaluate(new UniformAssertCommand(AssertUniform, message, 
-				new CompareAssertionData<Object>(p, a)));
+				new CompareAssertionData<Object>(expected, actual), evaluator));
 	}
 
-	private I_UniformAssertionEvaluator<?> getEvaluator(String message, Object expected, Object actual) {
-		if (expected == null) {
-			throw new NullPointerException("The expected value is null.");
+	
+
+	@SuppressWarnings("unchecked")
+	private <D> I_UniformAssertionEvaluator<?, D> getEvaluator(Object expectedInstance) {
+		if (expectedInstance == null) {
+			throw new IllegalStateException(MESSAGES.getNoEvaluatorFoundForClass() + expectedInstance);
 		}
-		Class<?> expectedClass = expected.getClass();
-		return getEvaluator(expectedClass, expected, actual);
+		
+		Class<?> expectedClass = expectedInstance.getClass();
+		return getEvaluator(expectedClass);
 	}
 
-	private I_UniformAssertionEvaluator<?> getEvaluator(Class<?> expectedClass, Object expected, Object actual) {
-		I_UniformAssertionEvaluator<?> eval = evaluationLookupOverrides.findEvaluator(expectedClass);
+	@SuppressWarnings("unchecked")
+	private <D> I_UniformAssertionEvaluator<?, D> getEvaluator(I_ExpectedThrownData data) {
+		if (data == null) {
+			throw new IllegalStateException(MESSAGES.getNoEvaluatorFoundForClass() + data);
+		}
+		Class<?> throwable = data.getThrowableClass();
+		if (throwable == null) {
+			throw new IllegalStateException(MESSAGES.getNoEvaluatorFoundForClass() + data);
+		}
+		return getEvaluator(throwable);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <D> I_UniformAssertionEvaluator<?, D> getEvaluator(Class<?> expectedClass) {
+		I_UniformAssertionEvaluator<?, ?> eval = evaluationLookupOverrides.findEvaluator(expectedClass);
 		if (eval == null) {
 			eval = evaluationLookup.findEvaluator(expectedClass);
 		}
 		if (eval == null) {
 			throw new IllegalStateException(MESSAGES.getNoEvaluatorFoundForClass() + expectedClass.getName());
 		}
-		return eval;
+		
+		return (I_UniformAssertionEvaluator<?, D>) eval;
 	}
 	
 	@Override

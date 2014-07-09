@@ -4,31 +4,28 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Evaluation implements I_Evaluation {
+public class Evaluation<T> implements I_Evaluation<T> {
 	private boolean success;
 	private String failureSubMessage;
-	private Map<String,Object> data = new HashMap<String,Object>();
+	private T data;
 	
 	public Evaluation() {
 		
 	}
 	
-	public Evaluation(I_Evaluation p) {
+	public Evaluation(I_Evaluation<T> p) {
 		success = p.isSuccess();
-		failureSubMessage = p.getFailureSubMessage();
-		Map<String,Object> pData = p.getData();
-		if (pData != null) {
-			data.putAll(pData);
-		}
+		failureSubMessage = p.getFailureReason();
+		data = p.getData();
 	}
 	
 	public boolean isSuccess() {
 		return success;
 	}
-	public String getFailureSubMessage() {
+	public String getFailureReason() {
 		return failureSubMessage;
 	}
-	public Map<String, Object> getData() {
-		return Collections.unmodifiableMap(data);
+	public T getData() {
+		return data;
 	}
 }

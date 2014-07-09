@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts.uniform;
 
-import java.util.Map;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
+
 
 /**
  * This interface contains information
@@ -10,14 +11,21 @@ import java.util.Map;
  * @author scott
  *
  */
-public interface I_Evaluation {
+public interface I_Evaluation<T> {
 	public boolean isSuccess();
-	public String getFailureSubMessage();
 	/**
-	 * return special data pertaining to this
-	 * evaluation result (ie the map could contain a entry like;
-	 * "LineText", I_LineTextCompareResult)
+	 * A more detailed failure message than {@link I_AssertCommand#getFailureMessage()} 
+	 * 
 	 * @return
 	 */
-	public Map<String,Object> getData();
+	public String getFailureReason();
+	/**
+	 * @return special data <T> pertaining to this
+	 * evaluation result  I_LineTextCompareResult
+	 * or String exc.  The data field is expected
+	 * to be immutable.
+	 * 
+	 * May be NULL!
+	 */
+	public T getData();
 }
