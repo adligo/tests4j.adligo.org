@@ -1,6 +1,15 @@
 package org.adligo.tests4j.models.shared.asserts.uniform;
 
-
+/**
+ * a mutable class to represent the result of a 
+ * {@link I_UniformAssertionEvaluator#isUniform(org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData)}
+ * or a 
+ * {@link I_UniformAssertionEvaluator#isNotUniform(org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData)}
+ * 
+ * @author scott
+ *
+ * @param <T>
+ */
 public class EvaluationMutant<T> implements I_Evaluation<T> {
 	private boolean success = false;
 	private String failureReason;

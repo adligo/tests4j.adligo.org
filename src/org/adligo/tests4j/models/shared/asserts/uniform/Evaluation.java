@@ -1,11 +1,17 @@
 package org.adligo.tests4j.models.shared.asserts.uniform;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * a immutable class to represent the result of a 
+ * {@link I_UniformAssertionEvaluator#isUniform(org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData)}
+ * or a 
+ * {@link I_UniformAssertionEvaluator#isNotUniform(org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData)}
+ * 
+ * @author scott
+ *
+ * @param <T>
+ */
 public class Evaluation<T> implements I_Evaluation<T> {
-	private boolean success;
+	private boolean success = false;
 	private String failureSubMessage;
 	private T data;
 	

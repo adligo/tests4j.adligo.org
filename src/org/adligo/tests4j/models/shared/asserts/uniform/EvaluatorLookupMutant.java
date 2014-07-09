@@ -6,7 +6,10 @@ import java.util.Map;
 
 /**
  * This is a mutable implementation of {@link I_EvaluatorLookup}
- * and is not threadsafe.
+ * and is not threadsafe.  It is used to provide a pluggable
+ * assertion frame work for assertUniform, assertNotUniform and
+ * assertThrownUniform assertions, so that users of tests4j
+ * may add their own assert evaluations at the Trial or Trials Run levels.
  * 
  * @author scott
  *
@@ -17,14 +20,15 @@ public class EvaluatorLookupMutant implements I_EvaluatorLookup {
 	 * The map of class names
 	 * to evaluators
 	 */
-	private Map<String, I_UniformAssertionEvaluator<?,?>> lookup =
-			new HashMap<String,I_UniformAssertionEvaluator<?,?>>();
+	private Map<String, I_UniformAssertionEvaluator<?,?>> lookup;
 	
 	public EvaluatorLookupMutant() {
+		lookup =
+				new HashMap<String,I_UniformAssertionEvaluator<?,?>>();
 	}
 	
 	public EvaluatorLookupMutant(I_EvaluatorLookup other) {
-		lookup = Collections.unmodifiableMap(other.getLookupData());
+		lookup = new HashMap<String,I_UniformAssertionEvaluator<?,?>>(other.getLookupData());
 	}
 
 	@Override
@@ -35,7 +39,7 @@ public class EvaluatorLookupMutant implements I_EvaluatorLookup {
 
 	@Override
 	public Map<String, I_UniformAssertionEvaluator<?,?>> getLookupData() {
-		return Collections.unmodifiableMap(lookup);
+		return new HashMap<String, I_UniformAssertionEvaluator<?,?>>(lookup);
 	}
 	
 	public void setEvaluator(Class<?> clazz, I_UniformAssertionEvaluator<?,?> p) {
