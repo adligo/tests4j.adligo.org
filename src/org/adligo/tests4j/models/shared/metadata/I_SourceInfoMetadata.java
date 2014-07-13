@@ -22,7 +22,7 @@ package org.adligo.tests4j.models.shared.metadata;
  * @author scott
  *
  */
-public interface I_SourceInfo {
+public interface I_SourceInfoMetadata {
 	/**
 	 * the full package.java file name.
 	 * ie this class would have 

@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts.uniform;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
+import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 
 
 /**
@@ -28,12 +29,12 @@ public interface I_UniformAssertionEvaluator<T,D> {
 	 * 	returned with getType()
 	 * @return
 	 */
-	public I_Evaluation<D> isUniform(I_CompareAssertionData<?> p);
+	public I_Evaluation<D> isUniform(I_CompareAssertionData<T> p);
 	/**
 	 * This method should do the actual evaluation.
 	 * @param p note this should be a instance of the class
 	 * 	returned with getType()
 	 * @return
 	 */
-	public I_Evaluation<D> isNotUniform(I_CompareAssertionData<?> p);
+	public I_Evaluation<D> isNotUniform(I_CompareAssertionData<T> p);
 }

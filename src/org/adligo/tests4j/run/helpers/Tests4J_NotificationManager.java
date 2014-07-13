@@ -18,7 +18,7 @@ import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
 import org.adligo.tests4j.models.shared.metadata.I_TestMetadata;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
-import org.adligo.tests4j.models.shared.metadata.SourceInfoMutant;
+import org.adligo.tests4j.models.shared.metadata.SourceInfoMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadata;
@@ -181,7 +181,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				tmm.setBeforeTrialMethodName(before.getName());
 			}
 			boolean ignored = td.isIgnored();
-			tmm.setSkipped(ignored);
+			tmm.setIgnored(ignored);
 			long timeout = td.getTimeout();
 			tmm.setTimeout(timeout);
 			
@@ -192,7 +192,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				case SourceFileTrial:
 					Class<?> clazz = td.getSourceFileClass();
 					if (clazz != null) {
-						tmm.setTestedClass(clazz.getName());
+						tmm.setTestedSourceFile(clazz.getName());
 					}
 					break;
 				case ApiTrial:
@@ -302,7 +302,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		List<String> classes = classDiscovery.getClassNames();
 		for (String clazz: classes) {
 			if (clazz.indexOf("$") == -1) {
-				SourceInfoMutant sim = new SourceInfoMutant();
+				SourceInfoMetadataMutant sim = new SourceInfoMetadataMutant();
 				sim.setName(clazz);
 				try {
 					Class<?> czx = Class.forName(clazz);

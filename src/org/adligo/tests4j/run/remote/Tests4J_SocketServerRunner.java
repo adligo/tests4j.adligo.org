@@ -27,6 +27,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
+import org.adligo.tests4j.models.shared.xml.XML_Builder;
 import org.adligo.tests4j.run.Tests4J;
 import org.adligo.tests4j.run.helpers.Tests4J_ThreadFactory;
 import org.adligo.tests4j.run.remote.io.I_CharacterInputStream;
@@ -355,7 +356,9 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 			reporter.log("sending command " + p.getCommand());
 		}
 		lastCommnadSent = p.getCommand();
-		String message = p.toXml();
+		XML_Builder builder = new XML_Builder();
+		p.toXml(builder);
+		String message = builder.toXmlString();
 		out.write(message.getBytes());
 		out.flush();
 		I_AfterMessageHandler handler = afterMessageTransportHandlers.get(message);

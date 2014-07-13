@@ -1,9 +1,9 @@
 package org.adligo.tests4j.models.shared.results;
 
-import org.adligo.tests4j.models.shared.metadata.I_UseCase;
+import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 
 public class UseCaseTrialResultMutant extends BaseTrialResultMutant implements I_UseCaseTrialResult {
-	private I_UseCase useCase;
+	private I_UseCaseMetadata useCase;
 	private String system;
 	
 	public UseCaseTrialResultMutant() {}
@@ -26,7 +26,7 @@ public class UseCaseTrialResultMutant extends BaseTrialResultMutant implements I
 		super(p, cloneRelaions);
 	}
 	
-	public I_UseCase getUseCase() {
+	public I_UseCaseMetadata getUseCase() {
 		return useCase;
 	}
 
@@ -34,7 +34,7 @@ public class UseCaseTrialResultMutant extends BaseTrialResultMutant implements I
 		return system;
 	}
 
-	public void setUseCase(I_UseCase useCase) {
+	public void setUseCase(I_UseCaseMetadata useCase) {
 		this.useCase = useCase;
 	}
 

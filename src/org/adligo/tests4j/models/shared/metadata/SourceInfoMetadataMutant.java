@@ -2,21 +2,21 @@ package org.adligo.tests4j.models.shared.metadata;
 
 /**
  * mutable implementation of I_SourceFile 
- * @see I_SourceInfo
+ * @see I_SourceInfoMetadata
  * @author scott
  *
  */
-public class SourceInfoMutant implements I_SourceInfo {
+public class SourceInfoMetadataMutant implements I_SourceInfoMetadata {
 	private String name;
 	private boolean available;
 	private boolean hasClass;
 	private boolean hasInterface;
 	private boolean hasEnum;
 	
-	public SourceInfoMutant () {
+	public SourceInfoMetadataMutant () {
 	}
 	
-	public SourceInfoMutant (I_SourceInfo p) { 
+	public SourceInfoMetadataMutant (I_SourceInfoMetadata p) { 
 		name = p.getName();
 		available = p.isAvailable();
 		hasClass = p.hasClass();
@@ -89,10 +89,8 @@ public class SourceInfoMutant implements I_SourceInfo {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		try {
-			I_SourceInfo other = (I_SourceInfo) obj;
+			I_SourceInfoMetadata other = (I_SourceInfoMetadata) obj;
 			if (name == null) {
 				if (other.getName() != null)
 					return false;
@@ -104,4 +102,11 @@ public class SourceInfoMutant implements I_SourceInfo {
 		return true;
 	}
 	
+	public String toString() {
+		return toString(SourceInfoMetadataMutant.class);
+	}
+	
+	public String toString(Class<?> c) {
+		return c.getSimpleName() + " [name=" + name + "]";
+	}
 }

@@ -25,14 +25,14 @@ public class RelevantClassesWithTrialsCalculator {
 		for (I_TrialMetadata tm: trialMetas) {
 			TrialType type =  tm.getType();
 			if (type == TrialType.SourceFileTrial) {
-				relevantClassesToTrials.put(tm.getTestedClass(), tm);
+				relevantClassesToTrials.put(tm.getTestedSourceFile(), tm);
 			}
 		}
 		Collection<String> allClasses = metadata.getAllSourceInfo();
 		
 		double allRelevantClasses = 0;
 		for (String clazzName: allClasses) {
-			I_SourceInfo si = metadata.getSourceInfo(clazzName);
+			I_SourceInfoMetadata si = metadata.getSourceInfo(clazzName);
 			if (!si.hasInterface()) {
 				allRelevantClasses++;
 				if (!relevantClassesToTrials.containsKey(clazzName)) {
@@ -60,7 +60,7 @@ public class RelevantClassesWithTrialsCalculator {
 		double allRelevantClasses = 0;
 		for (String clazzName: allClasses) {
 			if (clazzName.indexOf(packageName) != -1) {
-				I_SourceInfo si = metadata.getSourceInfo(clazzName);
+				I_SourceInfoMetadata si = metadata.getSourceInfo(clazzName);
 				if (!si.hasInterface()) {
 					allRelevantClasses++;
 					if (!classesWithoutTrialsInPackage.contains(clazzName)) {
@@ -80,7 +80,7 @@ public class RelevantClassesWithTrialsCalculator {
 		
 		Set<String> trialNames = new HashSet<String>();
 		for (String clazzName: allClasses) {
-				I_SourceInfo si = metadata.getSourceInfo(clazzName);
+				I_SourceInfoMetadata si = metadata.getSourceInfo(clazzName);
 				if (!si.hasInterface()) {
 					I_TrialMetadata tm = relevantClassesToTrials.get(clazzName);
 					if (tm != null) {

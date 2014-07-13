@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class TrialRunMetadataMutant implements I_TrialRunMetadata {
 	private List<TrialMetadataMutant> trials = new ArrayList<TrialMetadataMutant>();
-	private Map<String, SourceInfoMutant> sourceInfoMap = new HashMap<String, SourceInfoMutant>();
+	private Map<String, SourceInfoMetadataMutant> sourceInfoMap = new HashMap<String, SourceInfoMetadataMutant>();
 	
 	public TrialRunMetadataMutant() {}
 
@@ -55,15 +55,15 @@ public class TrialRunMetadataMutant implements I_TrialRunMetadata {
 		return toRet;
 	}
 	
-	public I_SourceInfo getSourceInfo(String name) {
+	public I_SourceInfoMetadata getSourceInfo(String name) {
 		return sourceInfoMap.get(name);
 	}
 	
-	public void setSourceInfo(String name, I_SourceInfo p) {
-		sourceInfoMap.put(name, new SourceInfoMutant(p));
+	public void setSourceInfo(String name, I_SourceInfoMetadata p) {
+		sourceInfoMap.put(name, new SourceInfoMetadataMutant(p));
 	}
 	
-	public void setSourceInfo(String name, SourceInfoMutant p) {
+	public void setSourceInfo(String name, SourceInfoMetadataMutant p) {
 		sourceInfoMap.put(name, p);
 	}
 	

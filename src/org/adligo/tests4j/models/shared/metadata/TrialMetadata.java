@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 
 public class TrialMetadata implements I_TrialMetadata {
 	private TrialMetadataMutant mutant;
@@ -38,8 +39,8 @@ public class TrialMetadata implements I_TrialMetadata {
 		return mutant.getTimeout();
 	}
 
-	public boolean isSkipped() {
-		return mutant.isSkipped();
+	public boolean isIgnored() {
+		return mutant.isIgnored();
 	}
 
 	public String getBeforeTrialMethodName() {
@@ -62,8 +63,8 @@ public class TrialMetadata implements I_TrialMetadata {
 		return mutant.getTestCount();
 	}
 
-	public int getSkippedTestCount() {
-		return mutant.getSkippedTestCount();
+	public int getIgnoredTestCount() {
+		return mutant.getIgnoredTestCount();
 	}
 
 	public boolean equals(Object obj) {
@@ -74,8 +75,8 @@ public class TrialMetadata implements I_TrialMetadata {
 		return mutant.getType();
 	}
 
-	public String getTestedClass() {
-		return mutant.getTestedClass();
+	public String getTestedSourceFile() {
+		return mutant.getTestedSourceFile();
 	}
 
 	public String getTestedPackage() {
@@ -86,7 +87,12 @@ public class TrialMetadata implements I_TrialMetadata {
 		return mutant.getSystem();
 	}
 
-	public I_UseCase getUseCase() {
+	public I_UseCaseMetadata getUseCase() {
 		return mutant.getUseCase();
+	}
+
+	@Override
+	public void toXml(I_XML_Builder builder) {
+		mutant.toXml(builder, this);
 	}
 }

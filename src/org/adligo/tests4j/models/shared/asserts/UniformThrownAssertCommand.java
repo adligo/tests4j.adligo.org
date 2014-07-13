@@ -26,17 +26,17 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
  * @author scott
  *
  */
-public class UniformThrownAssertCommand<D> extends AbstractAssertCommand 
+public class UniformThrownAssertCommand<T,D> extends AbstractAssertCommand 
 	implements I_UniformThrownAssertionCommand<D> {
 	
 	public static final String UNIFORM_THROWN_ASSERT_COMMAND_REQUIRES_A_EVALUATOR = 
 			"UniformThrownAssertCommand requires a evaluator.";
 	private I_ExpectedThrownData data;
-	private I_UniformAssertionEvaluator<?, D> evaluator;
+	private I_UniformAssertionEvaluator<Throwable, D> evaluator;
 	private I_Evaluation<D> result;
 	private Throwable actual;
 	
-	public UniformThrownAssertCommand(String failureMessage, I_ExpectedThrownData pData,  I_UniformAssertionEvaluator<?, D> pEvaluator) {
+	public UniformThrownAssertCommand(String failureMessage, I_ExpectedThrownData pData,  I_UniformAssertionEvaluator<Throwable, D> pEvaluator) {
 		super(AssertType.AssertThrownUniform, failureMessage);
 		data = pData;
 		if (data == null) {
@@ -106,7 +106,7 @@ public class UniformThrownAssertCommand<D> extends AbstractAssertCommand
 		if (!super.equals(obj))
 			return false;
 		@SuppressWarnings("unchecked")
-		UniformThrownAssertCommand<D> other = (UniformThrownAssertCommand<D>) obj;
+		UniformThrownAssertCommand<T,D> other = (UniformThrownAssertCommand<T,D>) obj;
 		if (actual == null) {
 			if (other.actual != null)
 				return false;

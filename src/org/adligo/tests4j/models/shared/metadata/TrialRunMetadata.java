@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class TrialRunMetadata implements I_TrialRunMetadata {
 	private List<I_TrialMetadata> trials = new ArrayList<I_TrialMetadata>();
-	private Map<String, I_SourceInfo> sourceInfoMap = new HashMap<String, I_SourceInfo>();
+	private Map<String, I_SourceInfoMetadata> sourceInfoMap = new HashMap<String, I_SourceInfoMetadata>();
 	
 	public TrialRunMetadata() {}
 	
@@ -21,7 +21,7 @@ public class TrialRunMetadata implements I_TrialRunMetadata {
 		trials = Collections.unmodifiableList(trials);
 		Collection<String> sourceInfoNames = p.getAllSourceInfo();
 		for (String s: sourceInfoNames) {
-			sourceInfoMap.put(s, new SourceInfo(p.getSourceInfo(s)));
+			sourceInfoMap.put(s, new SourceInfoMetadata(p.getSourceInfo(s)));
 		}
 	}
 
@@ -44,7 +44,7 @@ public class TrialRunMetadata implements I_TrialRunMetadata {
 	}
 
 	@Override
-	public I_SourceInfo getSourceInfo(String name) {
+	public I_SourceInfoMetadata getSourceInfo(String name) {
 		return sourceInfoMap.get(name);
 	}
 

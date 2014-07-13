@@ -7,6 +7,7 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
 
 /**
  * This class encapsulates parameters
@@ -16,7 +17,7 @@ import org.adligo.tests4j.models.shared.trials.I_Trial;
  * @author scott
  *
  */
-public interface I_Tests4J_Params extends I_Tests4J_XML_IO {
+public interface I_Tests4J_Params extends I_XML_Producer {
 
 	/**
 	 * The trials to run.

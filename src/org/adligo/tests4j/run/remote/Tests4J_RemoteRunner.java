@@ -13,6 +13,8 @@ import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.xml.XML_Builder;
+import org.adligo.tests4j.models.shared.xml.XML_Chars;
 import org.adligo.tests4j.run.remote.io.I_CharacterInputStream;
 import org.adligo.tests4j.run.remote.io.UTF8_InputStream;
 import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
@@ -93,7 +95,10 @@ public class Tests4J_RemoteRunner implements Runnable {
 				switch (lastCommnadSent) {
 					case CONNECT:
 						state = RemoteRunnerStateEnum.CONNECTED;
-						String xml = params.toXml();
+						XML_Builder builder = new XML_Builder(
+								XML_Chars.TAB, XML_Chars.NEW_LINE_UNIX);
+						params.toXml(builder);
+						String xml = builder.toXmlString();
 						transportMessage(new Tests4J_SocketMessage(Tests4J_Commands.RUN,authCode,
 								xml));
 						acceptMessage();
@@ -130,7 +135,9 @@ public class Tests4J_RemoteRunner implements Runnable {
 			reporter.log("Tests4J_RemoteRunner sending command " + p.getCommand());
 		}
 		lastCommnadSent = p.getCommand();
-		String message = p.toXml();
+		XML_Builder builder = new XML_Builder();
+		p.toXml(builder);
+		String message = builder.toXmlString();
 		out.write(message.getBytes());
 		out.flush();
 	}

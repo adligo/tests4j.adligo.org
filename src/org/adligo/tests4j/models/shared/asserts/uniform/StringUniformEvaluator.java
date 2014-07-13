@@ -16,7 +16,7 @@ public class StringUniformEvaluator implements I_UniformAssertionEvaluator<Strin
 	}
 
 	@Override
-	public I_Evaluation<I_TextLinesCompareResult> isUniform(I_CompareAssertionData<?> p) {
+	public I_Evaluation<I_TextLinesCompareResult> isUniform(I_CompareAssertionData<String> p) {
 		String expected = (String) p.getExpected();
 		String actual = (String) p.getActual();
 		
@@ -39,7 +39,7 @@ public class StringUniformEvaluator implements I_UniformAssertionEvaluator<Strin
 	}
 
 	@Override
-	public I_Evaluation<I_TextLinesCompareResult> isNotUniform(I_CompareAssertionData<?> p) {
+	public I_Evaluation<I_TextLinesCompareResult> isNotUniform(I_CompareAssertionData<String> p) {
 		String expected = (String) p.getExpected();
 		String actual = (String) p.getActual();
 	

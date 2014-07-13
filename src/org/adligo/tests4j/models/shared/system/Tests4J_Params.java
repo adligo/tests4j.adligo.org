@@ -13,6 +13,7 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.models.shared.trials.TrialRecursion;
+import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
 
@@ -289,7 +290,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		loggingClasses.add(p);
 	}
 
-	public String toXml() {
+	public void toXml(I_XML_Builder builder) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(XML_START);
 		if (trialThreads != null) {
@@ -380,7 +381,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			sb.append("\n");
 		}
 		sb.append(XML_END);
-		return sb.toString();
 	}
 
 	public Class<? extends I_CoveragePluginConfigurator> getCoveragePluginConfiguratorClass() {

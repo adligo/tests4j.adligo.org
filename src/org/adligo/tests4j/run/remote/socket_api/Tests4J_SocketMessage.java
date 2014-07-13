@@ -1,6 +1,8 @@
 package org.adligo.tests4j.run.remote.socket_api;
 
-import org.adligo.tests4j.models.shared.system.I_Tests4J_XML_IO;
+import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
+import org.adligo.tests4j.models.shared.xml.XML_Chars;
 
 import com.sun.xml.internal.ws.util.StringUtils;
 
@@ -14,23 +16,23 @@ import com.sun.xml.internal.ws.util.StringUtils;
  * @author scott
  *
  */
-public class Tests4J_SocketMessage implements I_Tests4J_XML_IO {
+public class Tests4J_SocketMessage implements I_XML_Producer {
 	
 	public static final String REQUIRES_AUTH_CODE_ATTRIBUTE_ERROR = "Requires AuthCode Attribute.";
 	public static final String REQUIRES_COMMAND_KEY_ATTRIBUTE_ERROR = "Requires Command Key Attribute.";
 	public static final String TAG_NAME ="tests4j_socket_message";
-	public static final String VERSION_KEY = "version" + EQUALS_QUOTE;
-	public static final String MESSAGE_START = START + TAG_NAME + " " + VERSION_KEY;
+	public static final String VERSION_KEY = "version" + XML_Chars.EQUALS_QUOTE;
+	public static final String MESSAGE_START = XML_Chars.START + TAG_NAME + " " + VERSION_KEY;
 	public static final String VERSION_1_0 = "1.0";
 	
-	public static final String COMMAND_KEY = "command" + EQUALS_QUOTE;
-	public static final String AUTH_CODE_KEY = "authCode" + EQUALS_QUOTE;
-	public static final String TAG_PAIR_END = END_START + TAG_NAME + END;
+	public static final String COMMAND_KEY = "command" + XML_Chars.EQUALS_QUOTE;
+	public static final String AUTH_CODE_KEY = "authCode" + XML_Chars.EQUALS_QUOTE;
+	public static final String TAG_PAIR_END = XML_Chars.END_START + TAG_NAME + XML_Chars.END;
 	public static int MIN_LENGTH = MESSAGE_START.length() +
-			VERSION_KEY.length() + VERSION_1_0.length() + ATTRIBUTE_END.length() +
-			COMMAND_KEY.length() + Tests4J_Commands.getMinLength() + ATTRIBUTE_END.length() + 
-			AUTH_CODE_KEY.length() + ATTRIBUTE_END.length() +
-			START_END.length();
+			VERSION_KEY.length() + VERSION_1_0.length() + XML_Chars.QUOTE.length() +
+			COMMAND_KEY.length() + Tests4J_Commands.getMinLength() + XML_Chars.QUOTE.length() + 
+			AUTH_CODE_KEY.length() + XML_Chars.QUOTE.length() +
+			XML_Chars.START_END.length();
 	public static final String REQUIRES_ERROR = "Requires a " + TAG_NAME + " tag.";
 	public static final String UNKNOWN_VERSION_ERROR_START = "Unknown Version ";
 	public static final String UNKNOWN_VERSION_ERROR_END = " expecting "+ VERSION_1_0 +".";
@@ -66,7 +68,7 @@ public class Tests4J_SocketMessage implements I_Tests4J_XML_IO {
 			throw new IllegalArgumentException(REQUIRES_ERROR);
 		}
 		int startLastIndex = startIndex + MESSAGE_START.length();
-		int versionEnd = xml.indexOf(ATTRIBUTE_END, startLastIndex);
+		int versionEnd = xml.indexOf(XML_Chars.QUOTE, startLastIndex);
 		if (versionEnd == -1) {
 			throw new IllegalArgumentException(UNKNOWN_VERSION_ERROR_START + "null" + 
 					UNKNOWN_VERSION_ERROR_END);
@@ -82,7 +84,7 @@ public class Tests4J_SocketMessage implements I_Tests4J_XML_IO {
 			throw new IllegalArgumentException(REQUIRES_COMMAND_KEY_ATTRIBUTE_ERROR);
 		}
 		int startCommandEndIndex = startCommandIndex + COMMAND_KEY.length();
-		int endCommandIndex = xml.indexOf(ATTRIBUTE_END, startCommandEndIndex);
+		int endCommandIndex = xml.indexOf(XML_Chars.QUOTE, startCommandEndIndex);
 		if (endCommandIndex == -1) {
 			throw new IllegalArgumentException(REQUIRES_COMMAND_KEY_ATTRIBUTE_ERROR);
 		}
@@ -94,39 +96,39 @@ public class Tests4J_SocketMessage implements I_Tests4J_XML_IO {
 			throw new IllegalArgumentException(REQUIRES_AUTH_CODE_ATTRIBUTE_ERROR);
 		}
 		int startAuthEndIndex = startAuthIndex + AUTH_CODE_KEY.length();
-		int endAuthIndex = xml.indexOf(ATTRIBUTE_END, startAuthEndIndex);
+		int endAuthIndex = xml.indexOf(XML_Chars.QUOTE, startAuthEndIndex);
 		if (endAuthIndex == -1) {
 			throw new IllegalArgumentException(REQUIRES_AUTH_CODE_ATTRIBUTE_ERROR);
 		}
 		authCode = xml.substring(startAuthEndIndex, endAuthIndex);
 	}
 	
-	public String toXml() {
+	public void toXml(I_XML_Builder builder) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(MESSAGE_START);
 		sb.append(VERSION_1_0);
-		sb.append(ATTRIBUTE_END);
+		sb.append(XML_Chars.QUOTE);
 		
 		sb.append(COMMAND_KEY);
 		sb.append(command);
-		sb.append(ATTRIBUTE_END);
+		sb.append(XML_Chars.QUOTE);
 		
 		sb.append(AUTH_CODE_KEY);
 		sb.append(authCode);
-		sb.append(ATTRIBUTE_END);
+		sb.append(XML_Chars.QUOTE);
 		
 		if (payload == null) {
-			sb.append(START_END);
+			sb.append(XML_Chars.START_END);
 		} else {
-			sb.append(END);
-			sb.append(NEW_LINE);
-			sb.append(TAB);
+			sb.append(XML_Chars.END);
+			sb.append(XML_Chars.NEW_LINE_UNIX);
+			sb.append(XML_Chars.TAB);
 			sb.append(payload);
-			sb.append(NEW_LINE);
+			sb.append(XML_Chars.NEW_LINE_UNIX);
 			sb.append(TAG_PAIR_END);
 		} 
 		
-		return sb.toString();
+		//return sb.toString();
 	}
 
 	public Tests4J_Commands getCommand() {

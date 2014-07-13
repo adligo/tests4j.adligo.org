@@ -47,7 +47,7 @@ public interface I_TrialRunMetadata {
 	 * @param name
 	 * @return
 	 */
-	public I_SourceInfo getSourceInfo(String name);
+	public I_SourceInfoMetadata getSourceInfo(String name);
 	
 	/**
 	 * All of the names of all of the .java files that 

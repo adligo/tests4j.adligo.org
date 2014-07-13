@@ -14,8 +14,8 @@ import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TrialDescriptionMessages;
-import org.adligo.tests4j.models.shared.metadata.I_UseCase;
-import org.adligo.tests4j.models.shared.metadata.UseCase;
+import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
+import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -395,7 +395,7 @@ public class TrialDescription implements I_TrialDescription {
 		return useCaseScope.system();
 	}
 	
-	public I_UseCase getUseCase() {
+	public I_UseCaseMetadata getUseCase() {
 		if (useCaseScope == null) {
 			return null;
 		}
@@ -407,7 +407,7 @@ public class TrialDescription implements I_TrialDescription {
 		if (StringMethods.isEmpty(verb)) {
 			return null;
 		}
-		return new UseCase(nown, verb);
+		return new UseCaseMetadata(nown, verb);
 	}
 	
 	public I_SourceFileCoverage findSourceFileCoverage(List<I_PackageCoverage> coverages) {

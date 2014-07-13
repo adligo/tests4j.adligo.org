@@ -13,7 +13,7 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 	}
 
 	@Override
-	public I_Evaluation<I_TextLinesCompareResult> isUniform(I_CompareAssertionData<?> p) {
+	public I_Evaluation<I_TextLinesCompareResult> isUniform(I_CompareAssertionData<Throwable> p) {
 		I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
 		
 		EvaluationMutant<I_TextLinesCompareResult> result = new EvaluationMutant<I_TextLinesCompareResult>();
@@ -51,7 +51,7 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 	}
 
 	@Override
-	public I_Evaluation<I_TextLinesCompareResult> isNotUniform(I_CompareAssertionData<?> p) {
+	public I_Evaluation<I_TextLinesCompareResult> isNotUniform(I_CompareAssertionData<Throwable> p) {
 		I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
 		
 		EvaluationMutant<I_TextLinesCompareResult> result = new EvaluationMutant<I_TextLinesCompareResult>();
@@ -63,7 +63,8 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 			return new Evaluation<I_TextLinesCompareResult>(result);
 		}
 		if (actual == null) {
-			result.setSuccess(true);
+			result.setSuccess(false);
+			result.setFailureReason(messages.getTheActualValueIsNull());
 			return new Evaluation<I_TextLinesCompareResult>(result);
 		}
 		Class<? extends Throwable> eClazz = expected.getClass();
@@ -82,7 +83,7 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 			result.setData(lineTextResult);
 			return new Evaluation<I_TextLinesCompareResult>(result);
 		}
-		result.setSuccess(false);
+		result.setSuccess(true);
 		return new Evaluation<I_TextLinesCompareResult>(result);
 	}
 

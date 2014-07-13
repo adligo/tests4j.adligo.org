@@ -204,7 +204,7 @@ public class SummaryReporter implements I_Tests4J_Reporter {
 				
 				if (ad instanceof ContainsAssertCommand) {
 					log("\tExpected;");
-					log("\t" + ad.getData(ContainsAssertCommand.VALUE));
+					log("\t'" + ad.getData(ContainsAssertCommand.VALUE) + "'");
 				} else if (ad instanceof ThrownAssertionData) {
 					logThrowableFailure((ThrownAssertionData) ad);
 				} else if (ad instanceof I_CompareAssertionData) {
@@ -225,13 +225,13 @@ public class SummaryReporter implements I_Tests4J_Reporter {
 		if (expected != null) {
 			log("\t\tClass: " + expected.getClass());
 		}
-		log("\t\t" + expected);
+		log("\t\t'" + expected + "'");
 		log("\tActual;");
 		Object actual = ad.getActual();
 		if (actual != null) {
 			log("\t\tClass: " + actual.getClass());
 		}
-		log("\t\t" + actual);
+		log("\t\t'" + actual + "'");
 	}
 	
 	private void logThrowableFailure(ThrownAssertionData ad) {

@@ -1,14 +1,20 @@
 package org.adligo.tests4j.models.shared.metadata;
 
-public class SourceInfo implements I_SourceInfo {
-	private SourceInfoMutant mutant;
+/**
+ * immutable implementation of I_SourceInfo
+ * @see I_SourceInfoMetadata
+ * @author scott
+ *
+ */
+public class SourceInfoMetadata implements I_SourceInfoMetadata {
+	private SourceInfoMetadataMutant mutant;
 	
-	public SourceInfo() {
-		mutant = new SourceInfoMutant();
+	public SourceInfoMetadata() {
+		mutant = new SourceInfoMetadataMutant();
 	}
 	
-	public SourceInfo(I_SourceInfo p) {
-		mutant = new SourceInfoMutant(p);
+	public SourceInfoMetadata(I_SourceInfoMetadata p) {
+		mutant = new SourceInfoMetadataMutant(p);
 	}
 	
 	public String getName() {
@@ -31,5 +37,9 @@ public class SourceInfo implements I_SourceInfo {
 	}
 	public boolean equals(Object obj) {
 		return mutant.equals(obj);
+	}
+	
+	public String toString() {
+		return mutant.toString(SourceInfoMetadata.class);
 	}
 }
