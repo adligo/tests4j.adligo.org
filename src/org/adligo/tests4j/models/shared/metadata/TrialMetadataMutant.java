@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.trials.I_UseCaseTrial;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.models.shared.xml.XML_Parser;
 
 public class TrialMetadataMutant implements I_TrialMetadata {
+	public static final String READ_XML_ERROR = "Tag " + I_TrialMetadata.TAG_NAME + " not found!";
 	private static final String TRIAL_METADATA_MUTANT_REQUIRES_A_NON_NULL_TYPE = "TrialMetadataMutant requires a non null type.";
 	private String trialName;
 	private Long timeout;
@@ -39,6 +43,47 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		testedPackage = p.getTestedPackage();
 		system = p.getSystem();
 		useCase = p.getUseCase();
+	}
+	
+	public TrialMetadataMutant(String xml) {
+		trialName = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TRIAL_NAME_ATTRIBUTE);
+		String timeoutString;
+		timeoutString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TIMEOUT_ATTRIBUTE);
+		if (!StringMethods.isEmpty(timeoutString)) {
+			timeout = new Long(timeoutString);
+		}
+		String ignoredString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.IGNORED_ATTRIBUTE);
+		if (!StringMethods.isEmpty(ignoredString)) {
+			ignored = Boolean.parseBoolean(ignoredString);
+		}
+		beforeTrialMethodName = XML_Parser.getAttributeValue(xml, 
+					I_TrialMetadata.BEFORE_TRIAL_METHOD_NAME_ATTRIBUTE);
+		afterTrialMethodName = XML_Parser.getAttributeValue(xml, 
+					I_TrialMetadata.AFTER_TRIAL_METHOD_NAME_ATTRIBUTE);
+		String typeString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TYPE_ATTRIBUTE);
+		if (!StringMethods.isEmpty(typeString)) {
+			type = TrialType.valueOf(typeString);
+		}
+		testedSourceFile = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TESTED_SOURCE_FILE_ATTRIBUTE);
+		testedPackage = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TESTED_PACKAGE_ATTRIBUTE);
+		system = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TESTED_SYSTEM_ATTRIBUTE);
+		int[] testsTag = XML_Parser.getIndexes(xml, I_TrialMetadata.TESTS_NESTED_TAG_NAME);
+		if (testsTag != null) {
+			int [] useCaseTags = XML_Parser.getIndexes(xml, I_UseCaseMetadata.TAG_NAME);
+			if (useCaseTags != null) {
+				String useCaseXml = xml.substring(useCaseTags[0], useCaseTags[1]);
+				useCase = new UseCaseMetadata(useCaseXml);
+			}
+			String testsXml = xml;
+			int [] testsTags = XML_Parser.getIndexes(xml, I_TestMetadata.TAG_NAME);
+			while (testsTags != null) {
+				String testXml = testsXml.substring(testsTags[0], testsTags[1]);
+				TestMetadataMutant tmm = new TestMetadataMutant(testXml);
+				tests.add(tmm);
+				testsXml = xml.substring(testsTags[1], testsXml.length());
+				testsTags = XML_Parser.getIndexes(testsXml, I_TestMetadata.TAG_NAME);
+			}
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -176,50 +221,71 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		builder.indent();
 		builder.addStartTag(I_TrialMetadata.TAG_NAME);
 		
-		builder.addAttribute(I_TrialMetadata.TRIAL_NAME_ATTRIBUTE, tm.getTrialName());
 		int attributeCount = 0;
+		if (tm.getTrialName() != null) {
+			builder.addAttribute(I_TrialMetadata.TRIAL_NAME_ATTRIBUTE, tm.getTrialName());
+			attributeCount++;
+		}
+			
 		TrialType type = tm.getType();
 		if (type != null) {
 			builder.addAttribute(I_TrialMetadata.TYPE_ATTRIBUTE, type.toString());
 			attributeCount++;
 		}
-		if (tm.getBeforeTrialMethodName() != null) {
-			builder.addAttribute(I_TrialMetadata.BEFORE_TRIAL_METHOD_NAME_ATTRIBUTE, 
-					tm.getBeforeTrialMethodName());
-			attributeCount++;
-		}
-		if (tm.getAfterTrialMethodName() != null) {
-			builder.addAttribute(I_TrialMetadata.AFTER_TRIAL_METHOD_NAME_ATTRIBUTE, 
-					tm.getAfterTrialMethodName());
-			attributeCount++;
-		}
-		
+		boolean firstWrap = true;
 		if (tm.getTimeout() != null) {
 			builder.addAttribute(I_TrialMetadata.TIMEOUT_ATTRIBUTE, 
 					"" + tm.getTimeout());
 			attributeCount++;
 		}
+		
 		if (attributeCount == 3) {
-			builder.endLine();
-			builder.indent();
+			wrapAttributes(builder, firstWrap);
+			firstWrap = false;
 		}
+		
+		if (tm.getBeforeTrialMethodName() != null) {
+			builder.addAttribute(I_TrialMetadata.BEFORE_TRIAL_METHOD_NAME_ATTRIBUTE, 
+					tm.getBeforeTrialMethodName());
+			attributeCount++;
+		}
+		
+		if (attributeCount == 3) {
+			wrapAttributes(builder, firstWrap);
+			firstWrap = false;
+		}
+		
 		if (tm.isIgnored()) {
 			builder.addAttribute(I_TrialMetadata.IGNORED_ATTRIBUTE,
 					"" + tm.isIgnored());
 			attributeCount++;
 		}
 		if (attributeCount == 3) {
-			builder.endLine();
-			builder.indent();
+			wrapAttributes(builder, firstWrap);
+			firstWrap = false;
 		}
+		
+		if (tm.getAfterTrialMethodName() != null) {
+			builder.addAttribute(I_TrialMetadata.AFTER_TRIAL_METHOD_NAME_ATTRIBUTE, 
+					tm.getAfterTrialMethodName());
+			attributeCount++;
+		}
+	
+		
+		
+		if (attributeCount == 3 || attributeCount == 6) {
+			wrapAttributes(builder, firstWrap);
+			firstWrap = false;
+		}
+		
 		if (tm.getTestedSourceFile() != null) {
 			builder.addAttribute(I_TrialMetadata.TESTED_SOURCE_FILE_ATTRIBUTE, 
 					tm.getTestedSourceFile());
 			attributeCount++;
 		}
 		if (attributeCount == 3 || attributeCount == 6) {
-			builder.endLine();
-			builder.indent();
+			wrapAttributes(builder, firstWrap);
+			firstWrap = false;
 		}
 		if (tm.getTestedPackage() != null) {
 			builder.addAttribute(I_TrialMetadata.TESTED_PACKAGE_ATTRIBUTE, 
@@ -227,27 +293,32 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 			attributeCount++;
 		}
 		if (attributeCount == 3 || attributeCount == 6) {
-			builder.endLine();
-			builder.indent();
+			wrapAttributes(builder, firstWrap);
+			firstWrap = false;
 		}
 		if (tm.getSystem() != null) {
 			builder.addAttribute(I_TrialMetadata.TESTED_SYSTEM_ATTRIBUTE, 
 					tm.getSystem());
 			attributeCount++;
 		}
-		if (attributeCount == 3 || attributeCount == 6) {
-			builder.endLine();
-			builder.indent();
+		if (attributeCount == 3 || attributeCount == 6 || attributeCount == 9) {
+			wrapAttributes(builder, firstWrap);
+			firstWrap = false;
 		}
 		I_UseCaseMetadata useCase = tm.getUseCase();
 		List<? extends I_TestMetadata> tests = tm.getTests();
 		if (useCase == null && tests.size() == 0) {
 			builder.append("/>");
 			builder.endLine();
+			if (firstWrap) {
+				builder.removeIndent();
+			}
 		} else {
 			builder.append(" >");
 			builder.endLine();
-			builder.addIndent();
+			if (firstWrap) {
+				builder.removeIndent();
+			}
 			
 			if (useCase != null) {
 				useCase.toXml(builder);
@@ -264,12 +335,22 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 					tst.toXml(builder);
 				}
 				builder.removeIndent();
+				builder.indent();
 				builder.addEndTag(I_TrialMetadata.TESTS_NESTED_TAG_NAME);
 				builder.endLine();
 			}
 			builder.removeIndent();
 			builder.indent();
 			builder.addEndTag(I_TrialMetadata.TAG_NAME);
+			builder.endLine();
 		}
+	}
+
+	private static void wrapAttributes(I_XML_Builder builder, boolean firstWrap) {
+		builder.endLine();
+		if (firstWrap) {
+			builder.addIndent();
+		}
+		builder.indent();
 	}
 }

@@ -28,6 +28,11 @@ public class CompareAssertionData<T> implements I_Immutable, I_CompareAssertionD
 	}
 
 	
+	public CompareAssertionData(I_CompareAssertionData<T> other) {
+		this(other.getExpected(), other.getActual());
+	}
+
+
 	public T getExpected() {
 		return expected;
 	}

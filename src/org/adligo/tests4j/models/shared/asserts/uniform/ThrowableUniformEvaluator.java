@@ -39,7 +39,7 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		}
 		TextLinesCompare tlc = new TextLinesCompare();
 		I_TextLinesCompareResult lineTextResult = 
-				tlc.compare(expected.getMessage(), actual.getMessage());
+				tlc.compare(expected.getMessage(), actual.getMessage(), true);
 		if (!lineTextResult.isMatched()) {
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheTextWasNOT_Uniform());
@@ -76,7 +76,7 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		}
 		TextLinesCompare tlc = new TextLinesCompare();
 		I_TextLinesCompareResult lineTextResult = 
-				tlc.compare(expected.getMessage(), actual.getMessage());
+				tlc.compare(expected.getMessage(), actual.getMessage(), true);
 		if (lineTextResult.isMatched()) {
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheTextWasUniform());

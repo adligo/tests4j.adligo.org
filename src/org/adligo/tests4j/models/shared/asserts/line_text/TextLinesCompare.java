@@ -27,10 +27,10 @@ public class TextLinesCompare  {
 	private TreeSet<Integer> actualLinesWithoutMatch = new TreeSet<Integer>();
 	
 	
-	public I_TextLinesCompareResult compare(String example, String actual) {
+	public I_TextLinesCompareResult compare(String example, String actual, boolean normalizeLineFeeds) {
 		
-		exampleLT = new TextLines(example);
-		actualLT = new TextLines(actual);
+		exampleLT = new TextLines(example, normalizeLineFeeds);
+		actualLT = new TextLines(actual, normalizeLineFeeds);
 		
 		findMatches(exampleLT, actualLT);
 
@@ -169,6 +169,7 @@ public class TextLinesCompare  {
 		Iterator<Integer> it = exampleLinesWithoutMatch.iterator();
 		while (it.hasNext()) {
 			Integer expLineNbr = it.next();
+			boolean removedThisIt = false;
 			int previousDiffCounter = expLineNbr - 1;
 			I_LineDiff beforeDiff = null;
 			while (beforeDiff == null && previousDiffCounter >= 0) {
@@ -185,27 +186,39 @@ public class TextLinesCompare  {
 				if (afterDiff == null) {
 					//no diffs matched
 					Iterator<Integer> ait = actualLinesWithoutMatch.iterator();
-					while (ait.hasNext()) {
+					while (ait.hasNext() && !removedThisIt) {
 						Integer actualLineNbr = ait.next();
 						String expected = exampleLT.getLine(expLineNbr);
 						String actual = actualLT.getLine(actualLineNbr);
-						addIfPartialMatch(expLineNbr, expected, actualLineNbr, actual);
+						if (addIfPartialMatch(expLineNbr, expected, actualLineNbr, actual)) {
+							ait.remove();
+							it.remove();
+							removedThisIt = true;
+						}
 					}
 				} else {
 					Integer lastActualNbr = afterDiff.getActualLineNbr();
 					Iterator<Integer> ait = actualLinesWithoutMatch.iterator();
-					while (ait.hasNext()) {
+					while (ait.hasNext() && !removedThisIt) {
 						Integer actualLineNbr = ait.next();
 						if (lastActualNbr != null){
 							if (actualLineNbr < lastActualNbr) {
 								String expected = exampleLT.getLine(expLineNbr);
 								String actual = actualLT.getLine(actualLineNbr);
-								addIfPartialMatch(expLineNbr, expected, actualLineNbr, actual);
+								if (addIfPartialMatch(expLineNbr, expected, actualLineNbr, actual)) {
+									ait.remove();
+									it.remove();
+									removedThisIt = true;
+								}
 							}
 						} else {
 							String expected = exampleLT.getLine(expLineNbr);
 							String actual = actualLT.getLine(actualLineNbr);
-							addIfPartialMatch(expLineNbr, expected, actualLineNbr, actual);
+							if (addIfPartialMatch(expLineNbr, expected, actualLineNbr, actual)) {
+								ait.remove();
+								it.remove();
+								removedThisIt = true;
+							}
 						}
 					}
 				}
@@ -228,11 +241,15 @@ public class TextLinesCompare  {
 						String expected = exampleLT.getLine(expLineNbr);
 						//loop through the actual lines that could be a match
 						Iterator<Integer> ait = actualLinesWithoutMatch.iterator();
-						while (ait.hasNext()) {
+						while (ait.hasNext() && !removedThisIt) {
 							Integer actualLineNbr = ait.next();
 							if (startActualLineNbr < actualLineNbr && startActualLineNbr < actualEnd) {
 								String actual = actualLT.getLine(actualLineNbr);
-								addIfPartialMatch(i, expected, actualLineNbr, actual);
+								if (addIfPartialMatch(i, expected, actualLineNbr, actual)) {
+									ait.remove();
+									it.remove();
+									removedThisIt = true;
+								}
 							}
 						}
 					}
@@ -242,24 +259,28 @@ public class TextLinesCompare  {
 	}
 
 
-	private void addIfPartialMatch(int i, String expected, int j, String actual) {
+	private boolean addIfPartialMatch(int i, String expected, int j, String actual) {
 		try {
 			DiffIndexesPair dip = new DiffIndexesPair(expected, actual);
-			
-			LineDiffMutant ldm = new LineDiffMutant();
-			ldm.setExampleLineNbr(i);
-			ldm.setActualLineNbr(j);
-			ldm.setType(LineDiffType.PARTIAL_MATCH);
-			ldm.setIndexes(dip);
-			LineDiff ld = new LineDiff(ldm);
-			diffs.add(ld);
-			exampleLinesWithoutMatch.remove(i);
-			actualLinesWithoutMatch.remove(j);
-			expectedToDiffs.put(i, ld);
-			actualToDiffs.put(j, ld);
+			I_DiffIndexes example = dip.getExample();
+			int start = example.getStart();
+			int end = example.getEnd();
+			if (start != 0 || end != expected.length() - 1) {
+				LineDiffMutant ldm = new LineDiffMutant();
+				ldm.setExampleLineNbr(i);
+				ldm.setActualLineNbr(j);
+				ldm.setType(LineDiffType.PARTIAL_MATCH);
+				ldm.setIndexes(dip);
+				LineDiff ld = new LineDiff(ldm);
+				diffs.add(ld);
+				expectedToDiffs.put(i, ld);
+				actualToDiffs.put(j, ld);
+				return true;
+			}
 		} catch (IOException x) {
 			//do nothing, actually regular program flow
 		}
+		return false;
 	}
 
 	

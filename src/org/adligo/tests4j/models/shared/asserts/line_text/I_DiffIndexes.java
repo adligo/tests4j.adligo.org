@@ -6,9 +6,16 @@ package org.adligo.tests4j.models.shared.asserts.line_text;
  *
  */
 public interface I_DiffIndexes {
-
+	/**
+	 * the start of where the lines were different
+	 * @return
+	 */
 	public abstract int getStart();
 
+	/**
+	 * the end of where the lines were different
+	 * @return
+	 */
 	public abstract int getEnd();
 
 }

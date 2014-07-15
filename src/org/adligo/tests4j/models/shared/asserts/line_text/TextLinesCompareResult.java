@@ -41,8 +41,9 @@ public class TextLinesCompareResult implements I_TextLinesCompareResult {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		return "TextLinesCompareResult [example=" + example + ", actual="
+				+ actual + ", matched=" + matched + ", lineDiffs=" + lineDiffs
+				+ "]";
 	}
 
 	/* (non-Javadoc)

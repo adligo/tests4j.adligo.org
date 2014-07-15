@@ -6,28 +6,45 @@ package org.adligo.tests4j.models.shared.asserts.line_text;
  *
  */
 public class LineSplitter {
-	private static final char LINE_SEPERATOR = '\n';
-	private static final char DOS_LINE_SEPERATOR = '\r';
-	private boolean lastCharIsLineFeed = false;
+	private static final char LF = '\n';
+	private static final char CR = '\r';
+	private Character lastNewLine;
 	
 	
-	public boolean isLineFeedChar(char c) {
-		if (c == LINE_SEPERATOR) {
-			lastCharIsLineFeed = true;
+	public boolean isNewLineChar(char c) {
+		if (c == LF) {
 			return true;
-		} else if (c == DOS_LINE_SEPERATOR) {
-			lastCharIsLineFeed = true;
+		} else if (c == CR) {
 			return true;
 		}
-		lastCharIsLineFeed = false;
 		return false;
 	}
 	
-	public boolean isLastCharLineFeedChar() {
-		return lastCharIsLineFeed;
+	/** 
+	 * should be set to null if the current char is not a line feed
+	 * @param c
+	 */
+	public void setLastNewLineChar(Character c) {
+		lastNewLine = c;
 	}
 	
-	public void setLastCharLineFeedChar(boolean p) {
-		lastCharIsLineFeed = p;
+	public boolean isLastCharNewLine() {
+		if (lastNewLine == null) {
+			return false;
+		}
+		return isNewLineChar(lastNewLine);
 	}
+	
+	public boolean isMultiCharNewLine(char c) {
+		if (lastNewLine == null) {
+			return false;
+		}
+		if (lastNewLine == CR) {
+			if (c == LF) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

@@ -21,7 +21,7 @@ public class StringUniformEvaluator implements I_UniformAssertionEvaluator<Strin
 		String actual = (String) p.getActual();
 		
 		TextLinesCompare tlc = new TextLinesCompare();
-		I_TextLinesCompareResult lineTextResult =  tlc.compare(expected, actual);
+		I_TextLinesCompareResult lineTextResult =  tlc.compare(expected, actual, true);
 		if (lineTextResult.isMatched()) {
 		   EvaluationMutant<I_TextLinesCompareResult> em = new EvaluationMutant<I_TextLinesCompareResult>();
 		   em.setSuccess(true);
@@ -45,7 +45,7 @@ public class StringUniformEvaluator implements I_UniformAssertionEvaluator<Strin
 	
 		
 		TextLinesCompare tlc = new TextLinesCompare();
-		I_TextLinesCompareResult lineTextResult =  tlc.compare(expected, actual);
+		I_TextLinesCompareResult lineTextResult =  tlc.compare(expected, actual, true);
 		if (!lineTextResult.isMatched()) {
 		   EvaluationMutant<I_TextLinesCompareResult> em = new EvaluationMutant<I_TextLinesCompareResult>();
 		   em.setSuccess(true);

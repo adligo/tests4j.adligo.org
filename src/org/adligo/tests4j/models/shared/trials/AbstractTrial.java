@@ -19,6 +19,7 @@ import org.adligo.tests4j.models.shared.asserts.CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.DoubleAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.IdenticalAssertCommand;
+import org.adligo.tests4j.models.shared.asserts.IdenticalStringAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.UniformAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.UniformThrownAssertCommand;
@@ -113,6 +114,18 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	
 	@Override
+	public void assertEquals(String p, String a) {
+		assertEquals(MESSAGES.getTheObjectsShouldBeEqual(), p, a);
+	}
+
+	@Override
+	public void assertEquals(String message, String p, String a) {
+		evaluate(new IdenticalStringAssertCommand(
+				AssertEquals, message, 
+				new CompareAssertionData<String>(p, a)));
+	}
+	
+	@Override
 	public void assertTrue(boolean p) {
 		assertTrue(MESSAGES.getTheValueShouldBeTrue(), p);
 	}
@@ -172,6 +185,18 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		evaluate(new IdenticalAssertCommand(
 				AssertNotEquals, message, 
 				new CompareAssertionData<Object>(p, a)));
+	}
+	
+	@Override
+	public void assertNotEquals(String p, String a) {
+		assertNotEquals(MESSAGES.getTheObjectsShould_NOT_BeEqual(),p, a);
+	}
+
+	@Override
+	public void assertNotEquals(String message, String p, String a) {
+		evaluate(new IdenticalStringAssertCommand(
+				AssertNotEquals, message, 
+				new CompareAssertionData<String>(p, a)));
 	}
 	
 	@Override

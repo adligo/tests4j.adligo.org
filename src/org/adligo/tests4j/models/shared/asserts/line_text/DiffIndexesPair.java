@@ -91,8 +91,8 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 		}
 		if (endLeftToRightMatch >= 0) {
 			int expectedStart = endLeftToRightMatch;
-			
 			int actualStart = endLeftToRightMatch;
+			
 			int expectedEnd = expectedChars.length - 1;
 			int actualEnd = actualChars.length - 1;
 			if (endMatch >= 0) {
@@ -101,8 +101,8 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 			}
 			
 			if (expectedStart <= expectedEnd && actualStart <= actualEnd) {
-				example = new DiffIndexes(expectedStart, expectedEnd);
-				actual = new DiffIndexes(actualStart, actualEnd);
+				example = new Diffndexes(expectedStart, expectedEnd);
+				actual = new Diffndexes(actualStart, actualEnd);
 				return;
 			}
 		} else if (endMatch != -1) {
@@ -111,8 +111,8 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 			int actualStart = 0;
 			int actualEnd = actualChars.length - 1 - endMatch;
 			if (expectedStart <= expectedEnd && actualStart <= actualEnd) {
-				example = new DiffIndexes(expectedStart, expectedEnd);
-				actual = new DiffIndexes(actualStart, actualEnd);
+				example = new Diffndexes(expectedStart, expectedEnd);
+				actual = new Diffndexes(actualStart, actualEnd);
 				return;
 			}
 		}

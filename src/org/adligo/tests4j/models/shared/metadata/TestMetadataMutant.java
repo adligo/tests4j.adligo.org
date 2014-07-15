@@ -21,7 +21,7 @@ public class TestMetadataMutant implements I_TestMetadata {
 		if (indexes == null) {
 			throw new IllegalArgumentException(READ_XML_ERROR);
 		}
-		String thisTag = xml.substring(indexes[0], indexes[1] + 1);
+		String thisTag = xml.substring(indexes[0], indexes[1]);
 		testName = XML_Parser.getAttributeValue(thisTag, I_TestMetadata.NAME_ATTRIBUTE);
 		
 		String timeOutString = XML_Parser.getAttributeValue(thisTag, I_TestMetadata.TIMEOUT_ATTRIBUTE);;
@@ -101,6 +101,7 @@ public class TestMetadataMutant implements I_TestMetadata {
 			builder.addAttribute(I_TestMetadata.TIMEOUT_ATTRIBUTE,"" + timeout);
 		}
 		builder.append(" />");
+		builder.endLine();
 	}
 	
 }

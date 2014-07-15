@@ -13,7 +13,14 @@ import java.util.List;
 public class TextLines implements I_TextLines {
 	private List<String> lines = new ArrayList<String>();
 	
-	public TextLines(String text) {
+	/**
+	 * 
+	 * @param text
+	 * @param normalizeLineFeed if true then all line feed chars are remove from the line data
+	 *   if false then the \r \n exc are added to the line data, to help with assertEquals 
+	 *   for string data.
+	 */
+	public TextLines(String text, boolean normalizeLineFeed) {
 		char [] chars = text.toCharArray();
 		StringBuilder line = new StringBuilder();
 		
@@ -21,31 +28,52 @@ public class TextLines implements I_TextLines {
 		LineSplitter splitter = new LineSplitter();
 		for (int i = 0; i < chars.length; i++) {
 			char c = chars[i];
-			if (splitter.isLastCharLineFeedChar()) {
-				if (splitter.isLineFeedChar(c)) {
+			if (splitter.isNewLineChar(c)) {
+				if (splitter.isMultiCharNewLine(c)) {
+					if (!normalizeLineFeed) {
+						line.append(c);
+					}
 					String lineText = line.toString();
 					lines.add(lineText);
 					
 					line = new StringBuilder();
-					splitter.setLastCharLineFeedChar(false);
-				} else {
+					splitter.setLastNewLineChar(null);
+				} else if (splitter.isLastCharNewLine()) {
+					if (!normalizeLineFeed) {
+						line.append(c);
+					}
 					String lineText = line.toString();
-					lines.add(lineText);
-					
 					line = new StringBuilder();
 					
-					line.append(c);
-					splitter.setLastCharLineFeedChar(false);
+					lines.add(lineText);
+					splitter.setLastNewLineChar(c);
+				}  else {
+					splitter.setLastNewLineChar(c);
+					if (!normalizeLineFeed) {
+						line.append(c);
+					}
 				}
+			} else if (splitter.isLastCharNewLine()) {
+				String lineText = line.toString();
+				lines.add(lineText);
+				
+				line = new StringBuilder();
+				line.append(c);
+				splitter.setLastNewLineChar(null);
 			} else {
-				if (!splitter.isLineFeedChar(c)) {
-					line.append(c);
-				}
+				line.append(c);
+				splitter.setLastNewLineChar(null);
 			}
 		}
-		String lineText = line.toString();
-		if (lineText.length() != 0) {
+		if (splitter.isLastCharNewLine()) {
+			//append empty line
+			String lineText = line.toString();
 			lines.add(lineText);
+		} else {
+			String lineText = line.toString();
+			if (lineText.length() >= 1) {
+				lines.add(lineText);
+			}
 		}
 	}
 	
@@ -66,5 +94,10 @@ public class TextLines implements I_TextLines {
 			return "";
 		}
 		return lines.get(i);
+	}
+
+	@Override
+	public String toString() {
+		return "TextLines [lines=" + lines + "]";
 	}
 }

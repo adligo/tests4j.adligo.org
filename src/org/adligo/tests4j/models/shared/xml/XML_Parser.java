@@ -17,72 +17,63 @@ public class XML_Parser {
 		int [] indexes = new int [2];
 		indexes[1] = -1;
 		//find the tag name first
-		int nextTagName = xml.indexOf(tagName);
+		//find the first <tagName,
+		//http://www.w3.org/TR/REC-xml/#sec-starttags
+		// no space between < and the name
+		// [40]   	STag	   ::=   	'<' Name
+		int nextTagName = xml.indexOf("<" + tagName);
 		char[] chars = xml.toCharArray();
 		
-		while (nextTagName != -1 && indexes[1] == -1) {
-			//work back to find the first < before the tagName,
-			//making sure there is only white space between them
-			boolean tagStartMatch = false;
-			if (nextTagName >= 1) {
-				for (int i = nextTagName -1; i >= 0; i--) {
-					char c = chars[i];
-					if (c == '<') {
-						tagStartMatch = true;
-						indexes[0] = i;
-						break;
-					} else if (!Character.isWhitespace(c)) {
-						break;
-					}
-				}
-			}
-			if (!tagStartMatch) {
-				//check for the next tagName in the xml string
-				nextTagName = xml.indexOf(tagName, nextTagName + tagName.length());
-			} else {
-				boolean inQuote = false;
-				boolean inNextedTag = false;
-				StringBuilder lastTag = new StringBuilder();
-				int start = nextTagName + tagName.length();
-
-				for (int i = start; i < chars.length; i++) {
-					char c = chars[i];
-					if (inQuote) {
-						if (c == '\"') {
-							inQuote = false;
-						}
-					} else if (inNextedTag) {
-						if (!Character.isWhitespace(c)) {
-							lastTag.append(c);
-							if (c == '>') {
-								inNextedTag = false;
-								String tag = lastTag.toString();
-								if (tag.equals(XML_Chars.END_START + tagName + ">")) {
-									indexes[1] = i;
-									break;
-								}
-								lastTag = new StringBuilder();
-							}
-						}
-					} else {
-						if (c == '\"') {
-							inQuote = true;
-						} else if (c == '<') {
-							inNextedTag = true;
-							lastTag.append(c);
-						} else if (c == '>') {
-							if (chars[i-1] == '/') {
-								indexes[1] = i;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
-		if (indexes[1] == -1) {
+		if (nextTagName == -1) {
 			return null;
 		}
+		boolean findingAfterEndTag = true;
+		while (findingAfterEndTag) {
+			boolean inQuote = false;
+			boolean inAnotherTag = false;
+			StringBuilder lastTag = new StringBuilder();
+			int start = nextTagName + tagName.length();
+
+			for (int i = start; i < chars.length; i++) {
+				char c = chars[i];
+				if (inQuote) {
+					if (c == '\"') {
+						inQuote = false;
+					}
+				} else if (inAnotherTag) {
+					// end tag may have white space 
+					//http://www.w3.org/TR/REC-xml/#sec-starttags
+					// [42]   	ETag	   ::=   	'</' Name S? '>'
+					if (!Character.isWhitespace(c)) {
+						lastTag.append(c);
+						if (c == '>') {
+							inAnotherTag = false;
+							String tag = lastTag.toString();
+							if (tag.equals(XML_Chars.END_START + tagName + ">")) {
+								indexes[1] = i + 1;
+								findingAfterEndTag = false;
+								break;
+							}
+							lastTag = new StringBuilder();
+						}
+					}
+				} else {
+					if (c == '\"') {
+						inQuote = true;
+					} else if (c == '<') {
+						inAnotherTag = true;
+						lastTag.append(c);
+					} else if (c == '>') {
+						if (chars[i-1] == '/') {
+							indexes[1] = i + 1;
+							findingAfterEndTag = false;
+							break;
+						}
+					}
+				}
+			}
+		}
+		
 		return indexes;
 	}
 	

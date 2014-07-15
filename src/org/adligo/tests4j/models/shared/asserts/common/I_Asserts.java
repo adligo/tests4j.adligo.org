@@ -10,7 +10,9 @@ public interface I_Asserts extends I_Platform {
 	
 	public void assertEquals(Object p, Object a);
 	public void assertEquals(String message, Object p, Object a);	
-
+	public void assertEquals(String p, String a);
+	public void assertEquals(String message, String p, String a);	
+	
 	public void assertFalse(boolean p);
 	public void assertFalse(String message, boolean p);	
 	
@@ -33,6 +35,8 @@ public interface I_Asserts extends I_Platform {
 
 	public void assertNotEquals(Object p, Object a);
 	public void assertNotEquals(String message, Object p, Object a);
+	public void assertNotEquals(String p, String a);
+	public void assertNotEquals(String message, String p, String a);
 	
 	public void assertNotSame(Object p, Object a);
 	public void assertNotSame(String message, Object p, Object a);	
