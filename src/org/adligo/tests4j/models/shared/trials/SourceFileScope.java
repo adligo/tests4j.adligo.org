@@ -20,4 +20,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface SourceFileScope {
 	Class<?> sourceClass();
+	/**
+	 * This is the minimum code coverage expected
+	 * on the sourceClass by the trial with this annotation.
+	 * @return a percentage 0.0 - 100.0 representing the minimum 
+	 * code coverage expected on the sourceClass by the trial 
+	 * with this annotation.
+	 */
+	 double minCoverage() default 100.0;
 }
