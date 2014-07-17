@@ -10,8 +10,6 @@ import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
-import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
 public class TrialDescriptionProcessor {
@@ -32,9 +30,6 @@ public class TrialDescriptionProcessor {
 		// This allows reuse of TrialDescription instances
 		synchronized (trialClazz) {
 			TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
-			if (memory.isExitAfterLastNotification()) {
-				memory.getReporter().log("debugging TrialDescriptionProcessor wheres the recorder");
-			}
 			
 			//try to reuse the description if another thread already described it
 			TrialDescription desc = memory.getTrialDescription(trialClazz.getName());

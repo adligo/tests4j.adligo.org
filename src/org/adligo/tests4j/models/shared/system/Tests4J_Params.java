@@ -55,10 +55,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * @see I_Tests4J_Params#getReporter()
 	 */
 	private transient I_Tests4J_Reporter reporter = new SummaryReporter();
-	/**
-	 * this flaggs a jvm exit
-	 */
-	private transient boolean exitAfterLastNotification = true;
 	
 	private I_ThreadCount trialThreads = new SimpleThreadCount();
 	/**
@@ -74,7 +70,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * these classes get reporting turned on 
 	 */
 	private transient List<Class<?>> loggingClasses = new ArrayList<Class<?>>();
-	private transient I_SystemExit exitor = new DefaultSystemExitor();
+	private transient I_SystemExit systemExit = new DefaultSystemExitor();
 	private Map<I_Tests4J_RemoteInfo, I_Tests4J_Params> remoteParams = 
 			new HashMap<I_Tests4J_RemoteInfo, I_Tests4J_Params>();
 			
@@ -90,9 +86,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		coveragePluginClass = p.getCoveragePluginClass();
 		coveragePluginConfiguratorClass = p.getCoveragePluginConfiguratorClass();
 		trialThreads = p.getThreadCount();
-		exitAfterLastNotification = p.isExitAfterLastNotification();
 		loggingClasses.addAll(p.getLoggingClasses());
-		exitor = p.getExitor();
+		systemExit = p.getSystemExit();
 		Collection<I_Tests4J_RemoteInfo> remotes = p.getRemoteInfo();
 		for (I_Tests4J_RemoteInfo remote: remotes){
 			remoteParams.put(remote, p.getRemoteParams(remote));
@@ -275,14 +270,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		tests.remove(p);
 	}
 
-	public boolean isExitAfterLastNotification() {
-		return exitAfterLastNotification;
-	}
-
-	public void setExitAfterLastNotification(boolean exitAfterLastNotification) {
-		this.exitAfterLastNotification = exitAfterLastNotification;
-	}
-
 	public List<Class<?>> getLoggingClasses() {
 		return new ArrayList<Class<?>>(loggingClasses);
 	}
@@ -398,12 +385,12 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		this.coveragePluginConfiguratorClass = coveragePluginConfiguratorClass;
 	}
 
-	public I_SystemExit getExitor() {
-		return exitor;
+	public I_SystemExit getSystemExit() {
+		return systemExit;
 	}
 
-	public void setExitor(I_SystemExit exitor) {
-		this.exitor = exitor;
+	public void setSystemExit(I_SystemExit exitor) {
+		this.systemExit = exitor;
 	}
 
 	public Class<? extends I_MetaTrial> getMetaTrialClass() {

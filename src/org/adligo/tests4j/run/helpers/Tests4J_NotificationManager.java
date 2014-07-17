@@ -29,6 +29,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
+import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
@@ -438,7 +439,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			}
 			if (trialsRan == trialsWhichCanRun + trialClazzFails + ignoredTrials) {
 				if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-					if (memory.isExitAfterLastNotification()) {
+					
+					if (memory.isDefaultSystemExitor()) {
 						reporter.log("debugging Tests4J_NotificationManager threads");
 					}
 				}
@@ -552,7 +554,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("onAllTrialsDone(I_TrialRunResult p)");
 		}
-		if (memory.isExitAfterLastNotification()) {
+		if (memory.isDefaultSystemExitor()) {
 			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 				reporter.log("Exiting JVM after this last notification.");
 			}

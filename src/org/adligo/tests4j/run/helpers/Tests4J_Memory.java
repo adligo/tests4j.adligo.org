@@ -19,8 +19,10 @@ import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_SystemExit;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
@@ -94,7 +96,8 @@ public class Tests4J_Memory {
 	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private boolean hasRemoteDelegation = false;
 	private EvaluatorLookup evaluationLookup;
-	private boolean exitAfterLastNotification = false;
+	private I_SystemExit systemExit;
+	
 	/**
 	 * 
 	 * @param params
@@ -112,7 +115,7 @@ public class Tests4J_Memory {
 			trialClasses.add(metaTrialClass);
 			metaTrial.set(true);
 		}
-		exitAfterLastNotification = params.isExitAfterLastNotification();
+		systemExit = params.getSystemExit();
 		reporter = params.getReporter();
 		
 		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
@@ -128,9 +131,8 @@ public class Tests4J_Memory {
 		}
 		threads = threads + remoteInfo.size();
 		threadManager = new Tests4J_Manager(
-				params.isExitAfterLastNotification(), 
 				threads,
-				params.getExitor(),
+				params.getSystemExit(),
 				reporter);
 		
 		Set<String> pTests = params.getTests();
@@ -409,7 +411,17 @@ public class Tests4J_Memory {
 		return evaluationLookup;
 	}
 
-	public boolean isExitAfterLastNotification() {
-		return exitAfterLastNotification;
+	public I_SystemExit getSystemExit() {
+		return systemExit;
+	}
+
+	/**
+	 * this helps debug only the main tests4j trial run, when it isn't behaving.
+	 * tests4j tests it self, which can get a little confusing/annoying if
+	 * you have a breakpoint near a tests4j life cycle point.
+	 * @return
+	 */
+	public boolean isDefaultSystemExitor() {
+		return systemExit instanceof DefaultSystemExitor;
 	}
 }

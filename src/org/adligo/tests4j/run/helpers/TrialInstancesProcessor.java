@@ -49,7 +49,7 @@ public class TrialInstancesProcessor implements Runnable,
 	
 	private ExecutorService testRunService;
 	private Future<?> testResultFuture;
-	private ArrayBlockingQueue<TestResult> blocking = new ArrayBlockingQueue<TestResult>(1);
+	private ArrayBlockingQueue<TestResult> blocking = new ArrayBlockingQueue<TestResult>(100);
 	private TestRunable testsRunner;
 	private boolean finished = false;
 	private ApiTrialResultMutant apiTrialResultMutant;

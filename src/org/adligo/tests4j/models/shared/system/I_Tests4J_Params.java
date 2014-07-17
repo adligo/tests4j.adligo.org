@@ -79,13 +79,6 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	 * @return
 	 */
 	public int getTrialThreadCount();
-	/**
-	 * This determines if System.exit(0);
-	 *  should be called after the last notification.
-	 *  
-	 * @return
-	 */
-	public boolean isExitAfterLastNotification();
 	
 	/**
 	 * the list of classes to report for 
@@ -95,11 +88,11 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	public List<Class<?>> getLoggingClasses();
 	
 	/**
-	 * return the delegate for System.exit(int status)
-	 * mostly for stubbing
-	 * @return
+	 * @return the delegate for System.exit(int status)
+	 *  or if you want to keep the jvm from exiting during
+	 *  your call to Tests4j
 	 */
-	public I_SystemExit getExitor();
+	public I_SystemExit getSystemExit();
 	
 	/**
 	 * 

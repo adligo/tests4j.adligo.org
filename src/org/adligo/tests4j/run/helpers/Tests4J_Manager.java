@@ -39,10 +39,8 @@ public class Tests4J_Manager {
 	private I_SystemExit exitor;
 	private I_Tests4J_Reporter reporter;
 	
-	private boolean jvmExit = false;
 	
-	public Tests4J_Manager(boolean pJvmExit, int trialThreads, I_SystemExit pExitor, I_Tests4J_Reporter pReporter) {
-		jvmExit = pJvmExit;
+	public Tests4J_Manager(int trialThreads, I_SystemExit pExitor, I_Tests4J_Reporter pReporter) {
 		exitor = pExitor;
 		reporter = pReporter;
 		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
@@ -52,6 +50,9 @@ public class Tests4J_Manager {
 	
 	
 	public void shutdown() {
+		if (reporter.isLogEnabled(Tests4J_Manager.class)) {
+			reporter.log("Tests4J_Manager.shutdown on " + ThreadLogMessageBuilder.getThreadWithGroupNameForLog());
+		}
 		for (Tests4J_RemoteRunner remote: remoteRunners) {
 			remote.shutdown();
 		}
@@ -90,10 +91,7 @@ public class Tests4J_Manager {
 			}
 		}
 		trialRunService.shutdownNow();
-		
-		if (jvmExit) {
-			exitor.doSystemExit(0);	
-		}
+		exitor.doSystemExit(0);	
 	}
 
 
