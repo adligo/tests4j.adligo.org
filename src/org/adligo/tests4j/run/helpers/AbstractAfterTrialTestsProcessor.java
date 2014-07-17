@@ -36,8 +36,8 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 
 	private I_CoverageRecorder trialThreadLocalCoverageRecorder;
 	private I_AbstractTrial trial;
-	private TestResultMutant afterTrialTestsResultMutant;
-	private List<Integer> afterTrialTestsAssertionHashes; 
+	private TestResultMutant delegatedTestResultMutant;
+	private List<Integer> delegatedTestAssertionHashes; 
 	
 	public AbstractAfterTrialTestsProcessor(Tests4J_Memory memory) {
 		bindings = new TrialBindings(Platform.JSE, memory.getEvaluationLookup(), memory.getReporter());
@@ -45,8 +45,8 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 	}
 
 	public void reset(TrialDescription pDesc, I_CoverageRecorder pRec, I_AbstractTrial pTrial) {
-		afterTrialTestsResultMutant = null;
-		afterTrialTestsAssertionHashes = new ArrayList<Integer>();
+		delegatedTestResultMutant = null;
+		delegatedTestAssertionHashes = new ArrayList<Integer>();
 		
 		trialDescription = pDesc;
 		trialThreadLocalCoverageRecorder = pRec;
@@ -54,18 +54,21 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 		trial.setBindings(bindings);
 	}
 	
+	public void startDelegatedTest() {
+		delegatedTestResultMutant = new TestResultMutant();
+	}
+	
 	@Override
 	public void assertCompleted(I_AssertCommand cmd) {
-		afterTrialTestsAssertionHashes.add(cmd.hashCode());
+		delegatedTestAssertionHashes.add(cmd.hashCode());
 	}
 
 	@Override
 	public void assertFailed(I_TestFailure failure) {
-		afterTrialTestsResultMutant = new TestResultMutant();
-		afterTrialTestsResultMutant.setFailure(failure);
-		afterTrialTestsResultMutant.setName(AFTER_TRIAL_TESTS);
-		flushAssertionHashes(afterTrialTestsResultMutant,afterTrialTestsAssertionHashes);
-		throw new AfterTrialTestsAssertionFailure();
+		delegatedTestResultMutant.setFailure(failure);
+		delegatedTestResultMutant.setName(AFTER_TRIAL_TESTS);
+		flushAssertionHashes(delegatedTestResultMutant,delegatedTestAssertionHashes);
+		throw new DelegateTestAssertionFailure();
 	}
 	
 	private void flushAssertionHashes(TestResultMutant trm, Collection<Integer> hashes) {
@@ -76,7 +79,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 	}
 
 	protected void flushAssertionHashes(TestResultMutant trm) {
-		Iterator<Integer> it = afterTrialTestsAssertionHashes.iterator();
+		Iterator<Integer> it = delegatedTestAssertionHashes.iterator();
 		while (it.hasNext()) {
 			Integer next = it.next();
 			trm.incrementAssertionCount(next);
@@ -97,20 +100,15 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 	}
 
 	protected TestResultMutant getAfterTrialTestsResultMutant() {
-		return afterTrialTestsResultMutant;
+		return delegatedTestResultMutant;
 	}
 
-
-	protected void setAfterTrialTestsResultMutant(
-			TestResultMutant afterTrialTestsResultMutant) {
-		this.afterTrialTestsResultMutant = afterTrialTestsResultMutant;
-	}
 	
-	protected void onAfterTrialTestsMethodException(Throwable x, String method) {
-		afterTrialTestsResultMutant = new TestResultMutant();
-		afterTrialTestsResultMutant.setPassed(false);
-		flushAssertionHashes(afterTrialTestsResultMutant, afterTrialTestsAssertionHashes);
-		afterTrialTestsResultMutant.setName(method);
+	protected void onDelegatedTestMethodException(Throwable x, String method) {
+		delegatedTestResultMutant = new TestResultMutant();
+		delegatedTestResultMutant.setPassed(false);
+		flushAssertionHashes(delegatedTestResultMutant, delegatedTestAssertionHashes);
+		delegatedTestResultMutant.setName(method);
 		TestFailureMutant tfm = new TestFailureMutant();
 		tfm.setException(x);
 		String message = x.getMessage();
@@ -118,7 +116,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 			message = "Unknown Error message.";
 		}
 		tfm.setMessage(message);
-		afterTrialTestsResultMutant.setFailure(tfm);
+		delegatedTestResultMutant.setFailure(tfm);
 	}
 	
 }

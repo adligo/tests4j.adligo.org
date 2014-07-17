@@ -104,8 +104,18 @@ public class TrialInstancesProcessor implements Runnable,
 			trialDescription = null;
 			try {
 				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
+					//start recording the trial coverage,
+					//code cover the creation of the class, in the trialDescrption
+					I_CoveragePlugin plugin = memory.getPlugin();
+					if (plugin != null) {
+						if (plugin.canThreadGroupLocalRecord()) {
+							//@diagram sync on 7/5/2014
+							// for Overview.seq 
+							trialThreadLocalCoverageRecorder = plugin.createRecorder();
+							trialThreadLocalCoverageRecorder.startRecording();
+						}
+					}
 					trialDescription = trialDescriptionProcessor.addTrialDescription(trialClazz);
-					trialThreadLocalCoverageRecorder = trialDescriptionProcessor.getTrialThreadLocalCoverageRecorder();
 					notifier.checkDoneDescribingTrials();
 				}
 				
@@ -127,6 +137,10 @@ public class TrialInstancesProcessor implements Runnable,
 							//once in all of the trial threads, having a trial running
 							//in two threads at the same time would be confusing to the users
 							synchronized (trialClazz) {
+								if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+									reporter.log("Thread " + Thread.currentThread().getName() +
+											" is running trial;\n" +trialDescription.getTrialName());
+								}
 								runTrial();
 							}	
 						} catch (RejectedExecutionException x) {
@@ -312,7 +326,9 @@ public class TrialInstancesProcessor implements Runnable,
 		} else {
 			notifier.startingTest(trialName, method.getName());
 			
-			
+			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+				reporter.log("starting test; " +trialName + "."+  method.getName());
+			}
 			
 			trial.beforeTests();
 			testsRunner.setTestMethod(method);
@@ -364,6 +380,8 @@ public class TrialInstancesProcessor implements Runnable,
 				if (trm != null) {
 					result.addResult(trm);
 				}
+				TestResultMutant minCoverageResult = afterSouceFileTrialTestsProcessor.testMinCoverage(result);
+				result.addResult(minCoverageResult);
 				return result;
 			case ApiTrial:
 				afterApiTrialTestsProcessor.reset(trialDescription, 

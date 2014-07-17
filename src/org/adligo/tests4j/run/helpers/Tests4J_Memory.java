@@ -130,7 +130,8 @@ public class Tests4J_Memory {
 		threadManager = new Tests4J_Manager(
 				params.isExitAfterLastNotification(), 
 				threads,
-				params.getExitor());
+				params.getExitor(),
+				reporter);
 		
 		Set<String> pTests = params.getTests();
 		if (pTests.size() >= 1) {

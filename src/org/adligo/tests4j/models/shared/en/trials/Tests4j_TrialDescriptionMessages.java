@@ -8,6 +8,8 @@ import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4j_BeforeTrialErrors;
 
 public class Tests4j_TrialDescriptionMessages 
 	extends Tests4J_AnnotationErrors implements I_Tests4J_TrialDescriptionMessages {
+	public static final String MIN_COVERAGE_MUST_BE_BETWEEN_0_0_AND_100_0_PERCENT = "minCoverage must be between 0.0 and 100.0 percent.";
+
 	public static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = 
 			"Classes which implement I_AbstractTrial must have a zero argument constructor.";
 	
@@ -142,5 +144,9 @@ public class Tests4j_TrialDescriptionMessages
 	
 	public String getMissingTypeAnnotationPost() {
 		return IS_MISSING_TRIAL_TYPE_ANNOTATION;
+	}
+	
+	public String getMinCoverageMustBeBetweenZeroAndOneHundred() {
+		return MIN_COVERAGE_MUST_BE_BETWEEN_0_0_AND_100_0_PERCENT;
 	}
 }

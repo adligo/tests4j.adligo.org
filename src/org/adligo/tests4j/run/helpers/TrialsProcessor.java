@@ -73,18 +73,35 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		for (Class<?> clazz: reportingClasses) {
 			reporter.setLogOn(clazz);
 		}
-		
+		List<Class<? extends I_AbstractTrial>> allTrialClasses = new ArrayList<Class<? extends I_AbstractTrial>>();
+		allTrialClasses.addAll(pParams.getTrials());
+		if (allTrialClasses.size() == 0) {
+			reporter.log("Nothing to do.");
+			return;
+		}
 		
 		I_CoveragePlugin plugin = params.getCoveragePlugin();
 		
 		if (plugin != null) {
 			plugin.setReporter(reporter);
-			List<Class<? extends I_AbstractTrial>> allTrialClasses = new ArrayList<Class<? extends I_AbstractTrial>>();
-			allTrialClasses.addAll(pParams.getTrials());
+			
+			/*
 			Class<? extends I_MetaTrial> metaTrialClass = pParams.getMetaTrialClass();
 			if (metaTrialClass != null) {
 				allTrialClasses.add(metaTrialClass);
 			}
+			*/
+			if (reporter.isLogEnabled(TrialsProcessor.class)) {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < allTrialClasses.size(); i++) {
+					sb.append(allTrialClasses.get(i));
+					sb.append("\n");
+				}
+				reporter.log("using the follwing " + allTrialClasses.size() + " trials;\n" +
+						sb.toString());
+			}
+			
+			
 			List<Class< ? extends I_Trial>> instrumentedNonMetaTrials = new ArrayList<Class< ? extends I_Trial>>();
 			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(allTrialClasses);
 			for (Class<? extends I_AbstractTrial> trialClass: instrumentedTrials) {
@@ -94,6 +111,15 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 				} else {
 					instrumentedNonMetaTrials.add((Class<? extends I_Trial>) trialClass);
 				}
+			}
+			if (reporter.isLogEnabled(TrialsProcessor.class)) {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < instrumentedTrials.size(); i++) {
+					sb.append(instrumentedTrials.get(i));
+					sb.append("\n");
+				}
+				reporter.log("setting the following instrumented " + instrumentedTrials.size() + "trials;\n" +
+						sb.toString());
 			}
 			params.setTrials(instrumentedNonMetaTrials);
 			
@@ -113,8 +139,10 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		}
 		SecurityManager securityManager = System.getSecurityManager();
 		if ( !(securityManager instanceof Tests4J_SecurityManager)) {
-			System.setSecurityManager(new Tests4J_SecurityManager(reporter));
+			//TODO add back in the security manager
+			//System.setSecurityManager(new Tests4J_SecurityManager(reporter));
 		}
+		
 		memory = new Tests4J_Memory(params,OUT, pListener, plugin);
 		
 		
@@ -123,10 +151,10 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		
 		
 		notifier = new Tests4J_NotificationManager(memory);
-		
 		if (plugin != null) {
 			startRecordingAllTrialsRun(plugin);
 		}
+		
 		
 		controls = new TrialProcessorControls(reporter, threadManager, notifier);
 		

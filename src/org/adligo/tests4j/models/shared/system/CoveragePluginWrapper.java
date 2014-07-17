@@ -17,8 +17,8 @@ public class CoveragePluginWrapper implements I_CoveragePlugin {
 		return delegate.instrumentClasses(trials);
 	}
 
-	public boolean canThreadLocalRecord() {
-		return delegate.canThreadLocalRecord();
+	public boolean canThreadGroupLocalRecord() {
+		return delegate.canThreadGroupLocalRecord();
 	}
 
 	public I_CoverageRecorder createRecorder() {

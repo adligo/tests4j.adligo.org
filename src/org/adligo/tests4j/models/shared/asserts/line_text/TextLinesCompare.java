@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+
 /**
  * A NON Threadsafe model class to compare large multi line strings
  * (aka files as strings).  A fairly simple algorithm which 
@@ -28,7 +31,10 @@ public class TextLinesCompare  {
 	
 	
 	public I_TextLinesCompareResult compare(String example, String actual, boolean normalizeLineFeeds) {
-		
+		if (actual == null) {
+			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			return new TextLinesCompareResult(messages.getTheActualValueIsNull());
+		}
 		exampleLT = new TextLines(example, normalizeLineFeeds);
 		actualLT = new TextLines(actual, normalizeLineFeeds);
 		

@@ -32,7 +32,7 @@ public interface I_CoveragePlugin {
 	 *    true if this coverage plugin 
 	 *    has the ability to record code coverage local to the thread.
 	 */
-	public boolean canThreadLocalRecord();
+	public boolean canThreadGroupLocalRecord();
 	
 	/**
 	 * Create a new recorder that records either 

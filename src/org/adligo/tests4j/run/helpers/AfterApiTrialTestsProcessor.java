@@ -35,7 +35,8 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 		TrialDescription trialDesc = super.getTrialDescription();
 		
 		try {
-			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_ApiTrialResult.class);
+			clazzMethod = trialClass.getMethod(AFTER_TRIAL_TESTS, I_ApiTrialResult.class);
+			//clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_ApiTrialResult.class);
 		} catch (NoSuchMethodException e) {
 			//do nothing
 		} catch (SecurityException e) {
@@ -58,27 +59,28 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 				trialResultMutant.setPackageCoverage(cover);
 			}
 		}
-		trialResultMutant.setRanAfterTrialTests(true);
+		
 		
 		boolean passed = false;
 		try {
 			if (trial instanceof I_ApiTrial) {
+				super.startDelegatedTest();
+				trialResultMutant.setRanAfterTrialTests(true);
 				ApiTrialResult result = new ApiTrialResult(trialResultMutant);
 				((I_ApiTrial) trial).afterTrialTests(result);
 			}
 			passed = true;
-		} catch (AfterTrialTestsAssertionFailure x) {
+		} catch (DelegateTestAssertionFailure x) {
 			//the test failed, in one of it's asserts
 		} catch (Throwable x) {
-			super.onAfterTrialTestsMethodException(x, AFTER_API_TRIAL_TESTS_METHOD);
+			super.onDelegatedTestMethodException(x, AFTER_API_TRIAL_TESTS_METHOD);
 		}
 		TestResultMutant afterTrialTestsResultMutant = super.getAfterTrialTestsResultMutant();
-		if (afterTrialTestsResultMutant == null) {
-			afterTrialTestsResultMutant = new TestResultMutant();
-			afterTrialTestsResultMutant.setPassed(passed);
+		if (passed) {
 			flushAssertionHashes(afterTrialTestsResultMutant);
-			afterTrialTestsResultMutant.setName(AFTER_API_TRIAL_TESTS_METHOD);
 		}
+		afterTrialTestsResultMutant.setPassed(passed);
+		afterTrialTestsResultMutant.setName(AFTER_API_TRIAL_TESTS_METHOD);
 		return afterTrialTestsResultMutant;
 	}
 }

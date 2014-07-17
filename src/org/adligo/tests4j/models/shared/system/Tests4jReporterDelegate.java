@@ -5,7 +5,7 @@ public class Tests4jReporterDelegate extends TrialRunListenerDelegate implements
 	private I_Tests4J_Reporter delegate;
 	
 	public Tests4jReporterDelegate(I_Tests4J_Reporter p) {
-		super(p);
+		super(p,p);
 		delegate = p;
 	}
 

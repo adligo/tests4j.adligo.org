@@ -133,7 +133,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 	 * starts listening to the connection
 	 */
 	void start() {
-		Tests4J_ThreadFactory factory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SERVER_THREAD_NAME);
+		Tests4J_ThreadFactory factory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SERVER_THREAD_NAME, reporter);
 		listenerService = Executors.newFixedThreadPool(1, factory);
 		listenerService.execute(new Runnable() {
 			

@@ -22,4 +22,5 @@ public interface I_Tests4J_TrialDescriptionMessages extends I_Tests4J_Annotation
 	public String getNoTests();
 	public String getMissingTypeAnnotationPre();
 	public String getMissingTypeAnnotationPost();
+	public String getMinCoverageMustBeBetweenZeroAndOneHundred();
 }

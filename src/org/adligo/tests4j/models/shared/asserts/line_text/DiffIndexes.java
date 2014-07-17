@@ -6,7 +6,7 @@ package org.adligo.tests4j.models.shared.asserts.line_text;
  * @author scott
  *
  */
-public class Diffndexes implements I_DiffIndexes {
+public class DiffIndexes implements I_DiffIndexes {
 	public static final String START_END_DIFF_REQUIRES_THE_START_TO_BE_BEFORE_THE_END = "StartEndDiff requires the start to be before the end.";
 	public static final String START_END_DIFF_REQUIRES_POSITIVE_INDEXES = "StartEndDiff requires positive indexes.";
 	/**
@@ -18,7 +18,7 @@ public class Diffndexes implements I_DiffIndexes {
 	 */
 	private int end;
 
-	public Diffndexes(final int pStart, final int pEnd) {
+	public DiffIndexes(final int pStart, final int pEnd) {
 		if (pStart < 0) {
 			throw new IllegalArgumentException(START_END_DIFF_REQUIRES_POSITIVE_INDEXES);
 		}

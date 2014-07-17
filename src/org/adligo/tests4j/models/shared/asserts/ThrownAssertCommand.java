@@ -58,8 +58,14 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		if ( !throwableClazz.equals(caught.getClass())) {
 			return false;
 		}
-		if (expected_message.equals(caught.getMessage())) {
-			return true;
+		if (expected_message == null) {
+			if (caught.getMessage() == null) {
+				return true;
+			}
+		} else {
+			if (expected_message.equals(caught.getMessage())) {
+				return true;
+			}
 		}
 		return false;
 	}

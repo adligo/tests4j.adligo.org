@@ -33,7 +33,8 @@ public class AfterUseCaseTrialTestsProcessor extends AbstractAfterTrialTestsProc
 		Class<? extends I_AbstractTrial> trialClass = trial.getClass();
 		
 		try {
-			clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_UseCaseTrialResult.class);
+			clazzMethod = trialClass.getMethod(AFTER_TRIAL_TESTS, I_UseCaseTrialResult.class);
+			//clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_UseCaseTrialResult.class);
 		} catch (NoSuchMethodException e) {
 			//do nothing
 		} catch (SecurityException e) {
@@ -47,26 +48,27 @@ public class AfterUseCaseTrialTestsProcessor extends AbstractAfterTrialTestsProc
 			return null;
 		}
 		
-		trialResultMutant.setRanAfterTrialTests(true);
+		
 		
 		boolean passed = false;
 		try {
 			if (trial instanceof I_UseCaseTrial) {
+				super.startDelegatedTest();
+				trialResultMutant.setRanAfterTrialTests(true);
 				((I_UseCaseTrial) trial).afterTrialTests(new UseCaseTrialResult(trialResultMutant));
 			}
 			passed = true;
-		} catch (AfterTrialTestsAssertionFailure x) {
+		} catch (DelegateTestAssertionFailure x) {
 			//the test failed, in one of it's asserts
 		} catch (Throwable x) {
-			super.onAfterTrialTestsMethodException(x, AFTER_USE_CASE_TRIAL_TESTS_METHOD);
+			super.onDelegatedTestMethodException(x, AFTER_USE_CASE_TRIAL_TESTS_METHOD);
 		}
 		TestResultMutant afterTrialTestsResultMutant = super.getAfterTrialTestsResultMutant();
-		if (afterTrialTestsResultMutant == null) {
-			afterTrialTestsResultMutant = new TestResultMutant();
-			afterTrialTestsResultMutant.setPassed(passed);
+		if (passed) {
 			flushAssertionHashes(afterTrialTestsResultMutant);
-			afterTrialTestsResultMutant.setName(AFTER_USE_CASE_TRIAL_TESTS_METHOD);
 		}
+		afterTrialTestsResultMutant.setPassed(passed);
+		afterTrialTestsResultMutant.setName(AFTER_USE_CASE_TRIAL_TESTS_METHOD);
 		return afterTrialTestsResultMutant;
 	}
 }

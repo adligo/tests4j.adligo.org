@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,7 +39,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public static final String LOGS_XML_END = "</logs>";
 	public static final String XML_END = "</Tests4J_Params>";
 	public static final String XML_START = "<Tests4J_Params ";
-
+	
 	/**
 	 * @see I_Tests4J_Params#getTrials()
 	 */
@@ -86,6 +88,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		tests.addAll(p.getTests());
 		reporter = p.getReporter();
 		coveragePluginClass = p.getCoveragePluginClass();
+		coveragePluginConfiguratorClass = p.getCoveragePluginConfiguratorClass();
 		trialThreads = p.getThreadCount();
 		exitAfterLastNotification = p.isExitAfterLastNotification();
 		loggingClasses.addAll(p.getLoggingClasses());
@@ -209,12 +212,14 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		return coveragePluginClass;
 	}
 	
-	public I_CoveragePlugin getCoveragePlugin() {
+	public synchronized I_CoveragePlugin getCoveragePlugin() {
 		if (coveragePluginClass == null) {
 			return null;
 		}
 		try {
-			I_CoveragePlugin plugin = coveragePluginClass.newInstance();
+			Constructor<? extends I_CoveragePlugin> coverConstructor = 
+						coveragePluginClass.getConstructor(I_Tests4J_Reporter.class);
+			I_CoveragePlugin plugin = coverConstructor.newInstance(reporter);
 			
 			if (coveragePluginConfiguratorClass != null) {
 				I_CoveragePluginConfigurator configurator = coveragePluginConfiguratorClass.newInstance();
@@ -223,7 +228,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			return plugin;
 		} catch (InstantiationException |
 				IllegalAccessException |
-				IllegalArgumentException e) {
+				IllegalArgumentException | InvocationTargetException | 
+				NoSuchMethodException | SecurityException e) {
 			throw new IllegalArgumentException(e);
 		}
 	}

@@ -44,10 +44,6 @@ public class UniformThrownAssertCommand<T,D> extends AbstractAssertCommand
 			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
 		}
 		String exceptionMessage = data.getMessage();
-		if (StringMethods.isEmpty(exceptionMessage)) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
-			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresMessage());
-		}
 		if (pEvaluator == null) {
 			throw new IllegalArgumentException(UNIFORM_THROWN_ASSERT_COMMAND_REQUIRES_A_EVALUATOR);
 		}

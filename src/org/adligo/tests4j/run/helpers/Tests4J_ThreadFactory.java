@@ -6,6 +6,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+
+/**
+ * In order to correctly record code coverage the trial threads each have
+ * their own numbered thread group and all child threads must 
+ * use the numbered trial thread group.
+ * Ie
+ * thread tests4j-trial-1 with thread group tests4j-trial-1
+ *         thread tests4j-test-1 with thread group tests4j-trial-1
+ *         		thread custom-thread-1 with thread group tests4j-trial-1
+ *                     
+ * @author scott
+ *
+ */
 public final class Tests4J_ThreadFactory implements ThreadFactory {
 	public static final String BASE_THREAD_NAME = "tests4j-";
 	/**
@@ -25,26 +39,21 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	
 	private List<Thread> threads = new CopyOnWriteArrayList<Thread>();
 	private AtomicInteger id = new AtomicInteger();
-	private String threadGroupName = "";
-	private ThreadGroup group;
+	private String name;
+	private I_Tests4J_Reporter reporter;
+	private final ThreadGroup instanceCreationThreadGroup = Thread.currentThread().getThreadGroup();
 	
-	public Tests4J_ThreadFactory(String pThreadGroupName, ThreadGroup parent) {
-		if (pThreadGroupName.contains(TRIAL_THREAD_NAME) || 
-			pThreadGroupName.contains(TEST_THREAD_NAME) ||
-			pThreadGroupName.contains(SERVER_THREAD_NAME)) {
-			threadGroupName = pThreadGroupName;
+	public Tests4J_ThreadFactory(String pName, I_Tests4J_Reporter pReporter) {
+		reporter = pReporter;
+		if (pName.contains(TRIAL_THREAD_NAME) || 
+				pName.contains(TEST_THREAD_NAME) ||
+				pName.contains(SERVER_THREAD_NAME)) {
+			name = pName;
 		} else {
 			throw new IllegalArgumentException("Tests4J threads must start"
 					+ "with one of the pre defined name prefixes in " + 
 					Tests4J_ThreadFactory.class.getName());
 		}
-		createNewThreadGroup(parent);
-	}
-
-	
-	
-	public Tests4J_ThreadFactory(String pName) {
-		this(pName,Thread.currentThread().getThreadGroup());
 	}
 	
 	@Override
@@ -55,17 +64,7 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 		return t;
 	}
 
-	/**
-	 * do not change this method name,
-	 * it is checked for in the Tests4J_SecurityManager
-	 * @param r
-	 * @param newId
-	 * @return
-	 */
-	private void createNewThreadGroup(ThreadGroup parent) {
-		group = new ThreadGroup(parent, threadGroupName);
-	}
-	
+
 	/**
 	 * do not change this method name,
 	 * it is checked for in the Tests4J_SecurityManager
@@ -74,7 +73,25 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	 * @return
 	 */
 	private Thread createNewThread(Runnable r, int newId) {
-		Thread t = new Thread(group, r, threadGroupName + "-" + newId);
+		ThreadGroup parentThreadGroup = Thread.currentThread().getThreadGroup();
+		String threadAndGroupName = name + "-" + newId;
+		Thread t = null;
+		if (name.indexOf(TRIAL_THREAD_NAME) != -1) {
+			ThreadGroup group = new ThreadGroup(parentThreadGroup, threadAndGroupName);
+			t = new Thread(group, r, threadAndGroupName);
+		} else {
+			t = new Thread(parentThreadGroup, r, threadAndGroupName);
+		}
+		if (reporter.isLogEnabled(Tests4J_ThreadFactory.class)) {
+			StringBuilder sb = new StringBuilder();
+			ThreadGroup childGroup = t.getThreadGroup();
+			while (!instanceCreationThreadGroup.equals(childGroup)) {
+				sb.append("~group=");
+				sb.append(childGroup);
+				childGroup = childGroup.getParent();
+			}
+			reporter.log("Tests4J_ThreadFactory creating new thread " + threadAndGroupName + sb.toString());
+		}
 		return t;
 	}
 
@@ -82,7 +99,4 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 		return Collections.unmodifiableList(threads);
 	}
 
-	public ThreadGroup getGroup() {
-		return group;
-	}
 }

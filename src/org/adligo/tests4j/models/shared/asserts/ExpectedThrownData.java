@@ -33,11 +33,6 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 		instance = t;
 		throwableClass = t.getClass();
 		message = t.getMessage();
-		if (message == null) {
-			I_Tests4J_AssertionInputMessages messages = 
-					Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
-			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresMessage());
-		}
 		
 	}
 	

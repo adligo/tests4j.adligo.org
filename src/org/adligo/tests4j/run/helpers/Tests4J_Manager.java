@@ -14,6 +14,7 @@ import java.util.concurrent.Future;
 
 import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
 import org.adligo.tests4j.models.shared.system.I_SystemExit;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.run.remote.RemoteRunnerStateEnum;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 
@@ -36,14 +37,16 @@ public class Tests4J_Manager {
 			
 	private Map<ExecutorService, Future<?>> testRuns = new ConcurrentHashMap<ExecutorService, Future<?>>();
 	private I_SystemExit exitor;
+	private I_Tests4J_Reporter reporter;
 	
 	private boolean jvmExit = false;
 	
-	public Tests4J_Manager(boolean pJvmExit, int trialThreads, I_SystemExit pExitor) {
+	public Tests4J_Manager(boolean pJvmExit, int trialThreads, I_SystemExit pExitor, I_Tests4J_Reporter pReporter) {
 		jvmExit = pJvmExit;
 		exitor = pExitor;
-		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME);
-		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME, trialFactory.getGroup());
+		reporter = pReporter;
+		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
+		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,reporter);
 		trialRunService = Executors.newFixedThreadPool(trialThreads, trialFactory);
 	}
 	

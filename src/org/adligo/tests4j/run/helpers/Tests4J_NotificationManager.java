@@ -80,7 +80,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		reporter = new Tests4jReporterDelegate(pMem.getReporter());
 		I_TrialRunListener pListener = pMem.getListener();
 		if (pListener != null) {
-			listener = new TrialRunListenerDelegate(pListener);
+			listener = new TrialRunListenerDelegate(pListener, reporter);
 		}
 		
 		long now = System.currentTimeMillis();

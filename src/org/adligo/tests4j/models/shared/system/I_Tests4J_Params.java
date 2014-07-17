@@ -62,6 +62,8 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	 */
 	public I_CoveragePlugin getCoveragePlugin();
 	public Class<? extends I_CoveragePlugin> getCoveragePluginClass();
+	public Class<? extends I_CoveragePluginConfigurator> getCoveragePluginConfiguratorClass();
+	
 	/**
 	 * The number of threads which to process 
 	 * Trials concurrently, the thread pool size

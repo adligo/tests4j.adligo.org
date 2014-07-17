@@ -16,6 +16,12 @@ public class TextLinesCompareResult implements I_TextLinesCompareResult {
 	private I_TextLines actual;
 	private boolean matched;
 	private List<I_LineDiff> lineDiffs = new ArrayList<I_LineDiff>();
+	private String errorMessage;
+	
+	public TextLinesCompareResult(String pErrorMessage) {
+		matched = false;
+		errorMessage = pErrorMessage;
+	}
 	
 	public TextLinesCompareResult(I_TextLines pExamle, I_TextLines pActualString,boolean pMatched, List<I_LineDiff> list) {
 		example = pExamle;
@@ -60,6 +66,17 @@ public class TextLinesCompareResult implements I_TextLinesCompareResult {
 	@Override
 	public I_TextLines getActualLines() {
 		return actual;
+	}
+	
+	public boolean hasErrorMessage() {
+		if (errorMessage == null) {
+			return false;
+		}
+		return true;
+	}
+	
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 	
 }

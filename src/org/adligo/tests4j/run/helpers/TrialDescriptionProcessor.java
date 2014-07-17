@@ -16,7 +16,6 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
 public class TrialDescriptionProcessor {
 	private Tests4J_Memory memory;
-	private I_CoverageRecorder trialThreadLocalCoverageRecorder;
 	
 	public TrialDescriptionProcessor(Tests4J_Memory pMemory) {
 		memory = pMemory;
@@ -28,7 +27,6 @@ public class TrialDescriptionProcessor {
 	 * @param trialClazz
 	 */
 	public TrialDescription addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
-		trialThreadLocalCoverageRecorder = null;
 		// synchronized on the trialClass instance to make sure
 		// that only one thread is doing this for a specific trial at a time
 		// This allows reuse of TrialDescription instances
@@ -37,7 +35,6 @@ public class TrialDescriptionProcessor {
 			if (memory.isExitAfterLastNotification()) {
 				memory.getReporter().log("debugging TrialDescriptionProcessor wheres the recorder");
 			}
-			trialThreadLocalCoverageRecorder = startRecordingTrial(trialClazz);
 			
 			//try to reuse the description if another thread already described it
 			TrialDescription desc = memory.getTrialDescription(trialClazz.getName());
@@ -88,27 +85,5 @@ public class TrialDescriptionProcessor {
 			}
 			return desc;
 		}
-	}
-	
-	/**
-	 * @diagram sync on 7/5/2014
-	 *    for Overview.seq
-	 *    
-	 * @param trialClazz
-	 */
-	private I_CoverageRecorder startRecordingTrial(
-			Class<? extends I_AbstractTrial> trialClazz) {
-		I_CoveragePlugin plugin = memory.getPlugin();
-		I_CoverageRecorder toRet = null;
-		if (plugin != null) {
-			//@diagram sync on 7/5/2014
-			// for Overview.seq 
-			toRet = plugin.createRecorder();
-			toRet.startRecording();
-		}
-		return toRet;
-	}
-	public I_CoverageRecorder getTrialThreadLocalCoverageRecorder() {
-		return trialThreadLocalCoverageRecorder;
 	}
 }

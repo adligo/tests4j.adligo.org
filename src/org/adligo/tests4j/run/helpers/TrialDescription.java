@@ -55,6 +55,7 @@ public class TrialDescription implements I_TrialDescription {
 	private SourceFileScope sourceFileScope;
 	private UseCaseScope useCaseScope;
 	private PackageScope packageScope;
+	private double minCoverage = 100.0;
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
 			I_Tests4J_Reporter pLog) {
@@ -124,6 +125,15 @@ public class TrialDescription implements I_TrialDescription {
 						if (clazz == null) {
 							resultFailureMessage = 
 									messages.getSourceFileScopeEmptyClass();
+							resultException	 =
+									new IllegalArgumentException(trialName + 
+											messages.getWasAnnotatedIncorrectly());
+							return false;
+						}
+						minCoverage = sourceFileScope.minCoverage();
+						if (minCoverage > 100.0 || minCoverage < 0.0) {
+							resultFailureMessage = 
+									messages.getMinCoverageMustBeBetweenZeroAndOneHundred();
 							resultException	 =
 									new IllegalArgumentException(trialName + 
 											messages.getWasAnnotatedIncorrectly());
@@ -449,5 +459,9 @@ public class TrialDescription implements I_TrialDescription {
 	@Override
 	public String toString() {
 		return "TrialDescription [trialClass=" + trialClass + "]";
+	}
+
+	public double getMinCoverage() {
+		return minCoverage;
 	}
 }
