@@ -335,9 +335,9 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
 			reporter.log("startingTrial " + name);
 		}
-		reporter.onStartingTrail(name);
+		reporter.onStartingTrial(name);
 		if (listener != null) {
-			listener.onStartingTrail(name);
+			listener.onStartingTrial(name);
 		}
 	}
 	

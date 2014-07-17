@@ -9,6 +9,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
  * Tests4J framework's run method so that results can be aggregated
  * (for something other than the console and xml reporters)
  * or displayed (eclipse plugin).
+ * Methods are expected to be Thread Safe.
  * 
  * @author scott
  *
@@ -27,7 +28,7 @@ public interface I_TrialRunListener {
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public void onStartingTrail(String trialName);
+	public void onStartingTrial(String trialName);
 	/**
 	 * 
 	 * @param trialName the full java class name for the trial.

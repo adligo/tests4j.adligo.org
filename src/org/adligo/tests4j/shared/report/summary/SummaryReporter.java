@@ -64,7 +64,7 @@ public class SummaryReporter implements I_Tests4J_Reporter {
 	}
 
 	@Override
-	public synchronized void onStartingTrail(String trialName) {
+	public synchronized void onStartingTrial(String trialName) {
 		if (isLogEnabled(SystemOut.class)) {
 			log("startingTrial: " + trialName);
 		}
