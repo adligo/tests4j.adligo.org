@@ -54,15 +54,13 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	 */
 	public I_Tests4J_Reporter getReporter();
 	/**
-	 * The coverage plug-in, used to compute
+	 * The factory for the coverage plug-in, used to compute
 	 * the java source code covered by this test.
 	 * A null value means don't calculate coverage.
 	 * 
 	 * @return
 	 */
-	public I_CoveragePlugin getCoveragePlugin();
-	public Class<? extends I_CoveragePlugin> getCoveragePluginClass();
-	public Class<? extends I_CoveragePluginConfigurator> getCoveragePluginConfiguratorClass();
+	public Class<? extends I_CoveragePluginFactory> getCoveragePluginFactoryClass();
 	
 	/**
 	 * The number of threads which to process 

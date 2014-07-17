@@ -1,7 +1,5 @@
 package org.adligo.tests4j.models.shared.system;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,7 +12,6 @@ import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
-import org.adligo.tests4j.models.shared.trials.TrialRecursion;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
@@ -26,8 +23,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public static final String TRIAL_XML_START = "<trial>";
 	public static final String TRIALS_XML_END = "</trials>";
 	public static final String TRIALS_XML_START = "<trials>";
-	public static final String COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY = "\" coveragePluginConfigurator=\"";
-	public static final String COVERAGE_PLUGIN_XML_KEY = " coveragePlugin=\"";
+	public static final String COVERAGE_PLUGIN_XML_KEY = " coveragePluginFactory=\"";
 	public static final String THREAD_COUNT_XML_KEY = "threadCount=\"";
 	public static final String TEST_XML_END = "</test>";
 	public static final String TEST_XML_START = "<test>";
@@ -64,8 +60,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * is null or true, and if recordTestCoverage is 
 	 * null or true.
 	 */
-	private Class<? extends I_CoveragePlugin> coveragePluginClass;
-	private Class<? extends I_CoveragePluginConfigurator> coveragePluginConfiguratorClass;
+	private Class<? extends I_CoveragePluginFactory> coveragePluginFactoryClass;
 	/**
 	 * these classes get reporting turned on 
 	 */
@@ -83,8 +78,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		metaTrialClass = p.getMetaTrialClass();
 		tests.addAll(p.getTests());
 		reporter = p.getReporter();
-		coveragePluginClass = p.getCoveragePluginClass();
-		coveragePluginConfiguratorClass = p.getCoveragePluginConfiguratorClass();
+		coveragePluginFactoryClass = p.getCoveragePluginFactoryClass();
 		trialThreads = p.getThreadCount();
 		loggingClasses.addAll(p.getLoggingClasses());
 		systemExit = p.getSystemExit();
@@ -126,19 +120,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			int end = tag.indexOf("\"", coveragePluginIndex);
 			String clazz = tag.substring(coveragePluginIndex,end);
 			try {
-				coveragePluginClass = (Class<? extends I_CoveragePlugin>) Class.forName(clazz);
-			} catch (ClassNotFoundException x) {
-				throw new IllegalArgumentException(x);
-			}
-		}
-		
-		int coveragePluginConfigIndex = tag.indexOf(COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY);
-		if (coveragePluginConfigIndex != -1) {
-			coveragePluginConfigIndex = coveragePluginConfigIndex  + COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY.length(); 
-			int end = tag.indexOf("\"", coveragePluginConfigIndex);
-			String clazz = tag.substring(coveragePluginIndex,end);
-			try {
-				coveragePluginConfiguratorClass = (Class<? extends I_CoveragePluginConfigurator>) Class.forName(clazz);
+				coveragePluginFactoryClass = (Class<? extends I_CoveragePluginFactory>) Class.forName(clazz);
 			} catch (ClassNotFoundException x) {
 				throw new IllegalArgumentException(x);
 			}
@@ -203,33 +185,27 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		trials.add(p);
 	}
 	
-	public Class<? extends I_CoveragePlugin> getCoveragePluginClass() {
-		return coveragePluginClass;
+	public Class<? extends I_CoveragePluginFactory> getCoveragePluginFactory() {
+		return coveragePluginFactoryClass;
 	}
 	
 	public synchronized I_CoveragePlugin getCoveragePlugin() {
-		if (coveragePluginClass == null) {
+		if (coveragePluginFactoryClass == null) {
 			return null;
 		}
 		try {
-			Constructor<? extends I_CoveragePlugin> coverConstructor = 
-						coveragePluginClass.getConstructor(I_Tests4J_Reporter.class);
-			I_CoveragePlugin plugin = coverConstructor.newInstance(reporter);
+			I_CoveragePluginFactory factory = coveragePluginFactoryClass.newInstance();
+			I_CoveragePlugin plugin = factory.create(reporter);
 			
-			if (coveragePluginConfiguratorClass != null) {
-				I_CoveragePluginConfigurator configurator = coveragePluginConfiguratorClass.newInstance();
-				configurator.configure(plugin);
-			}
 			return plugin;
-		} catch (InstantiationException |
-				IllegalAccessException |
-				IllegalArgumentException | InvocationTargetException | 
-				NoSuchMethodException | SecurityException e) {
-			throw new IllegalArgumentException(e);
+		} catch (Throwable t) {
+			if (reporter != null) {
+				reporter.onError(t);
+				return null;
+			} else {
+				throw new RuntimeException(t);
+			}
 		}
-	}
-	public void setCoveragePluginClass(Class<? extends I_CoveragePlugin> coverageRecorder) {
-		this.coveragePluginClass = coverageRecorder;
 	}
 	
 	public void addTrials(I_TrialList p) {
@@ -291,14 +267,9 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			sb.append(trialThreads.getClass().getName());
 			sb.append("\"");
 		}
-		if (coveragePluginClass != null) {
+		if (coveragePluginFactoryClass != null) {
 			sb.append(COVERAGE_PLUGIN_XML_KEY);
-			sb.append(coveragePluginClass.getName());
-			sb.append("\"");
-		}
-		if (coveragePluginConfiguratorClass != null) {
-			sb.append(COVERAGE_PLUGIN_CONFIGURATOR_XML_KEY);
-			sb.append(coveragePluginConfiguratorClass.getName());
+			sb.append(coveragePluginFactoryClass.getName());
 			sb.append("\"");
 		}
 
@@ -376,13 +347,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		sb.append(XML_END);
 	}
 
-	public Class<? extends I_CoveragePluginConfigurator> getCoveragePluginConfiguratorClass() {
-		return coveragePluginConfiguratorClass;
-	}
 
-	public void setCoveragePluginConfiguratorClass(
-			Class<? extends I_CoveragePluginConfigurator> coveragePluginConfiguratorClass) {
-		this.coveragePluginConfiguratorClass = coveragePluginConfiguratorClass;
+	public void setCoveragePluginFactoryClass(
+			Class<? extends I_CoveragePluginFactory> coveragePluginConfiguratorClass) {
+		coveragePluginFactoryClass = coveragePluginConfiguratorClass;
 	}
 
 	public I_SystemExit getSystemExit() {
@@ -430,5 +398,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 	public void setEvaluatorLookup(I_EvaluatorLookup evaluatorLookup) {
 		this.evaluatorLookup = evaluatorLookup;
+	}
+
+	@Override
+	public Class<? extends I_CoveragePluginFactory> getCoveragePluginFactoryClass() {
+		return coveragePluginFactoryClass;
 	}
 }

@@ -11,7 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.adligo.tests4j.models.shared.common.TrialType;
-import org.adligo.tests4j.models.shared.system.CoveragePluginWrapper;
+import org.adligo.tests4j.models.shared.system.CoveragePluginDelegator;
 import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
@@ -83,7 +83,6 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 		I_CoveragePlugin plugin = params.getCoveragePlugin();
 		
 		if (plugin != null) {
-			plugin.setReporter(reporter);
 			
 			/*
 			Class<? extends I_MetaTrial> metaTrialClass = pParams.getMetaTrialClass();
@@ -123,7 +122,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			}
 			params.setTrials(instrumentedNonMetaTrials);
 			
-			plugin = new CoveragePluginWrapper(plugin);
+			plugin = new CoveragePluginDelegator(plugin, reporter);
 		}
 		
 		

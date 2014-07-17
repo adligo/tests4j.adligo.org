@@ -11,13 +11,13 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
  * @author scott
  *
  */
-public class TrialRunListenerDelegate implements I_TrialRunListener {
+public class TrialRunListenerDelegator implements I_TrialRunListener {
 	public static final String TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TESTS4J_REPORTER = "TrialRunListenerDelegate requires a I_Tests4J_Reporter.";
 	public static final String TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TRIAL_RUN_LISTENER = "TrialRunListenerDelegate requires a I_TrialRunListener.";
 	private I_TrialRunListener delegate;
 	private I_Tests4J_Reporter reporter;
 	
-	public TrialRunListenerDelegate(I_TrialRunListener p, I_Tests4J_Reporter pReporter) {
+	public TrialRunListenerDelegator(I_TrialRunListener p, I_Tests4J_Reporter pReporter) {
 		if (p == null) {
 			throw new IllegalArgumentException(TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TRIAL_RUN_LISTENER);
 		}

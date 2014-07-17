@@ -25,7 +25,6 @@ public interface I_CoveragePlugin {
 	 */
 	public List<Class<? extends I_AbstractTrial>> instrumentClasses(List<Class<? extends I_AbstractTrial>> trials);
 	
-	public void setReporter(I_Tests4J_Reporter p);
 	/**
 	 *
 	 * @return

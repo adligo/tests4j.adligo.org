@@ -1,31 +1,31 @@
 package org.adligo.tests4j.models.shared.system;
 
 
-public class Tests4jReporterDelegate extends TrialRunListenerDelegate implements I_Tests4J_Reporter {
+public class Tests4jReporterDelegator extends TrialRunListenerDelegator implements I_Tests4J_Reporter {
 	private I_Tests4J_Reporter delegate;
 	
-	public Tests4jReporterDelegate(I_Tests4J_Reporter p) {
+	public Tests4jReporterDelegator(I_Tests4J_Reporter p) {
 		super(p,p);
 		delegate = p;
 	}
 
-	public synchronized void log(String p) {
+	public void log(String p) {
 		delegate.log(p);
 	}
 
-	public synchronized void onError(Throwable p) {
+	public void onError(Throwable p) {
 		delegate.onError(p);
 	}
 
-	public synchronized boolean isLogEnabled(Class<?> clazz) {
+	public boolean isLogEnabled(Class<?> clazz) {
 		return delegate.isLogEnabled(clazz);
 	}
 
-	public synchronized boolean isSnare() {
+	public boolean isSnare() {
 		return delegate.isSnare();
 	}
 
-	public synchronized boolean isRedirect() {
+	public boolean isRedirect() {
 		return delegate.isRedirect();
 	}
 

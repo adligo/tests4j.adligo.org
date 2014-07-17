@@ -33,8 +33,8 @@ import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
-import org.adligo.tests4j.models.shared.system.Tests4jReporterDelegate;
-import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegate;
+import org.adligo.tests4j.models.shared.system.Tests4jReporterDelegator;
+import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.IgnoreTest;
@@ -78,10 +78,10 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	public Tests4J_NotificationManager(Tests4J_Memory pMem) {
 		memory = pMem;
 		threadManager = pMem.getThreadManager();
-		reporter = new Tests4jReporterDelegate(pMem.getReporter());
+		reporter = new Tests4jReporterDelegator(pMem.getReporter());
 		I_TrialRunListener pListener = pMem.getListener();
 		if (pListener != null) {
-			listener = new TrialRunListenerDelegate(pListener, reporter);
+			listener = new TrialRunListenerDelegator(pListener, reporter);
 		}
 		
 		long now = System.currentTimeMillis();
