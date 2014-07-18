@@ -1,5 +1,9 @@
 package org.adligo.tests4j.models.shared.xml;
 
+import java.util.Set;
+
+import org.adligo.tests4j.models.shared.common.StringMethods;
+
 /**
  * a class to assist in building 
  * a string that represents xml
@@ -11,14 +15,31 @@ public class XML_Builder implements I_XML_Builder {
 	private String indentChars;
 	private String endOfLineChars;
 	private StringBuilder sb = new StringBuilder();
+	private int attributesPerLine = 3;
+	private int attributeCount = 0;
+	private boolean inAttributes = false;
+	private boolean prettyPrint = true;
+	private boolean tagStartedLine = false;
 	
 	public XML_Builder() {
 		this(XML_Chars.TAB, XML_Chars.NEW_LINE_UNIX);
 	}
 	
 	public XML_Builder(String pIndentChars, String pEndOfLineChars) {
-		indentChars = pIndentChars;
-		endOfLineChars = pEndOfLineChars;
+		if (pIndentChars != null) {
+			indentChars = pIndentChars;
+		} else {
+			indentChars = "";
+		}
+		if (pEndOfLineChars != null) {
+			endOfLineChars = pEndOfLineChars;
+		} else {
+			endOfLineChars = "";
+		}
+		
+		if (indentChars.length() == 0 && endOfLineChars.length() == 0) {
+			prettyPrint = false;
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -26,8 +47,10 @@ public class XML_Builder implements I_XML_Builder {
 	 */
 	@Override
 	public void indent() {
-		for (int i = 0; i < indent; i++) {
-			sb.append(indentChars);
+		if (prettyPrint) {
+			for (int i = 0; i < indent; i++) {
+				sb.append(indentChars);
+			}
 		}
 	}
 	
@@ -55,7 +78,11 @@ public class XML_Builder implements I_XML_Builder {
 	 */
 	@Override
 	public void endLine() {
-		sb.append(endOfLineChars);
+		if (prettyPrint) {
+			sb.append(endOfLineChars);
+			attributeCount = 0;
+			tagStartedLine = false;
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -65,6 +92,9 @@ public class XML_Builder implements I_XML_Builder {
 	public void addStartTag(String tagName) {
 		sb.append(XML_Chars.START);
 		sb.append(tagName);
+		if (prettyPrint) {
+			tagStartedLine = true;
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -82,12 +112,28 @@ public class XML_Builder implements I_XML_Builder {
 	 */
 	@Override
 	public void addAttribute(String attributeName, String content) {
+		if (!tagStartedLine) {
+			if (attributeCount == 0) {
+				indent();
+			}
+		}
 		sb.append(" ");
 		sb.append(attributeName);
 		sb.append(XML_Chars.EQUALS_QUOTE);
 		String toXml = XML_Chars.toXml(content);
 		sb.append(toXml);
 		sb.append(XML_Chars.QUOTE);
+		
+		if (prettyPrint) {
+			attributeCount++;
+			if (attributeCount == attributesPerLine) {
+				if (!inAttributes) {
+					addIndent();
+					inAttributes = true;
+				}
+				endLine();
+			}
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -113,5 +159,27 @@ public class XML_Builder implements I_XML_Builder {
 	@Override
 	public String toXmlString() {
 		return sb.toString();
+	}
+
+	public int getAttributesPerLine() {
+		return attributesPerLine;
+	}
+
+	public void setAttributesPerLine(int attributesPerLine) {
+		this.attributesPerLine = attributesPerLine;
+	}
+
+	@Override
+	public void endHeader() {
+		if (prettyPrint) {
+			if (inAttributes) {
+				inAttributes = false;
+				removeIndent();
+			}
+		}
+		sb.append(">");
+		if (prettyPrint) {
+			endLine();
+		}
 	}
 }

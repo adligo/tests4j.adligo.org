@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.asserts;
 
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
@@ -30,12 +31,7 @@ public class AssertionProcessor {
 			}
 		} else {
 			synchronized (listener) {
-				TestFailureMutant fm = new TestFailureMutant();
-				fm.setMessage(cmd.getFailureMessage());
-				fm.setLocationFailed(new AssertionFailureLocation());
-				fm.setData(cmd.getData());
-				TestFailure tf = new TestFailure(fm);
-				listener.assertFailed(tf);
+				onAssertionFailure(listener, cmd.getData(), cmd.getFailureMessage());
 			}
 		}
 	}
@@ -47,14 +43,19 @@ public class AssertionProcessor {
 			}
 		} else {
 			synchronized (listener) {
-				TestFailureMutant fm = new TestFailureMutant();
-				fm.setMessage(cmd.getFailureMessage());
-				fm.setLocationFailed(new AssertionFailureLocation());
-				fm.setData(cmd.getData());
-				TestFailure tf = new TestFailure(fm);
-				listener.assertFailed(tf);
+				onAssertionFailure(listener, cmd.getData(), cmd.getFailureMessage());
 			}
 		}
+	}
+
+	public static void onAssertionFailure(I_AssertListener listener,
+			I_AssertionData data, String failureMessage) {
+		TestFailureMutant fm = new TestFailureMutant();
+		fm.setMessage(failureMessage);
+		fm.setLocationFailed(new AssertionFailureLocation());
+		fm.setData(data);
+		TestFailure tf = new TestFailure(fm);
+		listener.assertFailed(tf);
 	}
 	
 }

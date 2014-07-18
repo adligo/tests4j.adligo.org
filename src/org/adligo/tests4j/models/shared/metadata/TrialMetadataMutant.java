@@ -2,7 +2,9 @@ package org.adligo.tests4j.models.shared.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
@@ -24,6 +26,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 	private String testedPackage;
 	private String system;
 	private I_UseCaseMetadata useCase;
+	private Double minCodeCoverage;
 	
 	public TrialMetadataMutant() {}
 	
@@ -43,6 +46,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		testedPackage = p.getTestedPackage();
 		system = p.getSystem();
 		useCase = p.getUseCase();
+		minCodeCoverage = p.getMinimumCodeCoverage();
 	}
 	
 	public TrialMetadataMutant(String xml) {
@@ -221,104 +225,60 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		builder.indent();
 		builder.addStartTag(I_TrialMetadata.TAG_NAME);
 		
-		int attributeCount = 0;
 		if (tm.getTrialName() != null) {
 			builder.addAttribute(I_TrialMetadata.TRIAL_NAME_ATTRIBUTE, tm.getTrialName());
-			attributeCount++;
 		}
 			
 		TrialType type = tm.getType();
 		if (type != null) {
 			builder.addAttribute(I_TrialMetadata.TYPE_ATTRIBUTE, type.toString());
-			attributeCount++;
 		}
-		boolean firstWrap = true;
 		if (tm.getTimeout() != null) {
 			builder.addAttribute(I_TrialMetadata.TIMEOUT_ATTRIBUTE, 
 					"" + tm.getTimeout());
-			attributeCount++;
-		}
-		
-		if (attributeCount == 3) {
-			wrapAttributes(builder, firstWrap);
-			firstWrap = false;
 		}
 		
 		if (tm.getBeforeTrialMethodName() != null) {
 			builder.addAttribute(I_TrialMetadata.BEFORE_TRIAL_METHOD_NAME_ATTRIBUTE, 
 					tm.getBeforeTrialMethodName());
-			attributeCount++;
-		}
-		
-		if (attributeCount == 3) {
-			wrapAttributes(builder, firstWrap);
-			firstWrap = false;
 		}
 		
 		if (tm.isIgnored()) {
 			builder.addAttribute(I_TrialMetadata.IGNORED_ATTRIBUTE,
 					"" + tm.isIgnored());
-			attributeCount++;
 		}
-		if (attributeCount == 3) {
-			wrapAttributes(builder, firstWrap);
-			firstWrap = false;
+		
+		if (tm.getMinimumCodeCoverage() != null) {
+			builder.addAttribute(I_TrialMetadata.MIN_CODE_COVERAGE_ATTRIBUTE, 
+					"" + tm.getMinimumCodeCoverage());
 		}
 		
 		if (tm.getAfterTrialMethodName() != null) {
 			builder.addAttribute(I_TrialMetadata.AFTER_TRIAL_METHOD_NAME_ATTRIBUTE, 
 					tm.getAfterTrialMethodName());
-			attributeCount++;
 		}
 	
-		
-		
-		if (attributeCount == 3 || attributeCount == 6) {
-			wrapAttributes(builder, firstWrap);
-			firstWrap = false;
-		}
-		
 		if (tm.getTestedSourceFile() != null) {
 			builder.addAttribute(I_TrialMetadata.TESTED_SOURCE_FILE_ATTRIBUTE, 
 					tm.getTestedSourceFile());
-			attributeCount++;
-		}
-		if (attributeCount == 3 || attributeCount == 6) {
-			wrapAttributes(builder, firstWrap);
-			firstWrap = false;
 		}
 		if (tm.getTestedPackage() != null) {
 			builder.addAttribute(I_TrialMetadata.TESTED_PACKAGE_ATTRIBUTE, 
 					tm.getTestedPackage());
-			attributeCount++;
-		}
-		if (attributeCount == 3 || attributeCount == 6) {
-			wrapAttributes(builder, firstWrap);
-			firstWrap = false;
 		}
 		if (tm.getSystem() != null) {
 			builder.addAttribute(I_TrialMetadata.TESTED_SYSTEM_ATTRIBUTE, 
 					tm.getSystem());
-			attributeCount++;
 		}
-		if (attributeCount == 3 || attributeCount == 6 || attributeCount == 9) {
-			wrapAttributes(builder, firstWrap);
-			firstWrap = false;
-		}
+		
 		I_UseCaseMetadata useCase = tm.getUseCase();
 		List<? extends I_TestMetadata> tests = tm.getTests();
 		if (useCase == null && tests.size() == 0) {
 			builder.append("/>");
 			builder.endLine();
-			if (firstWrap) {
-				builder.removeIndent();
-			}
 		} else {
 			builder.append(" >");
 			builder.endLine();
-			if (firstWrap) {
-				builder.removeIndent();
-			}
 			
 			if (useCase != null) {
 				useCase.toXml(builder);
@@ -346,11 +306,13 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		}
 	}
 
-	private static void wrapAttributes(I_XML_Builder builder, boolean firstWrap) {
-		builder.endLine();
-		if (firstWrap) {
-			builder.addIndent();
-		}
-		builder.indent();
+
+	@Override
+	public Double getMinimumCodeCoverage() {
+		return minCodeCoverage;
+	}
+	
+	public void setMinimumCodeCoverage(Double p) {
+		minCodeCoverage = p;
 	}
 }

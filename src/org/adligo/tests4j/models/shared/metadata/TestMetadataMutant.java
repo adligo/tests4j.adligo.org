@@ -91,6 +91,8 @@ public class TestMetadataMutant implements I_TestMetadata {
 
 	@Override
 	public void toXml(I_XML_Builder builder) {
+		int origAttrsPerLine = builder.getAttributesPerLine();
+		builder.setAttributesPerLine(4);
 		builder.indent();
 		builder.addStartTag(I_TestMetadata.TAG_NAME);
 		builder.addAttribute(I_TestMetadata.NAME_ATTRIBUTE, testName);
@@ -102,6 +104,7 @@ public class TestMetadataMutant implements I_TestMetadata {
 		}
 		builder.append(" />");
 		builder.endLine();
+		builder.setAttributesPerLine(origAttrsPerLine);
 	}
 	
 }

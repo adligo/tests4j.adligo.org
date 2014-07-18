@@ -95,4 +95,8 @@ public class TrialMetadata implements I_TrialMetadata {
 	public void toXml(I_XML_Builder builder) {
 		mutant.toXml(builder, this);
 	}
+
+	public Double getMinimumCodeCoverage() {
+		return mutant.getMinimumCodeCoverage();
+	}
 }

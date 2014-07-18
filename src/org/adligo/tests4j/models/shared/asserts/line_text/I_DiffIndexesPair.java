@@ -21,7 +21,7 @@ public interface I_DiffIndexesPair {
 	 * starts and ends
 	 * @return
 	 */
-	public abstract I_DiffIndexes getExample();
+	public abstract I_DiffIndexes getExpected();
 	/**
 	 * the indexes where the actual lines 
 	 * is different with the example line

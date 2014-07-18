@@ -23,4 +23,15 @@ public class StringMethods {
 			throw new IllegalArgumentException(message);
 		}
 	}
+	
+
+	public static int indexBoundsFix(String text, int index) {
+		if (index < 0) {
+			return 0;
+		}
+		if (index > text.length()) {
+			return text.length();
+		}
+		return index;
+	}
 }

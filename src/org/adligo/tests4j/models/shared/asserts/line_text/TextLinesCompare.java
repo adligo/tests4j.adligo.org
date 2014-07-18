@@ -266,12 +266,11 @@ public class TextLinesCompare  {
 
 
 	private boolean addIfPartialMatch(int i, String expected, int j, String actual) {
-		try {
-			DiffIndexesPair dip = new DiffIndexesPair(expected, actual);
-			I_DiffIndexes example = dip.getExample();
-			int start = example.getStart();
-			int end = example.getEnd();
-			if (start != 0 || end != expected.length() - 1) {
+		DiffIndexesPair dip = new DiffIndexesPair(expected, actual);
+		I_DiffIndexes example = dip.getExpected();
+		if (example != null) {
+			Integer matchLeftToRight = example.getMatchLeftToRight();
+			if (matchLeftToRight != null) {
 				LineDiffMutant ldm = new LineDiffMutant();
 				ldm.setExampleLineNbr(i);
 				ldm.setActualLineNbr(j);
@@ -283,8 +282,6 @@ public class TextLinesCompare  {
 				actualToDiffs.put(j, ld);
 				return true;
 			}
-		} catch (IOException x) {
-			//do nothing, actually regular program flow
 		}
 		return false;
 	}

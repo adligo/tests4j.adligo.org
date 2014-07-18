@@ -52,6 +52,11 @@ public interface I_XML_Builder {
 	public abstract void addAttribute(String attributeName, String content);
 
 	/**
+	 * a method to add the > and new line after the attributes,
+	 * also removes a indent if it was increased during attribute addition.
+	 */
+	public abstract void endHeader();
+	/**
 	 * adds arbitrary text content
 	 * @param text the xml content to be escaped
 	 *    "a&b" would become "a&amp;b"
@@ -70,5 +75,17 @@ public interface I_XML_Builder {
 	 * @return
 	 */
 	public String toXmlString();
+	
+	/**
+	 * the current attributes per line
+	 * @return
+	 */
+	public int getAttributesPerLine();
+
+	/**
+	 * mutates the xml builder for future calls to addAttribute
+	 * @param attributesPerLine
+	 */
+	public void setAttributesPerLine(int attributesPerLine);
 
 }

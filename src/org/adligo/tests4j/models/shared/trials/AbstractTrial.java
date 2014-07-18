@@ -100,7 +100,20 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		AssertionProcessor.evaluate(listener, cmd, p);
 	}
 	
+	public void evaluateForNullExpected(Object expected) {
+		if (expected == null) {
+			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			AssertionProcessor.onAssertionFailure(listener, null, messages.getTheExpectedValueShouldNeverBeNull());
+		}
+	}
 
+	public void evaluateForNullThrower(I_Thrower thrower) {
+		if (thrower == null) {
+			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			AssertionProcessor.onAssertionFailure(listener, null, messages.getIThrowerIsRequired());
+		}
+	}
+	
 	@Override
 	public void assertEquals(Object p, Object a) {
 		assertEquals(MESSAGES.getTheObjectsShouldBeEqual(), p, a);
@@ -108,6 +121,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertEquals(String message, Object p, Object a) {
+		evaluateForNullExpected(p);
 		evaluate(new IdenticalAssertCommand(
 				AssertEquals, message, 
 				new CompareAssertionData<Object>(p, a)));
@@ -120,6 +134,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertEquals(String message, String p, String a) {
+		evaluateForNullExpected(p);
 		evaluate(new IdenticalStringAssertCommand(
 				AssertEquals, message, 
 				new CompareAssertionData<String>(p, a)));
@@ -182,6 +197,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertNotEquals(String message, Object p, Object a) {
+		evaluateForNullExpected(p);
 		evaluate(new IdenticalAssertCommand(
 				AssertNotEquals, message, 
 				new CompareAssertionData<Object>(p, a)));
@@ -194,6 +210,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertNotEquals(String message, String p, String a) {
+		evaluateForNullExpected(p);
 		evaluate(new IdenticalStringAssertCommand(
 				AssertNotEquals, message, 
 				new CompareAssertionData<String>(p, a)));
@@ -206,6 +223,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertSame(String message, Object p, Object a) {
+		evaluateForNullExpected(p);
 		evaluate(new IdenticalAssertCommand(
 				AssertSame, message, 
 				new CompareAssertionData<Object>(p, a)));
@@ -219,6 +237,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void assertNotUniform(String message, Object expected, Object actual) {
+		evaluateForNullExpected(expected);
 		I_UniformAssertionEvaluator<?, ?> eval = getEvaluator(expected);
 		evaluate(new UniformAssertCommand(
 				AssertNotUniform, message, 
@@ -232,6 +251,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertNotSame(String message, Object p, Object a) {
+		evaluateForNullExpected(p);
 		evaluate(new IdenticalAssertCommand(
 				AssertType.AssertNotSame, message, 
 				new CompareAssertionData<Object>(p, a)));
@@ -239,28 +259,32 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertThrown(I_ExpectedThrownData pData, I_Thrower pThrower) {
+		evaluateForNullExpected(pData);
+		evaluateForNullThrower(pThrower);
 		assertThrown(MESSAGES.getNothingWasThrown(), pData, pThrower);
 	}
 
 	@Override
 	public void assertThrown(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
+		evaluateForNullExpected(pData);
+		evaluateForNullThrower(pThrower);
 		evaluate(new ThrownAssertCommand(pMessage, pData), pThrower);
 	}
 	
 	@Override
 	public void assertThrownUniform(I_ExpectedThrownData pData, I_Thrower pThrower) {
+		evaluateForNullExpected(pData);
+		evaluateForNullThrower(pThrower);
 		assertThrownUniform(MESSAGES.getTheExpectedThrowableDataDidNotMatchTheActual(), pData, pThrower);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void assertThrownUniform(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
+		evaluateForNullExpected(pData);
+		evaluateForNullThrower(pThrower);
 		I_UniformAssertionEvaluator<?, ?> evaluator = getEvaluator(pData);
 		evaluate(new UniformThrownAssertCommand( pMessage, pData, evaluator), pThrower);
-	}
-	
-	public void assertUniform(String p, String a) {
-		assertUniform(MESSAGES.getTheObjectsShouldBeUniform(), p, a);
 	}
 	
 	public void assertUniform(Object expected, Object actual) {
@@ -268,6 +292,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void assertUniform(String message, Object expected, Object actual) {
+		evaluateForNullExpected(expected);
 		I_UniformAssertionEvaluator<?, ?> evaluator = getEvaluator(expected);
 		evaluate(new UniformAssertCommand(AssertUniform, message, 
 				new CompareAssertionData<Object>(expected, actual), evaluator));
@@ -292,7 +317,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		}
 		Class<?> throwable = data.getThrowableClass();
 		if (throwable == null) {
-			throw new IllegalStateException(MESSAGES.getNoEvaluatorFoundForClass() + data);
+			AssertionProcessor.onAssertionFailure(listener, null, MESSAGES.getNoEvaluatorFoundForClass());
 		}
 		return getEvaluator(throwable);
 	}
@@ -304,7 +329,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 			eval = evaluationLookup.findEvaluator(expectedClass);
 		}
 		if (eval == null) {
-			throw new IllegalStateException(MESSAGES.getNoEvaluatorFoundForClass() + expectedClass.getName());
+			AssertionProcessor.onAssertionFailure(listener, null, MESSAGES.getNoEvaluatorFoundForClass());
 		}
 		
 		return (I_UniformAssertionEvaluator<?, D>) eval;
@@ -326,12 +351,14 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertContains(Collection<?> p, Object a) {
+		evaluateForNullExpected(p);
 		evaluate(new ContainsAssertCommand(
 				MESSAGES.getTheCollectionShouldContainTheValue(), p, a));
 	}
 
 	@Override
 	public void assertContains(String message, Collection<?> p, Object a) {
+		evaluateForNullExpected(p);
 		evaluate(new ContainsAssertCommand(
 				message, p, a));
 	}

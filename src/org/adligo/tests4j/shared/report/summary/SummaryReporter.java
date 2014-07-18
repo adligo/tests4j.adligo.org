@@ -22,6 +22,7 @@ import org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiff;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.RelevantClassesWithTrialsCalculator;
@@ -32,7 +33,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 
-public class SummaryReporter implements I_Tests4J_Reporter {
+public class SummaryReporter implements I_Tests4J_Reporter, I_LineOut {
 	public static final String DEFAULT_PREFIX = "Tests4J: ";
 	
 	private String prefix = DEFAULT_PREFIX;
@@ -230,50 +231,7 @@ public class SummaryReporter implements I_Tests4J_Reporter {
 
 	private void logCompareFailure(StringCompareAssertionData ad) {
 		I_TextLinesCompareResult result =  (I_TextLinesCompareResult) ad.getData(StringCompareAssertionData.COMPARISON);
-		I_TextLines actualLines = result.getActualLines();
-		I_TextLines exampleLines = result.getExpectedLines();
-		
-		List<I_LineDiff> diffs =  result.getLineDiffs();
-		
-		for (I_LineDiff diff: diffs) {
-			LineDiffType type = diff.getType();
-			if (type != LineDiffType.MATCH) {
-				int expected = diff.getExampleLineNbr();
-				String expectedLine = null;
-				if (expected >= 0 && expected < exampleLines.getLines()) {
-					expectedLine = exampleLines.getLine(expected);
-				}
-				Integer actual = diff.getActualLineNbr();
-				String actualLine = null;
-				if (actual != null ) {
-					if (actual >= 0 && actual < actualLines.getLines()) {
-						actualLine = actualLines.getLine(actual);
-					}
-				}
-				
-				switch (type) {
-					case PARTIAL_MATCH:
-						I_DiffIndexesPair pair = diff.getIndexes();
-						I_DiffIndexes exampleIndexes = pair.getExample();
-						I_DiffIndexes actualIndexes = pair.getActual();
-						log("Expected line " + expected + " is different from the actual line as follows;");
-						String expectedDiff = expectedLine.substring(exampleIndexes.getStart(), exampleIndexes.getEnd());
-						log("Expected; '" + expectedDiff+ "'");
-						String actualDiff = actualLine.substring(actualIndexes.getStart(), actualIndexes.getEnd());
-						log("Actual; '" + actualDiff+ "'");
-						break;
-					case MISSING_ACTUAL_LINE:
-							log("The following actual line " + actual + " is missing in the expected text;");
-							log(actualLine);
-						break;
-					case MISSING_EXAMPLE_LINE:
-						log("The following example line " + expected + " is missing after the actual text;");
-						log(expectedLine);
-						break;
-				}
-				break;
-			}
-		}
+		LineDiffTextDisplay.display(this, result);
 	}
 	
 	private void logCompareFailure(I_CompareAssertionData<?> ad) {
@@ -385,5 +343,10 @@ public class SummaryReporter implements I_Tests4J_Reporter {
 	@Override
 	public void setListRelevantClassesWithoutTrials(boolean p) {
 		listRelevantClassesWithoutTrials = p;
+	}
+
+	@Override
+	public void println(String p) {
+		out.println(p);
 	}
 }

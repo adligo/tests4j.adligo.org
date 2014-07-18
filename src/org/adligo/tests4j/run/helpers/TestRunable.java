@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
@@ -19,8 +17,6 @@ import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_TrialBindings;
-import org.adligo.tests4j.models.shared.trials.TrialBindings;
 
 public class TestRunable implements Runnable, I_AssertListener {
 
@@ -56,10 +52,15 @@ public class TestRunable implements Runnable, I_AssertListener {
 			if (!assertFailed) {
 				testResultMutant.setPassed(true);
 			}
-		} catch (InvocationTargetException e) {
-			unexpected = e.getCause();
 		} catch (Exception x) {
-			unexpected = x;
+			Throwable cause = x.getCause();
+			if (cause instanceof AssertionFailedException) {
+				//a assertion failed, which is expected
+			} else if (cause instanceof InvocationTargetException ) {
+					unexpected = x.getCause();
+			} else {
+				unexpected = x;
+			}
 		}
 		flushAssertionHashes(testResultMutant);
 		if (unexpected != null) {
@@ -114,6 +115,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		TestResult tr = new TestResult(testResultMutant);
 		assertFailed = true;
 		listener.testFinished(tr);
+		throw new AssertionFailedException();
 	}
 
 	private void flushAssertionHashes(TestResultMutant trm) {
