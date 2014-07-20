@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
-import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;

@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4j_AfterTrialErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4j_AfterTrialErrors;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.AfterTrial;
 

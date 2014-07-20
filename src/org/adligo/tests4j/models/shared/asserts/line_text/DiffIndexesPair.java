@@ -73,7 +73,7 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 				//expected in actual exists
 				if (expectedInActual == 0) {
 					//at left
-					actual = new DiffIndexes(expectedLine.length() + 1, actualLine.length(), 0, expectedLine.length());
+					actual = new DiffIndexes(expectedLine.length(), actualLine.length() -1, 0, expectedLine.length() -1);
 				} else if (actualLine.length() == expectedInActual + expectedLine.length()){
 					//at right
 					actual = new DiffIndexes(0, expectedInActual - 1, expectedInActual, actualLine.length() -1);
@@ -89,13 +89,13 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 				//actual in expected exists,
 				if (actualInExpectd == 0) {
 					//at left
-					expected = new DiffIndexes(0, actualLine.length(), actualLine.length() + 1, expectedLine.length());
+					expected = new DiffIndexes( actualLine.length() , expectedLine.length() - 1, 0, actualLine.length() - 1);
 				} else if (expectedLine.length() == actualInExpectd + actualLine.length()){
 					//at right
 					expected = new DiffIndexes(0, actualInExpectd - 1, actualInExpectd, expectedLine.length() -1);
 				} else {
 					//in middle
-					expected = new DiffIndexes(0, actualLine.length(), actualInExpectd, expectedLine.length());
+					expected = new DiffIndexes(0, expectedLine.length() -1, actualInExpectd, actualInExpectd + actualLine.length() -1);
 				}
 			}
 		}

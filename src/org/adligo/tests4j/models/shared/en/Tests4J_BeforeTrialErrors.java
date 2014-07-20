@@ -1,6 +1,6 @@
-package org.adligo.tests4j.models.shared.en.trials;
+package org.adligo.tests4j.models.shared.en;
 
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4j_BeforeTrialErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4j_BeforeTrialErrors;
 
 public class Tests4J_BeforeTrialErrors extends AbstractTests4J_MethodErrors 
 	implements I_Tests4j_BeforeTrialErrors {

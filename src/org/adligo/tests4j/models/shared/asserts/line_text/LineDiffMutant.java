@@ -7,7 +7,7 @@ public class LineDiffMutant implements I_LineDiff {
 	 * -1 or greater
 	 * -1 means it came before the expected lines
 	 */
-	private int exampleLineNbr;
+	private int expectedLineNbr;
 	private Integer actualLineNbr;
 	private I_DiffIndexesPair indexes;
 	
@@ -15,7 +15,7 @@ public class LineDiffMutant implements I_LineDiff {
 	
 	public LineDiffMutant(I_LineDiff p) {
 		type = p.getType();
-		setExampleLineNbr(p.getExampleLineNbr());
+		setExpectedLineNbr(p.getExpectedLineNbr());
 		setActualLineNbr(p.getActualLineNbr());
 		indexes = p.getIndexes();
 	}
@@ -31,8 +31,8 @@ public class LineDiffMutant implements I_LineDiff {
 	 * @see org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiff#getExampleLineNbr()
 	 */
 	@Override
-	public int getExampleLineNbr() {
-		return exampleLineNbr;
+	public int getExpectedLineNbr() {
+		return expectedLineNbr;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiff#getActualLineNbr()
@@ -53,11 +53,11 @@ public class LineDiffMutant implements I_LineDiff {
 		this.type = type;
 	}
 	
-	public void setExampleLineNbr(int p) {
+	public void setExpectedLineNbr(int p) {
 		if (p < -1) {
 			throw new IllegalArgumentException(LINE_NUMBERS_MUST_BE_NEGATIVE_ONE_OR_GREATER);
 		}
-		exampleLineNbr = p;
+		expectedLineNbr = p;
 	}
 	
 	public void setActualLineNbr(Integer p) {
@@ -75,7 +75,7 @@ public class LineDiffMutant implements I_LineDiff {
 
 	@Override
 	public int compareTo(I_LineDiff o) {
-		int baseResult = exampleLineNbr - o.getExampleLineNbr();
+		int baseResult = expectedLineNbr - o.getExpectedLineNbr();
 		if (baseResult != 0) {
 			return baseResult;
 		}
@@ -91,7 +91,7 @@ public class LineDiffMutant implements I_LineDiff {
 		int result = 1;
 		result = prime * result
 				+ ((actualLineNbr == null) ? 0 : actualLineNbr.hashCode());
-		result = prime * result + exampleLineNbr;
+		result = prime * result + expectedLineNbr;
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
@@ -109,7 +109,7 @@ public class LineDiffMutant implements I_LineDiff {
 					return false;
 			} else if (!actualLineNbr.equals(other.getActualLineNbr()))
 				return false;
-			if (exampleLineNbr != other.getExampleLineNbr())
+			if (expectedLineNbr != other.getExpectedLineNbr())
 				return false;
 			if (type != other.getType())
 				return false;
@@ -126,6 +126,6 @@ public class LineDiffMutant implements I_LineDiff {
 	
 	public String toString(Class<?> c) {
 		return c.getSimpleName() + " [type=" + type + ", exampleLineNbr="
-				+ exampleLineNbr + ", actualLineNbr=" + actualLineNbr + "]";
+				+ expectedLineNbr + ", actualLineNbr=" + actualLineNbr + "]";
 	}
 }

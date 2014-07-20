@@ -23,11 +23,13 @@ public class TextLinesCompareResult implements I_TextLinesCompareResult {
 		errorMessage = pErrorMessage;
 	}
 	
-	public TextLinesCompareResult(I_TextLines pExamle, I_TextLines pActualString,boolean pMatched, List<I_LineDiff> list) {
+	public TextLinesCompareResult(I_TextLines pExamle, I_TextLines pActualString,boolean pMatched, List<? extends I_LineDiff> list) {
 		example = pExamle;
 		actual = pActualString;
 		matched = pMatched;
-		lineDiffs.addAll(list);
+		for (int i = 0; i < list.size(); i++) {
+			lineDiffs.add(new LineDiff(list.get(i)));
+		}
 	}
 	
 	/* (non-Javadoc)

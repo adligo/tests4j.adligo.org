@@ -1,10 +1,11 @@
 package org.adligo.tests4j.models.shared.system;
 
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
-import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
-import org.adligo.tests4j.models.shared.i18n.eclipse.I_EclipseErrors;
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TrialDescriptionMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayConstants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
 
 public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	I_Tests4J_Constants delegate;
@@ -17,7 +18,7 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 		return delegate.getTrialDescriptionMessages();
 	}
 
-	public I_EclipseErrors getEclipseErrors() {
+	public I_Tests4J_EclipseErrors getEclipseErrors() {
 		return delegate.getEclipseErrors();
 	}
 
@@ -42,5 +43,10 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	public String getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames() {
 		return delegate
 				.getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames();
+	}
+
+	@Override
+	public I_Tests4J_LineDiffTextDisplayConstants getLineDiffTextDisplayMessages() {
+		return delegate.getLineDiffTextDisplayMessages();
 	}
 }

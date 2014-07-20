@@ -1,7 +1,7 @@
 package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.models.shared.common.TrialType;
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TrialDescriptionMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.TrialTypeAnnotation;

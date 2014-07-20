@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts.line_text;
 
 import org.adligo.tests4j.models.shared.common.LineSeperator;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 
 /**
  * a immutable class to represent 
@@ -163,7 +164,7 @@ public class DiffIndexes implements I_DiffIndexes {
 	
 	@Override
 	public String[] getDifferences(String line) {
-		if (diffLeftToRight == null) {
+		if (diffLeftToRight == null || StringMethods.isEmpty(line)) {
 			return EMPTY_STRING_ARRAY;
 		}
 		if (matchLeftToRight == null) {
@@ -181,7 +182,7 @@ public class DiffIndexes implements I_DiffIndexes {
 	
 	@Override
 	public String[] getMatches(String line) {
-		if (matchLeftToRight == null) {
+		if (matchLeftToRight == null  || StringMethods.isEmpty(line)) {
 			return EMPTY_STRING_ARRAY;
 		}
 		if (diffLeftToRight == null) {

@@ -1,6 +1,6 @@
-package org.adligo.tests4j.models.shared.en.asserts;
+package org.adligo.tests4j.models.shared.en;
 
-import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 
 public class Tests4J_AssertionResultMessages implements I_Tests4J_AssertionResultMessages {
 

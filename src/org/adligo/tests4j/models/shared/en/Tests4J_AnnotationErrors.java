@@ -1,6 +1,6 @@
-package org.adligo.tests4j.models.shared.en.trials;
+package org.adligo.tests4j.models.shared.en;
 
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TestMethodErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TestMethodErrors;
 
 public class Tests4J_AnnotationErrors extends AbstractTests4J_MethodErrors 
 	implements I_Tests4J_TestMethodErrors {

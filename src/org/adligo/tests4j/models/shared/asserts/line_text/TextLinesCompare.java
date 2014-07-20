@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-import org.adligo.tests4j.models.shared.i18n.asserts.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
@@ -58,8 +58,8 @@ public class TextLinesCompare  {
 		
 		for (Integer lineNbr: exampleLinesWithoutMatch) {
 			LineDiffMutant ldm = new LineDiffMutant();
-			ldm.setExampleLineNbr(lineNbr);
-			ldm.setType(LineDiffType.MISSING_EXAMPLE_LINE);
+			ldm.setExpectedLineNbr(lineNbr);
+			ldm.setType(LineDiffType.MISSING_EXPECTED_LINE);
 		}
 		boolean matched = true;
 		for (I_LineDiff ld: diffs) {
@@ -89,9 +89,9 @@ public class TextLinesCompare  {
 			}
 			LineDiffMutant ldm = new LineDiffMutant();
 			if (diff != null) {
-				ldm.setExampleLineNbr(diff.getExampleLineNbr());
+				ldm.setExpectedLineNbr(diff.getExpectedLineNbr());
 			} else {
-				ldm.setExampleLineNbr(i);
+				ldm.setExpectedLineNbr(i);
 			}
 			ldm.setActualLineNbr(lineNbr);
 			ldm.setType(LineDiffType.MISSING_ACTUAL_LINE);
@@ -100,7 +100,7 @@ public class TextLinesCompare  {
 			
 			
 			actualToDiffs.put(ld.getActualLineNbr(), ld);
-			expectedToDiffs.put(ld.getExampleLineNbr(), ld);
+			expectedToDiffs.put(ld.getExpectedLineNbr(), ld);
 			diffs.add(ld);
 		}
 	}
@@ -113,7 +113,7 @@ public class TextLinesCompare  {
 			it.remove();
 			
 			LineDiffMutant ldm = new LineDiffMutant();
-			ldm.setExampleLineNbr(lineNbr);
+			ldm.setExpectedLineNbr(lineNbr);
 			if (lineNbr == 0) {
 				I_LineDiff diff = expectedToDiffs.get(-1);
 				if (diff == null) {
@@ -143,12 +143,12 @@ public class TextLinesCompare  {
 					ldm.setActualLineNbr(i);
 				}
 			}
-			ldm.setType(LineDiffType.MISSING_EXAMPLE_LINE);
+			ldm.setType(LineDiffType.MISSING_EXPECTED_LINE);
 			LineDiff ld = new LineDiff(ldm);
 			
 			
 			actualToDiffs.put(ld.getActualLineNbr(), ld);
-			expectedToDiffs.put(ld.getExampleLineNbr(), ld);
+			expectedToDiffs.put(ld.getExpectedLineNbr(), ld);
 			diffs.add(ld);
 		}
 	}
@@ -229,13 +229,13 @@ public class TextLinesCompare  {
 					}
 				}
 			} else {
-				int startExampleLineNbr = beforeDiff.getExampleLineNbr() + 1;
+				int startExampleLineNbr = beforeDiff.getExpectedLineNbr() + 1;
 				int startActualLineNbr = beforeDiff.getActualLineNbr();
 				
 				if (expLineNbr >= startExampleLineNbr) {
 					int exampleEnd = exampleLT.getLines() -1;
 					if (afterDiff != null) {
-						exampleEnd = afterDiff.getExampleLineNbr();
+						exampleEnd = afterDiff.getExpectedLineNbr();
 					}
 					
 					int actualEnd = actualLT.getLines() -1;
@@ -272,7 +272,7 @@ public class TextLinesCompare  {
 			Integer matchLeftToRight = example.getMatchLeftToRight();
 			if (matchLeftToRight != null) {
 				LineDiffMutant ldm = new LineDiffMutant();
-				ldm.setExampleLineNbr(i);
+				ldm.setExpectedLineNbr(i);
 				ldm.setActualLineNbr(j);
 				ldm.setType(LineDiffType.PARTIAL_MATCH);
 				ldm.setIndexes(dip);
@@ -301,7 +301,7 @@ public class TextLinesCompare  {
 				String actualLine = actualLT.getLine(j);
 				if (exampleLine.equals(actualLine)) {
 					LineDiffMutant ldm = new LineDiffMutant();
-					ldm.setExampleLineNbr(i);
+					ldm.setExpectedLineNbr(i);
 					ldm.setActualLineNbr(j);
 					ldm.setType(LineDiffType.MATCH);
 					LineDiff ld = new LineDiff(ldm);

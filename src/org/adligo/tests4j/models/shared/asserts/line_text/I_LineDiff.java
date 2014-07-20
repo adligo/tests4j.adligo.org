@@ -12,12 +12,12 @@ public interface I_LineDiff extends  Comparable<I_LineDiff>  {
 	public abstract LineDiffType getType();
 
 	/**
-	 * @return  the line number of the example text
+	 * @return  the line number of the expected text
 	 * or the line number above where this line is missing 
 	 * if it is missing in the example text.
-	 * -1 means that the actual line came before the start of the example lines.
+	 * -1 means that the actual line came before the start of the expected lines of text.
 	 */
-	public abstract int getExampleLineNbr();
+	public abstract int getExpectedLineNbr();
 	/**
 	 * @return the line number of the actual text
 	 * or the line above the missing line if the actual line is missing.

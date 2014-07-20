@@ -16,13 +16,7 @@ import org.adligo.tests4j.models.shared.asserts.StringCompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.ThrownAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_DiffIndexes;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_DiffIndexesPair;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiff;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
-import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.RelevantClassesWithTrialsCalculator;
@@ -34,6 +28,14 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 
 public class SummaryReporter implements I_Tests4J_Reporter, I_LineOut {
+	public static final String TEST = "Test: ";
+	public static final String FAILED = "Failed!";
+	public static final String PASSED = "Passed!";
+	public static final String INDENT = "\t";
+	public static final String TESTS = "Tests: ";
+	public static final String TRIALS = "Trials: ";
+	public static final String METADATA_CALCULATED = "Metadata Calculated: ";
+
 	public static final String DEFAULT_PREFIX = "Tests4J: ";
 	
 	private String prefix = DEFAULT_PREFIX;
@@ -58,8 +60,11 @@ public class SummaryReporter implements I_Tests4J_Reporter, I_LineOut {
 	@Override
 	public void onMetadataCalculated(I_TrialRunMetadata p) {
 		if (isLogEnabled(SummaryReporter.class)) {
-			log("Metadata Calculated: " + p.getAllTrialsCount() + " trials with " +
-					p.getAllTestsCount() + " tests.");
+			log(METADATA_CALCULATED + p.getAllTrialsCount() + TRIALS +
+					p.getAllTestsCount() + TESTS);
+			log (TRIALS + p.getAllTrialsCount());
+			log(TESTS + p.getAllTestsCount());
+			
 		}
 		metadata = p;
 	}
@@ -82,11 +87,11 @@ public class SummaryReporter implements I_Tests4J_Reporter, I_LineOut {
 	public synchronized void onTestCompleted(String trialName, String testName,
 			boolean passed) {
 		if (isLogEnabled(SummaryReporter.class)) {
-			String passedString = " passed!";
+			String passedString = PASSED;
 			if (!passed) {
-				passedString = " failed!";
+				passedString = FAILED;
 			}
-			log("Test: " + trialName + "." + testName + passedString);
+			log(TEST + trialName + "." + testName + passedString);
 		}
 	}
 
@@ -111,7 +116,7 @@ public class SummaryReporter implements I_Tests4J_Reporter, I_LineOut {
 	public void onRunCompleted(I_TrialRunResult result) {
 		if (isLogEnabled(SummaryReporter.class)) {
 			log("------------------------Test Results-------------------------");
-			log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds.");
+			log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds on ");
 			DecimalFormat formatter = new DecimalFormat("###.##");
 			
 			RelevantClassesWithTrialsCalculator calc = new RelevantClassesWithTrialsCalculator(metadata);
@@ -231,7 +236,8 @@ public class SummaryReporter implements I_Tests4J_Reporter, I_LineOut {
 
 	private void logCompareFailure(StringCompareAssertionData ad) {
 		I_TextLinesCompareResult result =  (I_TextLinesCompareResult) ad.getData(StringCompareAssertionData.COMPARISON);
-		LineDiffTextDisplay.display(this, result);
+		LineDiffTextDisplay lineDiffTextDisplay = new LineDiffTextDisplay();
+		lineDiffTextDisplay.display(this, result, 3);
 	}
 	
 	private void logCompareFailure(I_CompareAssertionData<?> ad) {

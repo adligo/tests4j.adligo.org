@@ -13,8 +13,8 @@ public class LineDiff implements I_LineDiff {
 	public LineDiffType getType() {
 		return mutant.getType();
 	}
-	public int getExampleLineNbr() {
-		return mutant.getExampleLineNbr();
+	public int getExpectedLineNbr() {
+		return mutant.getExpectedLineNbr();
 	}
 	public Integer getActualLineNbr() {
 		return mutant.getActualLineNbr();

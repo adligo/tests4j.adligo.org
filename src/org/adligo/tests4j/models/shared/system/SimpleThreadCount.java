@@ -8,6 +8,9 @@ public class SimpleThreadCount implements I_ThreadCount {
 	
 	public SimpleThreadCount() {}
 	
+	public SimpleThreadCount(int p) {
+		setThreadCount(p);
+	}
 	
 	@Override
 	public int getThreadCount() {

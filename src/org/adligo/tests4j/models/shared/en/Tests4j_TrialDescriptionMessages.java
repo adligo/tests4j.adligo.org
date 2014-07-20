@@ -1,10 +1,10 @@
-package org.adligo.tests4j.models.shared.en.trials;
+package org.adligo.tests4j.models.shared.en;
 
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_AfterTrialTestsErrors;
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TestMethodErrors;
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4J_TrialDescriptionMessages;
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4j_AfterTrialErrors;
-import org.adligo.tests4j.models.shared.i18n.trials.I_Tests4j_BeforeTrialErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AfterTrialTestsErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TestMethodErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4j_AfterTrialErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4j_BeforeTrialErrors;
 
 public class Tests4j_TrialDescriptionMessages 
 	extends Tests4J_AnnotationErrors implements I_Tests4J_TrialDescriptionMessages {

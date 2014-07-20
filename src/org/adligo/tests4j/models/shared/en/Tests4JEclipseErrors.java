@@ -1,8 +1,8 @@
-package org.adligo.tests4j.models.shared.en.eclipse;
+package org.adligo.tests4j.models.shared.en;
 
-import org.adligo.tests4j.models.shared.i18n.eclipse.I_EclipseErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
 
-public class EclipseErrors implements I_EclipseErrors {
+public class Tests4JEclipseErrors implements I_Tests4J_EclipseErrors {
 
 	@Override
 	public String getErrorRunningTests4J_RemoteRunner_Title() {
