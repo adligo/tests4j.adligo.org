@@ -13,7 +13,6 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
-import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {
@@ -47,12 +46,9 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private Class<? extends I_MetaTrial>  metaTrialClass;
 	
 	private Set<String> tests = new HashSet<String>();
-	/**
-	 * @see I_Tests4J_Params#getReporter()
-	 */
-	private transient I_Tests4J_Reporter reporter = new SummaryReporter();
 	
-	private I_ThreadCount trialThreads = new SimpleThreadCount();
+	private Integer recommendedTrialThreadCount;
+	
 	/**
 	 * All coverage is always recorded if there is a plugin,
 	 * more fine grained coverage may be recorded if the 
@@ -64,8 +60,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	/**
 	 * these classes get reporting turned on 
 	 */
-	private transient List<Class<?>> loggingClasses = new ArrayList<Class<?>>();
-	private transient I_SystemExit systemExit = new DefaultSystemExitor();
+	private List<Class<?>> loggingClasses = new ArrayList<Class<?>>();
 	private Map<I_Tests4J_RemoteInfo, I_Tests4J_Params> remoteParams = 
 			new HashMap<I_Tests4J_RemoteInfo, I_Tests4J_Params>();
 			
@@ -77,11 +72,9 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		trials.addAll(p.getTrials());
 		metaTrialClass = p.getMetaTrialClass();
 		tests.addAll(p.getTests());
-		reporter = p.getReporter();
 		coveragePluginFactoryClass = p.getCoveragePluginFactoryClass();
-		trialThreads = p.getThreadCount();
+		recommendedTrialThreadCount = p.getRecommendedTrialThreadCount();
 		loggingClasses.addAll(p.getLoggingClasses());
-		systemExit = p.getSystemExit();
 		Collection<I_Tests4J_RemoteInfo> remotes = p.getRemoteInfo();
 		for (I_Tests4J_RemoteInfo remote: remotes){
 			remoteParams.put(remote, p.getRemoteParams(remote));
@@ -93,25 +86,17 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 
 	public void fromXml(String p) {
+		/** TODO
 		int start =  p.indexOf(XML_START);
 		int tagEnd = p.indexOf(">", start);
 		String tag = p.substring(start, tagEnd);
 		
 		int threadCountIndex = tag.indexOf(THREAD_COUNT_XML_KEY);
-		trialThreads = null;
 		if (threadCountIndex != -1) {
 			threadCountIndex = threadCountIndex + THREAD_COUNT_XML_KEY.length();
 			int end = tag.indexOf("\"", threadCountIndex);
 			String clazz = tag.substring(threadCountIndex, end);
-			try {
-				Class<?> clazzInst = Class.forName(clazz);
-				trialThreads = (I_ThreadCount) clazzInst.newInstance();
-			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException x) {
-				throw new IllegalArgumentException(x);
-			}
-		}
-		if (trialThreads != null) {
-			trialThreads.fromXml(p);
+			
 		}
 		
 		int coveragePluginIndex = tag.indexOf(COVERAGE_PLUGIN_XML_KEY);
@@ -119,11 +104,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			coveragePluginIndex = coveragePluginIndex + COVERAGE_PLUGIN_XML_KEY.length();
 			int end = tag.indexOf("\"", coveragePluginIndex);
 			String clazz = tag.substring(coveragePluginIndex,end);
-			try {
-				coveragePluginFactoryClass = (Class<? extends I_CoveragePluginFactory>) Class.forName(clazz);
-			} catch (ClassNotFoundException x) {
-				throw new IllegalArgumentException(x);
-			}
+			
 		}
 		int metaTrialStart = p.indexOf(META_TRIAL_XML_START);
 		int metaTrialEnd = p.indexOf(META_TRIAL_XML_END);
@@ -172,6 +153,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 				testIndex = testsPart.indexOf(TEST_XML_START);
 			}
 		}
+		*/
 	}
 	
 	public List<Class<? extends I_Trial>> getTrials() {
@@ -189,44 +171,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		return coveragePluginFactoryClass;
 	}
 	
-	public synchronized I_CoveragePlugin getCoveragePlugin() {
-		if (coveragePluginFactoryClass == null) {
-			return null;
-		}
-		try {
-			I_CoveragePluginFactory factory = coveragePluginFactoryClass.newInstance();
-			I_CoveragePlugin plugin = factory.create(reporter);
-			
-			return plugin;
-		} catch (Throwable t) {
-			if (reporter != null) {
-				reporter.onError(t);
-				return null;
-			} else {
-				throw new RuntimeException(t);
-			}
-		}
-	}
+
 	
 	public void addTrials(I_TrialList p) {
 		trials.addAll(p.getTrials());
-		/*
-		minTests = minTests + p.getMinTests();
-		minAsserts = minAsserts + p.getMinAsserts();
-		minUniqueAssertions = minUniqueAssertions + p.getMinUniqueAssertions();
-		*/
-	}
-	public I_ThreadCount getThreadCount() {
-		return trialThreads;
-	}
-	public void setThreadCount(I_ThreadCount p) {
-		this.trialThreads = p;
-	}
-	public I_Tests4J_Reporter getReporter() {
-		return reporter;
-	}
-	public void setReporter(I_Tests4J_Reporter p) {
-		this.reporter = p;
 	}
 
 	public Set<String> getTests() {
@@ -260,13 +208,9 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 
 	public void toXml(I_XML_Builder builder) {
+		/** TODO
 		StringBuilder sb = new StringBuilder();
 		sb.append(XML_START);
-		if (trialThreads != null) {
-			sb.append(THREAD_COUNT_XML_KEY);
-			sb.append(trialThreads.getClass().getName());
-			sb.append("\"");
-		}
 		if (coveragePluginFactoryClass != null) {
 			sb.append(COVERAGE_PLUGIN_XML_KEY);
 			sb.append(coveragePluginFactoryClass.getName());
@@ -274,10 +218,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		}
 
 		sb.append(" >\n");
-		if (trialThreads != null) {
-			sb.append(trialThreads.toXml());
-			sb.append("\n");
-		}
 		if (trials.size() >= 1 || metaTrialClass != null) {
 			
 			sb.append("\t");
@@ -345,20 +285,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			sb.append("\n");
 		}
 		sb.append(XML_END);
+		*/
 	}
 
 
 	public void setCoveragePluginFactoryClass(
 			Class<? extends I_CoveragePluginFactory> coveragePluginConfiguratorClass) {
 		coveragePluginFactoryClass = coveragePluginConfiguratorClass;
-	}
-
-	public I_SystemExit getSystemExit() {
-		return systemExit;
-	}
-
-	public void setSystemExit(I_SystemExit exitor) {
-		this.systemExit = exitor;
 	}
 
 	public Class<? extends I_MetaTrial> getMetaTrialClass() {
@@ -369,14 +302,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		this.metaTrialClass = metaTrialClass;
 	}
 
-	@Override
-	public int getTrialThreadCount() {
-		int threadCount = trialThreads.getThreadCount();
-		if (trials.size() < threadCount) {
-			threadCount = trials.size();
-		}
-		return threadCount;
-	}
+	
 
 	@Override
 	public Collection<I_Tests4J_RemoteInfo> getRemoteInfo() {
@@ -403,5 +329,14 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	@Override
 	public Class<? extends I_CoveragePluginFactory> getCoveragePluginFactoryClass() {
 		return coveragePluginFactoryClass;
+	}
+
+	@Override
+	public Integer getRecommendedTrialThreadCount() {
+		return recommendedTrialThreadCount;
+	}
+	
+	public void setRecommendedTrialThreadCount(Integer p) {
+		recommendedTrialThreadCount = p;
 	}
 }

@@ -6,76 +6,92 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 
 /**
  * just catches any sort of error/exception and loggs it to the I_Tests4J_Reporter
- * so that tests4j isn't blamed for other code.
+ * so that tests4j isn't blamed for external code.
  * 
  * @author scott
  *
  */
 public class TrialRunListenerDelegator implements I_TrialRunListener {
-	public static final String TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TESTS4J_REPORTER = "TrialRunListenerDelegate requires a I_Tests4J_Reporter.";
-	public static final String TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TRIAL_RUN_LISTENER = "TrialRunListenerDelegate requires a I_TrialRunListener.";
+	public static final String TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TESTS4J_LOGGER = "TrialRunListenerDelegate requires a I_Tests4J_Logger.";
 	private I_TrialRunListener delegate;
-	private I_Tests4J_Reporter reporter;
+	private I_Tests4J_Logger logger;
 	
-	public TrialRunListenerDelegator(I_TrialRunListener p, I_Tests4J_Reporter pReporter) {
-		if (p == null) {
-			throw new IllegalArgumentException(TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TRIAL_RUN_LISTENER);
-		}
+	public TrialRunListenerDelegator(I_TrialRunListener p, I_Tests4J_Logger pLogger) {
+		//allow null delegate
 		delegate = p;
 		
-		if (pReporter == null) {
-			throw new IllegalArgumentException(TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TESTS4J_REPORTER);
+		//DO NOT allow null logger
+		if (pLogger == null) {
+			throw new IllegalArgumentException(TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TESTS4J_LOGGER);
 		}
-		reporter = pReporter;
+		logger = pLogger;
 		
 	}
 	
 	public void onMetadataCalculated(I_TrialRunMetadata metadata) {
+		if (delegate == null) {
+			return;
+		}
 		try {
 			delegate.onMetadataCalculated(metadata);
 		} catch (Throwable t) {
-			reporter.onError(t);
+			logger.onError(t);
 		}
 	}
 
 	public void onStartingTrial(String trialName) {
+		if (delegate == null) {
+			return;
+		}
 		try {
 			delegate.onStartingTrial(trialName);
 		} catch (Throwable t) {
-			reporter.onError(t);
+			logger.onError(t);
 		}
 	}
 
 	public void onStartingTest(String trialName, String testName) {
+		if (delegate == null) {
+			return;
+		}
 		try {
 			delegate.onStartingTest(trialName, testName);
 		} catch (Throwable t) {
-			reporter.onError(t);
+			logger.onError(t);
 		}
 	}
 
 	public void onTestCompleted(String trialName, String testName,
 			boolean passed) {
+		if (delegate == null) {
+			return;
+		}
 		try {
 			delegate.onTestCompleted(trialName, testName, passed);
 		} catch (Throwable t) {
-			reporter.onError(t);
+			logger.onError(t);
 		}
 	}
 
 	public void onTrialCompleted(I_TrialResult result) {
+		if (delegate == null) {
+			return;
+		}
 		try {
 			delegate.onTrialCompleted(result);
 		} catch (Throwable t) {
-			reporter.onError(t);
+			logger.onError(t);
 		}
 	}
 
 	public void onRunCompleted(I_TrialRunResult result) {
+		if (delegate == null) {
+			return;
+		}
 		try {
 			delegate.onRunCompleted(result);
 		} catch (Throwable t) {
-			reporter.onError(t);
+			logger.onError(t);
 		}
 	}
 	

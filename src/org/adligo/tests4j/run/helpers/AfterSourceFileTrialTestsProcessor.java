@@ -12,6 +12,7 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
+import org.adligo.tests4j.run.discovery.TrialDescription;
 
 /**
  * TODO extract the method 

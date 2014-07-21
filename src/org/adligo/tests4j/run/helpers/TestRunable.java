@@ -14,7 +14,7 @@ import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
@@ -24,14 +24,12 @@ public class TestRunable implements Runnable, I_AssertListener {
 	private I_AbstractTrial trial;
 	private I_TestFinishedListener listener;
 	private List<Integer> assertionHashes = new ArrayList<Integer>(); 
-	private I_Tests4J_Reporter reporter;
+	private I_Tests4J_Logger reporter;
 	private TestResultMutant testResultMutant;
 	private boolean assertFailed = false;
-	private Tests4J_Memory memory;
 	
-	public TestRunable(Tests4J_Memory pMemory, I_Tests4J_Reporter pReporter) {
-		memory = pMemory;
-		reporter = pReporter;
+	public TestRunable(Tests4J_Memory pMemory) {
+		reporter = pMemory.getLogger();
 	}
 	
 	@Override

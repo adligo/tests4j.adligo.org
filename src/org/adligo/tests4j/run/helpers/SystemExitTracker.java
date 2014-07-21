@@ -1,9 +1,8 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import org.adligo.tests4j.models.shared.system.I_SystemExit;
+import org.adligo.tests4j.models.shared.system.I_System;
 
 
 /**
@@ -13,7 +12,7 @@ import org.adligo.tests4j.models.shared.system.I_SystemExit;
  * @author scott
  *
  */
-public class SystemExitTracker implements I_SystemExit {
+public class SystemExitTracker implements I_System {
 	private final ArrayBlockingQueue<Integer> lastStatus = new ArrayBlockingQueue<>(10);
 	
 	@Override
@@ -26,6 +25,18 @@ public class SystemExitTracker implements I_SystemExit {
 
 	public int getLastStatus() throws InterruptedException {
 		return lastStatus.take();
+	}
+
+	@Override
+	public void println(String p) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public long getTime() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

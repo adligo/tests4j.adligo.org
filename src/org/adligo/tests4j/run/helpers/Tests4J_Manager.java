@@ -12,9 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
-import org.adligo.tests4j.models.shared.system.I_SystemExit;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_System;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.run.remote.RemoteRunnerStateEnum;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 
@@ -36,12 +35,12 @@ public class Tests4J_Manager {
 			new CopyOnWriteArrayList<Tests4J_RemoteRunner>();
 			
 	private Map<ExecutorService, Future<?>> testRuns = new ConcurrentHashMap<ExecutorService, Future<?>>();
-	private I_SystemExit exitor;
-	private I_Tests4J_Reporter reporter;
+	private I_System system;
+	private I_Tests4J_Logger reporter;
 	
 	
-	public Tests4J_Manager(int trialThreads, I_SystemExit pExitor, I_Tests4J_Reporter pReporter) {
-		exitor = pExitor;
+	public Tests4J_Manager(int trialThreads, I_System pSystem, I_Tests4J_Logger pReporter) {
+		system = pSystem;
 		reporter = pReporter;
 		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
 		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,reporter);
@@ -91,7 +90,7 @@ public class Tests4J_Manager {
 			}
 		}
 		trialRunService.shutdownNow();
-		exitor.doSystemExit(0);	
+		system.doSystemExit(0);	
 	}
 
 

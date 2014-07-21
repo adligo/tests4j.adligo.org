@@ -1,31 +1,23 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
-import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.system.CoveragePluginDelegator;
-import org.adligo.tests4j.models.shared.system.DuplicatingPrintStream;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
-import org.adligo.tests4j.models.shared.system.Tests4J_Params;
+import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.I_Trial;
-import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
+import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
 /**
@@ -37,6 +29,7 @@ import org.adligo.tests4j.shared.report.summary.SummaryReporter;
  *
  */
 public class TrialsProcessor implements I_Tests4J_Delegate {
+	public static final String REQUIRES_SETUP_IS_CALLED_BEFORE_RUN = " requires setup is called before run.";
 	/**
 	 * note this is static and final, so that 
 	 * when Tests4J tests itself the ThreadLocalOutputStream
@@ -44,9 +37,90 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 	 * in the I_TrialResults.
 	 */
 	private static final ThreadLocalOutputStream OUT = new ThreadLocalOutputStream();
+	private I_Tests4J_Logger logger;
+	private I_System system;
+	
+	private int trialThreadCount;
+	private Tests4J_Manager threadManager;
 	private Tests4J_Memory memory;
 	private I_Tests4J_NotificationManager notifier;
-	private TrialProcessorControls controls;
+	private Tests4J_Controls controls;
+	
+	private I_CoveragePlugin coveragePlugin;
+	private I_Tests4J_Params paramsForRun;
+	/**
+	 * This method sets up everything for the run,
+	 * assumes all other setters have been called.
+	 *  
+	 * @param pListener
+	 * @param pParams
+	 * @param pLogger
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public boolean setup(I_TrialRunListener pListener, I_Tests4J_Params pParams) {
+		
+		memory = new Tests4J_Memory();
+		memory.setThreadLocalOutput(OUT);
+		memory.setLogger(logger);
+		memory.setReporter(new SummaryReporter(logger));
+		memory.setListener(new TrialRunListenerDelegator(pListener, logger));
+		
+		
+		Tests4J_ParamsReader reader = new Tests4J_ParamsReader(pParams, logger);
+		
+		if (reader.isRunnable()) {
+			trialThreadCount = reader.getTrialThreadCount();
+			threadManager = new Tests4J_Manager(trialThreadCount, system, logger);
+			memory.setThreadManager(threadManager);
+			
+			List<Class<? extends I_AbstractTrial>> trials = reader.getInstrumentedTrials();
+			if (trials.size() == 0) {
+				trials = reader.getTrials();
+			} 
+			Class<? extends I_MetaTrial> meta = reader.getMetaTrialClass();
+			if (meta != null) {
+				TrialDescriptionProcessor trialDescProcessor = new TrialDescriptionProcessor(memory);
+				trialDescProcessor.addTrialDescription(meta);
+				trials.add(meta);
+			}
+			coveragePlugin =  reader.getCoveragePlugin();
+			memory.setCoveragePlugin(coveragePlugin);
+			memory.setTrialClasses(trials);
+			memory.setEvaluationLookup(reader.getEvaluatorLookup());
+			
+			
+			
+			notifier = new Tests4J_NotificationManager(memory);
+			
+			controls = new Tests4J_Controls(threadManager, notifier);
+			return true;
+		}
+		controls = new Tests4J_Controls();
+		return false;
+		/*
+		 
+		//TODO
+		/*
+		if (reporter.isRedirect()) {
+			if (reporter.isSnare()) {
+				System.setOut(new PrintStream(OUT));
+				System.setErr(new PrintStream(OUT));
+			} else {
+				System.setOut(new DuplicatingPrintStream(OUT, System.out));
+				System.setErr(new DuplicatingPrintStream(OUT, System.err));
+			}
+		}
+		
+		SecurityManager securityManager = System.getSecurityManager();
+		if ( !(securityManager instanceof Tests4J_SecurityManager)) {
+			//TODO add back in the security manager
+			//System.setSecurityManager(new Tests4J_SecurityManager(reporter));
+		}
+		
+		
+		*/
+	}	
 	
 	/**
 	 * This method kicks off the TheadPool (ExecutorService)
@@ -60,110 +134,22 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void run(I_TrialRunListener pListener, I_Tests4J_Params pParams) {
-		
-		Tests4J_Params params = new Tests4J_Params(pParams);
-		//set up logging first
-		I_Tests4J_Reporter reporter = params.getReporter();
-		if (reporter == null) {
-			reporter = new SummaryReporter();
-			params.setReporter(reporter);
-		} 
-		List<Class<?>> reportingClasses = pParams.getLoggingClasses();
-		for (Class<?> clazz: reportingClasses) {
-			reporter.setLogOn(clazz);
+	public void run() {
+		if (notifier == null) {
+			throw new IllegalStateException(this.getClass() + REQUIRES_SETUP_IS_CALLED_BEFORE_RUN);
 		}
-		List<Class<? extends I_AbstractTrial>> allTrialClasses = new ArrayList<Class<? extends I_AbstractTrial>>();
-		allTrialClasses.addAll(pParams.getTrials());
-		if (allTrialClasses.size() == 0) {
-			reporter.log("Nothing to do.");
-			return;
+		if (logger.isLogEnabled(TrialsProcessor.class)) {
+			logger.log("Starting run with " + trialThreadCount + " trial threads.");
 		}
-		
-		I_CoveragePlugin plugin = params.getCoveragePlugin();
-		
-		if (plugin != null) {
-			
-			/*
-			Class<? extends I_MetaTrial> metaTrialClass = pParams.getMetaTrialClass();
-			if (metaTrialClass != null) {
-				allTrialClasses.add(metaTrialClass);
-			}
-			*/
-			if (reporter.isLogEnabled(TrialsProcessor.class)) {
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < allTrialClasses.size(); i++) {
-					sb.append(allTrialClasses.get(i));
-					sb.append("\n");
-				}
-				reporter.log("using the follwing " + allTrialClasses.size() + " trials;\n" +
-						sb.toString());
-			}
-			
-			
-			List<Class< ? extends I_Trial>> instrumentedNonMetaTrials = new ArrayList<Class< ? extends I_Trial>>();
-			List<Class<? extends I_AbstractTrial>> instrumentedTrials = plugin.instrumentClasses(allTrialClasses);
-			for (Class<? extends I_AbstractTrial> trialClass: instrumentedTrials) {
-				TrialType type = TrialTypeFinder.getTypeInternal(trialClass);
-				if (type == TrialType.MetaTrial) {
-					params.setMetaTrialClass((Class<? extends I_MetaTrial>) trialClass);
-				} else {
-					instrumentedNonMetaTrials.add((Class<? extends I_Trial>) trialClass);
-				}
-			}
-			if (reporter.isLogEnabled(TrialsProcessor.class)) {
-				StringBuilder sb = new StringBuilder();
-				for (int i = 0; i < instrumentedTrials.size(); i++) {
-					sb.append(instrumentedTrials.get(i));
-					sb.append("\n");
-				}
-				reporter.log("setting the following instrumented " + instrumentedTrials.size() + "trials;\n" +
-						sb.toString());
-			}
-			params.setTrials(instrumentedNonMetaTrials);
-			
-			plugin = new CoveragePluginDelegator(plugin, reporter);
+		if (coveragePlugin != null) {
+			startRecordingAllTrialsRun(coveragePlugin);
 		}
-		
-		
-		
-		if (reporter.isRedirect()) {
-			if (reporter.isSnare()) {
-				System.setOut(new PrintStream(OUT));
-				System.setErr(new PrintStream(OUT));
-			} else {
-				System.setOut(new DuplicatingPrintStream(OUT, System.out));
-				System.setErr(new DuplicatingPrintStream(OUT, System.err));
-			}
-		}
-		SecurityManager securityManager = System.getSecurityManager();
-		if ( !(securityManager instanceof Tests4J_SecurityManager)) {
-			//TODO add back in the security manager
-			//System.setSecurityManager(new Tests4J_SecurityManager(reporter));
-		}
-		
-		memory = new Tests4J_Memory(params,OUT, pListener, plugin);
-		
-		
-		
-		Tests4J_Manager threadManager = memory.getThreadManager();
-		
-		
-		notifier = new Tests4J_NotificationManager(memory);
-		if (plugin != null) {
-			startRecordingAllTrialsRun(plugin);
-		}
-		
-		
-		controls = new TrialProcessorControls(reporter, threadManager, notifier);
 		
 		ExecutorService runService = threadManager.getTrialRunService();
 		
-		
-		int threads = params.getTrialThreadCount();
 		//@diagram Overview.seq sync on 5/1/2014 'loop theadPoolSize'
-		for (int i = 0; i < threads; i++) {
-			TrialInstancesProcessor tip = new TrialInstancesProcessor(memory, notifier, reporter); 
+		for (int i = 0; i < trialThreadCount; i++) {
+			TrialInstancesProcessor tip = new TrialInstancesProcessor(memory, notifier); 
 			try {
 				Future<?> future = runService.submit(tip);
 				threadManager.addTrialFuture(future);
@@ -173,7 +159,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 				// it must have to do with shutdown, but it happens intermittently.
 			}
 		}
-		
+		/*
 		Collection<I_Tests4J_RemoteInfo> remotes = params.getRemoteInfo();
 		for (I_Tests4J_RemoteInfo remote: remotes) {
 			I_Tests4J_Params remoteParams = params.getRemoteParams(remote);
@@ -187,6 +173,7 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 			tpe.setKeepAliveTime(1000, TimeUnit.MILLISECONDS);
 			tpe.allowCoreThreadTimeOut(true);
 		}
+		*/
 	}
 
 	/**
@@ -206,4 +193,21 @@ public class TrialsProcessor implements I_Tests4J_Delegate {
 	public I_Tests4J_Controls getControls() {
 		return controls;
 	}
+
+	public I_Tests4J_Logger getLogger() {
+		return logger;
+	}
+
+	public I_System getSystem() {
+		return system;
+	}
+
+	public void setLogger(I_Tests4J_Logger logger) {
+		this.logger = logger;
+	}
+
+	public void setSystem(I_System system) {
+		this.system = system;
+	}
+
 }

@@ -17,6 +17,7 @@ import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 import org.adligo.tests4j.models.shared.trials.TrialRecursion;
+import org.adligo.tests4j.run.discovery.TrialDescription;
 
 /**
  * a abstract class to help keep the TrialInstancesProcessor
@@ -40,7 +41,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 	private List<Integer> delegatedTestAssertionHashes; 
 	
 	public AbstractAfterTrialTestsProcessor(Tests4J_Memory memory) {
-		bindings = new TrialBindings(Platform.JSE, memory.getEvaluationLookup(), memory.getReporter());
+		bindings = new TrialBindings(Platform.JSE, memory.getEvaluationLookup(), memory.getLogger());
 		bindings.setAssertListener(this);
 	}
 

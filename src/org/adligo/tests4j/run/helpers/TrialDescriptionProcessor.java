@@ -11,6 +11,8 @@ import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.run.discovery.TrialTypeFinder;
 
 public class TrialDescriptionProcessor {
 	private Tests4J_Memory memory;
@@ -34,7 +36,7 @@ public class TrialDescriptionProcessor {
 			//try to reuse the description if another thread already described it
 			TrialDescription desc = memory.getTrialDescription(trialClazz.getName());
 			if (desc == null) {
-				desc = new TrialDescription(trialClazz, memory.getReporter());
+				desc = new TrialDescription(trialClazz, memory.getLogger());
 			}
 			memory.addTrialDescription(trialClazz.getName(), desc);
 			

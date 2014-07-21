@@ -29,16 +29,15 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
-import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
-import org.adligo.tests4j.models.shared.system.Tests4jReporterDelegator;
 import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.IgnoreTest;
 import org.adligo.tests4j.run.discovery.ClassDiscovery;
+import org.adligo.tests4j.run.discovery.TestDescription;
+import org.adligo.tests4j.run.discovery.TrialDescription;
 
 /**
  * This class handles event notification
@@ -55,11 +54,13 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	/**
 	 * always call reporter first then call listener
 	 */
-	private I_Tests4J_Reporter reporter;
+	private I_Tests4J_Logger logger;
 	/**
 	 * always call reporter first then call listener
 	 */
-	private I_TrialRunListener listener;
+	private TrialRunListenerDelegator listener;
+	private I_TrialRunListener reporter;
+	
 	private final AtomicLong startTime = new AtomicLong();
 	private final AtomicLong assertionCount = new AtomicLong();
 	private final AtomicLong uniqueAssertionCount = new AtomicLong();
@@ -78,11 +79,9 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	public Tests4J_NotificationManager(Tests4J_Memory pMem) {
 		memory = pMem;
 		threadManager = pMem.getThreadManager();
-		reporter = new Tests4jReporterDelegator(pMem.getReporter());
-		I_TrialRunListener pListener = pMem.getListener();
-		if (pListener != null) {
-			listener = new TrialRunListenerDelegator(pListener, reporter);
-		}
+		logger = pMem.getLogger();
+		listener = pMem.getListener();
+		reporter = pMem.getReporter();
 		
 		long now = System.currentTimeMillis();
 		startTime.set(now);
@@ -94,28 +93,28 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 */
 	@Override
 	public void checkDoneDescribingTrials() {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("checkDoneDescribingTrials()");
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("checkDoneDescribingTrials()");
 		}
 		if (doneDescribeingTrials.get()) {
-			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-				reporter.log("done describing trials.");
+			if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+				logger.log("done describing trials.");
 			}
 			return;
 		}
 		int trialDescriptions = memory.getDescriptionCount();
 		int trialCount = memory.getAllTrialCount();
 		
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("checkDoneDescribingTrials() trialCount = " + trialCount + 
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("checkDoneDescribingTrials() trialCount = " + trialCount + 
 					" trialDescriptions = " +trialDescriptions);
 		}
 		if (trialCount == trialDescriptions) {
 			synchronized (doneDescribeingTrials) {
 				if (!doneDescribeingTrials.get()) {
 					doneDescribeingTrials.set(true);
-					if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-						reporter.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
+					if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+						logger.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
 					}
 					onTrialDefinitionsDone();
 				}	
@@ -128,8 +127,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 */
 	private void onTrialDefinitionsDone() {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("onTrialDefinitionsDone()");
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("onTrialDefinitionsDone()");
 		}
 		sendMetadata();
 		
@@ -159,8 +158,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 */
 	@Override
 	public void sendMetadata() {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("sendingMetadata. " + memory.getDescriptionCount()
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("sendingMetadata. " + memory.getDescriptionCount()
 					+ " TrialDescription ");
 		}
 		Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
@@ -261,8 +260,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 							break;
 					}
 					tmm.setTests(testMetas);
-					if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-						reporter.log("sendingMetadata. " + trialClass.getName()
+					if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+						logger.log("sendingMetadata. " + trialClass.getName()
 								+ "  has " + testMetas.size() + " tests.");
 						totalTests = totalTests + testMetas.size();
 					}
@@ -285,17 +284,15 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		}
 		
 		metadata = new TrialRunMetadata(trmm);
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("sendingMetadata. " + memory.getDescriptionCount()
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("sendingMetadata. " + memory.getDescriptionCount()
 					+ " TrialDescription " + metadata.getAllTestsCount() + " tests."
 					+ "\n total tests " + totalTests);
 		}
 		// @diagram_sync on 5/26/2014 with Overview.seq
 		memory.setMetaTrialData(metadata);
+		listener.onMetadataCalculated(metadata);
 		reporter.onMetadataCalculated(metadata);
-		if (listener != null) {
-			listener.onMetadataCalculated(metadata);
-		}
 	}
 
 	private void addClasses(TrialRunMetadataMutant trmm,
@@ -317,7 +314,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					}
 					sim.setHasClass(true);
 				} catch (ClassNotFoundException x) {
-					reporter.onError(x);
+					logger.onError(x);
 				}
 				trmm.setSourceInfo(clazz, sim);
 			}
@@ -333,13 +330,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 */
 	@Override
 	public void startingTrial(String name) {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("startingTrial " + name);
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("startingTrial " + name);
 		}
+		listener.onStartingTrial(name);
 		reporter.onStartingTrial(name);
-		if (listener != null) {
-			listener.onStartingTrial(name);
-		}
 	}
 	
 	/* (non-Javadoc)
@@ -347,10 +342,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 */
 	@Override
 	public void startingTest(String trialName, String testName) {
+		listener.onStartingTest(trialName, testName);
 		reporter.onStartingTest(trialName, testName);
-		if (listener != null) {
-			listener.onStartingTest(trialName, testName);
-		}
 	}
 	
 	/* (non-Javadoc)
@@ -358,10 +351,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 */
 	@Override
 	public void onTestCompleted(String trialName, String testName, boolean passed) {
+		listener.onTestCompleted(trialName, testName, passed);
 		reporter.onTestCompleted(trialName, testName, passed);
-		if (listener != null) {
-			listener.onTestCompleted(trialName, testName, passed);
-		}
 	}
 	
 	/* (non-Javadoc)
@@ -369,8 +360,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 */
 	@Override
 	public void onTrialCompleted(I_TrialResult result) {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("trialFinished " + result.getName() + " " + result.isPassed());
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("trialFinished " + result.getName() + " " + result.isPassed());
 		}
 		onTrialCompetedInternal(result);
 	}
@@ -382,14 +373,12 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 */
 
 	private void onTrialCompetedInternal(I_TrialResult result) {
+		listener.onTrialCompleted(result);
 		reporter.onTrialCompleted(result);
-		if (listener != null) {
-			listener.onTrialCompleted(result);
-		}
 		
 		incrementTrialResultCounts(result);
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("trialFinished " + result.getName() + " " + trials.get() + 
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("trialFinished " + result.getName() + " " + trials.get() + 
 					" trials completed " + testCount.get() + " tests completed.");
 		}
 		
@@ -431,17 +420,17 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			int trialClazzFails = trialClassDefFailures.get();
 			
 			
-			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-				reporter.log("checkDoneRunningNonMetaTrials() " + trialsRan + " =? " +
+			if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+				logger.log("checkDoneRunningNonMetaTrials() " + trialsRan + " =? " +
 						trialsWhichCanRun + 
 						"\n trialClazzFails=" + trialClazzFails + " ignoredTrials=" +
 						ignoredTrials);
 			}
 			if (trialsRan == trialsWhichCanRun + trialClazzFails + ignoredTrials) {
-				if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
+				if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
 					
-					if (memory.isDefaultSystemExitor()) {
-						reporter.log("debugging Tests4J_NotificationManager threads");
+					if (logger.isMainReporter()) {
+						logger.log("debugging Tests4J_NotificationManager threads");
 					}
 				}
 				synchronized (doneRunningTrials) {
@@ -456,8 +445,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					if (!tip.isFinished()) {
 						TrialDescription td =  tip.getTrialDescription();
 						if (td != null) {
-							if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-								reporter.log("currently working on " + td);
+							if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+								logger.log("currently working on " + td);
 							}
 						}
 					}
@@ -473,8 +462,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 */
 	private synchronized void onDoneRunningNonMetaTrials() {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("onDoneRunningNonMetaTrials()");
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("onDoneRunningNonMetaTrials()");
 		}
 		TrialRunResultMutant runResult = new TrialRunResultMutant();
 		runResult.setStartTime(startTime.get());
@@ -508,13 +497,13 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 									ranMetaTrial.set(true);
 									I_AbstractTrial trial = (I_AbstractTrial) desc.getTrial();
 									if (trial instanceof I_MetaTrial) {
-										if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-											reporter.log("calling MetaTrailProcessor.runMetaTrialMethods");
+										if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+											logger.log("calling MetaTrailProcessor.runMetaTrialMethods");
 										}
 										I_TrialResult result = metaProcessor.runMetaTrialMethods(
 												(I_MetaTrial) trial, new TrialRunResult(runResult));
-										if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-											reporter.log("called MetaTrailProcessor.runMetaTrialMethods");
+										if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+											logger.log("called MetaTrailProcessor.runMetaTrialMethods");
 										}
 										called = true;
 										
@@ -534,7 +523,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 						}
 					} 
 					if (!called) {
-						reporter.onError(new Throwable("Some issue with the meta trial which wasn't called."));
+						logger.onError(new Throwable("Some issue with the meta trial which wasn't called."));
 					}
 				}
 			}
@@ -551,19 +540,17 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#onAllTrialsDone(org.adligo.tests4j.models.shared.results.I_TrialRunResult)
 	 */
 	private void onAllTrialsDone(I_TrialRunResult p) {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("onAllTrialsDone(I_TrialRunResult p)");
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("onAllTrialsDone(I_TrialRunResult p)");
 		}
-		if (memory.isDefaultSystemExitor()) {
-			if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-				reporter.log("Exiting JVM after this last notification.");
+		if (logger.isMainReporter()) {
+			if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+				logger.log("Exiting JVM after this last notification.");
 			}
 		}
 		TrialRunResult endResult = new TrialRunResult(p);
+		listener.onRunCompleted(endResult);
 		reporter.onRunCompleted(endResult);
-		if (listener != null) {
-			listener.onRunCompleted(endResult);
-		}
 		threadManager.shutdown();
 	}
 
@@ -572,8 +559,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 * @param runResult
 	 */
 	private void stopRecordingTrialsRun(TrialRunResultMutant runResult) {
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("stopRecordingTrialsRun(TrialRunResultMutant runResult)");
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("stopRecordingTrialsRun(TrialRunResultMutant runResult)");
 		}
 		I_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
 		if (allCoverageRecorder != null) {
@@ -601,8 +588,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			runResult.setCoverage(toAdd);
 		}
 		runResult.setPassingTrials(passingTrialNames);
-		if (reporter.isLogEnabled(Tests4J_NotificationManager.class)) {
-			reporter.log("stopRecordingTrialsRun(TrialRunResultMutant runResult) finished");
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			logger.log("stopRecordingTrialsRun(TrialRunResultMutant runResult) finished");
 		}
 	}
 	

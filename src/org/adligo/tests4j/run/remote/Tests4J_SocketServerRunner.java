@@ -19,11 +19,12 @@ import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
-import org.adligo.tests4j.models.shared.system.I_SystemExit;
+import org.adligo.tests4j.models.shared.system.DefaultLogger;
+import org.adligo.tests4j.models.shared.system.DefaultSystem;
+import org.adligo.tests4j.models.shared.system.I_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
@@ -42,7 +43,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 	private BlockingQueue<Tests4J_SocketMessage> messages = new ArrayBlockingQueue<>(100);
 	private Map<Tests4J_SocketMessage, I_AfterMessageHandler> afterMessageTransportHandlers =
 			new ConcurrentHashMap<Tests4J_SocketMessage, I_AfterMessageHandler>();
-	private I_Tests4J_Reporter reporter = new SummaryReporter();
+	private static I_Tests4J_Logger logger;
 	private OutputStream out;
 	private InputStream in;
 	private Tests4J_Commands lastCommnadSent;
@@ -53,7 +54,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
 	private AfterShutdownHandler afterShutdownHandler;
-	private I_SystemExit exitor = new DefaultSystemExitor();
+	private I_System system = new DefaultSystem();
 	private ExecutorService listenerService;
 	private I_Tests4J_Controls controlls;
 	
@@ -62,16 +63,15 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 		//note these lines will never be testable as it runs System.exit(0);
 		Tests4J_SocketServerRunner runner = new Tests4J_SocketServerRunner();
 		
-		SummaryReporter reporter = new SummaryReporter();
-		reporter.setLogOn(Tests4J_SocketServerRunner.class);
-		runner.setReporter(reporter);
 		
-		runner.main(args, new DefaultSystemExitor());
+		runner.main(args, new DefaultSystem());
 	}
 	
-	public void main(String[] args, I_SystemExit pExitor) {
+	public void main(String[] args, I_System pSystem) {
 		Integer port = null;
 		String authCode = "";
+		logger = new DefaultLogger(pSystem, null);
+		
 		for (int i = 0; i < args.length; i++) {
 			if("-port".equalsIgnoreCase(args[i])) { //$NON-NLS-1$
 				if (args.length > i +1) {
@@ -88,21 +88,21 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 		}
 		
 		if (port == null) {
-			if (reporter.isLogEnabled(Tests4J_SocketServerRunner.class)) {
-				reporter.log("Tests4J_SocketServerRunner: Port is null exiting.");
+			if (logger.isLogEnabled(Tests4J_SocketServerRunner.class)) {
+				logger.log("Tests4J_SocketServerRunner: Port is null exiting.");
 			}
 			return;
 		}
 		if (StringMethods.isEmpty(authCode)) {
-			if (reporter.isLogEnabled(Tests4J_SocketServerRunner.class)) {
-				reporter.log("Tests4J_SocketServerRunner: AuthCode is empty exiting.");
+			if (logger.isLogEnabled(Tests4J_SocketServerRunner.class)) {
+				logger.log("Tests4J_SocketServerRunner: AuthCode is empty exiting.");
 			}
 			return;
 		}
 		try {
 			InetAddress localhost = InetAddress.getLocalHost();
 			info = new Tests4J_RemoteInfo(localhost.getHostName(), port, authCode);
-			startup(pExitor);
+			startup(pSystem);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -111,14 +111,14 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 	}
 	
 	public void startup() {
-		startup(new DefaultSystemExitor());
+		
+		startup(new DefaultSystem());
 	}
 	
-	public void startup(I_SystemExit pExitor) {
+	public void startup(I_System pSystem) {
 		
-		afterShutdownHandler = new AfterShutdownHandler(pExitor);
+		afterShutdownHandler = new AfterShutdownHandler(pSystem);
 		
-		reporter.setLogOn(Tests4J_SocketServerRunner.class);
 		start();
 			
 	}
@@ -133,7 +133,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 	 * starts listening to the connection
 	 */
 	void start() {
-		Tests4J_ThreadFactory factory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SERVER_THREAD_NAME, reporter);
+		Tests4J_ThreadFactory factory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SERVER_THREAD_NAME, logger);
 		listenerService = Executors.newFixedThreadPool(1, factory);
 		listenerService.execute(new Runnable() {
 			
@@ -142,8 +142,8 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 				try {
 					int port = info.getPort();
 					InetAddress localhost = InetAddress.getLocalHost();
-					if (reporter.isLogEnabled(Tests4J_SocketServerRunner.class)) {
-						reporter.log("Tests4J_SocketServerRunner: Starting SocketServer on " + info.getHost() + " " + port);
+					if (logger.isLogEnabled(Tests4J_SocketServerRunner.class)) {
+						logger.log("Tests4J_SocketServerRunner: Starting SocketServer on " + info.getHost() + " " + port);
 					}
 					
 					serverSocket = new ServerSocket(port, 3, localhost);
@@ -153,11 +153,11 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 				    utf8In = new UTF8_InputStream(in);
 				    reader = new RemoteMessageReader(utf8In);
 				    
-				    if (reporter.isLogEnabled(Tests4J_SocketServerRunner.class)) {
-						reporter.log("Tests4J_SocketServerRunner: SocketServer on " + localhost + " " + port + " started");
+				    if (logger.isLogEnabled(Tests4J_SocketServerRunner.class)) {
+						logger.log("Tests4J_SocketServerRunner: SocketServer on " + localhost + " " + port + " started");
 					}
 				} catch (IOException x) {
-					reporter.onError(x);
+					logger.onError(x);
 					shutdown();
 					return;
 				}
@@ -171,10 +171,10 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 							acceptMessage();
 						}
 					} catch (IOException x) {
-						reporter.onError(x);
+						logger.onError(x);
 						return;
 					} catch (InterruptedException e) {
-						reporter.onError(e);
+						logger.onError(e);
 						return;
 					}
 				}
@@ -185,8 +185,8 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 	void acceptMessage() throws IOException {
 		String content = reader.read();
 		if (!StringMethods.isEmpty(content)) {
-			if (reporter.isLogEnabled(Tests4J_SocketServerRunner.class)) {
-				reporter.log("Tests4J_SocketServerRunner: in acceptMessage read line with message;\n" + content);
+			if (logger.isLogEnabled(Tests4J_SocketServerRunner.class)) {
+				logger.log("Tests4J_SocketServerRunner: in acceptMessage read line with message;\n" + content);
 			}
 			Tests4J_SocketMessage message = new Tests4J_SocketMessage(content);
 			processIncomingMessage(message);
@@ -227,7 +227,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 				x.printStackTrace();
 			}
 		}
-		exitor.doSystemExit(0);
+		system.doSystemExit(0);
 	}
 	@Override
 	public void onMetadataCalculated(I_TrialRunMetadata metadata) {
@@ -268,8 +268,8 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 
 	void processIncomingMessage(Tests4J_SocketMessage message) {
 		Tests4J_Commands cmd = message.getCommand();
-		if (reporter.isLogEnabled(Tests4J_SocketServerRunner.class)) {
-			reporter.log("Tests4J_SocketServerRunner: received command " + cmd);
+		if (logger.isLogEnabled(Tests4J_SocketServerRunner.class)) {
+			logger.log("Tests4J_SocketServerRunner: received command " + cmd);
 		}
 		String authCode = info.getAuthCode();
 		
@@ -312,7 +312,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 						String xml = message.getPayload();
 						Tests4J_Params params = new Tests4J_Params();
 						params.fromXml(xml);
-						params.setReporter(reporter);
+						//params.setReporter(reporter);
 						controlls = Tests4J.run(params);
 						send(new Tests4J_SocketMessage(
 								Tests4J_Commands.ACK, 
@@ -333,12 +333,12 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 
 
 
-	public I_SystemExit getExitor() {
-		return exitor;
+	public I_System getSystem() {
+		return system;
 	}
 
-	public void setExitor(I_SystemExit exitor) {
-		this.exitor = exitor;
+	public void setSystem(I_System p) {
+		this.system = p;
 	}
 
 
@@ -352,8 +352,8 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 	}
 	
 	void transportMessage(Tests4J_SocketMessage p) throws IOException {
-		if (reporter.isLogEnabled(Tests4J_SocketServerRunner.class)) {
-			reporter.log("sending command " + p.getCommand());
+		if (logger.isLogEnabled(Tests4J_SocketServerRunner.class)) {
+			logger.log("sending command " + p.getCommand());
 		}
 		lastCommnadSent = p.getCommand();
 		XML_Builder builder = new XML_Builder();
@@ -373,17 +373,17 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 		return connected.get();
 	}
 	
-	public I_Tests4J_Reporter getReporter() {
-		return reporter;
+	public I_Tests4J_Logger getLogger() {
+		return logger;
 	}
 
 	@SuppressWarnings("null")
-	public void setReporter(I_Tests4J_Reporter p) {
+	public void setReporter(I_Tests4J_Logger p) {
 		if (p == null) {
 			//throw a NPE
 			p.hashCode();
 		} else {
-			reporter = p;
+			logger = p;
 		}
 	}
 

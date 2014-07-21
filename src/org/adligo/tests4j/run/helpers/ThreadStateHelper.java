@@ -4,12 +4,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 
 public class ThreadStateHelper {
-	private I_Tests4J_Reporter reporter;
+	private I_Tests4J_Logger reporter;
 	
-	public ThreadStateHelper(I_Tests4J_Reporter p) {
+	public ThreadStateHelper(I_Tests4J_Logger p) {
 		reporter = p;
 	}
 	

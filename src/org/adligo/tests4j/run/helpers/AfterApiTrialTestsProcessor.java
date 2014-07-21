@@ -11,6 +11,7 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_ApiTrial;
+import org.adligo.tests4j.run.discovery.TrialDescription;
 
 /**
  * This class should behave like a model (not thread safe)

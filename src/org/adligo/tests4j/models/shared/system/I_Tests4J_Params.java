@@ -46,14 +46,6 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	public Set<String> getTests();
 	
 	/**
-	 * The reporter originally used to print messages to the console,
-	 * since Test4J usually modifies System.out and System.err
-	 * so that it can be captured as part of the TrialResult.
-	 * 
-	 * @return
-	 */
-	public I_Tests4J_Reporter getReporter();
-	/**
 	 * The factory for the coverage plug-in, used to compute
 	 * the java source code covered by this test.
 	 * A null value means don't calculate coverage.
@@ -61,22 +53,30 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	 * @return
 	 */
 	public Class<? extends I_CoveragePluginFactory> getCoveragePluginFactoryClass();
-	
+
 	/**
-	 * The number of threads which to process 
-	 * Trials concurrently, the thread pool size
-	 * defaults to 32, 
+	 * a recommendation for the number of TrailThreads for
+	 * environments that allow multi threading (like JSE, but not GWT).
+	 * The actual number of threads is calculated as follows;
 	 * 
-	 * @return
+	 * If this setting is Null;
+	 * Use the smallest number of threads from either;
+	 *   Runtime.getRuntime().availableProcessors() * 2
+	 *   or 
+	 *   the number of Trials (@see getTrials())
+	 *   
+	 * If this setting is NOT null;
+	 * Use the smallest number of threads from either;
+	 *   this setting 
+	 *   or 
+	 *   the number of Trials (@see getTrials())
+	 * 
+	 * So a run of a single trial, will only use one trial thread
+	 * for it's processing.
+	 * 
+	 * @return null for the defaults
 	 */
-	public I_ThreadCount getThreadCount();
-	/**
-	 * the number of theads from the trial count
-	 * but is automatically
-	 * reduced to the number of trials if it is smaller.
-	 * @return
-	 */
-	public int getTrialThreadCount();
+	public Integer getRecommendedTrialThreadCount();
 	
 	/**
 	 * the list of classes to report for 
@@ -84,13 +84,6 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	 * @return
 	 */
 	public List<Class<?>> getLoggingClasses();
-	
-	/**
-	 * @return the delegate for System.exit(int status)
-	 *  or if you want to keep the jvm from exiting during
-	 *  your call to Tests4j
-	 */
-	public I_SystemExit getSystemExit();
 	
 	/**
 	 * 
@@ -112,7 +105,11 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	/**
 	 * 
 	 * @return a evaluator lookup 
-	 * for plug-able assertion framework.
+	 * for the plug-able uniform assertion framework.
+	 * assertUniform
+	 * assertNotUniform
+	 * assertUniformThrown
+	 * exc
 	 */
 	public I_EvaluatorLookup getEvaluatorLookup();
 

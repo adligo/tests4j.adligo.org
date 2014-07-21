@@ -10,5 +10,5 @@ package org.adligo.tests4j.models.shared.system;
  *
  */
 public interface I_CoveragePluginFactory {
-	public I_CoveragePlugin create(I_Tests4J_Reporter reporter);
+	public I_CoveragePlugin create(I_Tests4J_Logger reporter);
 }

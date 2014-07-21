@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.xml.XML_Builder;
 import org.adligo.tests4j.models.shared.xml.XML_Chars;
 import org.adligo.tests4j.run.remote.io.I_CharacterInputStream;
@@ -28,7 +28,7 @@ public class Tests4J_RemoteRunner implements Runnable {
 	private AtomicBoolean running = new AtomicBoolean(false);
 	private I_Tests4J_RemoteInfo info;
 	private I_Tests4J_Params params;
-	private I_Tests4J_Reporter reporter;
+	private I_Tests4J_Logger reporter;
 	private Socket socket;
 	private OutputStream out;
 	private InputStream in;
@@ -38,7 +38,7 @@ public class Tests4J_RemoteRunner implements Runnable {
 	private volatile RemoteRunnerStateEnum state;
 	
 	public Tests4J_RemoteRunner(I_Tests4J_RemoteInfo pInfo, I_Tests4J_Params pParams,
-			I_Tests4J_Reporter pReporter) {
+			I_Tests4J_Logger pReporter) {
 		info = pInfo;
 		params = pParams;
 		reporter = pReporter;

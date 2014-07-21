@@ -29,10 +29,12 @@ import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
+import org.adligo.tests4j.run.discovery.TestDescription;
+import org.adligo.tests4j.run.discovery.TrialDescription;
 
 public class TrialInstancesProcessor implements Runnable,  
 	I_TestFinishedListener {
@@ -43,7 +45,7 @@ public class TrialInstancesProcessor implements Runnable,
 	private Tests4J_Manager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
-	private I_Tests4J_Reporter reporter;
+	private I_Tests4J_Logger reporter;
 	private I_AbstractTrial trial;
 	private BaseTrialResultMutant trialResultMutant;
 	
@@ -73,18 +75,17 @@ public class TrialInstancesProcessor implements Runnable,
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
 	public TrialInstancesProcessor(Tests4J_Memory p, 
-			I_Tests4J_NotificationManager pNotificationManager,
-			I_Tests4J_Reporter pReporter) {
+			I_Tests4J_NotificationManager pNotificationManager) {
 		memory = p;
 		notifier = pNotificationManager;
-		reporter = pReporter;
+		reporter = p.getLogger();
 		threadManager = p.getThreadManager();
 		
-		testsRunner = new TestRunable(memory, pReporter);
+		testsRunner = new TestRunable(memory);
 		testsRunner.setListener(this);
 		testRunService = threadManager.createNewTestRunService();
 		
-		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), pReporter);
+		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), reporter);
 		bindings.setAssertListener(testsRunner);
 		
 		afterSouceFileTrialTestsProcessor = new AfterSourceFileTrialTestsProcessor(memory);
@@ -106,7 +107,7 @@ public class TrialInstancesProcessor implements Runnable,
 				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
 					//start recording the trial coverage,
 					//code cover the creation of the class, in the trialDescrption
-					I_CoveragePlugin plugin = memory.getPlugin();
+					I_CoveragePlugin plugin = memory.getCoveragePlugin();
 					if (plugin != null) {
 						if (plugin.canThreadGroupLocalRecord()) {
 							//@diagram sync on 7/5/2014
@@ -120,11 +121,11 @@ public class TrialInstancesProcessor implements Runnable,
 				}
 				
 			} catch (Exception x) {
-				memory.getReporter().onError(x);
+				memory.getLogger().onError(x);
 				notifier.onDescibeTrialError();
 				return;
 			} catch (Error x) {
-				memory.getReporter().onError(x);
+				memory.getLogger().onError(x);
 				notifier.onDescibeTrialError();
 				return;
 			}
@@ -144,11 +145,11 @@ public class TrialInstancesProcessor implements Runnable,
 								runTrial();
 							}	
 						} catch (RejectedExecutionException x) {
-							memory.getReporter().onError(x);
+							memory.getLogger().onError(x);
 						} catch (Exception x) {
-							memory.getReporter().onError(x);
+							memory.getLogger().onError(x);
 						} catch (Error x) {
-							memory.getReporter().onError(x);
+							memory.getLogger().onError(x);
 						} 
 					}
 				}

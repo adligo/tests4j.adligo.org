@@ -9,6 +9,8 @@ import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayConstants;
+import org.adligo.tests4j.models.shared.system.I_System;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 import sun.util.logging.resources.logging;
@@ -29,7 +31,7 @@ public class LineDiffTextDisplay {
 	private Integer actual;
 	private String actualLine;
 	
-	public void display(I_LineOut out, I_TextLinesCompareResult result, int diffLimit) {
+	public void display(I_Tests4J_Logger out, I_TextLinesCompareResult result, int diffLimit) {
 		actualLines = result.getActualLines();
 		exampleLines = result.getExpectedLines();
 		
@@ -44,7 +46,7 @@ public class LineDiffTextDisplay {
 				}
 				I_DiffIndexesPair pair = diff.getIndexes();
 				if (type == null) {
-					out.println(constants.getError());
+					out.log(constants.getError());
 				} else if ( type != LineDiffType.MATCH) {
 					
 					Integer expected = diff.getExpectedLineNbr();
@@ -56,17 +58,17 @@ public class LineDiffTextDisplay {
 					String actualLine = getActualLine(actualLines, actual);
 					
 					if (expectedLine == null && actualLine == null) {
-						out.println(constants.getError());
+						out.log(constants.getError());
 					} else {
 					
 						switch (type) {
 							case PARTIAL_MATCH:
 								if (pair == null) {
-									out.println(constants.getError());
+									out.log(constants.getError());
 									break;
 								}
 								if (expectedLine == null || actualLine == null) {
-									out.println(constants.getError());
+									out.log(constants.getError());
 									break;
 								} 
 								diffCount++;
@@ -75,47 +77,47 @@ public class LineDiffTextDisplay {
 								I_DiffIndexes actualIndexes = pair.getActual();
 								
 								try {
-									out.println(constants.getTheLineOfTextIsDifferent());
+									out.log(constants.getTheLineOfTextIsDifferent());
 									
 									String [] exampleDiffs = exampleIndexes.getDifferences(expectedLine);
 									
-									out.println(constants.getExpected() + " " + expected);
-									out.println(expectedLine);
+									out.log(constants.getExpected() + " " + expected);
+									out.log(expectedLine);
 									if (exampleDiffs.length >= 1) {
-										out.println(constants.getDifferences());
+										out.log(constants.getDifferences());
 										for (int i = 0; i < exampleDiffs.length; i++) {
-											out.println("'" + exampleDiffs[i] + "'");
+											out.log("'" + exampleDiffs[i] + "'");
 										}
 									}
-									out.println(constants.getActual()  + " " + actual);
-									out.println(actualLine);
+									out.log(constants.getActual()  + " " + actual);
+									out.log(actualLine);
 									String [] actualDiffs = actualIndexes.getDifferences(actualLine);
 									if (actualDiffs.length >= 1) {
-										out.println(constants.getDifferences());
+										out.log(constants.getDifferences());
 										for (int i = 0; i < actualDiffs.length; i++) {
-											out.println("'" + actualDiffs[i] + "'");
+											out.log("'" + actualDiffs[i] + "'");
 										}	
 									}
 								} catch (StringIndexOutOfBoundsException x) {
-									out.println(constants.getError());
+									out.log(constants.getError());
 								}
 								break;
 							case MISSING_ACTUAL_LINE:
 								if (actualLine != null) {
 									diffCount++;
-									out.println(constants.getTheFollowingActualLineOfTextIsMissing() + actual);
-									out.println(actualLine);
+									out.log(constants.getTheFollowingActualLineOfTextIsMissing() + actual);
+									out.log(actualLine);
 								} else {
-									out.println(constants.getError());
+									out.log(constants.getError());
 								}
 								break;
 							case MISSING_EXPECTED_LINE:
 								if (expectedLine != null) {
 									diffCount++;
-									out.println(constants.getTheFollowingExpectedLineOfTextIsMissing() + expected);
-									out.println(expectedLine);
+									out.log(constants.getTheFollowingExpectedLineOfTextIsMissing() + expected);
+									out.log(expectedLine);
 								} else {
-									out.println(constants.getError());
+									out.log(constants.getError());
 								}
 								break;
 						}

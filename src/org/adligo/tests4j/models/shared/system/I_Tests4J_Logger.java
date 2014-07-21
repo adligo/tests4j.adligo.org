@@ -1,0 +1,52 @@
+package org.adligo.tests4j.models.shared.system;
+
+
+
+/**
+ * Implementations of this interface are intended to report 
+ * out message from the test run.  It is basically a 
+ * logging facade for tests4j internals.
+ * 
+ * Implementations are intended to be thread safe, and
+ * have a default no argument constructor so they can
+ * be passed into Tests4j via the I_Tests4j_Params.
+ * 
+ * @author scott
+ *
+ */
+public interface I_Tests4J_Logger {
+	/**
+	 * log a message out to the main test run location.
+	 * @param p
+	 */
+	public void log(String p);
+
+	/**
+	 * Notify the reporter that a 
+	 * internal Test4J
+	 * Error has been thrown.
+	 * 
+	 * This should generally not occur.
+	 * 
+	 * @param p
+	 */
+	public void onError(Throwable p);
+	/**
+	 * If the log is enabled, used to optimize string 
+	 * creation of log messages.
+	 * 
+	 * @return
+	 */
+	public boolean isLogEnabled(Class<?> clazz);
+
+	/**
+	 * if this is a regular Tests4J test run 
+	 * this will return true.
+	 * If tests4J is testing itself through
+	 * trial run recursion this will return false.
+	 * 
+	 * @return
+	 */
+	public boolean isMainReporter();
+
+}

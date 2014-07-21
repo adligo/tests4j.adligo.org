@@ -5,6 +5,7 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayConstants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderConstants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
 
 public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
@@ -48,5 +49,20 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	@Override
 	public I_Tests4J_LineDiffTextDisplayConstants getLineDiffTextDisplayMessages() {
 		return delegate.getLineDiffTextDisplayMessages();
+	}
+
+	@Override
+	public String getTests4J_NullParamsExceptionMessage() {
+		return delegate.getTests4J_NullParamsExceptionMessage();
+	}
+
+	@Override
+	public String getTests4J_NullListenerExceptionMessage() {
+		return delegate.getTests4J_NullListenerExceptionMessage();
+	}
+
+	@Override
+	public I_Tests4J_ParamReaderConstants getTests4j_ParamReaderConstants() {
+		return delegate.getTests4j_ParamReaderConstants();
 	}
 }

@@ -1,4 +1,4 @@
-package org.adligo.tests4j.run.helpers;
+package org.adligo.tests4j.run.discovery;
 
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;

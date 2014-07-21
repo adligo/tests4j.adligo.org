@@ -14,19 +14,17 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
+import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.system.DefaultSystemExitor;
 import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_SystemExit;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Reporter;
+import org.adligo.tests4j.models.shared.system.I_System;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
-import org.adligo.tests4j.models.shared.system.Tests4J_Params;
+import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.AfterTrial;
 import org.adligo.tests4j.models.shared.trials.BeforeTrial;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -37,6 +35,7 @@ import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
 import org.adligo.tests4j.models.shared.trials.TrialTypeAnnotation;
 import org.adligo.tests4j.models.shared.trials.UseCaseScope;
+import org.adligo.tests4j.run.discovery.TrialDescription;
 
 /**
  * Instances of this class represent the main
@@ -62,7 +61,7 @@ public class Tests4J_Memory {
 	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private AtomicBoolean metaTrial = new AtomicBoolean(false);
-	private Set<String> tests;
+	private CopyOnWriteArraySet<String> tests;
 	/**
 	 * The key is the class name of the trial
 	 * 
@@ -83,20 +82,32 @@ public class Tests4J_Memory {
 	
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
 	private int allTrialCount;
-	private I_CoveragePlugin plugin;
-	private I_Tests4J_Reporter reporter;
+	private I_CoveragePlugin coveragePlugin;
+	private I_Tests4J_Logger logger;
 	private ThreadLocalOutputStream out;
 	private CopyOnWriteArrayList<TrialInstancesProcessor> trialInstancesProcessors = 
 			new CopyOnWriteArrayList<TrialInstancesProcessor>();
 
-	private I_TrialRunListener listener;
+	
+	/**
+	 * a safe wrapper around the I_TrialRunListener passed to Test4J.run
+	 * this should never be null during the trial run
+	 */
+	private TrialRunListenerDelegator listener;
+	
+	/**
+	 * this is the reporter that tests4j uses to report it's own
+	 * progress, and should never be null during the trial run
+	 */
+	private I_TrialRunListener reporter;
+	
 	private Tests4J_Manager threadManager;
 	private ArrayBlockingQueue<I_TrialRunMetadata> metaTrialDataBlock = new ArrayBlockingQueue<I_TrialRunMetadata>(1);
 	private TrialDescription metaTrialDescription;
 	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private boolean hasRemoteDelegation = false;
-	private EvaluatorLookup evaluationLookup;
-	private I_SystemExit systemExit;
+	private I_EvaluatorLookup evaluationLookup;
+	private I_System system;
 	
 	/**
 	 * 
@@ -104,62 +115,7 @@ public class Tests4J_Memory {
 	 * 
 	 * @diagram sync on 5/21/2014 with Overview.seq 
 	 */
-	public Tests4J_Memory(Tests4J_Params params, ThreadLocalOutputStream pOut, 
-			I_TrialRunListener pListener,I_CoveragePlugin pPlugin) {
-		out = pOut;
-		listener = pListener;
-		trialClasses.addAll(params.getTrials());
-		evaluationLookup = new EvaluatorLookup(params.getEvaluatorLookup());
-		Class<? extends I_MetaTrial> metaTrialClass = params.getMetaTrialClass();
-		if (metaTrialClass != null) {
-			trialClasses.add(metaTrialClass);
-			metaTrial.set(true);
-		}
-		systemExit = params.getSystemExit();
-		reporter = params.getReporter();
-		
-		if (reporter.isLogEnabled(Tests4J_Memory.class)) {
-			reporter.log("Starting thread manager with " + params.getTrialThreadCount());
-		}
-		/**
-		 * @diagram sync //TODO
-		 */
-		int threads = params.getTrialThreadCount();
-		Collection<I_Tests4J_RemoteInfo> remoteInfo = params.getRemoteInfo();
-		if (remoteInfo.size() >= 1) {
-			hasRemoteDelegation = true;
-		}
-		threads = threads + remoteInfo.size();
-		threadManager = new Tests4J_Manager(
-				threads,
-				params.getSystemExit(),
-				reporter);
-		
-		Set<String> pTests = params.getTests();
-		if (pTests.size() >= 1) {
-			tests = new CopyOnWriteArraySet<String>();
-			tests.addAll(pTests);
-			tests = Collections.unmodifiableSet(tests);
-		}
-		allTrialCount = trialClasses.size();
-		plugin = pPlugin;
-		if (!LOADED_COMMON_CLASSES.get()) {
-			synchronized (LOADED_COMMON_CLASSES) {
-				if (!LOADED_COMMON_CLASSES.get()) {
-					COMMON_CLASSES = getCommonClasses(reporter);
-				}
-				LOADED_COMMON_CLASSES.set(true);
-			}
-		}
-		
-		metaTrialClass = params.getMetaTrialClass();
-		if (metaTrialClass != null) {
-			TrialDescriptionProcessor trialDescProcessor = new TrialDescriptionProcessor(this);
-			trialDescProcessor.addTrialDescription(metaTrialClass);
-		}
-
-		long now = System.currentTimeMillis();
-		
+	public Tests4J_Memory() {
 		
 	}
 	
@@ -167,7 +123,7 @@ public class Tests4J_Memory {
 	 * this is the set of common classes that 
 	 * @return
 	 */
-	private List<Class<?>> getCommonClasses(I_Tests4J_Reporter log) {
+	private List<Class<?>> getCommonClasses(I_Tests4J_Logger log) {
 		List<Class<?>> toRet = new ArrayList<Class<?>>();
 		//start with common
 		toRet.add(TrialType.class);
@@ -263,8 +219,8 @@ public class Tests4J_Memory {
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public I_CoveragePlugin getPlugin() {
-		return plugin;
+	public I_CoveragePlugin getCoveragePlugin() {
+		return coveragePlugin;
 	}
 	
 	/**
@@ -312,8 +268,8 @@ public class Tests4J_Memory {
 		return toRet;
 	}
 
-	public I_Tests4J_Reporter getReporter() {
-		return reporter;
+	public I_Tests4J_Logger getLogger() {
+		return logger;
 	}
 
 	public List<TrialInstancesProcessor> getTrialInstancesProcessors() {
@@ -346,7 +302,7 @@ public class Tests4J_Memory {
 		return false;
 	}
 
-	public I_TrialRunListener getListener() {
+	public TrialRunListenerDelegator getListener() {
 		return listener;
 	}
 
@@ -407,21 +363,69 @@ public class Tests4J_Memory {
 		return hasRemoteDelegation;
 	}
 
-	public EvaluatorLookup getEvaluationLookup() {
+	public I_EvaluatorLookup getEvaluationLookup() {
 		return evaluationLookup;
 	}
 
-	public I_SystemExit getSystemExit() {
-		return systemExit;
+	public I_System getSystem() {
+		return system;
+	}
+
+	public I_TrialRunListener getReporter() {
+		return reporter;
+	}
+
+	protected void setReporter(I_TrialRunListener reporter) {
+		this.reporter = reporter;
+	}
+
+	protected void setListener(TrialRunListenerDelegator listener) {
+		this.listener = listener;
+	}
+
+	protected void setThreadManager(Tests4J_Manager threadManager) {
+		this.threadManager = threadManager;
+	}
+
+	protected void setTrialClasses(
+			Collection<Class<? extends I_AbstractTrial>> p) {
+		
+		for (Class<? extends I_AbstractTrial> clazz: p) {
+			if (I_MetaTrial.class.isAssignableFrom(clazz)) {
+				metaTrial.set(true);
+			}
+		}
+		allTrialCount = p.size();
+		trialClasses.addAll(p);
+	}
+
+	protected void setEvaluationLookup(I_EvaluatorLookup p) {
+		evaluationLookup = p;
 	}
 
 	/**
-	 * this helps debug only the main tests4j trial run, when it isn't behaving.
-	 * tests4j tests it self, which can get a little confusing/annoying if
-	 * you have a breakpoint near a tests4j life cycle point.
+	 * paramTests
 	 * @return
 	 */
-	public boolean isDefaultSystemExitor() {
-		return systemExit instanceof DefaultSystemExitor;
+	public CopyOnWriteArraySet<String> getTests() {
+		return tests;
 	}
+
+	protected void setTests(Collection<String> p) {
+		tests.clear();
+		tests.addAll(p);
+	}
+
+	protected void setLogger(I_Tests4J_Logger logger) {
+		this.logger = logger;
+	}
+
+	protected void setCoveragePlugin(I_CoveragePlugin coveragePlugin) {
+		this.coveragePlugin = coveragePlugin;
+	}
+
+	protected void setThreadLocalOutput(ThreadLocalOutputStream p) {
+		this.out = p;
+	}
+
 }
