@@ -9,7 +9,7 @@ import java.io.PrintStream;
  * @author scott
  *
  */
-public class DefaultSystem implements I_System {
+public class DefaultSystem implements I_Tests4J_System {
 	private static final PrintStream OUT = System.out;
 
 	@Override

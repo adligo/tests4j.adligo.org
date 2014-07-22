@@ -11,12 +11,12 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
  * @author scott
  *
  */
-public class TrialRunListenerDelegator implements I_TrialRunListener {
+public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 	public static final String TRIAL_RUN_LISTENER_DELEGATE_REQUIRES_A_I_TESTS4J_LOGGER = "TrialRunListenerDelegate requires a I_Tests4J_Logger.";
-	private I_TrialRunListener delegate;
+	private I_Tests4J_Listener delegate;
 	private I_Tests4J_Logger logger;
 	
-	public TrialRunListenerDelegator(I_TrialRunListener p, I_Tests4J_Logger pLogger) {
+	public Tests4J_ListenerDelegator(I_Tests4J_Listener p, I_Tests4J_Logger pLogger) {
 		//allow null delegate
 		delegate = p;
 		

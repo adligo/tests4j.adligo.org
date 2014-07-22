@@ -12,17 +12,24 @@ import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.system.I_AssertListener;
-import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
-public class TestRunable implements Runnable, I_AssertListener {
+/**
+ * runs a single test in a thread,
+ * which implements the @Test timeout annotation parameter.
+ * 
+ * @author scott
+ *
+ */
+public class TestRunable implements Runnable, I_Tests4J_AssertListener {
 
 	private Method testMethod;
 	private I_AbstractTrial trial;
-	private I_TestFinishedListener listener;
+	private I_Tests4J_TestFinishedListener listener;
 	private List<Integer> assertionHashes = new ArrayList<Integer>(); 
 	private I_Tests4J_Logger reporter;
 	private TestResultMutant testResultMutant;
@@ -46,7 +53,10 @@ public class TestRunable implements Runnable, I_AssertListener {
 			testResultMutant.setName(testMethod.getName());
 			
 			assertFailed = false;
+			//todo isolated try catch Exception around this next method
+			trial.beforeTests();
 			testMethod.invoke(trial, new Object[] {});
+			
 			if (!assertFailed) {
 				testResultMutant.setPassed(true);
 			}
@@ -60,6 +70,9 @@ public class TestRunable implements Runnable, I_AssertListener {
 				unexpected = x;
 			}
 		}
+		//todo try catch Exception around this next method
+		trial.afterTests();
+		
 		flushAssertionHashes(testResultMutant);
 		if (unexpected != null) {
 			TestFailureMutant failure = new TestFailureMutant();
@@ -87,7 +100,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		return trial;
 	}
 
-	public I_TestFinishedListener getListener() {
+	public I_Tests4J_TestFinishedListener getListener() {
 		return listener;
 	}
 
@@ -99,7 +112,7 @@ public class TestRunable implements Runnable, I_AssertListener {
 		this.trial = trial;
 	}
 
-	public void setListener(I_TestFinishedListener listener) {
+	public void setListener(I_Tests4J_TestFinishedListener listener) {
 		this.listener = listener;
 	}
 	

@@ -29,10 +29,10 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
-import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
-import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
-import org.adligo.tests4j.models.shared.system.TrialRunListenerDelegator;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
+import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.ClassDiscovery;
@@ -50,7 +50,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	private AtomicBoolean doneDescribeingTrials = new AtomicBoolean(false);
 	private AtomicBoolean doneRunningTrials = new AtomicBoolean(false);
 	private Tests4J_Memory memory;
-	private Tests4J_Manager threadManager;
+	private Tests4J_ThreadManager threadManager;
 	/**
 	 * always call reporter first then call listener
 	 */
@@ -58,8 +58,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	/**
 	 * always call reporter first then call listener
 	 */
-	private TrialRunListenerDelegator listener;
-	private I_TrialRunListener reporter;
+	private Tests4J_ListenerDelegator listener;
+	private I_Tests4J_Listener reporter;
 	
 	private final AtomicLong startTime = new AtomicLong();
 	private final AtomicLong assertionCount = new AtomicLong();
@@ -440,8 +440,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					}
 				}
 			} else {
-				List<TrialInstancesProcessor> tips =  memory.getTrialInstancesProcessors();
-				for (TrialInstancesProcessor tip: tips) {
+				List<Tests4J_TrialsRunable> tips =  memory.getTrialInstancesProcessors();
+				for (Tests4J_TrialsRunable tip: tips) {
 					if (!tip.isFinished()) {
 						TrialDescription td =  tip.getTrialDescription();
 						if (td != null) {
@@ -562,7 +562,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
 			logger.log("stopRecordingTrialsRun(TrialRunResultMutant runResult)");
 		}
-		I_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
+		I_Tests4J_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
 		if (allCoverageRecorder != null) {
 			//
 			List<I_PackageCoverage> packageCoverage = allCoverageRecorder.endRecording();

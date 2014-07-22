@@ -8,13 +8,10 @@ public interface I_Tests4J_Delegate {
 	 * 
 	 * @return if the setup method has determined, that a run() can occur.
 	 */
-	public boolean setup(I_TrialRunListener listener, I_Tests4J_Params params);
+	public boolean setup(I_Tests4J_Listener listener, I_Tests4J_Params params);
 	public void run();
 	public I_Tests4J_Controls getControls();
 	
-	public I_Tests4J_Logger getLogger() ;
 	public void setLogger(I_Tests4J_Logger logger);
-	
-	public I_System getSystem();
-	public void setSystem(I_System system);
+	public void setSystem(I_Tests4J_System system);
 }

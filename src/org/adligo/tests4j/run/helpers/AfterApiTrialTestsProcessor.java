@@ -8,7 +8,7 @@ import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_ApiTrial;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -52,7 +52,7 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 			return null;
 		}
 		
-		I_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
+		I_Tests4J_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
 		if (rec != null) {
 			coverage = rec.endRecording();
 			I_PackageCoverage cover = trialDesc.findPackageCoverage(coverage);

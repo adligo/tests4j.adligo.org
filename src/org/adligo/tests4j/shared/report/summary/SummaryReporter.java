@@ -26,12 +26,12 @@ import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.DefaultLogger;
-import org.adligo.tests4j.models.shared.system.I_System;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
-import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.DefaultSystem;
 
-public class SummaryReporter implements I_TrialRunListener  {
+public class SummaryReporter implements I_Tests4J_Listener  {
 	public static final String TEST = "Test: ";
 	public static final String FAILED = "Failed!";
 	public static final String PASSED = "Passed!";

@@ -9,6 +9,12 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
  * This class will block method calls based on the stack.
  * To use instantiate it in your method.
  * 
+ * I have not though this through as a security precaution, 
+ * it is simply a way to make fairly sure
+ * only a few callers can execute specific methods.
+ *   ie ASM could potentially change class names, of the caller or something along those lines to circumvent this  
+ *    protection, assuming it was loaded into memory.
+ *    
  * @author scott
  *
  */

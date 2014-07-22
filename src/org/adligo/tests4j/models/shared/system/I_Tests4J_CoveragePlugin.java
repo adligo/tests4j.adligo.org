@@ -13,7 +13,7 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
  * @author scott
  *
  */
-public interface I_CoveragePlugin {
+public interface I_Tests4J_CoveragePlugin {
 	/**
 	 * this instruments the classes so that
 	 * they notify the recorder
@@ -44,6 +44,6 @@ public interface I_CoveragePlugin {
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public I_CoverageRecorder createRecorder();
+	public I_Tests4J_CoverageRecorder createRecorder();
 	
 }

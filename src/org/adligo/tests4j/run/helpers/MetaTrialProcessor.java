@@ -18,11 +18,11 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.system.I_AssertListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 
-public class MetaTrialProcessor implements I_AssertListener {
+public class MetaTrialProcessor implements I_Tests4J_AssertListener {
 	private static final String AFTER_METADATA_CALCULATED_METHOD = 
 			"afterMetadataCalculated(I_TrialRunMetadata p)";
 	private static final String AFTER_NON_META_TRIALS_RUN_METHOD = 

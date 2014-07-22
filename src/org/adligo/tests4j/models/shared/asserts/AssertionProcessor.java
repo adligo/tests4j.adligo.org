@@ -9,7 +9,7 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvalua
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionCommand;
 import org.adligo.tests4j.models.shared.results.TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
-import org.adligo.tests4j.models.shared.system.I_AssertListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 
 /**
  * this class processes the assert commands
@@ -24,7 +24,7 @@ public class AssertionProcessor {
 	/**
 	 * @param cmd
 	 */
-	public static void evaluate(I_AssertListener listener, I_SimpleAssertCommand cmd) {
+	public static void evaluate(I_Tests4J_AssertListener listener, I_SimpleAssertCommand cmd) {
 		if (cmd.evaluate()) {
 			synchronized (listener) {
 				listener.assertCompleted(cmd);
@@ -36,7 +36,7 @@ public class AssertionProcessor {
 		}
 	}
 	
-	public static void evaluate(I_AssertListener listener, I_ThrownAssertCommand cmd, I_Thrower p) {
+	public static void evaluate(I_Tests4J_AssertListener listener, I_ThrownAssertCommand cmd, I_Thrower p) {
 		if (cmd.evaluate(p)) {
 			synchronized (listener) {
 				listener.assertCompleted(cmd);
@@ -48,7 +48,7 @@ public class AssertionProcessor {
 		}
 	}
 
-	public static void onAssertionFailure(I_AssertListener listener,
+	public static void onAssertionFailure(I_Tests4J_AssertListener listener,
 			I_AssertionData data, String failureMessage) {
 		TestFailureMutant fm = new TestFailureMutant();
 		fm.setMessage(failureMessage);

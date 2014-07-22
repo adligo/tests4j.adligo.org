@@ -10,8 +10,8 @@ import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderConstants;
-import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_CoveragePluginFactory;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -42,7 +42,7 @@ public class Tests4J_ParamsReader {
 	 * information to actually run.
 	 */
 	private boolean runnable = true;
-	private I_CoveragePlugin coveragePlugin;
+	private I_Tests4J_CoveragePlugin coveragePlugin;
 	private List<Class<? extends I_AbstractTrial>> trials = new ArrayList<Class<? extends I_AbstractTrial>>();
 	private List<Class<? extends I_AbstractTrial>> instrumentedTrials = new ArrayList<Class<? extends I_AbstractTrial>>();
 	private Class<? extends I_MetaTrial> metaTrialClass;
@@ -59,12 +59,7 @@ public class Tests4J_ParamsReader {
 		params = pParams;
 		logger = pLogger;
 		
-		try {
-			coveragePlugin = createCoveragePlugin();
-		} catch (Throwable t) {
-			//some error/exception with the coveragePlugin, try to recover
-			logger.onError(t);
-		}
+		
 		try {
 			getTrialsFromParams(pParams);
 		} catch (Throwable t) {
@@ -73,12 +68,33 @@ public class Tests4J_ParamsReader {
 			runnable = false;
 			return;
 		}
+		
 		if (trials.size() == 0 ) {
 			I_Tests4J_ParamReaderConstants constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
 			logger.log(constants.getNoTrialsToRun());
 			runnable = false;
 			return;
 		}
+		
+		try {
+			coveragePlugin = createCoveragePlugin();
+		} catch (Throwable t) {
+			//some error/exception with the coveragePlugin, try to recover
+			logger.onError(t);
+		}
+		if (coveragePlugin != null) {
+			try {
+				instrumentClasses();
+			} catch (Throwable t) {
+				//some error/exception with the trials, do NOT try to recover
+				I_Tests4J_ParamReaderConstants constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
+				logger.log(constants.getThereWasAIssueInstrumentingClassesForCodeCoverage());
+				logger.onError(t);
+				runnable = false;
+				return;
+			}
+		}
+		
 		try {
 			Set<String> paramTests = pParams.getTests();
 			
@@ -101,22 +117,7 @@ public class Tests4J_ParamsReader {
 			logger.onError(t);
 		}
 		trialThreadCount = determineTrialThreads(recommendedTrialThreads);
-		if (coveragePlugin != null) {
-			try {
-				List<Class<? extends I_AbstractTrial>> instrumentedAbstractTrials = coveragePlugin.instrumentClasses(
-						new ArrayList<Class<? extends I_AbstractTrial>>(trials));
-				for (Class<? extends I_AbstractTrial> trialClass: instrumentedAbstractTrials) {
-					instrumentedTrials.add((Class<? extends I_Trial>) trialClass);
-				}
-			} catch (Throwable t) {
-				//some error/exception with the trials, do NOT try to recover
-				I_Tests4J_ParamReaderConstants constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
-				logger.log(constants.getThereWasAIssueInstrumentingClassesForCodeCoverage());
-				logger.onError(t);
-				runnable = false;
-				return;
-			}
-		}
+		
 		try {
 			evaluatorLookup = new EvaluatorLookup(params.getEvaluatorLookup());
 		} catch (Throwable t) {
@@ -139,6 +140,14 @@ public class Tests4J_ParamsReader {
 		
 	}
 
+	private void instrumentClasses() {
+		List<Class<? extends I_AbstractTrial>> instrumentedAbstractTrials = coveragePlugin.instrumentClasses(
+				new ArrayList<Class<? extends I_AbstractTrial>>(trials));
+		for (Class<? extends I_AbstractTrial> trialClass: instrumentedAbstractTrials) {
+			instrumentedTrials.add((Class<? extends I_Trial>) trialClass);
+		}
+	}
+
 	public int determineTrialThreads(Integer trialThreads) {
 		if (trialThreads == null) {
 			trialThreads = Runtime.getRuntime().availableProcessors() * 2;
@@ -159,19 +168,19 @@ public class Tests4J_ParamsReader {
 		metaTrialClass = pParams.getMetaTrialClass();
 	}
 	
-	public I_CoveragePlugin createCoveragePlugin() throws Exception {
-		Class<? extends I_CoveragePluginFactory> coveragePluginFactoryClass = params.getCoveragePluginFactoryClass();
+	public I_Tests4J_CoveragePlugin createCoveragePlugin() throws Exception {
+		Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginFactoryClass = params.getCoveragePluginFactoryClass();
 		if (coveragePluginFactoryClass == null) {
 			return null;
 		}
 		
-		I_CoveragePluginFactory factory = coveragePluginFactoryClass.newInstance();
-		I_CoveragePlugin plugin = factory.create(logger);
+		I_Tests4J_CoveragePluginFactory factory = coveragePluginFactoryClass.newInstance();
+		I_Tests4J_CoveragePlugin plugin = factory.create(logger);
 		
 		return plugin;
 	}
 
-	public I_CoveragePlugin getCoveragePlugin() {
+	public I_Tests4J_CoveragePlugin getCoveragePlugin() {
 		return coveragePlugin;
 	}
 

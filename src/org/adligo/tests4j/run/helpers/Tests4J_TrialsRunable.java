@@ -14,6 +14,7 @@ import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
 import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
+import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
@@ -22,27 +23,33 @@ import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.models.shared.results.TrialRunResult;
-import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
-import org.adligo.tests4j.models.shared.system.I_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_TestFinishedListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 
-public class TrialInstancesProcessor implements Runnable,  
-	I_TestFinishedListener {
+/**
+ * A Runnable that polls the queue of trials that 
+ * need to be run, and runs them one at a time,
+ * delegating @Tests to another thread @see TestRunnable.
+ * 
+ * @author scott
+ *
+ */
+public class Tests4J_TrialsRunable implements Runnable,  
+	I_Tests4J_TestFinishedListener {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
 	
 	private Tests4J_Memory memory;
-	private Tests4J_Manager threadManager;
+	private Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
 	private I_Tests4J_Logger reporter;
@@ -61,7 +68,7 @@ public class TrialInstancesProcessor implements Runnable,
 	
 
 	private String trialName;
-	private I_CoverageRecorder trialThreadLocalCoverageRecorder;
+	private I_Tests4J_CoverageRecorder trialThreadLocalCoverageRecorder;
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
@@ -74,7 +81,7 @@ public class TrialInstancesProcessor implements Runnable,
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public TrialInstancesProcessor(Tests4J_Memory p, 
+	public Tests4J_TrialsRunable(Tests4J_Memory p, 
 			I_Tests4J_NotificationManager pNotificationManager) {
 		memory = p;
 		notifier = pNotificationManager;
@@ -107,7 +114,7 @@ public class TrialInstancesProcessor implements Runnable,
 				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
 					//start recording the trial coverage,
 					//code cover the creation of the class, in the trialDescrption
-					I_CoveragePlugin plugin = memory.getCoveragePlugin();
+					I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
 					if (plugin != null) {
 						if (plugin.canThreadGroupLocalRecord()) {
 							//@diagram sync on 7/5/2014
@@ -138,7 +145,7 @@ public class TrialInstancesProcessor implements Runnable,
 							//once in all of the trial threads, having a trial running
 							//in two threads at the same time would be confusing to the users
 							synchronized (trialClazz) {
-								if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+								if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
 									reporter.log("Thread " + Thread.currentThread().getName() +
 											" is running trial;\n" +trialDescription.getTrialName());
 								}
@@ -180,7 +187,7 @@ public class TrialInstancesProcessor implements Runnable,
 	
 	private void runTrial() throws RejectedExecutionException  {
 		
-		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+		if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
 			reporter.log("running trial " + trialName);
 		}
 		apiTrialResultMutant = null;
@@ -206,12 +213,12 @@ public class TrialInstancesProcessor implements Runnable,
 		if (this.trialResultMutant.getFailure() == null) {
 		
 			testsRunner.setTrial(trial);
-			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+			if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
 				reporter.log("running trial tests " + trialName);
 			}
 			runTests();
 			
-			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+			if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
 				reporter.log("finished trial tests" + trialName);
 			}
 			if (trialResultMutant.isPassed()) {
@@ -221,7 +228,7 @@ public class TrialInstancesProcessor implements Runnable,
 			runAfterTrial();
 		}
 		
-		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+		if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
 			reporter.log("calculating trial results " + trialName);
 		}
 		
@@ -241,7 +248,7 @@ public class TrialInstancesProcessor implements Runnable,
 			default:
 				result = new BaseTrialResult(trialResultMutant);
 		}
-		if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+		if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
 			reporter.log("notifying trial finished " + trialName);
 		}
 		notifier.onTrialCompleted(result);
@@ -327,11 +334,11 @@ public class TrialInstancesProcessor implements Runnable,
 		} else {
 			notifier.startingTest(trialName, method.getName());
 			
-			if (reporter.isLogEnabled(TrialInstancesProcessor.class)) {
+			if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
 				reporter.log("starting test; " +trialName + "."+  method.getName());
 			}
 			
-			trial.beforeTests();
+			//trial.beforeTests();
 			testsRunner.setTestMethod(method);
 			testResultFuture = testRunService.submit(testsRunner);
 			
@@ -363,7 +370,7 @@ public class TrialInstancesProcessor implements Runnable,
 			} catch (InterruptedException x) {
 				//do nothing
 			}
-			trial.afterTests();
+			//trial.afterTests();
 		}
 	}
 	
@@ -427,7 +434,7 @@ public class TrialInstancesProcessor implements Runnable,
 	}
 	
 	@Override
-	public void testFinished(TestResult p) {
+	public void testFinished(I_TestResult p) {
 		TestResultMutant forOut = new TestResultMutant(p);
 		forOut.setOutput(memory.getThreadLocalOutput());
 		TestResult result = new TestResult(forOut);

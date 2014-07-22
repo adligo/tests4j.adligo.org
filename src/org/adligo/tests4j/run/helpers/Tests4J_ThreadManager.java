@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.adligo.tests4j.models.shared.system.I_System;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.run.remote.RemoteRunnerStateEnum;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
@@ -24,7 +24,7 @@ import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
  * @author scott
  *
  */
-public class Tests4J_Manager {
+public class Tests4J_ThreadManager {
 	private Tests4J_ThreadFactory trialFactory;
 	private Tests4J_ThreadFactory testFactory;
 	private ExecutorService trialRunService;
@@ -35,11 +35,11 @@ public class Tests4J_Manager {
 			new CopyOnWriteArrayList<Tests4J_RemoteRunner>();
 			
 	private Map<ExecutorService, Future<?>> testRuns = new ConcurrentHashMap<ExecutorService, Future<?>>();
-	private I_System system;
+	private I_Tests4J_System system;
 	private I_Tests4J_Logger reporter;
 	
 	
-	public Tests4J_Manager(int trialThreads, I_System pSystem, I_Tests4J_Logger pReporter) {
+	public Tests4J_ThreadManager(int trialThreads, I_Tests4J_System pSystem, I_Tests4J_Logger pReporter) {
 		system = pSystem;
 		reporter = pReporter;
 		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
@@ -49,7 +49,7 @@ public class Tests4J_Manager {
 	
 	
 	public void shutdown() {
-		if (reporter.isLogEnabled(Tests4J_Manager.class)) {
+		if (reporter.isLogEnabled(Tests4J_ThreadManager.class)) {
 			reporter.log("Tests4J_Manager.shutdown on " + ThreadLogMessageBuilder.getThreadWithGroupNameForLog());
 		}
 		for (Tests4J_RemoteRunner remote: remoteRunners) {

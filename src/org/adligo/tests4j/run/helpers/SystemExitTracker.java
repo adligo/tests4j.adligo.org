@@ -2,7 +2,7 @@ package org.adligo.tests4j.run.helpers;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
-import org.adligo.tests4j.models.shared.system.I_System;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 
 
 /**
@@ -12,7 +12,7 @@ import org.adligo.tests4j.models.shared.system.I_System;
  * @author scott
  *
  */
-public class SystemExitTracker implements I_System {
+public class SystemExitTracker implements I_Tests4J_System {
 	private final ArrayBlockingQueue<Integer> lastStatus = new ArrayBlockingQueue<>(10);
 	
 	@Override

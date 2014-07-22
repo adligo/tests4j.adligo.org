@@ -8,10 +8,10 @@ package org.adligo.tests4j.models.shared.system;
  * @author scott
  *
  */
-public interface I_System {
+public interface I_Tests4J_System {
 	/**
 	 * just like System.out.println(p)
-	 * subbed for testing
+	 * stubbed for testing
 	 * @param p
 	 */
 	public void println(String p);

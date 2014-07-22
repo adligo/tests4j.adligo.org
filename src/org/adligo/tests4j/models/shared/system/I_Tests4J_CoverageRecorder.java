@@ -12,7 +12,7 @@ import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
  * @author scott
  *
  */
-public interface I_CoverageRecorder {
+public interface I_Tests4J_CoverageRecorder {
 	/**
 	 * this start recording for the context of the current recorder
 	 */

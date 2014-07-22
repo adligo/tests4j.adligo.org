@@ -56,7 +56,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * is null or true, and if recordTestCoverage is 
 	 * null or true.
 	 */
-	private Class<? extends I_CoveragePluginFactory> coveragePluginFactoryClass;
+	private Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginFactoryClass;
 	/**
 	 * these classes get reporting turned on 
 	 */
@@ -167,13 +167,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		trials.add(p);
 	}
 	
-	public Class<? extends I_CoveragePluginFactory> getCoveragePluginFactory() {
+	public Class<? extends I_Tests4J_CoveragePluginFactory> getCoveragePluginFactory() {
 		return coveragePluginFactoryClass;
 	}
 	
 
 	
-	public void addTrials(I_TrialList p) {
+	public void addTrials(I_Tests4J_TrialList p) {
 		trials.addAll(p.getTrials());
 	}
 
@@ -290,7 +290,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 
 	public void setCoveragePluginFactoryClass(
-			Class<? extends I_CoveragePluginFactory> coveragePluginConfiguratorClass) {
+			Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginConfiguratorClass) {
 		coveragePluginFactoryClass = coveragePluginConfiguratorClass;
 	}
 
@@ -327,7 +327,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 
 	@Override
-	public Class<? extends I_CoveragePluginFactory> getCoveragePluginFactoryClass() {
+	public Class<? extends I_Tests4J_CoveragePluginFactory> getCoveragePluginFactoryClass() {
 		return coveragePluginFactoryClass;
 	}
 

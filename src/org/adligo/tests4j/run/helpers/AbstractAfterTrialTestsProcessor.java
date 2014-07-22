@@ -12,8 +12,8 @@ import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.system.I_AssertListener;
-import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 import org.adligo.tests4j.models.shared.trials.TrialRecursion;
@@ -30,12 +30,12 @@ import org.adligo.tests4j.run.discovery.TrialDescription;
  * @author scott
  *
  */
-public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListener {
+public abstract class AbstractAfterTrialTestsProcessor implements I_Tests4J_AssertListener {
 	public static final String AFTER_TRIAL_TESTS = "afterTrialTests";
 	private TrialBindings bindings;
 	private TrialDescription trialDescription;
 
-	private I_CoverageRecorder trialThreadLocalCoverageRecorder;
+	private I_Tests4J_CoverageRecorder trialThreadLocalCoverageRecorder;
 	private I_AbstractTrial trial;
 	private TestResultMutant delegatedTestResultMutant;
 	private List<Integer> delegatedTestAssertionHashes; 
@@ -45,7 +45,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 		bindings.setAssertListener(this);
 	}
 
-	public void reset(TrialDescription pDesc, I_CoverageRecorder pRec, I_AbstractTrial pTrial) {
+	public void reset(TrialDescription pDesc, I_Tests4J_CoverageRecorder pRec, I_AbstractTrial pTrial) {
 		delegatedTestResultMutant = null;
 		delegatedTestAssertionHashes = new ArrayList<Integer>();
 		
@@ -92,7 +92,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 	}
 
 
-	protected I_CoverageRecorder getTrialThreadLocalCoverageRecorder() {
+	protected I_Tests4J_CoverageRecorder getTrialThreadLocalCoverageRecorder() {
 		return trialThreadLocalCoverageRecorder;
 	}
 

@@ -2,18 +2,24 @@ package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 
+/**
+ * @see I_Tests4J_Controls controlls
+ * to abort the test run (needed for eclipse fast cancel)
+ * 
+ * @author scott
+ *
+ */
 public class Tests4J_Controls implements I_Tests4J_Controls {
-	private Tests4J_Manager threadManager;
+	private Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notificationManager;
 	
 	public Tests4J_Controls() {
 	}
 	
-	public Tests4J_Controls(Tests4J_Manager pThreadManager,
-			I_Tests4J_NotificationManager pNotificationManager) {
-		
-		threadManager = pThreadManager;
-		notificationManager = pNotificationManager;
+	public Tests4J_Controls(Tests4J_Memory memory) {
+		//anything can be null except memory
+		threadManager = memory.getThreadManager();
+		notificationManager = memory.getNotifier();
 	}
 	@Override
 	public void shutdown() {
@@ -21,11 +27,6 @@ public class Tests4J_Controls implements I_Tests4J_Controls {
 			threadManager.shutdown();
 		}
 	}
-
-	public Tests4J_Manager getThreadManager() {
-		return threadManager;
-	}
-
 
 	@Override
 	public boolean isRunning() {

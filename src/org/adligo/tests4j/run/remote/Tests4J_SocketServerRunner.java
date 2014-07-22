@@ -21,11 +21,11 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.DefaultLogger;
 import org.adligo.tests4j.models.shared.system.DefaultSystem;
-import org.adligo.tests4j.models.shared.system.I_System;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
-import org.adligo.tests4j.models.shared.system.I_TrialRunListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.xml.XML_Builder;
@@ -39,7 +39,7 @@ import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
-public class Tests4J_SocketServerRunner implements I_TrialRunListener {
+public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	private BlockingQueue<Tests4J_SocketMessage> messages = new ArrayBlockingQueue<>(100);
 	private Map<Tests4J_SocketMessage, I_AfterMessageHandler> afterMessageTransportHandlers =
 			new ConcurrentHashMap<Tests4J_SocketMessage, I_AfterMessageHandler>();
@@ -54,7 +54,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
 	private AfterShutdownHandler afterShutdownHandler;
-	private I_System system = new DefaultSystem();
+	private I_Tests4J_System system = new DefaultSystem();
 	private ExecutorService listenerService;
 	private I_Tests4J_Controls controlls;
 	
@@ -67,7 +67,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 		runner.main(args, new DefaultSystem());
 	}
 	
-	public void main(String[] args, I_System pSystem) {
+	public void main(String[] args, I_Tests4J_System pSystem) {
 		Integer port = null;
 		String authCode = "";
 		logger = new DefaultLogger(pSystem, null);
@@ -115,7 +115,7 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 		startup(new DefaultSystem());
 	}
 	
-	public void startup(I_System pSystem) {
+	public void startup(I_Tests4J_System pSystem) {
 		
 		afterShutdownHandler = new AfterShutdownHandler(pSystem);
 		
@@ -333,11 +333,11 @@ public class Tests4J_SocketServerRunner implements I_TrialRunListener {
 
 
 
-	public I_System getSystem() {
+	public I_Tests4J_System getSystem() {
 		return system;
 	}
 
-	public void setSystem(I_System p) {
+	public void setSystem(I_Tests4J_System p) {
 		this.system = p;
 	}
 

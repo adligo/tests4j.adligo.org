@@ -9,7 +9,7 @@ import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.system.I_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -67,7 +67,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		TrialDescription trialDesc = super.getTrialDescription();
 		
 		List<I_PackageCoverage> coverage;
-		I_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
+		I_Tests4J_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
 		if (rec != null) {
 			coverage = rec.endRecording();
 			I_SourceFileCoverage cover = trialDesc.findSourceFileCoverage(coverage);

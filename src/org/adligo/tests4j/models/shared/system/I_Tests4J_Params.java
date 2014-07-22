@@ -52,7 +52,7 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	 * 
 	 * @return
 	 */
-	public Class<? extends I_CoveragePluginFactory> getCoveragePluginFactoryClass();
+	public Class<? extends I_Tests4J_CoveragePluginFactory> getCoveragePluginFactoryClass();
 
 	/**
 	 * a recommendation for the number of TrailThreads for

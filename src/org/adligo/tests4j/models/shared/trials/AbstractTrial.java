@@ -34,7 +34,7 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvalua
 import org.adligo.tests4j.models.shared.common.I_Platform;
 import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
-import org.adligo.tests4j.models.shared.system.I_AssertListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
@@ -50,7 +50,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
-	private I_AssertListener listener;
+	private I_Tests4J_AssertListener listener;
 	private I_Tests4J_Logger reporter;
 	private I_Platform platform;
 	private I_EvaluatorLookup evaluationLookup;

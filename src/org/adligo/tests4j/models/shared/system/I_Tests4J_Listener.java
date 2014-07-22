@@ -14,7 +14,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
  * @author scott
  *
  */
-public interface I_TrialRunListener {
+public interface I_Tests4J_Listener {
 	/**
 	 * @param metadata
 	 * 
