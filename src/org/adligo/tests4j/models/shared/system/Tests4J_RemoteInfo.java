@@ -1,13 +1,71 @@
 package org.adligo.tests4j.models.shared.system;
 
+import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderConstants;
+import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.models.shared.xml.XML_Parser;
+
+/**
+ *  a immutable implementation of I_Tests4J_RemoteInfo,
+ *  used to tell test4j where remote tests4j instances are
+ *  so they can be called/delegated to.
+ *  
+ * @author scott
+ *
+ */
 public class Tests4J_RemoteInfo implements I_Tests4J_RemoteInfo {
+
+	
 	private String host;
 	private int port;
 	private String authCode;
 	
+	protected Tests4J_RemoteInfo() {}
+	
+	public Tests4J_RemoteInfo(String xml) {
+		int [] indexes = XML_Parser.getIndexes(xml, I_Tests4J_RemoteInfo.TAG_NAME);
+		if (indexes == null) {
+			throw XML_Parser.getReadError(I_Tests4J_RemoteInfo.TAG_NAME);
+		}
+		String thisTag = xml.substring(indexes[0], indexes[1]);
+		host = XML_Parser.getAttributeValue(thisTag, I_Tests4J_RemoteInfo.HOST_ATTRIBUTE);
+		port = XML_Parser.getAttributeIntegerValue(thisTag, I_Tests4J_RemoteInfo.PORT_ATTRIBUTE);
+		authCode = XML_Parser.getAttributeValue(thisTag, I_Tests4J_RemoteInfo.AUTH_ATTRIBUTE);
+	}
+	
+	public Tests4J_RemoteInfo(I_Tests4J_RemoteInfo other) {
+		this(other.getHost(), other.getPort(), other.getAuthCode());
+	}
+	
+	/**
+	 * Validates that there is something in the authCode field, by 
+	 * the end of the constructor.  This is done to make Tests4J_ParamsReader
+	 * simpler, by delegating logic.
+	 * 
+	 * @param other
+	 * @param defaultAuthCode
+	 */
+	public Tests4J_RemoteInfo(I_Tests4J_RemoteInfo other, String defaultAuthCode) {
+		this(other);
+		if (authCode == null) {
+			authCode = defaultAuthCode;
+		}
+		if (StringMethods.isEmpty(authCode)) {
+			I_Tests4J_ParamReaderConstants constants = Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
+			throw new IllegalArgumentException(constants.getAuthCodeOrAuthCodeDefaultRequired());
+		}
+	}
+	
 	public Tests4J_RemoteInfo(String pHost, int pPort, String pAuthCode) {
+		if (StringMethods.isEmpty(pHost)) {
+			I_Tests4J_ParamReaderConstants constants = Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
+			throw new IllegalArgumentException(constants.getHostRequired());
+		}
 		host = pHost;
 		port = pPort;
+		//auth code can be empty or null, until the Tests4J_Params reader,
+		//at which point it must either come from the I_Tests4J_Params instance or 
+		// this
 		authCode = pAuthCode;
 	}
 	
@@ -66,6 +124,22 @@ public class Tests4J_RemoteInfo implements I_Tests4J_RemoteInfo {
 		if (port != other.port)
 			return false;
 		return true;
+	}
+
+	@Override
+	public void toXml(I_XML_Builder builder) {
+		builder.indent();
+		int attribsPerLine = builder.getAttributesPerLine();
+		builder.setAttributesPerLine(4);
+		builder.addStartTag(TAG_NAME);
+		builder.addAttribute(HOST_ATTRIBUTE, host);
+		builder.addAttribute(PORT_ATTRIBUTE, "" + port);
+		if ( !StringMethods.isEmpty(authCode)) {
+			builder.addAttribute(AUTH_ATTRIBUTE, authCode);
+		}
+		builder.setAttributesPerLine(attribsPerLine);
+		builder.append(" />");
+		builder.endLine();
 	}
 	
 }

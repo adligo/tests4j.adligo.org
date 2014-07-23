@@ -1,6 +1,7 @@
 package org.adligo.tests4j.run.discovery;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,8 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.system.Tests4J_Params;
+import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
@@ -51,6 +54,13 @@ public class Tests4J_ParamsReader {
 	private Set<String> tests = new HashSet<String>();
 	
 	/**
+	 * turn into local instances to block further propagation of issues
+	 * with external implementations.  Also this recurses 
+	 * when parameters are remote.
+	 */
+	private Map<Tests4J_RemoteInfo,Tests4J_ParamsReader> remotes = new HashMap<Tests4J_RemoteInfo, Tests4J_ParamsReader>();
+	
+	/**
 	 * assumes non null parameters
 	 * @param pParams
 	 * @param pReporter
@@ -62,6 +72,16 @@ public class Tests4J_ParamsReader {
 		
 		try {
 			getTrialsFromParams(pParams);
+		} catch (Throwable t) {
+			//some error/exception with the trials, do NOT try to recover
+			logger.onError(t);
+			runnable = false;
+			return;
+		}
+		
+
+		try {
+			getRemotes();
 		} catch (Throwable t) {
 			//some error/exception with the trials, do NOT try to recover
 			logger.onError(t);
@@ -140,6 +160,11 @@ public class Tests4J_ParamsReader {
 		
 	}
 
+	private void getRemotes() {
+		//
+		
+	}
+	
 	private void instrumentClasses() {
 		List<Class<? extends I_AbstractTrial>> instrumentedAbstractTrials = coveragePlugin.instrumentClasses(
 				new ArrayList<Class<? extends I_AbstractTrial>>(trials));

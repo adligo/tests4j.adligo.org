@@ -4,7 +4,6 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.models.shared.xml.XML_Parser;
 
 public class TestMetadataMutant implements I_TestMetadata {
-	public static final String READ_XML_ERROR = "Tag " + I_TestMetadata.TAG_NAME + " not found!";
 	private String testName;
 	private Long timeout;
 	private boolean ignored = false;
@@ -19,7 +18,7 @@ public class TestMetadataMutant implements I_TestMetadata {
 	public TestMetadataMutant(String xml) {
 		int [] indexes = XML_Parser.getIndexes(xml, I_TestMetadata.TAG_NAME);
 		if (indexes == null) {
-			throw new IllegalArgumentException(READ_XML_ERROR);
+			throw XML_Parser.getReadError(I_TestMetadata.TAG_NAME);
 		}
 		String thisTag = xml.substring(indexes[0], indexes[1]);
 		testName = XML_Parser.getAttributeValue(thisTag, I_TestMetadata.NAME_ATTRIBUTE);

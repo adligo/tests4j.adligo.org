@@ -2,13 +2,10 @@ package org.adligo.tests4j.models.shared.metadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
-import org.adligo.tests4j.models.shared.trials.I_UseCaseTrial;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.models.shared.xml.XML_Parser;
 
@@ -50,6 +47,12 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 	}
 	
 	public TrialMetadataMutant(String xml) {
+		int [] indexes = XML_Parser.getIndexes(xml, I_TrialMetadata.TAG_NAME);
+		if (indexes == null) {
+			throw XML_Parser.getReadError(I_TrialMetadata.TAG_NAME);
+		}
+		xml = xml.substring(indexes[0], indexes[1]);
+		
 		trialName = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TRIAL_NAME_ATTRIBUTE);
 		String timeoutString;
 		timeoutString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TIMEOUT_ATTRIBUTE);

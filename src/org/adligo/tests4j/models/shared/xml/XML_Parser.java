@@ -1,7 +1,13 @@
 package org.adligo.tests4j.models.shared.xml;
 
+import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.metadata.I_TestMetadata;
+
 public class XML_Parser {
 	
+	public static final IllegalArgumentException getReadError(String tagName) {
+		return new IllegalArgumentException("Tag " + tagName + " not found in xml!");
+	}
 	/**
 	 * 
 	 * @param xml
@@ -9,6 +15,10 @@ public class XML_Parser {
 	 * @return a int array size 2,
 	 *     0 is the start index
 	 *     1 is the end index
+	 *     
+	 *     may return null if no indexes are found, leaving the client
+	 *     to decide if the tag was required (@see getReadError(String p))
+	 *     or if doesn't require the tag.
 	 */
 	public static int[] getIndexes(String xml, String tagName) {
 		if (xml == null || tagName == null) {
@@ -119,6 +129,22 @@ public class XML_Parser {
 				}
 			}
 			nextStart = xml.indexOf(attributeName, start);
+		}
+		return null;
+	}
+	
+	public static Integer getAttributeIntegerValue(String xml, String attributeName) {
+		String integerString = getAttributeValue(xml, attributeName);
+		if ( !StringMethods.isEmpty(integerString)) {
+			return Integer.parseInt(integerString);
+		}
+		return null;
+	}
+ 
+	public static Double getAttributeDoubleValue(String xml, String attributeName) {
+		String doubleString = getAttributeValue(xml, attributeName);
+		if ( !StringMethods.isEmpty(doubleString)) {
+			return Double.parseDouble(doubleString);
 		}
 		return null;
 	}

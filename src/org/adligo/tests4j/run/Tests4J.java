@@ -54,7 +54,8 @@ public class Tests4J {
 	
 	
 	/**
-	 * run the trials/tests
+	 * Run the trials/tests, using the public endorsed test4j api.
+	 * 
 	 * @diagram_sync with Overview.seq on 7/21/2014
 	 *   see left most activation bar  (listener is optional)
 	 * @param pParams
@@ -76,7 +77,8 @@ public class Tests4J {
 	
 	/**
 	 * 
-	 * run the trials/tests
+	 * Run the trials/tests, using the public endorsed test4j api.
+	 * 
 	 * @diagram_sync with Overview.seq on 7/21/2014
 	 *   see left most activation bar  (listener is optional)
 	 * @param pParams
