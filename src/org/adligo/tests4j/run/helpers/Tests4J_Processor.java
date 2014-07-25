@@ -12,7 +12,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
@@ -38,7 +38,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	private Tests4J_ParamsReader reader;
 	private DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	private Tests4J_Memory memory = new Tests4J_Memory();
-	private I_Tests4J_Logger logger;
+	private I_Tests4J_Log logger;
 	
 	private Tests4J_ThreadManager threadManager;
 	private Tests4J_NotificationManager notifier;
@@ -56,12 +56,17 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	@SuppressWarnings("unchecked")
 	public boolean setup(I_Tests4J_Listener pListener, I_Tests4J_Params pParams) {
 		
+		I_Tests4J_System system = memory.getSystem();
 		memory.setThreadLocalOutput(OUT);
-		I_Tests4J_Logger logger = memory.getLogger();
+		reader = new Tests4J_ParamsReader(system,  pParams);
+		
+		I_Tests4J_Log logger = reader.getLogger();
+		memory.setLogger(logger);
+		
 		memory.setListener(pListener);
 		memory.setReporter(new SummaryReporter(logger));
 		
-		reader = new Tests4J_ParamsReader(pParams, logger);
+		
 		
 		if (reader.isRunnable()) {
 			memory.initialize(reader);
@@ -258,11 +263,6 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	@Override
 	public I_Tests4J_Controls getControls() {
 		return controls;
-	}
-
-	@Override
-	public void setLogger(I_Tests4J_Logger logger) {
-		memory.setLogger(logger);
 	}
 
 	@Override

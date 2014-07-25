@@ -1,37 +1,37 @@
 package org.adligo.tests4j.shared.report.summary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 public class TrialsReporter {
 	public static final String TEST = "Test: ";
 	public static final String FAILED = "Failed!";
 	public static final String PASSED = "Passed!";
-	private I_Tests4J_Logger logger;
-	private List<I_TrialResult> failedTrials = new ArrayList<I_TrialResult>();
+	private I_Tests4J_Log logger;
+	private TrialsFailedReporter failuresReporter;
 	private boolean hadTrialTestsWhichDidNOTRun = false;
 	
-	public TrialsReporter(I_Tests4J_Logger pLogger) {
+	
+	public TrialsReporter(I_Tests4J_Log pLogger) {
 		logger = pLogger;
+		failuresReporter = new TrialsFailedReporter(pLogger);
 	}
 	
-	public synchronized void onStartingTrial(String trialName) {
+	public void onStartingTrial(String trialName) {
 		if (logger.isLogEnabled(TrialsReporter.class)) {
 			logger.log("startingTrial: " + trialName);
 		}
 	}
 
-	public synchronized void onTrialCompleted(I_TrialResult result) {
-		if (logger.isLogEnabled(TrialsReporter.class)) {
-			String passedString = " passed!";
-			if (!result.isPassed()) {
-				passedString = " failed!";
-				failedTrials.add(result);
+	public void onTrialCompleted(I_TrialResult result) {
+		if (!result.isPassed()) {
+			failuresReporter.onTrialCompleted(result);
+		} else {
+			if (logger.isLogEnabled(TrialsReporter.class)) {
+				logger.log("Trial: " + result.getName() + " passed!");
 			}
-			logger.log("Trial: " + result.getName() + passedString);
 		}
 		if (result.isHadAfterTrialTests()) {
 			if (!result.isRanAfterTrialTests()) {
@@ -40,11 +40,11 @@ public class TrialsReporter {
 		}
 	}
 
-	protected synchronized List<I_TrialResult> getFailedTrials() {
-		return failedTrials;
+	protected List<I_TrialResult> getFailedTrials() {
+		return failuresReporter.getFailedTrials();
 	}
 
-	protected synchronized boolean isHadTrialTestsWhichDidNOTRun() {
+	protected boolean isHadTrialTestsWhichDidNOTRun() {
 		return hadTrialTestsWhichDidNOTRun;
 	}
 }

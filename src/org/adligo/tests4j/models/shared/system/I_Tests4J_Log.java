@@ -14,7 +14,7 @@ package org.adligo.tests4j.models.shared.system;
  * @author scott
  *
  */
-public interface I_Tests4J_Logger {
+public interface I_Tests4J_Log {
 	/**
 	 * log a message out to the main test run location.
 	 * @param p
@@ -41,12 +41,17 @@ public interface I_Tests4J_Logger {
 
 	/**
 	 * if this is a regular Tests4J test run 
-	 * this will return true.
+	 * this will return true when the Tests4J_System
+	 * is a DefaultSystem, which allows developers of tests4j
+	 * to know if they are looking at the regular trial run
+	 * or a trial run that was started by the regular trial run.
+	 * i.e. org.adligo.tests4j_tests.trials_api.AssertionsFail_Trial.java
+	 *  
 	 * If tests4J is testing itself through
 	 * trial run recursion this will return false.
 	 * 
 	 * @return
 	 */
-	public boolean isMainReporter();
+	public boolean isMainLog();
 
 }

@@ -29,7 +29,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.DefaultLogger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
 	public static final String TEST = "Test: ";
@@ -49,7 +49,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	private boolean redirect = true;
 	private Set<String> enabledLogClasses = new HashSet<String>();
 	
-	private I_Tests4J_Logger logger;
+	private I_Tests4J_Log logger;
 	private boolean listRelevantClassesWithoutTrials = false;
 	private I_TrialRunMetadata metadata;
 	private TestsReporter testsReporter;
@@ -59,7 +59,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		this(new DefaultLogger());
 	}
 	
-	public SummaryReporter(I_Tests4J_Logger p) {
+	public SummaryReporter(I_Tests4J_Log p) {
 		logger = p;
 		testsReporter = new TestsReporter(p);
 		trialsReporter = new TrialsReporter(p);

@@ -20,7 +20,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -70,7 +70,7 @@ public class Tests4J_Memory {
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
 	private int allTrialCount;
 	private I_Tests4J_CoveragePlugin coveragePlugin;
-	private I_Tests4J_Logger logger;
+	private I_Tests4J_Log logger;
 	private ThreadLocalOutputStream out;
 	private CopyOnWriteArrayList<Tests4J_TrialsRunable> trialInstancesProcessors = 
 			new CopyOnWriteArrayList<Tests4J_TrialsRunable>();
@@ -267,7 +267,7 @@ public class Tests4J_Memory {
 		return toRet;
 	}
 
-	public I_Tests4J_Logger getLogger() {
+	public I_Tests4J_Log getLogger() {
 		return logger;
 	}
 
@@ -390,7 +390,7 @@ public class Tests4J_Memory {
 		return tests;
 	}
 
-	protected void setLogger(I_Tests4J_Logger logger) {
+	protected void setLogger(I_Tests4J_Log logger) {
 		this.logger = logger;
 	}
 

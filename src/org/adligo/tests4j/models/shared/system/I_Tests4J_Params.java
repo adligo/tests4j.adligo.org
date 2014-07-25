@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared.system;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
@@ -129,7 +130,7 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 * reporting really is just Tests4J internal logging
 	 * @return
 	 */
-	public List<Class<?>> getLoggingClasses();
+	public Map<Class<?>, Boolean> getLogStates();
 	
 	/**
 	 * 

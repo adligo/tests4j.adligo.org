@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared.system;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,9 +45,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 */
 	private Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginFactoryClass;
 	/**
-	 * these classes get reporting turned on 
+	 * these classes get reporting turned on or off,
+	 * the defaults are in the Tests4J_ParamsReader
 	 */
-	private List<Class<?>> loggingClasses = new ArrayList<Class<?>>();
+	private Map<Class<?>, Boolean> logStates = new HashMap<Class<?>, Boolean>();
 	private Map<I_Tests4J_RemoteInfo, I_Tests4J_Params> remoteParams = 
 			new HashMap<I_Tests4J_RemoteInfo, I_Tests4J_Params>();
 			
@@ -63,7 +65,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		recommendedSetupThreadCount = p.getRecommendedSetupThreadCount();
 		recommendedRemoteThreadCount = p.getRecommendedRemoteThreadCount();
 		
-		loggingClasses.addAll(p.getLoggingClasses());
+		Map<Class<?>, Boolean> otherSettings = p.getLogStates();
+		if (otherSettings != null) {
+			logStates.putAll(otherSettings);
+		}
 		Collection<I_Tests4J_RemoteInfo> remotes = p.getRemoteInfo();
 		for (I_Tests4J_RemoteInfo remote: remotes){
 			remoteParams.put(remote, p.getRemoteParams(remote));
@@ -183,18 +188,14 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		tests.remove(p);
 	}
 
-	public List<Class<?>> getLoggingClasses() {
-		return new ArrayList<Class<?>>(loggingClasses);
+	public Map<Class<?>, Boolean> getLogStates() {
+		return Collections.unmodifiableMap(logStates);
 	}
 
-	public void setLoggingClasses(List<Class<?>> p) {
-		loggingClasses.clear();
-		loggingClasses.addAll(p);
+	public void setLogState(Class<?> p, boolean on) {
+		logStates.put(p, on);
 	}
 
-	public void addLoggingClass(Class<?> p) {
-		loggingClasses.add(p);
-	}
 
 	public void toXml(I_XML_Builder builder) {
 		builder.indent();
@@ -235,9 +236,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		
 		builder.addCollection(tests, I_Tests4J_Params.TESTS_TAG_NAME, I_Tests4J_Params.TEST_TAG_NAME);
 		
-		List<String> logClassesNames = ClassMethods.toNames(loggingClasses);
+		/*
+		List<String> logClassesNames = ClassMethods.toNames(loggingStates);
 		builder.addCollection(logClassesNames, I_Tests4J_Params.LOG_CLASSESS_TAG_NAME, I_Tests4J_Params.CLASS_NAME_TAG_NAME);
-		
+		*/
 	}
 
 	

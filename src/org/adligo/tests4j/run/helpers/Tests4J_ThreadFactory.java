@@ -6,7 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 /**
  * In order to correctly record code coverage the trial threads each have
@@ -40,10 +40,10 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	private List<Thread> threads = new CopyOnWriteArrayList<Thread>();
 	private AtomicInteger id = new AtomicInteger();
 	private String name;
-	private I_Tests4J_Logger reporter;
+	private I_Tests4J_Log reporter;
 	private final ThreadGroup instanceCreationThreadGroup = Thread.currentThread().getThreadGroup();
 	
-	public Tests4J_ThreadFactory(String pName, I_Tests4J_Logger pReporter) {
+	public Tests4J_ThreadFactory(String pName, I_Tests4J_Log pReporter) {
 		reporter = pReporter;
 		if (pName.contains(TRIAL_THREAD_NAME) || 
 				pName.contains(TEST_THREAD_NAME) ||

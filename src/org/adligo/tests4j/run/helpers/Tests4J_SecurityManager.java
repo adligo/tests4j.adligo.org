@@ -4,7 +4,7 @@ import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 /**
  * This class helps block thread creation at inappropriate
@@ -19,9 +19,9 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
  *    check out http://www.javaspecialists.eu)
  */
 public class Tests4J_SecurityManager extends SecurityManager {
-	private I_Tests4J_Logger reporter;
+	private I_Tests4J_Log reporter;
 	
-	public Tests4J_SecurityManager(I_Tests4J_Logger pReporter) {
+	public Tests4J_SecurityManager(I_Tests4J_Log pReporter) {
 		reporter = pReporter;
 	}
 	

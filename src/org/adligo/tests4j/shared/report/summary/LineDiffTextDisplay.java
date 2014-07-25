@@ -10,7 +10,7 @@ import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayConstants;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 /**
  * is NOT thread safe
@@ -27,7 +27,7 @@ public class LineDiffTextDisplay {
 	private Integer actual;
 	private String actualLine;
 	
-	public void display(I_Tests4J_Logger out, I_TextLinesCompareResult result, int diffLimit) {
+	public void display(I_Tests4J_Log out, I_TextLinesCompareResult result, int diffLimit) {
 		actualLines = result.getActualLines();
 		exampleLines = result.getExpectedLines();
 		

@@ -2,12 +2,12 @@ package org.adligo.tests4j.shared.report.summary;
 
 import java.text.DecimalFormat;
 
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 public abstract class AbstractProgressReporter {
-	private I_Tests4J_Logger logger;
+	private I_Tests4J_Log logger;
 	
-	protected AbstractProgressReporter(I_Tests4J_Logger pLogger) {
+	protected AbstractProgressReporter(I_Tests4J_Log pLogger) {
 		logger = pLogger;
 	}
 	

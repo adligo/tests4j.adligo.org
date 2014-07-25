@@ -11,7 +11,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_DelegateFactory;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -68,10 +68,8 @@ public class Tests4J {
 		}
 		I_Tests4J_System system = new DefaultSystem();
 		//sets up logging for the run, from the params
-		DefaultLogger logger = new DefaultLogger(new DefaultSystem(), pParams);
 		Tests4J instance = new Tests4J();
 		instance.setSystem(system);
-		instance.setLogger(logger);
 		return instance.instanceRun(pParams, pListener);
 	}
 	
@@ -87,10 +85,8 @@ public class Tests4J {
 	public static I_Tests4J_Controls run(I_Tests4J_Params pParams) {
 		I_Tests4J_System system = new DefaultSystem();
 		//sets up logging for the run, from the params
-		DefaultLogger logger = new DefaultLogger(new DefaultSystem(), pParams);
 		Tests4J instance = new Tests4J();
 		instance.setSystem(system);
-		instance.setLogger(logger);
 		return instance.instanceRun(pParams, null);
 	}
 	
@@ -121,12 +117,6 @@ public class Tests4J {
 	 */
 	protected Tests4J() {}
 	
-	/**
-	 * redirects output (can silence tests4j when it tests itself,
-	 * so that the log doesn't contain a failure from a 
-	 * test of a expected test failure.)
-	 */
-	private I_Tests4J_Logger logger;
 	/**
 	 * wrapper around some java.lang.System
 	 * methods so that tests4j can make sure
@@ -160,8 +150,7 @@ public class Tests4J {
 		}
 		//@diagram_sync with Overview.seq on 7/21/2014
 		I_Tests4J_Delegate delegate =  factory.create();
-		//@diagram_sync with Overview.seq on 7/21/2014
-		delegate.setLogger(logger);
+
 		//@diagram_sync with Overview.seq on 7/21/2014
 		delegate.setSystem(system);
 		//@diagram_sync with Overview.seq on 7/21/2014
@@ -173,16 +162,9 @@ public class Tests4J {
 		return delegate.getControls();
 	}
 
-	protected I_Tests4J_Logger getLogger() {
-		return logger;
-	}
 
 	protected I_Tests4J_System getSystem() {
 		return system;
-	}
-
-	protected void setLogger(I_Tests4J_Logger logger) {
-		this.logger = logger;
 	}
 
 	protected void setSystem(I_Tests4J_System system) {

@@ -1,7 +1,7 @@
 package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -12,7 +12,7 @@ public class Tests4J_SetupRunnable implements Runnable {
 	private Tests4J_Memory memory;
 	private Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
-	private I_Tests4J_Logger logger;
+	private I_Tests4J_Log logger;
 	private TrialDescriptionProcessor trialDescriptionProcessor;
 	private Tests4J_ProgressMonitor progressMonitor;
 	/**

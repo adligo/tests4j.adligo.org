@@ -11,15 +11,26 @@ import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderConstants;
+import org.adligo.tests4j.models.shared.system.DefaultLogger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.shared.report.summary.RemoteProgressReporter;
+import org.adligo.tests4j.shared.report.summary.SetupProgressReporter;
+import org.adligo.tests4j.shared.report.summary.SummaryReporter;
+import org.adligo.tests4j.shared.report.summary.TestsFailedReporter;
+import org.adligo.tests4j.shared.report.summary.TestsProgressReporter;
+import org.adligo.tests4j.shared.report.summary.TestsReporter;
+import org.adligo.tests4j.shared.report.summary.TrialsFailedReporter;
+import org.adligo.tests4j.shared.report.summary.TrialsProgressReporter;
+import org.adligo.tests4j.shared.report.summary.TrialsReporter;
 
 /**
  * since anyone can re implement 
@@ -37,7 +48,7 @@ import org.adligo.tests4j.models.shared.trials.I_Trial;
  */
 public class Tests4J_ParamsReader {
 	private I_Tests4J_Params params;
-	private I_Tests4J_Logger logger;
+	private I_Tests4J_Log logger;
 	/**
 	 * if this boolean gets set to false
 	 * the parameters did have enough not sufficient 
@@ -64,10 +75,19 @@ public class Tests4J_ParamsReader {
 	 * @param pParams
 	 * @param pReporter
 	 */
-	public Tests4J_ParamsReader(I_Tests4J_Params pParams, I_Tests4J_Logger pLogger) {
+	public Tests4J_ParamsReader(I_Tests4J_System pSystem, I_Tests4J_Params pParams) {
 		params = pParams;
-		logger = pLogger;
 		
+		Map<Class<?>, Boolean> logStates = getDefalutLogStates();
+		try {
+			Map<Class<?>, Boolean>  paramStates = pParams.getLogStates();
+			if (paramStates != null) {
+				logStates.putAll(paramStates);
+			}
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
+		}
+		logger = new DefaultLogger(pSystem, logStates);
 		
 		try {
 			getTrialsFromParams(pParams);
@@ -146,6 +166,23 @@ public class Tests4J_ParamsReader {
 			return;
 		}
 		
+	}
+
+	public Map<Class<?>, Boolean> getDefalutLogStates() {
+		Map<Class<?>, Boolean> logStates = new HashMap<Class<?>, Boolean>();
+		//set defaults;
+		logStates.put(RemoteProgressReporter.class, true);
+		logStates.put(SetupProgressReporter.class, true);
+		logStates.put(SummaryReporter.class, true);
+		
+		logStates.put(TestsFailedReporter.class, true);
+		logStates.put(TestsProgressReporter.class, true);
+		logStates.put(TestsReporter.class, true);
+		
+		logStates.put(TrialsFailedReporter.class, true);
+		logStates.put(TrialsProgressReporter.class, true);
+		logStates.put(TrialsReporter.class, true);
+		return logStates;
 	}
 
 	private void readEvaluatorLookup() throws InstantiationException,
@@ -229,4 +266,9 @@ public class Tests4J_ParamsReader {
 	public Set<String> getTests() {
 		return tests;
 	}
+
+	public I_Tests4J_Log getLogger() {
+		return logger;
+	}
+
 }

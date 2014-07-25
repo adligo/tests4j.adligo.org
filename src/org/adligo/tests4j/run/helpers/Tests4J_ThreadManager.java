@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.run.remote.RemoteRunnerStateEnum;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 
@@ -40,10 +40,10 @@ public class Tests4J_ThreadManager {
 			
 	private Map<ExecutorService, Future<?>> testRuns = new ConcurrentHashMap<ExecutorService, Future<?>>();
 	private I_Tests4J_System system;
-	private I_Tests4J_Logger reporter;
+	private I_Tests4J_Log reporter;
 	
 	
-	public Tests4J_ThreadManager(int trialThreads, int remoteThreads, I_Tests4J_System pSystem, I_Tests4J_Logger pReporter) {
+	public Tests4J_ThreadManager(int trialThreads, int remoteThreads, I_Tests4J_System pSystem, I_Tests4J_Log pReporter) {
 		system = pSystem;
 		reporter = pReporter;
 		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);

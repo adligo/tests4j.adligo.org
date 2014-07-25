@@ -1,14 +1,14 @@
 package org.adligo.tests4j.shared.report.summary;
 
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 public class TestsReporter {
 	public static final String TEST = "Test: ";
 	public static final String FAILED = "Failed!";
 	public static final String PASSED = "Passed!";
-	private I_Tests4J_Logger logger;
+	private I_Tests4J_Log logger;
 	
-	public TestsReporter(I_Tests4J_Logger pLogger) {
+	public TestsReporter(I_Tests4J_Log pLogger) {
 		logger = pLogger;
 	}
 	

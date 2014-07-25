@@ -23,7 +23,7 @@ import org.adligo.tests4j.models.shared.system.DefaultLogger;
 import org.adligo.tests4j.models.shared.system.DefaultSystem;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
@@ -43,7 +43,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	private BlockingQueue<Tests4J_SocketMessage> messages = new ArrayBlockingQueue<>(100);
 	private Map<Tests4J_SocketMessage, I_AfterMessageHandler> afterMessageTransportHandlers =
 			new ConcurrentHashMap<Tests4J_SocketMessage, I_AfterMessageHandler>();
-	private static I_Tests4J_Logger logger;
+	private static I_Tests4J_Log logger;
 	private OutputStream out;
 	private InputStream in;
 	private Tests4J_Commands lastCommnadSent;
@@ -373,12 +373,12 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 		return connected.get();
 	}
 	
-	public I_Tests4J_Logger getLogger() {
+	public I_Tests4J_Log getLogger() {
 		return logger;
 	}
 
 	@SuppressWarnings("null")
-	public void setReporter(I_Tests4J_Logger p) {
+	public void setReporter(I_Tests4J_Log p) {
 		if (p == null) {
 			//throw a NPE
 			p.hashCode();

@@ -12,6 +12,5 @@ public interface I_Tests4J_Delegate {
 	public void run();
 	public I_Tests4J_Controls getControls();
 	
-	public void setLogger(I_Tests4J_Logger logger);
 	public void setSystem(I_Tests4J_System system);
 }

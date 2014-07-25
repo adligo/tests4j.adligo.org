@@ -16,7 +16,7 @@ import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
@@ -55,14 +55,14 @@ public class TrialDescription implements I_TrialDescription {
 	private boolean ignored;
 	private long duration;
 	private long timeout;
-	private I_Tests4J_Logger reporter;
+	private I_Tests4J_Log reporter;
 	private SourceFileScope sourceFileScope;
 	private UseCaseScope useCaseScope;
 	private PackageScope packageScope;
 	private double minCoverage = 100.0;
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
-			I_Tests4J_Logger pLog) {
+			I_Tests4J_Log pLog) {
 		long start = System.currentTimeMillis();
 		reporter = pLog;
 		trialClass = pTrialClass;

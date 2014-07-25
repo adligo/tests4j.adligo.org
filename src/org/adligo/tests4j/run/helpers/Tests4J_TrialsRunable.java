@@ -27,7 +27,7 @@ import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
@@ -52,7 +52,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 	private Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
-	private I_Tests4J_Logger logger;
+	private I_Tests4J_Log logger;
 	private I_AbstractTrial trial;
 	private BaseTrialResultMutant trialResultMutant;
 	

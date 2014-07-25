@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.MethodBlocker;
 import org.adligo.tests4j.models.shared.system.DefaultLogger;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 /**
  * generally catches uncaught exceptions and
@@ -22,7 +22,7 @@ public class Tests4J_UncaughtExceptionHandler implements UncaughtExceptionHandle
 	 * note this is not volatile as it will probably only change 
 	 * in the trial
 	 */
-	private static I_Tests4J_Logger logger = new DefaultLogger();
+	private static I_Tests4J_Log logger = new DefaultLogger();
 	public Tests4J_UncaughtExceptionHandler() {}
 	
 	@Override
@@ -40,7 +40,7 @@ public class Tests4J_UncaughtExceptionHandler implements UncaughtExceptionHandle
 		}
 	}
 
-	protected static I_Tests4J_Logger getLogger() {
+	protected static I_Tests4J_Log getLogger() {
 		return logger;
 	}
 
@@ -48,7 +48,7 @@ public class Tests4J_UncaughtExceptionHandler implements UncaughtExceptionHandle
 	 * a way to set this from a test only
 	 * @param logger
 	 */
-	protected static synchronized void setLogger(I_Tests4J_Logger logger) {
+	protected static synchronized void setLogger(I_Tests4J_Log logger) {
 		List<String> allowedCallers = new ArrayList<String>();
 		allowedCallers.add("org.adligo.tests4j_tests.run.mocks.MockTests4J_UncaughtExceptionHandler");
 		

@@ -6,9 +6,9 @@ public class CoveragePluginDelegator implements I_Tests4J_CoveragePlugin {
 	public static final String COVERAGE_PLUGIN_DELEGATE_REQUIRES_A_I_TESTS4J_REPORTER = "CoveragePluginDelegate requires a I_Tests4J_Reporter.";
 	public static final String COVERAGE_PLUGIN_DELEGATE_REQUIRES_A_I_COVERAGE_PLUGIN = "CoveragePluginDelegate requires a I_CoveragePlugin.";
 	private I_Tests4J_CoveragePlugin delegate;
-	private I_Tests4J_Logger reporter;
+	private I_Tests4J_Log reporter;
 	
-	public CoveragePluginDelegator(I_Tests4J_CoveragePlugin p, I_Tests4J_Logger pReporter) {
+	public CoveragePluginDelegator(I_Tests4J_CoveragePlugin p, I_Tests4J_Log pReporter) {
 		if (p == null) {
 			throw new IllegalArgumentException(COVERAGE_PLUGIN_DELEGATE_REQUIRES_A_I_COVERAGE_PLUGIN);
 		}
