@@ -14,6 +14,7 @@ public class Tests4J_SetupRunnable implements Runnable {
 	private I_Tests4J_NotificationManager notifier;
 	private I_Tests4J_Logger logger;
 	private TrialDescriptionProcessor trialDescriptionProcessor;
+	private Tests4J_ProgressMonitor progressMonitor;
 	/**
 	 * 
 	 * @param p
@@ -25,14 +26,20 @@ public class Tests4J_SetupRunnable implements Runnable {
 		notifier = pNotificationManager;
 		logger = p.getLogger();
 		
+		int allTrials = memory.getAllTrialCount();
+		progressMonitor = new Tests4J_ProgressMonitor(memory, notifier, allTrials, "setup");
 		trialDescriptionProcessor = new TrialDescriptionProcessor(memory);
 	}
+	
 	@Override
 	public void run() {
 		Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClasses();
+		
 		while (trialClazz != null) {
 			try {
+				
 				Class<? extends I_AbstractTrial> instrumentedClass = null;
+				progressMonitor.notifyIfProgressedTime();
 				//no need to instrument the meta trial
 				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
 					//instrument the classes first, so that 
@@ -51,6 +58,7 @@ public class Tests4J_SetupRunnable implements Runnable {
 						memory.addTrialToRun(trialClazz);
 					}
 				}
+				memory.addTrialSetup();
 				notifier.checkDoneDescribingTrials();
 				
 				
@@ -63,6 +71,10 @@ public class Tests4J_SetupRunnable implements Runnable {
 			}
 			trialClazz = memory.pollTrialClasses();
 		}
+		progressMonitor.notifyDone();
+	}
+	protected void setNotifyProgress(boolean notifyProgress) {
+		progressMonitor.setNotifyProgress(notifyProgress);
 	}
 
 }

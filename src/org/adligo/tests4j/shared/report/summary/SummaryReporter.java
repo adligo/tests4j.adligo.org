@@ -3,11 +3,12 @@ package org.adligo.tests4j.shared.report.summary;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -27,10 +28,8 @@ import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.DefaultLogger;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.DefaultSystem;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
 	public static final String TEST = "Test: ";
@@ -43,15 +42,18 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 
 	public static final String DEFAULT_PREFIX = "Tests4J: ";
 	
+	private Map<String,AbstractProgressReporter> processes = new HashMap<String,AbstractProgressReporter>();
+	
 	private String prefix = DEFAULT_PREFIX;
 	private boolean snare = false;
 	private boolean redirect = true;
 	private Set<String> enabledLogClasses = new HashSet<String>();
-	private List<I_TrialResult> failedTrials = new ArrayList<I_TrialResult>();
-	private boolean hadTrialTestsWhichDidNOTRun = false;
+	
 	private I_Tests4J_Logger logger;
 	private boolean listRelevantClassesWithoutTrials = false;
 	private I_TrialRunMetadata metadata;
+	private TestsReporter testsReporter;
+	private TrialsReporter trialsReporter;
 	
 	public SummaryReporter() {
 		this(new DefaultLogger());
@@ -59,10 +61,15 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	
 	public SummaryReporter(I_Tests4J_Logger p) {
 		logger = p;
+		testsReporter = new TestsReporter(p);
+		trialsReporter = new TrialsReporter(p);
+		processes.put("setup", new SetupProgressReporter(p));
+		processes.put("trials", new TrialsProgressReporter(p));
+		processes.put("tests", new TestsProgressReporter(p));
 	}
 	
 	@Override
-	public void onMetadataCalculated(I_TrialRunMetadata p) {
+	public synchronized  void onMetadataCalculated(I_TrialRunMetadata p) {
 		logger.log(METADATA_CALCULATED + LineSeperator.getLineSeperator() +
 				TRIALS + p.getAllTrialsCount() + LineSeperator.getLineSeperator() +
 			 	TESTS + p.getAllTestsCount());
@@ -72,41 +79,27 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 
 	@Override
 	public synchronized void onStartingTrial(String trialName) {
-		logger.log("startingTrial: " + trialName);
+		trialsReporter.onStartingTrial(trialName);
 	}
 
 	@Override
 	public synchronized void onStartingTest(String trialName, String testName) {
-		logger.log("startingTest: " + trialName + "." + testName);
+		testsReporter.onStartingTest(trialName, testName);
 	}
 
 	@Override
 	public synchronized void onTestCompleted(String trialName, String testName,
 			boolean passed) {
-		String passedString = PASSED;
-		if (!passed) {
-			passedString = FAILED;
-		}
-		logger.log(TEST + trialName + "." + testName + passedString);
+		testsReporter.onTestCompleted(trialName, testName, passed);
 	}
 
 	@Override
 	public synchronized void onTrialCompleted(I_TrialResult result) {
-		String passedString = " passed!";
-		if (!result.isPassed()) {
-			passedString = " failed!";
-			failedTrials.add(result);
-		}
-		logger.log("Trial: " + result.getName() + passedString);
-		if (result.isHadAfterTrialTests()) {
-			if (!result.isRanAfterTrialTests()) {
-				hadTrialTestsWhichDidNOTRun = true;
-			}
-		}
+		trialsReporter.onTrialCompleted(result);
 	}
 
 	@Override
-	public void onRunCompleted(I_TrialRunResult result) {
+	public synchronized void onRunCompleted(I_TrialRunResult result) {
 		logger.log("------------------------Test Results-------------------------");
 		logger.log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds on ");
 		DecimalFormat formatter = new DecimalFormat("###.##");
@@ -136,11 +129,12 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 					+ result.getTrials() + " Trials with " + formatter.format(pct) + "% coverage;");
 			logger.log("");
 			logger.log("\t\t\tPassed!");
-			if (hadTrialTestsWhichDidNOTRun) {
+			if (trialsReporter.isHadTrialTestsWhichDidNOTRun()) {
 				logger.log("\t\tWarning afterTrialTests methods/assertions did not run!");
 			}
 			logger.log("");
 		} else {
+			List<I_TrialResult> failedTrials = trialsReporter.getFailedTrials();
 			for (I_TrialResult trial: failedTrials) {
 				logTrialFailure(trial);
 			}
@@ -288,6 +282,14 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	public void setPrefix(String prefix) {
 		this.prefix = prefix;
 	}
+
+	@Override
+	public synchronized void onProgress(String process, double pctComplete) {
+		AbstractProgressReporter apr = processes.get(process);
+		apr.onProgress(process, pctComplete);
+		
+	}
+
 
 
 }

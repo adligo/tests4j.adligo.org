@@ -23,6 +23,8 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	public static final String COVERAGE_PLUGIN_FACTORY_ATTRIBUTE= "coveragePluginFactory";
 	public static final String EVALUATOR_LOOKUP_ATTRIBUTE = "evaluatorLookup";
 	public static final String META_TRIAL_ATTRIBUTE = "metaTrial";
+	public static final String RECOMENDED_REMOTE_THREADS_ATTRIBUTE = "recomendedRemoteThreads";
+	public static final String RECOMENDED_SETUP_THREADS_ATTRIBUTE = "recomendedSetupThreads";
 	public static final String RECOMENDED_TRIAL_THREADS_ATTRIBUTE = "recomendedThreadThreads";
 	
 	public static final String TRIAL_TAG_NAME = "trial";
@@ -92,9 +94,35 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 * So a run of a single trial, will only use one trial thread
 	 * for it's processing.
 	 * 
+	 * If the setting is 1 then the runnable is run on the main thread
+	 * by simply calling it's run method.
+	 * 
 	 * @return null for the defaults
 	 */
 	public Integer getRecommendedTrialThreadCount();
+	/**
+	 * This defaults to the number of remote tests4j instances
+	 * requested to be run by the getRemoteInfo() method.
+	 * 
+	 * It may be dialed back using this setting.
+	 * 
+	 * If the setting is 1 then the runnable is run on the main thread
+	 * by simply calling it's run method.
+	 * 
+	 * @return null for the defaults
+	 */
+	public Integer getRecommendedRemoteThreadCount();
+	/**
+	 * This defaults the same mechanism as getRecommendedTrialThreadCount.
+	 * 
+	 * It may be dialed back using this setting.
+	 * 
+	 * If the setting is 1 then the runnable is run on the main thread
+	 * by simply calling it's run method.
+	 * 
+	 * @return null for the defaults
+	 */
+	public Integer getRecommendedSetupThreadCount();
 	
 	/**
 	 * the list of classes to report for 

@@ -15,6 +15,8 @@ public interface I_Tests4J_NotificationManager {
 	 */
 	public abstract void sendMetadata();
 
+	public abstract void onProgress(String processName, double pctDone);
+	
 	public abstract void startingTrial(String name);
 
 	public abstract void startingTest(String trialName, String testName);

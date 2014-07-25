@@ -1,5 +1,8 @@
 package org.adligo.tests4j.run.helpers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
@@ -32,9 +35,11 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 * in the I_TrialResults.
 	 */
 	private static final ThreadLocalOutputStream OUT = new ThreadLocalOutputStream();
+	private Tests4J_ParamsReader reader;
+	private DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	private Tests4J_Memory memory = new Tests4J_Memory();
+	private I_Tests4J_Logger logger;
 	
-	private int trialThreadCount;
 	private Tests4J_ThreadManager threadManager;
 	private Tests4J_NotificationManager notifier;
 	private Tests4J_Controls controls;
@@ -56,7 +61,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		memory.setListener(pListener);
 		memory.setReporter(new SummaryReporter(logger));
 		
-		Tests4J_ParamsReader reader = new Tests4J_ParamsReader(pParams, logger);
+		reader = new Tests4J_ParamsReader(pParams, logger);
 		
 		if (reader.isRunnable()) {
 			memory.initialize(reader);
@@ -78,14 +83,15 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 */
 	@SuppressWarnings("unchecked")
 	public void run() {
-		//@diagram sync with Overview.seq on 7/21/2014
-		trialThreadCount = memory.getTrialThreadCount();
-		I_Tests4J_Logger logger = memory.getLogger();
+		
+		logger = memory.getLogger();
+		
+		long time = memory.getTime();
+		memory.setStartTime(time);
 		if (logger.isLogEnabled(Tests4J_Processor.class)) {
-			logger.log("Starting run with " + trialThreadCount + " trial threads.");
+			
+			logger.log("Start: " + dateFormat.format(new Date(time)));
 		}
-		
-		
 		threadManager = memory.getThreadManager();
 		notifier = memory.getNotifier();
 		submitSetupRunnables();
@@ -121,49 +127,115 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 *    		AllTrialsRunn with 75 trials 522 tests
 	 *    
 	 *    			12.5 seconds when one thread runs Tests4J_SetupRunnable
-	 *                9.2 seconds with 8 threads, but fails code coverage inconsistent
-	 *                8.7 seconds with 16 threads, but fails 2 tests code coverage inconsistent
+	 *                9.2 seconds with 8 threads
+	 *                8.7 seconds with 16 threads
 	 */
 	private void submitSetupRunnables() {
-		//Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier); 
-		//sr.run();
-		ExecutorService runService = threadManager.getTrialRunService();
+		//memory.getS
+		int setupThreadCount = memory.getSetupThreadCount();
 		
-		
-		for (int i = 0; i < trialThreadCount; i++) {
-			Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier); 
-			try {
-				Future<?> future = runService.submit(sr);
-				threadManager.addSetupFuture(future);
-			} catch (RejectedExecutionException x) {
-				//do nothing, not sure why this exception is happening for me
-				// it must have to do with shutdown, but it happens intermittently.
-			}
+		if (logger.isLogEnabled(Tests4J_Processor.class)) {
+			logger.log("Starting setup with " + setupThreadCount + " trial threads.");
 		}
-		while (!notifier.isDoneDescribeingTrials()) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException x) {
-				throw new RuntimeException(x);
+		if (setupThreadCount <= 1) {
+			//run single threaded on the main thread.
+			Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier); 
+			sr.run();
+		} else {
+			ExecutorService runService = threadManager.getTrialRunService();
+			
+			int allTrials = memory.getAllTrialCount();
+			Tests4J_ProgressMonitor progressMonitor = new Tests4J_ProgressMonitor(memory, notifier, allTrials, "setup");
+			progressMonitor.setNotifyProgress(true);
+			progressMonitor.setTimeBetweenLongs(501);
+			
+			for (int i = 0; i < setupThreadCount; i++) {
+				Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier); 
+				sr.setNotifyProgress(false);
+				
+				try {
+					Future<?> future = runService.submit(sr);
+					threadManager.addSetupFuture(future);
+				} catch (RejectedExecutionException x) {
+					//do nothing, not sure why this exception is happening for me
+					// it must have to do with shutdown, but it happens intermittently.
+				}
 			}
+			while (!notifier.isDoneDescribeingTrials()) {
+				try {
+					Thread.sleep(500);
+					long trialsSetup = memory.getTrialsSetup();
+					progressMonitor.notifyIfProgressedTime(trialsSetup);
+				} catch (InterruptedException x) {
+					throw new RuntimeException(x);
+				}
+			}
+			progressMonitor.notifyDone();
+		}
+		long now = memory.getTime();
+		memory.setSetupEndTime(now);
+		if (logger.isLogEnabled(Tests4J_Processor.class)) {
+			double millis = now - memory.getStartTime();
+			double secs = millis/1000.0;
+			logger.log("Finised setup after " + secs + " seconds.");
 		}
 	}
 	
 	private void submitTrialsRunnables() {
-		ExecutorService runService = threadManager.getTrialRunService();
+		int trialThreadCount = memory.getTrialThreadCount();
 		
-		
-		for (int i = 0; i < trialThreadCount; i++) {
+		if (logger.isLogEnabled(Tests4J_Processor.class)) {
+			logger.log("Starting submitTrialRunnables with " + trialThreadCount + " trial threads.");
+		}
+		if (trialThreadCount <= 1) {
 			Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
-			try {
-				Future<?> future = runService.submit(tip);
-				threadManager.addTrialFuture(future);
-				memory.addTrialInstancesProcessors(tip);
-			} catch (RejectedExecutionException x) {
-				//do nothing, not sure why this exception is happening for me
-				// it must have to do with shutdown, but it happens intermittently.
+			
+			tip.run();
+			long now = memory.getTime();
+			memory.setSetupEndTime(now);
+			if (logger.isLogEnabled(Tests4J_Processor.class)) {
+				double millis = now - memory.getStartTime();
+				double secs = millis/1000.0;
+				logger.log("Finised trials after " + secs + " seconds.");
+			}
+		} else {
+			ExecutorService runService = threadManager.getTrialRunService();
+			
+			
+			
+			for (int i = 0; i < trialThreadCount; i++) {
+				Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
+				try {
+					Future<?> future = runService.submit(tip);
+					threadManager.addTrialFuture(future);
+					memory.addTrialInstancesProcessors(tip);
+				} catch (RejectedExecutionException x) {
+					//do nothing, not sure why this exception is happening for me
+					// it must have to do with shutdown, but it happens intermittently.
+				}
+			}
+			
+			int trials = memory.getAllTrialCount();
+			Tests4J_ProgressMonitor  trialProgressMonitor = new Tests4J_ProgressMonitor(memory, notifier, trials, "trials");
+			int tests = memory.getAllTestsCount();
+			Tests4J_ProgressMonitor  testsProgressMonitor = new Tests4J_ProgressMonitor(memory, notifier, tests, "tests");
+			
+			while (!notifier.isDoneRunningTrials()) {
+				try {
+					Thread.sleep(500);
+					
+					long trialsRan = memory.getTrialsDone();
+					trialProgressMonitor.notifyIfProgressedTime(trialsRan);
+					long testsRan = memory.getTestsDone();
+					testsProgressMonitor.notifyIfProgressedTime(testsRan);
+				} catch (InterruptedException x) {
+					throw new RuntimeException(x);
+				}
 			}
 		}
+		
+		
+		
 	}
 
 	/**

@@ -84,6 +84,8 @@ public class Tests4J_TrialsRunable implements Runnable,
 			I_Tests4J_NotificationManager pNotificationManager) {
 		memory = p;
 		notifier = pNotificationManager;
+		
+		
 		logger = p.getLogger();
 		threadManager = p.getThreadManager();
 		
@@ -247,6 +249,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 			logger.log("notifying trial finished " + trialName);
 		}
 		notifier.onTrialCompleted(result);
+		memory.addTrialsDone();
 	}
 
 	private UseCaseTrialResultMutant getUseCaseResult() {
@@ -307,6 +310,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 		
 		while (methods.hasNext()) {
 			runTest(methods.next());
+			memory.addTestsDone();
 		}
 	}
 
@@ -374,6 +378,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 		TrialType type = trialDescription.getType();
 		
 		
+		long tests = memory.getTestsDone();
 		switch (type) {
 			case SourceFileTrial:
 				afterSouceFileTrialTestsProcessor.reset(trialDescription, 
@@ -385,6 +390,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 				}
 				TestResultMutant minCoverageResult = afterSouceFileTrialTestsProcessor.testMinCoverage(result);
 				result.addResult(minCoverageResult);
+				memory.addTestsDone();
 				return result;
 			case ApiTrial:
 				afterApiTrialTestsProcessor.reset(trialDescription, 
@@ -394,6 +400,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 				if (apiTrm != null) {
 					apiResult.addResult(apiTrm);
 				}
+				memory.addTestsDone();
 				return apiResult;
 			case UseCaseTrial:
 				afterUseCaseTrialTestsProcessor.reset(trialDescription, 
@@ -403,6 +410,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 				if (useCaseTrm != null) {
 					useCaseResult.addResult(useCaseTrm);
 				}
+				memory.addTestsDone();
 				return useCaseResult;
 			default:
 				//do nothing

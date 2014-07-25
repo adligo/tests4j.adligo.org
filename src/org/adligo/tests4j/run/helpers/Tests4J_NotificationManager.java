@@ -30,8 +30,8 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
@@ -73,6 +73,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	private Set<String> passingTrialNames = new CopyOnWriteArraySet<String>();
 	private final AtomicBoolean running = new AtomicBoolean(true);
 	private final AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
+	
+	
 	private volatile I_TrialRunMetadata metadata = null;
 	private MetaTrialProcessor metaProcessor;
 	
@@ -435,6 +437,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				}
 				synchronized (doneRunningTrials) {
 					if (!doneRunningTrials.get()) {
+						
 						doneRunningTrials.set(true);
 						onDoneRunningNonMetaTrials();
 					}
@@ -549,6 +552,17 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			}
 		}
 		TrialRunResult endResult = new TrialRunResult(p);
+		
+		long now = memory.getTime();
+		memory.setSetupEndTime(now);
+		if (logger.isLogEnabled(Tests4J_NotificationManager.class)) {
+			double millis = now - memory.getStartTime();
+			double secs = millis/1000.0;
+			logger.log("Finised trials after " + secs + " seconds.");
+		}
+		onProgress("tests", 100.0);
+		onProgress("trials", 100.0);
+		
 		listener.onRunCompleted(endResult);
 		reporter.onRunCompleted(endResult);
 		threadManager.shutdown();
@@ -611,5 +625,20 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	
 	public boolean isDoneDescribeingTrials() {
 		return doneDescribeingTrials.get();
+	}
+
+	@Override
+	public void onProgress(String processName, double pctDone) {
+		if (pctDone <= 100.0) {
+			if (!doneRunningTrials.get()) {
+			listener.onProgress(processName, pctDone);
+			reporter.onProgress(processName, pctDone);
+			}
+			
+		}
+	}
+
+	public boolean isDoneRunningTrials() {
+		return doneRunningTrials.get();
 	}
 }

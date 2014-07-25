@@ -61,4 +61,11 @@ public interface I_Tests4J_Listener {
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
 	public void onRunCompleted(I_TrialRunResult result);
+	
+	/**
+	 * @param
+	 * 
+	 * @diagram Overview.seq sync on 7/25/2014
+	 */
+	public void onProgress(String process, double pctComplete);
 }

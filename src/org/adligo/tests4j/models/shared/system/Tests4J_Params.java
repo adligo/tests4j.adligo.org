@@ -32,6 +32,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private Set<String> tests = new HashSet<String>();
 	
 	private Integer recommendedTrialThreadCount;
+	private Integer recommendedRemoteThreadCount;
+	private Integer recommendedSetupThreadCount;
 	
 	/**
 	 * All coverage is always recorded if there is a plugin,
@@ -58,6 +60,9 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		tests.addAll(p.getTests());
 		coveragePluginFactoryClass = p.getCoveragePluginFactoryClass();
 		recommendedTrialThreadCount = p.getRecommendedTrialThreadCount();
+		recommendedSetupThreadCount = p.getRecommendedSetupThreadCount();
+		recommendedRemoteThreadCount = p.getRecommendedRemoteThreadCount();
+		
 		loggingClasses.addAll(p.getLoggingClasses());
 		Collection<I_Tests4J_RemoteInfo> remotes = p.getRemoteInfo();
 		for (I_Tests4J_RemoteInfo remote: remotes){
@@ -207,15 +212,31 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			builder.addAttribute(I_Tests4J_Params.META_TRIAL_ATTRIBUTE, 
 					metaTrialClass.getName());
 		}
+		
+		if (recommendedRemoteThreadCount != null) {
+			builder.addAttribute(I_Tests4J_Params.RECOMENDED_REMOTE_THREADS_ATTRIBUTE, 
+					"" + recommendedRemoteThreadCount);
+		}
+		
+		if (recommendedTrialThreadCount != null) {
+			builder.addAttribute(I_Tests4J_Params.RECOMENDED_TRIAL_THREADS_ATTRIBUTE, 
+					"" + recommendedTrialThreadCount);
+		}
+		
+		if (recommendedSetupThreadCount != null) {
+			builder.addAttribute(I_Tests4J_Params.RECOMENDED_SETUP_THREADS_ATTRIBUTE, 
+					"" + recommendedSetupThreadCount);
+		}
+		
 		builder.append(">");
 		builder.endLine();
 		List<String> trialNames = ClassMethods.toNames(trials);
-		builder.addList(trialNames, I_Tests4J_Params.TRIALS_TAG_NAME, I_Tests4J_Params.TRIAL_TAG_NAME);
+		builder.addCollection(trialNames, I_Tests4J_Params.TRIALS_TAG_NAME, I_Tests4J_Params.TRIAL_TAG_NAME);
 		
-		builder.addList(tests, I_Tests4J_Params.TESTS_TAG_NAME, I_Tests4J_Params.TEST_TAG_NAME);
+		builder.addCollection(tests, I_Tests4J_Params.TESTS_TAG_NAME, I_Tests4J_Params.TEST_TAG_NAME);
 		
 		List<String> logClassesNames = ClassMethods.toNames(loggingClasses);
-		builder.addList(logClassesNames, I_Tests4J_Params.LOG_CLASSESS_TAG_NAME, I_Tests4J_Params.CLASS_NAME_TAG_NAME);
+		builder.addCollection(logClassesNames, I_Tests4J_Params.LOG_CLASSESS_TAG_NAME, I_Tests4J_Params.CLASS_NAME_TAG_NAME);
 		
 	}
 
@@ -272,5 +293,15 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	
 	public void setRecommendedTrialThreadCount(Integer p) {
 		recommendedTrialThreadCount = p;
+	}
+
+	@Override
+	public Integer getRecommendedRemoteThreadCount() {
+		return recommendedRemoteThreadCount;
+	}
+
+	@Override
+	public Integer getRecommendedSetupThreadCount() {
+		return recommendedSetupThreadCount;
 	}
 }

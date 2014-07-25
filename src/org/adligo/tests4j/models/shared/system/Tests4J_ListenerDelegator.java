@@ -38,6 +38,18 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 			logger.onException(t);
 		}
 	}
+	
+	@Override
+	public void onProgress(String process, double pctComplete) {
+		if (delegate == null) {
+			return;
+		}
+		try {
+			delegate.onProgress(process, pctComplete);
+		} catch (Throwable t) {
+			logger.onException(t);
+		}
+	}
 
 	public void onStartingTrial(String trialName) {
 		if (delegate == null) {
@@ -94,5 +106,7 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 			logger.onException(t);
 		}
 	}
+
+	
 	
 }

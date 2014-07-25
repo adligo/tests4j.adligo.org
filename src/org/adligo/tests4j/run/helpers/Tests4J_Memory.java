@@ -11,6 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.TrialType;
@@ -89,12 +90,23 @@ public class Tests4J_Memory {
 	
 	private Tests4J_ThreadManager threadManager;
 	private ArrayBlockingQueue<I_TrialRunMetadata> metaTrialDataBlock = new ArrayBlockingQueue<I_TrialRunMetadata>(1);
+	private I_TrialRunMetadata metadata;
 	private TrialDescription metaTrialDescription;
 	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private boolean hasRemoteDelegation = false;
 	private I_EvaluatorLookup evaluationLookup;
 	private I_Tests4J_System system;
 	private int trialThreadCount;
+	private int setupThreadCount;
+	private int remoteThreadCount;
+	private AtomicLong startTime = new AtomicLong();
+	private AtomicLong setupEndTime = new AtomicLong();
+	private AtomicLong trialEndTime = new AtomicLong();
+	private AtomicLong remoteEndTime = new AtomicLong();
+	private AtomicLong trialsSetup = new AtomicLong();
+	private AtomicLong trialsDone = new AtomicLong();
+	private AtomicLong testsDone = new AtomicLong();
+	
 	private Tests4J_NotificationManager notifier;
 	/**
 	 * 
@@ -301,7 +313,8 @@ public class Tests4J_Memory {
 	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 * @param md
 	 */
-	public void setMetaTrialData(I_TrialRunMetadata md) {
+	public synchronized void setMetaTrialData(I_TrialRunMetadata md) {
+		metadata = md;
 		metaTrialDataBlock.add(md);
 	}
 	/**
@@ -409,5 +422,85 @@ public class Tests4J_Memory {
 	
 	protected boolean hasTrialThatCanRun() {
 		return hasTrialThatCanRun.get();
+	}
+
+	protected int getSetupThreadCount() {
+		return setupThreadCount;
+	}
+
+	protected int getRemoteThreadCount() {
+		return remoteThreadCount;
+	}
+
+	protected void setSetupThreadCount(int setupThreadCount) {
+		this.setupThreadCount = setupThreadCount;
+	}
+
+	protected void setRemoteThreadCount(int remoteThreadCount) {
+		this.remoteThreadCount = remoteThreadCount;
+	}
+	
+	public long getTime() {
+		return system.getTime();
+	}
+
+	protected Long getStartTime() {
+		return startTime.get();
+	}
+
+	protected Long getSetupEndTime() {
+		return setupEndTime.get();
+	}
+
+	protected Long getTrialEndTime() {
+		return trialEndTime.get();
+	}
+
+	protected Long getRemoteEndTime() {
+		return remoteEndTime.get();
+	}
+
+	protected void setStartTime(long p) {
+		startTime.set(p);
+	}
+
+	protected void setSetupEndTime(long p) {
+		setupEndTime.set(p);
+	}
+
+	protected void setTrialEndTime(long p) {
+		trialEndTime.set(p);
+	}
+
+	protected void setRemoteEndTime(long p) {
+		remoteEndTime.set(p);
+	}
+
+	protected Long getTrialsSetup() {
+		return trialsSetup.get();
+	}
+
+	protected Long getTrialsDone() {
+		return trialsDone.get();
+	}
+
+	protected Long getTestsDone() {
+		return testsDone.get();
+	}
+
+	protected void addTrialSetup() {
+		this.trialsSetup.addAndGet(1L);
+	}
+
+	protected void addTrialsDone() {
+		this.trialsDone.addAndGet(1L);
+	}
+
+	protected void addTestsDone() {
+		this.testsDone.addAndGet(1L);
+	}
+	
+	public int getAllTestsCount() {
+		return metadata.getAllTestsCount();
 	}
 }

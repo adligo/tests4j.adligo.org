@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.xml;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * a interface to assist in building
@@ -35,8 +36,24 @@ public interface I_XML_Builder {
 	 * @param pluralTagName
 	 * @param singularTagName
 	 */
-	public void addList(Collection<String> items, String pluralTagName, String singularTagName);
+	public void addCollection(Collection<String> items, String pluralTagName, String singularTagName);
 
+	/**
+	 * adds a map to the xml ie;
+	 * <tagName>
+	 *     <key>
+	 *        <mapKey/>
+	 *     </key>
+	 *     <value>
+	 *     	  <mapValue/>
+	 *     </value>
+	 * </tagName>
+	 * @param items
+	 * @param pluralTagName
+	 * @param singularTagName
+	 */
+	public void addMap(Map<I_XML_Producer, I_XML_Producer> items, String tagName);
+	
 	/**
 	 * reduce the current indent level
 	 */

@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.xml;
 
 import java.util.Collection;
+import java.util.Map;
 
 
 /**
@@ -195,7 +196,7 @@ public class XML_Builder implements I_XML_Builder {
 	}
 
 
-	public void addList(Collection<String> items, String pluralTagName, String singularTagName) {
+	public void addCollection(Collection<String> items, String pluralTagName, String singularTagName) {
 		addIndent();
 		indent();
 		addStartTagWithoutAttributes(pluralTagName, true);
@@ -216,5 +217,15 @@ public class XML_Builder implements I_XML_Builder {
 		addEndTag(pluralTagName);
 		endLine();
 		removeIndent();
+	}
+
+	@Override
+	public void addMap(Map<I_XML_Producer, I_XML_Producer> items, String tagName) {
+		indent();
+		addStartTag(tagName);
+		
+		
+		
+		
 	}
 }

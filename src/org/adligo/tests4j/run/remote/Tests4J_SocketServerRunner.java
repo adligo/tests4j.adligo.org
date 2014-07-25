@@ -392,5 +392,11 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	public Tests4J_Commands getLastCommnadSent() {
 		return lastCommnadSent;
 	}
+
+	@Override
+	public void onProgress(String process, double pctComplete) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
