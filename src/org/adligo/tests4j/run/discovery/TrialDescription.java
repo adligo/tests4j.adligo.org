@@ -35,17 +35,21 @@ import org.adligo.tests4j.models.shared.trials.UseCaseScope;
  */
 public class TrialDescription implements I_TrialDescription {
 
-
-	private Class<? extends I_AbstractTrial> trialClass;
-	
+	/**
+	 * this may be either the non instrumented class instance
+	 * or the instrumented class instance, as instances of 
+	 * TrialDescription are created twice for each trial 
+	 * when there is a CodeCoveragePlugin
+	 */
 	private I_AbstractTrial trial;
+	private Class<? extends I_AbstractTrial> trialClass;
 	
 	private Method beforeTrialMethod;
 	private Method afterTrialTestsMethod;
 	private Method afterTrialMethod;
 	private final List<TestDescription> testMethods = new CopyOnWriteArrayList<TestDescription>();
 	private TrialType type;
-	private boolean trialCanRun = false;
+	private boolean runnable = false;
 	private String resultFailureMessage;
 	private Exception resultException;
 	private boolean ignored;
@@ -66,7 +70,7 @@ public class TrialDescription implements I_TrialDescription {
 			reporter.log("Creating TrialDescription for " + trialClass);
 		}
 		
-		trialCanRun = checkTestClass();
+		runnable = checkTestClass();
 		long end = System.currentTimeMillis();
 		duration = end - start;
 	}
@@ -272,22 +276,28 @@ public class TrialDescription implements I_TrialDescription {
 
 
 
+	/**
+	 * Note this needs to be called twice
+	 * once to see if the trial can run 
+	 * and another time to 
+	 * @return
+	 */
 	private boolean createInstance() {
 		try {
 			Constructor<? extends I_AbstractTrial> constructor =
 					trialClass.getConstructor(new Class[] {});
 			constructor.setAccessible(true);
 			Object o = constructor.newInstance(new Object[] {});
-			trial = (I_AbstractTrial) o;
+			trial =  (I_AbstractTrial) o;
+			return true;
 		} catch (Exception x) {
 			I_Tests4J_TrialDescriptionMessages messages = 
 					Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
 			
 			resultFailureMessage = messages.getBadConstuctor(); 
 			resultException	= x;
-			return false;
 		}
-		return true;
+		return false;
 	}
 
 	public TrialType getType() {
@@ -297,8 +307,12 @@ public class TrialDescription implements I_TrialDescription {
 		return type;
 	}
 	
-	public boolean isTrialCanRun() {
-		return trialCanRun;
+	/**
+	 * if this trial can run.
+	 * @return
+	 */
+	public boolean isRunnable() {
+		return runnable;
 	}
 
 	public String getResultFailureMessage() {
@@ -309,8 +323,8 @@ public class TrialDescription implements I_TrialDescription {
 		return resultException;
 	}
 
-	public void setTrialCanRun(boolean trialCanRun) {
-		this.trialCanRun = trialCanRun;
+	public void setRunnable(boolean trialCanRun) {
+		this.runnable = trialCanRun;
 	}
 
 	public void setResultFailureMessage(String resultFailureMessage) {
@@ -337,10 +351,7 @@ public class TrialDescription implements I_TrialDescription {
 	public String getTrialName() {
 		return trialClass.getName();
 	}
-	public I_AbstractTrial getTrial() {
-		return trial;
-	}
-
+	
 	public Method getBeforeTrialMethod() {
 		return beforeTrialMethod;
 	}
@@ -463,5 +474,9 @@ public class TrialDescription implements I_TrialDescription {
 
 	public double getMinCoverage() {
 		return minCoverage;
+	}
+
+	public I_AbstractTrial getTrial() {
+		return trial;
 	}
 }

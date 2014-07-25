@@ -9,7 +9,7 @@ package org.adligo.tests4j.models.shared.asserts.line_text;
  */
 public interface I_LineDiff extends  Comparable<I_LineDiff>  {
 
-	public abstract LineDiffType getType();
+	public abstract I_LineDiffType getType();
 
 	/**
 	 * @return  the line number of the expected text

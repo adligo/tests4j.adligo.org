@@ -157,7 +157,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 						logger.log("Tests4J_SocketServerRunner: SocketServer on " + localhost + " " + port + " started");
 					}
 				} catch (IOException x) {
-					logger.onError(x);
+					logger.onException(x);
 					shutdown();
 					return;
 				}
@@ -171,10 +171,10 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 							acceptMessage();
 						}
 					} catch (IOException x) {
-						logger.onError(x);
+						logger.onException(x);
 						return;
 					} catch (InterruptedException e) {
-						logger.onError(e);
+						logger.onException(e);
 						return;
 					}
 				}

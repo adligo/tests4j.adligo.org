@@ -10,30 +10,14 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
+import org.adligo.tests4j.models.shared.common.ClassMethods;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {
-	public static final String META_TRIAL_XML_END = "</meta_trial>";
-	public static final String META_TRIAL_XML_START = "<meta_trial>";
-	public static final String TRIAL_XML_END = "</trial>";
-	public static final String TRIAL_XML_START = "<trial>";
-	public static final String TRIALS_XML_END = "</trials>";
-	public static final String TRIALS_XML_START = "<trials>";
-	public static final String COVERAGE_PLUGIN_XML_KEY = " coveragePluginFactory=\"";
-	public static final String THREAD_COUNT_XML_KEY = "threadCount=\"";
-	public static final String TEST_XML_END = "</test>";
-	public static final String TEST_XML_START = "<test>";
-	public static final String TESTS_XML_START = "<tests>";
-	public static final String TESTS_XML_END = "</tests>";
-	public static final String LOGS_XML_START = "<logs>";
-	public static final String LOG_XML_START = "<log>";
-	public static final String LOG_XML_END = "</log>";
-	public static final String LOGS_XML_END = "</logs>";
-	public static final String XML_END = "</Tests4J_Params>";
-	public static final String XML_START = "<Tests4J_Params ";
+
 	
 	/**
 	 * @see I_Tests4J_Params#getTrials()
@@ -64,7 +48,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private Map<I_Tests4J_RemoteInfo, I_Tests4J_Params> remoteParams = 
 			new HashMap<I_Tests4J_RemoteInfo, I_Tests4J_Params>();
 			
-	private I_EvaluatorLookup evaluatorLookup = EvaluatorLookup.DEFAULT_LOOKUP;
+	private Class<? extends I_EvaluatorLookup> evaluatorLookup = EvaluatorLookup.DEFAULT_LOOKUP.getClass();
 	
 	public Tests4J_Params() {}
 	
@@ -208,86 +192,36 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 
 	public void toXml(I_XML_Builder builder) {
-		/** TODO
-		StringBuilder sb = new StringBuilder();
-		sb.append(XML_START);
+		builder.indent();
+		builder.addStartTag(I_Tests4J_Params.TAG_NAME);
+		
 		if (coveragePluginFactoryClass != null) {
-			sb.append(COVERAGE_PLUGIN_XML_KEY);
-			sb.append(coveragePluginFactoryClass.getName());
-			sb.append("\"");
+			builder.addAttribute(I_Tests4J_Params.COVERAGE_PLUGIN_FACTORY_ATTRIBUTE, 
+					coveragePluginFactoryClass.getName());
 		}
-
-		sb.append(" >\n");
-		if (trials.size() >= 1 || metaTrialClass != null) {
-			
-			sb.append("\t");
-			sb.append(TRIALS_XML_START);
-			sb.append("\n");
-			if (metaTrialClass != null) {
-				sb.append("\t");
-				sb.append(META_TRIAL_XML_START);
-				sb.append("\n");
-				sb.append("\t");
-				sb.append("\t");
-				sb.append(metaTrialClass.getName());
-				sb.append(META_TRIAL_XML_END);
-				sb.append("\n");
-			}
-			for (Class<? extends I_Trial> c: trials) {
-				if (c != null) {
-					sb.append("\t");
-					sb.append("\t");
-					sb.append(TRIAL_XML_START);
-					sb.append(c.getName());
-					sb.append(TRIAL_XML_END);
-					sb.append("\n");
-				}
-			}
-			sb.append("\t");
-			sb.append(TRIALS_XML_END);
-			sb.append("\n");
+		if (evaluatorLookup != null) {
+			builder.addAttribute(I_Tests4J_Params.EVALUATOR_LOOKUP_ATTRIBUTE, 
+					evaluatorLookup.getName());
 		}
-		if (tests.size() >= 1) {
-			sb.append("\t");
-			sb.append(TESTS_XML_START);
-			sb.append("\n");
-			for (String test: tests) {
-				if (test != null) {
-					sb.append("\t");
-					sb.append("\t");
-					sb.append(TEST_XML_START);
-					sb.append(test);
-					sb.append(TEST_XML_END);
-					sb.append("\n");
-				}
-			}
-			
-			sb.append("\t");
-			sb.append(TESTS_XML_END);
-			sb.append("\n");
+		if (metaTrialClass != null) {
+			builder.addAttribute(I_Tests4J_Params.META_TRIAL_ATTRIBUTE, 
+					metaTrialClass.getName());
 		}
-		if (loggingClasses.size() >= 1) {
-			sb.append("\t");
-			sb.append(LOGS_XML_START);
-			sb.append("\n");
-			for (Class<?> c: loggingClasses) {
-				if (c != null) {
-					sb.append("\t");
-					sb.append("\t");
-					sb.append(LOG_XML_START);
-					sb.append(c.getName());
-					sb.append(LOG_XML_END);
-					sb.append("\n");
-				}
-			}
-			sb.append("\t");
-			sb.append(LOGS_XML_END);
-			sb.append("\n");
-		}
-		sb.append(XML_END);
-		*/
+		builder.append(">");
+		builder.endLine();
+		List<String> trialNames = ClassMethods.toNames(trials);
+		builder.addList(trialNames, I_Tests4J_Params.TRIALS_TAG_NAME, I_Tests4J_Params.TRIAL_TAG_NAME);
+		
+		builder.addList(tests, I_Tests4J_Params.TESTS_TAG_NAME, I_Tests4J_Params.TEST_TAG_NAME);
+		
+		List<String> logClassesNames = ClassMethods.toNames(loggingClasses);
+		builder.addList(logClassesNames, I_Tests4J_Params.LOG_CLASSESS_TAG_NAME, I_Tests4J_Params.CLASS_NAME_TAG_NAME);
+		
 	}
 
+	
+
+	
 
 	public void setCoveragePluginFactoryClass(
 			Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginConfiguratorClass) {
@@ -318,11 +252,11 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		remoteParams.put(info, p);
 	}
 
-	public I_EvaluatorLookup getEvaluatorLookup() {
+	public Class<? extends I_EvaluatorLookup> getEvaluatorLookup() {
 		return evaluatorLookup;
 	}
 
-	public void setEvaluatorLookup(I_EvaluatorLookup evaluatorLookup) {
+	public void setEvaluatorLookup( Class<? extends I_EvaluatorLookup> evaluatorLookup) {
 		this.evaluatorLookup = evaluatorLookup;
 	}
 

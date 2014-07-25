@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.xml;
 
+import java.util.Collection;
+
 /**
  * a interface to assist in building
  * xml as a UTF16 string (java internal charset)
@@ -21,6 +23,19 @@ public interface I_XML_Builder {
 	 * add to the current indent level
 	 */
 	public abstract void addIndent();
+	
+	/**
+	 * adds a list of something to the xml ie;
+	 * <pluralTagName>
+	 *     <singularTagName>item 1</singularTagName>
+	 *     <singularTagName>item 2</singularTagName>
+	 *     <singularTagName>item 3</singularTagName>
+	 * </pluralTagName>
+	 * @param items
+	 * @param pluralTagName
+	 * @param singularTagName
+	 */
+	public void addList(Collection<String> items, String pluralTagName, String singularTagName);
 
 	/**
 	 * reduce the current indent level
@@ -38,6 +53,13 @@ public interface I_XML_Builder {
 	 */
 	public abstract void addStartTag(String tagName);
 
+	/**
+	 * Adds a start tag ie "<hey>" with out any attributes
+	 * @param tagName a valid xml tag name (no special character treatment)
+	 */
+	public abstract void addStartTagWithoutAttributes(String tagName, boolean endLine);
+	
+	
 	/**
 	 * Adds a end ie "</hey>"
 	 * @param tagName a valid xml tag name (no special character treatment)

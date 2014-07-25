@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.i18n.I_Tests4j_BeforeTrialErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_BeforeTrialErrors;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.BeforeTrial;
 /**
@@ -23,7 +23,7 @@ public class BeforeTrialAuditor {
 		String trialName = trialDesc.getTrialName();
 		BeforeTrial bt = method.getAnnotation(BeforeTrial.class);
 		if (bt != null) {
-			I_Tests4j_BeforeTrialErrors errors = 
+			I_Tests4J_BeforeTrialErrors errors = 
 					Tests4J_Constants.CONSTANTS
 					.getTrialDescriptionMessages().getBeforeTrialErrors();
 			

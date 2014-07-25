@@ -12,6 +12,13 @@ import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
 
+/**
+ * this is a threadsafe class 
+ * to discover packages for a group of classes.
+ * 
+ * @author scott
+ *
+ */
 public class TopPackageSet {
 	private Set<String> packages = new HashSet<String>();
 	
@@ -54,13 +61,13 @@ public class TopPackageSet {
 		TopPackageSet packages = new TopPackageSet();
 		for (Class<?> clazz: classes) {
 			if (I_Trial.class.isAssignableFrom(clazz)) {
-				addTrialClassScopes(packages,(Class<? extends I_Trial>) clazz);
+				addTrialTypePackage(packages,(Class<? extends I_Trial>) clazz);
 			} 
 		}
 		return packages;
 	}
 
-	private static void addTrialClassScopes(TopPackageSet packages,
+	private static void addTrialTypePackage(TopPackageSet packages,
 			Class<? extends I_Trial> clazz) {
 		PackageScope ps = clazz.getAnnotation(PackageScope.class);
 		if (ps != null) {
@@ -80,7 +87,7 @@ public class TopPackageSet {
 		TopPackageSet packages = new TopPackageSet();
 		for (Class<?> clazz: classes) {
 			if (I_Trial.class.isAssignableFrom(clazz)) {
-				addTrialClassScopes(packages,(Class<? extends I_Trial>) clazz);
+				addTrialTypePackage(packages,(Class<? extends I_Trial>) clazz);
 				AdditionalInstrumentation ai = clazz.getAnnotation(AdditionalInstrumentation.class);
 				if (ai != null) {
 					String pkgs = ai.javaPackages();

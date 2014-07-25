@@ -1,8 +1,5 @@
 package org.adligo.tests4j.models.shared.system;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
 public class CoveragePluginDelegator implements I_Tests4J_CoveragePlugin {
@@ -23,23 +20,22 @@ public class CoveragePluginDelegator implements I_Tests4J_CoveragePlugin {
 		reporter = pReporter;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<Class<? extends I_AbstractTrial>> instrumentClasses(
-			List<Class<? extends I_AbstractTrial>> trials) {
+	public Class<? extends I_AbstractTrial> instrument(
+			Class<? extends I_AbstractTrial> trial) {
 		try {
-			return delegate.instrumentClasses(trials);
+			return delegate.instrument(trial);
 		} catch (Throwable t) {
-			reporter.onError(t);
+			reporter.onException(t);
 		}
-		return (List<Class<? extends I_AbstractTrial>>) Collections.EMPTY_LIST;
+		return null;
 	}
 
 	public boolean canThreadGroupLocalRecord() {
 		try {
 			return delegate.canThreadGroupLocalRecord();
 		} catch (Throwable t) {
-			reporter.onError(t);
+			reporter.onException(t);
 		}
 		return false;
 	}
@@ -48,7 +44,7 @@ public class CoveragePluginDelegator implements I_Tests4J_CoveragePlugin {
 		try {
 			return delegate.createRecorder();
 		} catch (Throwable t) {
-			reporter.onError(t);
+			reporter.onException(t);
 		}
 		return null;
 	}

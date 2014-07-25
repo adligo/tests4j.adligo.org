@@ -32,10 +32,10 @@ public class Tests4J_UncaughtExceptionHandler implements UncaughtExceptionHandle
 			threadName = t.getName();
 		}
 		logger.log("uncaughtException on thread " + threadName);
-		logger.onError(e);
+		logger.onException(e);
 		Throwable cause = e.getCause();
 		while (cause != null) {
-			logger.onError(cause);
+			logger.onException(cause);
 			cause = cause.getCause();
 		}
 	}

@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts;
 
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertCommand;
 
@@ -26,12 +27,14 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 	 * @param failureMessage
 	 * @param pData
 	 */
-	public DoubleAssertCommand(AssertType pType, String failureMessage, CompareAssertionData<Double> pData) {
+	public DoubleAssertCommand(I_AssertType pType, String failureMessage, CompareAssertionData<Double> pData) {
 		super(pType, failureMessage, pData);
-		if (AssertType.AssertGreaterThanOrEquals != pType) {
+		
+		//copy it between classloaders
+		type = AssertType.getType(pType);
+		if (AssertType.AssertGreaterThanOrEquals != type) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
-		type = (AssertType) pType;
 		data = pData;
 	}
 

@@ -16,7 +16,6 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
@@ -74,7 +73,7 @@ public class Tests4J_ParamsReader {
 			getTrialsFromParams(pParams);
 		} catch (Throwable t) {
 			//some error/exception with the trials, do NOT try to recover
-			logger.onError(t);
+			logger.onException(t);
 			runnable = false;
 			return;
 		}
@@ -84,7 +83,7 @@ public class Tests4J_ParamsReader {
 			getRemotes();
 		} catch (Throwable t) {
 			//some error/exception with the trials, do NOT try to recover
-			logger.onError(t);
+			logger.onException(t);
 			runnable = false;
 			return;
 		}
@@ -100,20 +99,9 @@ public class Tests4J_ParamsReader {
 			coveragePlugin = createCoveragePlugin();
 		} catch (Throwable t) {
 			//some error/exception with the coveragePlugin, try to recover
-			logger.onError(t);
+			logger.onException(t);
 		}
-		if (coveragePlugin != null) {
-			try {
-				instrumentClasses();
-			} catch (Throwable t) {
-				//some error/exception with the trials, do NOT try to recover
-				I_Tests4J_ParamReaderConstants constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
-				logger.log(constants.getThereWasAIssueInstrumentingClassesForCodeCoverage());
-				logger.onError(t);
-				runnable = false;
-				return;
-			}
-		}
+	
 		
 		try {
 			Set<String> paramTests = pParams.getTests();
@@ -123,7 +111,7 @@ public class Tests4J_ParamsReader {
 			tests.addAll(paramTests);
 		} catch (Throwable t) {
 			//error with tests, don't recover
-			logger.onError(t);
+			logger.onException(t);
 			runnable = false;
 			return;
 		}
@@ -134,14 +122,14 @@ public class Tests4J_ParamsReader {
 			recommendedTrialThreads = pParams.getRecommendedTrialThreadCount();
 		} catch (Throwable t) {
 			//some error/exception with the trials, do try to recover
-			logger.onError(t);
+			logger.onException(t);
 		}
 		trialThreadCount = determineTrialThreads(recommendedTrialThreads);
 		
 		try {
-			evaluatorLookup = new EvaluatorLookup(params.getEvaluatorLookup());
+			readEvaluatorLookup();
 		} catch (Throwable t) {
-			logger.onError(t);
+			logger.onException(t);
 			runnable = false;
 			return;
 		}
@@ -160,18 +148,23 @@ public class Tests4J_ParamsReader {
 		
 	}
 
+	private void readEvaluatorLookup() throws InstantiationException,
+			IllegalAccessException {
+		Class<?> elc = params.getEvaluatorLookup();
+		if (elc == null) {
+			evaluatorLookup = EvaluatorLookup.DEFAULT_LOOKUP;
+		} else if (EvaluatorLookup.class.isAssignableFrom(elc)) {
+			evaluatorLookup = EvaluatorLookup.DEFAULT_LOOKUP;
+		} else {
+			evaluatorLookup = (I_EvaluatorLookup) elc.newInstance();
+		}
+	}
+
 	private void getRemotes() {
 		//
 		
 	}
 	
-	private void instrumentClasses() {
-		List<Class<? extends I_AbstractTrial>> instrumentedAbstractTrials = coveragePlugin.instrumentClasses(
-				new ArrayList<Class<? extends I_AbstractTrial>>(trials));
-		for (Class<? extends I_AbstractTrial> trialClass: instrumentedAbstractTrials) {
-			instrumentedTrials.add((Class<? extends I_Trial>) trialClass);
-		}
-	}
 
 	public int determineTrialThreads(Integer trialThreads) {
 		if (trialThreads == null) {

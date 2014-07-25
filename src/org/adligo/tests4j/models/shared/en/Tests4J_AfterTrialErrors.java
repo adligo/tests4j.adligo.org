@@ -1,9 +1,9 @@
 package org.adligo.tests4j.models.shared.en;
 
-import org.adligo.tests4j.models.shared.i18n.I_Tests4j_AfterTrialErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AfterTrialErrors;
 
 public class Tests4J_AfterTrialErrors extends AbstractTests4J_MethodErrors 
-	implements I_Tests4j_AfterTrialErrors {
+	implements I_Tests4J_AfterTrialErrors {
 
 	private static final String NOT_PUBLIC = "Methods Annotated with @AfterTrial must be public.";
 	private static final String NOT_STATIC = "Methods Annotated with @AfterTrial must be static.";

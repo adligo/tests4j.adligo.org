@@ -10,7 +10,7 @@ public class LineDiff implements I_LineDiff {
 	public LineDiff(I_LineDiff p) {
 		mutant = new LineDiffMutant(p);
 	}
-	public LineDiffType getType() {
+	public I_LineDiffType getType() {
 		return mutant.getType();
 	}
 	public int getExpectedLineNbr() {

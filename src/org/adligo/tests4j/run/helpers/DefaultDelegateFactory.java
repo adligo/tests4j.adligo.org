@@ -7,7 +7,7 @@ public class DefaultDelegateFactory implements I_Tests4J_DelegateFactory {
 
 	@Override
 	public I_Tests4J_Delegate create() {
-		return new Tests4J_TrialRunProcessor();
+		return new Tests4J_Processor();
 	}
 
 }

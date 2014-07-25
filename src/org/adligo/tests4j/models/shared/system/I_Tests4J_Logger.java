@@ -30,7 +30,7 @@ public interface I_Tests4J_Logger {
 	 * 
 	 * @param p
 	 */
-	public void onError(Throwable p);
+	public void onException(Throwable p);
 	/**
 	 * If the log is enabled, used to optimize string 
 	 * creation of log messages.

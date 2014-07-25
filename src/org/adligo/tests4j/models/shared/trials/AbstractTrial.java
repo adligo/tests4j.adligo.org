@@ -369,7 +369,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void log(Throwable p) {
-		reporter.onError(p);
+		reporter.onException(p);
 	}
 
 	@Override

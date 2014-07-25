@@ -52,7 +52,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 	private Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
-	private I_Tests4J_Logger reporter;
+	private I_Tests4J_Logger logger;
 	private I_AbstractTrial trial;
 	private BaseTrialResultMutant trialResultMutant;
 	
@@ -72,7 +72,6 @@ public class Tests4J_TrialsRunable implements Runnable,
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
-	private TrialDescriptionProcessor trialDescriptionProcessor;
 	/**
 	 * 
 	 * @param p
@@ -85,20 +84,20 @@ public class Tests4J_TrialsRunable implements Runnable,
 			I_Tests4J_NotificationManager pNotificationManager) {
 		memory = p;
 		notifier = pNotificationManager;
-		reporter = p.getLogger();
+		logger = p.getLogger();
 		threadManager = p.getThreadManager();
 		
 		testsRunner = new TestRunable(memory);
 		testsRunner.setListener(this);
 		testRunService = threadManager.createNewTestRunService();
 		
-		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), reporter);
+		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), logger);
 		bindings.setAssertListener(testsRunner);
 		
 		afterSouceFileTrialTestsProcessor = new AfterSourceFileTrialTestsProcessor(memory);
 		afterApiTrialTestsProcessor = new AfterApiTrialTestsProcessor(memory);
 		afterUseCaseTrialTestsProcessor = new AfterUseCaseTrialTestsProcessor(memory);
-		trialDescriptionProcessor = new TrialDescriptionProcessor(memory);
+		
 	}
 
 	/**
@@ -107,9 +106,9 @@ public class Tests4J_TrialsRunable implements Runnable,
 	 */
 	@Override
 	public void run() {
-		Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClasses();
+		
+		Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialsToRun();
 		while (trialClazz != null) {
-			trialDescription = null;
 			try {
 				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
 					//start recording the trial coverage,
@@ -123,45 +122,41 @@ public class Tests4J_TrialsRunable implements Runnable,
 							trialThreadLocalCoverageRecorder.startRecording();
 						}
 					}
-					trialDescription = trialDescriptionProcessor.addTrialDescription(trialClazz);
-					notifier.checkDoneDescribingTrials();
+					
+					//recreate the TrialDescrption, so that the zero arg constructor
+					//is called on the instrumented trial (to correctly calculate code coverage)
+					trialDescription = new TrialDescription(trialClazz, logger);
 				}
 				
 			} catch (Exception x) {
-				memory.getLogger().onError(x);
-				notifier.onDescibeTrialError();
-				return;
-			} catch (Error x) {
-				memory.getLogger().onError(x);
-				notifier.onDescibeTrialError();
-				return;
-			}
-		
+				logger.onException(x);
+			} 
+			
 			if (trialDescription != null) {
-				if (trialDescription.isTrialCanRun()) {
+				if (trialDescription.isRunnable()) {
 					if (trialDescription.getType() != TrialType.MetaTrial) {
 						try {
 							//synchronized here so that each trial can only be running
 							//once in all of the trial threads, having a trial running
 							//in two threads at the same time would be confusing to the users
 							synchronized (trialClazz) {
-								if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
-									reporter.log("Thread " + Thread.currentThread().getName() +
+								if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+									logger.log("Thread " + Thread.currentThread().getName() +
 											" is running trial;\n" +trialDescription.getTrialName());
 								}
 								runTrial();
 							}	
 						} catch (RejectedExecutionException x) {
-							memory.getLogger().onError(x);
+							memory.getLogger().onException(x);
 						} catch (Exception x) {
-							memory.getLogger().onError(x);
+							memory.getLogger().onException(x);
 						} catch (Error x) {
-							memory.getLogger().onError(x);
+							memory.getLogger().onException(x);
 						} 
 					}
 				}
 			}
-			trialClazz = memory.pollTrialClasses();
+			trialClazz = memory.pollTrialsToRun();
 		}
 		
 		notifier.checkDoneRunningNonMetaTrials();
@@ -187,8 +182,8 @@ public class Tests4J_TrialsRunable implements Runnable,
 	
 	private void runTrial() throws RejectedExecutionException  {
 		
-		if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
-			reporter.log("running trial " + trialName);
+		if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+			logger.log("running trial " + trialName);
 		}
 		apiTrialResultMutant = null;
 		sourceFileTrialResultMutant = null;
@@ -213,13 +208,13 @@ public class Tests4J_TrialsRunable implements Runnable,
 		if (this.trialResultMutant.getFailure() == null) {
 		
 			testsRunner.setTrial(trial);
-			if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
-				reporter.log("running trial tests " + trialName);
+			if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+				logger.log("running trial tests " + trialName);
 			}
 			runTests();
 			
-			if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
-				reporter.log("finished trial tests" + trialName);
+			if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+				logger.log("finished trial tests" + trialName);
 			}
 			if (trialResultMutant.isPassed()) {
 				//skip this method unless everything passed in the trial
@@ -228,8 +223,8 @@ public class Tests4J_TrialsRunable implements Runnable,
 			runAfterTrial();
 		}
 		
-		if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
-			reporter.log("calculating trial results " + trialName);
+		if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+			logger.log("calculating trial results " + trialName);
 		}
 		
 		switch (type) {
@@ -248,8 +243,8 @@ public class Tests4J_TrialsRunable implements Runnable,
 			default:
 				result = new BaseTrialResult(trialResultMutant);
 		}
-		if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
-			reporter.log("notifying trial finished " + trialName);
+		if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+			logger.log("notifying trial finished " + trialName);
 		}
 		notifier.onTrialCompleted(result);
 	}
@@ -334,8 +329,8 @@ public class Tests4J_TrialsRunable implements Runnable,
 		} else {
 			notifier.startingTest(trialName, method.getName());
 			
-			if (reporter.isLogEnabled(Tests4J_TrialsRunable.class)) {
-				reporter.log("starting test; " +trialName + "."+  method.getName());
+			if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+				logger.log("starting test; " +trialName + "."+  method.getName());
 			}
 			
 			//trial.beforeTests();

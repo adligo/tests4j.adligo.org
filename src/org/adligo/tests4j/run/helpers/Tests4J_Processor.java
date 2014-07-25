@@ -23,7 +23,7 @@ import org.adligo.tests4j.shared.report.summary.SummaryReporter;
  * @author scott
  *
  */
-public class Tests4J_TrialRunProcessor implements I_Tests4J_Delegate {
+public class Tests4J_Processor implements I_Tests4J_Delegate {
 	public static final String REQUIRES_SETUP_IS_CALLED_BEFORE_RUN = " requires setup is called before run.";
 	/**
 	 * note this is static and final, so that 
@@ -34,7 +34,9 @@ public class Tests4J_TrialRunProcessor implements I_Tests4J_Delegate {
 	private static final ThreadLocalOutputStream OUT = new ThreadLocalOutputStream();
 	private Tests4J_Memory memory = new Tests4J_Memory();
 	
-	
+	private int trialThreadCount;
+	private Tests4J_ThreadManager threadManager;
+	private Tests4J_NotificationManager notifier;
 	private Tests4J_Controls controls;
 	
 	/**
@@ -77,32 +79,22 @@ public class Tests4J_TrialRunProcessor implements I_Tests4J_Delegate {
 	@SuppressWarnings("unchecked")
 	public void run() {
 		//@diagram sync with Overview.seq on 7/21/2014
-		int trialThreadCount = memory.getTrialThreadCount();
+		trialThreadCount = memory.getTrialThreadCount();
 		I_Tests4J_Logger logger = memory.getLogger();
-		if (logger.isLogEnabled(Tests4J_TrialRunProcessor.class)) {
+		if (logger.isLogEnabled(Tests4J_Processor.class)) {
 			logger.log("Starting run with " + trialThreadCount + " trial threads.");
 		}
-		I_Tests4J_CoveragePlugin coveragePlugin = memory.getCoveragePlugin();
-		if (coveragePlugin != null) {
-			startRecordingAllTrialsRun(coveragePlugin);
-		}
 		
-		Tests4J_ThreadManager threadManager = memory.getThreadManager();
-		ExecutorService runService = threadManager.getTrialRunService();
-		Tests4J_NotificationManager notifier = memory.getNotifier();
 		
-		//@diagram Overview.seq sync on 7/21/2014 'loop trialThreadCount size()'
-		for (int i = 0; i < trialThreadCount; i++) {
-			Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
-			try {
-				Future<?> future = runService.submit(tip);
-				threadManager.addTrialFuture(future);
-				memory.addTrialInstancesProcessors(tip);
-			} catch (RejectedExecutionException x) {
-				//do nothing, not sure why this exception is happening for me
-				// it must have to do with shutdown, but it happens intermittently.
-			}
-		}
+		threadManager = memory.getThreadManager();
+		notifier = memory.getNotifier();
+		submitSetupRunnables();
+		
+		startRecordingAllTrialsRun();
+		
+		//sleep this thread until it can start running trials
+		
+		submitTrialsRunnables();
 		/*
 		Collection<I_Tests4J_RemoteInfo> remotes = params.getRemoteInfo();
 		for (I_Tests4J_RemoteInfo remote: remotes) {
@@ -121,16 +113,74 @@ public class Tests4J_TrialRunProcessor implements I_Tests4J_Delegate {
 	}
 
 	/**
+	 * 
+	 * @diagram_sync with Overview.seq on 7/24/2014
+	 * 
+	 * please keep these stats
+	 *    7/24/2014  
+	 *    		AllTrialsRunn with 75 trials 522 tests
+	 *    
+	 *    			12.5 seconds when one thread runs Tests4J_SetupRunnable
+	 *                9.2 seconds with 8 threads, but fails code coverage inconsistent
+	 *                8.7 seconds with 16 threads, but fails 2 tests code coverage inconsistent
+	 */
+	private void submitSetupRunnables() {
+		//Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier); 
+		//sr.run();
+		ExecutorService runService = threadManager.getTrialRunService();
+		
+		
+		for (int i = 0; i < trialThreadCount; i++) {
+			Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier); 
+			try {
+				Future<?> future = runService.submit(sr);
+				threadManager.addSetupFuture(future);
+			} catch (RejectedExecutionException x) {
+				//do nothing, not sure why this exception is happening for me
+				// it must have to do with shutdown, but it happens intermittently.
+			}
+		}
+		while (!notifier.isDoneDescribeingTrials()) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException x) {
+				throw new RuntimeException(x);
+			}
+		}
+	}
+	
+	private void submitTrialsRunnables() {
+		ExecutorService runService = threadManager.getTrialRunService();
+		
+		
+		for (int i = 0; i < trialThreadCount; i++) {
+			Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
+			try {
+				Future<?> future = runService.submit(tip);
+				threadManager.addTrialFuture(future);
+				memory.addTrialInstancesProcessors(tip);
+			} catch (RejectedExecutionException x) {
+				//do nothing, not sure why this exception is happening for me
+				// it must have to do with shutdown, but it happens intermittently.
+			}
+		}
+	}
+
+	/**
 	 * @adligo.diagram_sync with Overview.seq on 7/5/2014
 	 * @param plugin
 	 */
-	private void startRecordingAllTrialsRun(I_Tests4J_CoveragePlugin plugin) {
-		//@adligo.diagram_sync with Overview.seq on 7/5/2014
-		I_Tests4J_CoverageRecorder allCoverageRecorder = plugin.createRecorder();
-		//@adligo.diagram_sync with Overview.seq on 7/5/2014
-		allCoverageRecorder.startRecording();
-		//@adligo.diagram_sync with Overview.seq on 7/5/2014
-		memory.setMainRecorder(allCoverageRecorder);
+	private void startRecordingAllTrialsRun() {
+		I_Tests4J_CoveragePlugin coveragePlugin = memory.getCoveragePlugin();
+		if (coveragePlugin != null) {
+			//@adligo.diagram_sync with Overview.seq on 7/5/2014
+			I_Tests4J_CoverageRecorder allCoverageRecorder = coveragePlugin.createRecorder();
+			//@adligo.diagram_sync with Overview.seq on 7/5/2014
+			allCoverageRecorder.startRecording();
+			//@adligo.diagram_sync with Overview.seq on 7/5/2014
+			memory.setMainRecorder(allCoverageRecorder);
+		}
+		
 	}
 
 	@Override

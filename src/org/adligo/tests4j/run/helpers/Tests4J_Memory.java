@@ -2,10 +2,8 @@ package org.adligo.tests4j.run.helpers;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -15,26 +13,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.models.shared.common.I_Immutable;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
-import org.adligo.tests4j.models.shared.trials.AfterTrial;
-import org.adligo.tests4j.models.shared.trials.BeforeTrial;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.IgnoreTest;
-import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
-import org.adligo.tests4j.models.shared.trials.PackageScope;
-import org.adligo.tests4j.models.shared.trials.SourceFileScope;
-import org.adligo.tests4j.models.shared.trials.TrialTypeAnnotation;
-import org.adligo.tests4j.models.shared.trials.UseCaseScope;
+import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 
@@ -48,20 +38,10 @@ import org.adligo.tests4j.run.discovery.TrialDescription;
  *
  */
 public class Tests4J_Memory {
-	private static AtomicBoolean LOADED_COMMON_CLASSES = new AtomicBoolean(false);
-	
-	/**
-	 * these are enums, interfaces and other classes
-	 * that have NO methods or runtime code 
-	 * which are loaded by this class's
-	 * parent classloader so that wierd .
-	 * These are stored here for testing of this class.
-	 */
-	public static List<Class<?>> COMMON_CLASSES;
-	
 	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private AtomicBoolean metaTrial = new AtomicBoolean(false);
+	private AtomicBoolean hasTrialThatCanRun = new AtomicBoolean(false);
 	private CopyOnWriteArraySet<String> tests;
 	/**
 	 * The key is the class name of the trial
@@ -76,6 +56,11 @@ public class Tests4J_Memory {
 	 * if the user of the api is running trials more than once
 	 */
 	private CopyOnWriteArrayList<TrialDescription> allTrialDescriptions = new CopyOnWriteArrayList<TrialDescription>();
+	/**
+	 * the queue of trials to run,
+	 * they should be instrumented if there is a coverage plugin
+	 */
+	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialsToRun = new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	
 	private ConcurrentHashMap<String,AtomicInteger> trialRuns = new ConcurrentHashMap<String,AtomicInteger>();
 	
@@ -123,7 +108,8 @@ public class Tests4J_Memory {
 	
 	protected void initialize(Tests4J_ParamsReader p) {
 		trialThreadCount = p.getTrialThreadCount();
-		threadManager = new Tests4J_ThreadManager(trialThreadCount, system, logger);
+		//TODO pass remote count into the thread manager
+		threadManager = new Tests4J_ThreadManager(trialThreadCount, 0, system, logger);
 		
 		List<Class<? extends I_AbstractTrial>> trials = p.getInstrumentedTrials();
 		if (trials.size() == 0) {
@@ -161,25 +147,30 @@ public class Tests4J_Memory {
 		return trialClasses.poll();
 	}
 	/**
-	 * @diagram_sync with Overview.seq on 7/5/2014
 	 * @param name
 	 * @param p
 	 */
-	public synchronized void addTrialDescription(String name, TrialDescription p) {
+	public void addTrialDescription(String name, TrialDescription p) {
 		allTrialDescriptions.add(p);
-		if (p.isTrialCanRun() && p.getType() == TrialType.MetaTrial) {
+		if (p.isRunnable() && p.getType() == TrialType.MetaTrial) {
 			metaTrialDescription = p;
 		}
 		trialDescriptions.put(name, p);
 		if (!trialRuns.containsKey(name)) {
 			trialRuns.put(name, new AtomicInteger(0));
 		}
+		if (logger.isLogEnabled(Tests4J_Memory.class)) {
+			logger.log("added trial description for " + name);
+		}
 	}
-	public synchronized TrialDescription getTrialDescription(String name) {
+	public TrialDescription getTrialDescription(String name) {
 		return trialDescriptions.get(name);
 	}
 	
-	public synchronized int incrementTrialRun(String trialName) {
+	public int incrementTrialRun(String trialName) {
+		if (logger.isLogEnabled(Tests4J_Memory.class)) {
+			logger.log("incrementTrialRun for " + trialName);
+		}
 		AtomicInteger next = trialRuns.get(trialName);
 		return next.getAndAdd(1);
 	}
@@ -254,7 +245,7 @@ public class Tests4J_Memory {
 		Iterator<TrialDescription> it = allTrialDescriptions.iterator();
 		while (it.hasNext()) {
 			TrialDescription desc = it.next();
-			if (desc.isTrialCanRun()) {
+			if (desc.isRunnable()) {
 				if (!desc.isIgnored()) {
 					toRet++;
 				}
@@ -406,4 +397,17 @@ public class Tests4J_Memory {
 		this.system = system;
 	}
 
+	
+	protected void addTrialToRun(Class<? extends I_AbstractTrial> p) {
+		trialsToRun.add(p);
+		hasTrialThatCanRun.set(true);
+	}
+	
+	protected Class<? extends I_AbstractTrial> pollTrialsToRun() {
+		return trialsToRun.poll();
+	}
+	
+	protected boolean hasTrialThatCanRun() {
+		return hasTrialThatCanRun.get();
+	}
 }

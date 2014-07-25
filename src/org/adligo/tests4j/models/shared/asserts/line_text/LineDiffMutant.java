@@ -14,7 +14,11 @@ public class LineDiffMutant implements I_LineDiff {
 	public LineDiffMutant() {}
 	
 	public LineDiffMutant(I_LineDiff p) {
-		type = p.getType();
+		I_LineDiffType pType = p.getType();
+		if  (pType != null) {
+			//copy between classloaders
+			type = LineDiffType.get(pType);
+		}
 		setExpectedLineNbr(p.getExpectedLineNbr());
 		setActualLineNbr(p.getActualLineNbr());
 		indexes = p.getIndexes();
@@ -24,7 +28,7 @@ public class LineDiffMutant implements I_LineDiff {
 	 * @see org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiff#getType()
 	 */
 	@Override
-	public LineDiffType getType() {
+	public I_LineDiffType getType() {
 		return type;
 	}
 	/* (non-Javadoc)
@@ -49,8 +53,8 @@ public class LineDiffMutant implements I_LineDiff {
 		return indexes;
 	}
 	
-	public void setType(LineDiffType type) {
-		this.type = type;
+	public void setType(I_LineDiffType type) {
+		this.type = LineDiffType.get(type);
 	}
 	
 	public void setExpectedLineNbr(int p) {

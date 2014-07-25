@@ -1,7 +1,9 @@
 package org.adligo.tests4j.models.shared.asserts.common;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -24,7 +26,7 @@ import java.util.Set;
  * @author scott
  *
  */
-public enum AssertType implements I_AssertType{
+public enum AssertType implements I_AssertType {
 	AssertTrue(0), AssertFalse(1), AssertNull(2), AssertNotNull(3),
 	AssertEquals(4), AssertNotEquals(5), AssertSame(6), AssertNotSame(7),
 	AssertThrown(8), AssertThrownUniform(9), 
@@ -35,6 +37,7 @@ public enum AssertType implements I_AssertType{
 	public static Set<AssertType> EQUAL_TYPES = getEqualTypes();
 	public static Set<AssertType> IDENTICAL_TYPES = getIdenticalTypes();
 	public static Set<AssertType> UNIFORM_TYPES = getUniformTypes();
+	public static Map<Integer, AssertType> TYPES_BY_ID = getTypesById();
 	
 	private static Set<AssertType> getBooleanTypes() {
 		Set<AssertType> toRet = new HashSet<AssertType>();
@@ -67,6 +70,38 @@ public enum AssertType implements I_AssertType{
 		toRet.add(AssertUniform);
 		toRet.add(AssertNotUniform);
 		return Collections.unmodifiableSet(toRet);
+	}
+	
+	/**
+	 * copy assert types between classloaders
+	 * @param p
+	 * @return
+	 */
+	public static AssertType getType(I_AssertType p) {
+		return TYPES_BY_ID.get(p.getId());
+	}
+	
+	private static Map<Integer, AssertType> getTypesById() {
+		Map<Integer, AssertType> toRet = new HashMap<Integer, AssertType>();
+		add(AssertTrue, toRet);
+		add(AssertFalse, toRet);
+		add(AssertNull, toRet);
+		add(AssertNotNull, toRet);
+		add(AssertEquals, toRet);
+		add(AssertNotEquals, toRet); 
+		add(AssertSame, toRet);
+		add(AssertNotSame, toRet);
+		add(AssertThrown, toRet);
+		add(AssertThrownUniform, toRet);
+		add(AssertUniform, toRet);
+		add(AssertNotUniform, toRet);
+		add(AssertContains, toRet);
+		add(AssertGreaterThanOrEquals, toRet);
+		return Collections.unmodifiableMap(toRet);
+	}
+	
+	private static void add(AssertType type, Map<Integer, AssertType> map) {
+		map.put(type.getId(), type);
 	}
 	
 	private int id;

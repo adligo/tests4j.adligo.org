@@ -27,6 +27,7 @@ public class TrialDescriptionProcessor {
 	 * @param trialClazz
 	 */
 	public TrialDescription addTrialDescription(Class<? extends I_AbstractTrial> trialClazz) {
+		String className = trialClazz.getName();
 		// synchronized on the trialClass instance to make sure
 		// that only one thread is doing this for a specific trial at a time
 		// This allows reuse of TrialDescription instances
@@ -34,16 +35,16 @@ public class TrialDescriptionProcessor {
 			TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
 			
 			//try to reuse the description if another thread already described it
-			TrialDescription desc = memory.getTrialDescription(trialClazz.getName());
+			TrialDescription desc = memory.getTrialDescription(className);
 			if (desc == null) {
 				desc = new TrialDescription(trialClazz, memory.getLogger());
 			}
-			memory.addTrialDescription(trialClazz.getName(), desc);
+			memory.addTrialDescription(className, desc);
 			
 			if (!desc.isIgnored()) {
-				if (!desc.isTrialCanRun()) {
+				if (!desc.isRunnable()) {
 					BaseTrialResultMutant trm = new BaseTrialResultMutant();
-					trm.setTrialName(desc.getTrialName());
+					trm.setTrialName(className);
 					String failureMessage = desc.getResultFailureMessage();
 					if (failureMessage != null) {
 						TrialFailure tf = new TrialFailure(failureMessage, desc.getResultException());
@@ -76,8 +77,6 @@ public class TrialDescriptionProcessor {
 						default:
 							memory.addResultBeforeMetadata(new BaseTrialResult(trm));
 					}
-					
-					
 				}
 			}
 			return desc;

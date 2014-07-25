@@ -35,7 +35,7 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 		try {
 			delegate.onMetadataCalculated(metadata);
 		} catch (Throwable t) {
-			logger.onError(t);
+			logger.onException(t);
 		}
 	}
 
@@ -46,7 +46,7 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 		try {
 			delegate.onStartingTrial(trialName);
 		} catch (Throwable t) {
-			logger.onError(t);
+			logger.onException(t);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 		try {
 			delegate.onStartingTest(trialName, testName);
 		} catch (Throwable t) {
-			logger.onError(t);
+			logger.onException(t);
 		}
 	}
 
@@ -69,7 +69,7 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 		try {
 			delegate.onTestCompleted(trialName, testName, passed);
 		} catch (Throwable t) {
-			logger.onError(t);
+			logger.onException(t);
 		}
 	}
 
@@ -80,7 +80,7 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 		try {
 			delegate.onTrialCompleted(result);
 		} catch (Throwable t) {
-			logger.onError(t);
+			logger.onException(t);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 		try {
 			delegate.onRunCompleted(result);
 		} catch (Throwable t) {
-			logger.onError(t);
+			logger.onException(t);
 		}
 	}
 	

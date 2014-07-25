@@ -57,7 +57,7 @@ public class DefaultLogger implements I_Tests4J_Logger {
 				logs = Collections.unmodifiableMap(logs);
 			}
 		} catch (Throwable t) {
-			onError(t);
+			onException(t);
 		}
 	}
 	
@@ -67,7 +67,7 @@ public class DefaultLogger implements I_Tests4J_Logger {
 	}
 
 	@Override
-	public synchronized void onError(Throwable p) {
+	public synchronized void onException(Throwable p) {
 		logThrowable("\t", p);
 	}
 

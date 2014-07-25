@@ -7,6 +7,7 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
 import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
 
 /**
@@ -17,8 +18,25 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_Tests4J_Params extends I_XML_Producer {
-
+public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
+	public static final String TAG_NAME = "tests4j_Params";
+	public static final String COVERAGE_PLUGIN_FACTORY_ATTRIBUTE= "coveragePluginFactory";
+	public static final String EVALUATOR_LOOKUP_ATTRIBUTE = "evaluatorLookup";
+	public static final String META_TRIAL_ATTRIBUTE = "metaTrial";
+	public static final String RECOMENDED_TRIAL_THREADS_ATTRIBUTE = "recomendedThreadThreads";
+	
+	public static final String TRIAL_TAG_NAME = "trial";
+	public static final String TRIALS_TAG_NAME = "trials";
+	
+	public static final String TEST_TAG_NAME = "test";
+	public static final String TESTS_TAG_NAME = "tests";
+	
+	public static final String LOG_CLASSESS_TAG_NAME = "logClasses";
+	public static final String CLASS_NAME_TAG_NAME = "className";
+	
+	public static final String REMOTE_RUNS = "remoteRuns";
+	public static final String REMOTE_RUN = "remoteRun";
+	
 	/**
 	 * The trials to run.
 	 * 
@@ -109,8 +127,10 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	 * assertUniform
 	 * assertNotUniform
 	 * assertUniformThrown
+	 * 
+	 * must be available to the jvm of the tests4j instance
 	 * exc
 	 */
-	public I_EvaluatorLookup getEvaluatorLookup();
+	public Class<? extends I_EvaluatorLookup> getEvaluatorLookup();
 
 }

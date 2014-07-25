@@ -6,11 +6,12 @@ import java.util.List;
 
 /**
  * for GWT bridge Windows, Unix
+ * mostly for stubbing tests/trials 
  * @author scott
  *
  */
 public class LineSeperator {
-	private static String LINE_SEPERATOR;
+	private static String LINE_SEPERATOR = System.lineSeparator();
 	private static List<String> CALLING_CLASSES = getCallingClasses();
 	
 	private static List<String> getCallingClasses() {

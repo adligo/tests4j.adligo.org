@@ -38,10 +38,12 @@ public class UniformAssertCommand<T,D> extends AbstractAssertCommand
 	public UniformAssertCommand(I_AssertType pType, String failureMessage, 
 			I_CompareAssertionData<T> pData, I_UniformAssertionEvaluator<T, D> pEvaluator) {
 		super(pType, failureMessage);
-		if (!AssertType.UNIFORM_TYPES.contains(pType)) {
+		
+		//copy it between classloaders
+		type = AssertType.getType(pType);
+		if (!AssertType.UNIFORM_TYPES.contains(type)) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
-		type = (AssertType) pType;
 		data = pData;
 		if (data == null) {
 			throw new IllegalArgumentException(NULL_DATA);

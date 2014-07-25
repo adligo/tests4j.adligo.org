@@ -5,17 +5,13 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_DiffIndexes;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_DiffIndexesPair;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiff;
+import org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiffType;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayConstants;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Logger;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
-
-import sun.util.logging.resources.logging;
-
-import com.sun.medialib.mlib.Constants;
 /**
  * is NOT thread safe
  * @author scott
@@ -40,7 +36,8 @@ public class LineDiffTextDisplay {
 		int diffCount = 0;
 		for (I_LineDiff diff: diffs) {
 			if (diff != null) {
-				LineDiffType type = diff.getType();
+				I_LineDiffType pType = diff.getType();
+				LineDiffType type = LineDiffType.get(pType);
 				if (diffCount > diffLimit) {
 					return;
 				}

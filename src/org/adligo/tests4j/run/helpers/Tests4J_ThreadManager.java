@@ -27,8 +27,12 @@ import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 public class Tests4J_ThreadManager {
 	private Tests4J_ThreadFactory trialFactory;
 	private Tests4J_ThreadFactory testFactory;
+	private ExecutorService setupService;
 	private ExecutorService trialRunService;
+	private ExecutorService remoteService;
+	
 	private List<ExecutorService> testExecutorServices = new CopyOnWriteArrayList<ExecutorService>();
+	private List<Future<?>> setupFutures = new CopyOnWriteArrayList<Future<?>>();
 	private List<Future<?>> trialFutures = new CopyOnWriteArrayList<Future<?>>();
 	private List<Future<?>> remoteFutures = new CopyOnWriteArrayList<Future<?>>();
 	private CopyOnWriteArrayList<Tests4J_RemoteRunner> remoteRunners = 
@@ -39,12 +43,21 @@ public class Tests4J_ThreadManager {
 	private I_Tests4J_Logger reporter;
 	
 	
-	public Tests4J_ThreadManager(int trialThreads, I_Tests4J_System pSystem, I_Tests4J_Logger pReporter) {
+	public Tests4J_ThreadManager(int trialThreads, int remoteThreads, I_Tests4J_System pSystem, I_Tests4J_Logger pReporter) {
 		system = pSystem;
 		reporter = pReporter;
 		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
 		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,reporter);
-		trialRunService = Executors.newFixedThreadPool(trialThreads, trialFactory);
+		if (trialThreads >= 1) {
+			//it could be 0 if there were only remotes
+			setupService = Executors.newFixedThreadPool(trialThreads, trialFactory);
+			trialRunService = Executors.newFixedThreadPool(trialThreads, trialFactory);
+		}
+		/**
+		if (remoteThreads >= 0) {
+			remoteService = Executors.newFixedThreadPool(remoteThreads, remoteThreads);
+		}
+		*/
 	}
 	
 	
@@ -52,24 +65,40 @@ public class Tests4J_ThreadManager {
 		if (reporter.isLogEnabled(Tests4J_ThreadManager.class)) {
 			reporter.log("Tests4J_Manager.shutdown on " + ThreadLogMessageBuilder.getThreadWithGroupNameForLog());
 		}
-		for (Tests4J_RemoteRunner remote: remoteRunners) {
-			remote.shutdown();
-		}
-		shutdownTestThreads();
-		Set<Entry<ExecutorService, Future<?>>> testRunEntries = testRuns.entrySet();
-		for (Entry<ExecutorService, Future<?>> e: testRunEntries) {
-			ExecutorService es =  e.getKey();
-			es.shutdownNow();
-			Future<?> future = e.getValue();
-			if (!future.isDone()) {
-				future.cancel(true);
+		if (remoteService != null) {
+			//notify the remote runners first, as it will take some time
+			//for the socket communication to occur.
+			for (Tests4J_RemoteRunner remote: remoteRunners) {
+				remote.shutdown();
 			}
 		}
-		for (Future<?> future: trialFutures) {
-			if (!future.isDone()) {
-				future.cancel(true);
+		//if there is a setupService there is also a trialService
+		if (setupService != null) {
+			for (Future<?> future: setupFutures) {
+				if (!future.isDone()) {
+					future.cancel(true);
+				}
 			}
+			setupService.shutdownNow();
+			
+			shutdownTestThreads();
+			Set<Entry<ExecutorService, Future<?>>> testRunEntries = testRuns.entrySet();
+			for (Entry<ExecutorService, Future<?>> e: testRunEntries) {
+				ExecutorService es =  e.getKey();
+				es.shutdownNow();
+				Future<?> future = e.getValue();
+				if (!future.isDone()) {
+					future.cancel(true);
+				}
+			}
+			for (Future<?> future: trialFutures) {
+				if (!future.isDone()) {
+					future.cancel(true);
+				}
+			}
+			trialRunService.shutdownNow();
 		}
+		
 		boolean remotesShutdown = false;
 		if (remoteRunners.size() == 0) {
 			remotesShutdown = true;
@@ -89,7 +118,9 @@ public class Tests4J_ThreadManager {
 				}
 			}
 		}
-		trialRunService.shutdownNow();
+		
+		
+		//shutdown remotes
 		system.doSystemExit(0);	
 	}
 
@@ -118,6 +149,10 @@ public class Tests4J_ThreadManager {
 		trialFutures.add(future);
 	}
 	
+	public void addSetupFuture(Future<?> future) {
+		setupFutures.add(future);
+	}
+	
 	public void addRemoteFuture(Future<?> future) {
 		remoteFutures.add(future);
 	}
@@ -134,5 +169,10 @@ public class Tests4J_ThreadManager {
 	
 	public void addRemoteRunner(Tests4J_RemoteRunner p) {
 		remoteRunners.add(p);
+	}
+
+
+	protected ExecutorService getSetupService() {
+		return setupService;
 	}
 }

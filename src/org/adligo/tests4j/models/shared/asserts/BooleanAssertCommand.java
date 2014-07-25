@@ -34,11 +34,13 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 	public BooleanAssertCommand(I_AssertType pType,
 			String pFailureMessage, Object pValue) {
 		super(pType, pFailureMessage);
-		if (!AssertType.BOOLEAN_TYPES.contains(pType)) {
+		
+		//copy it between classloaders
+		type = AssertType.getType(pType);
+		if (!AssertType.BOOLEAN_TYPES.contains(type)) {
 			throw new IllegalArgumentException(
 					BOOLEAN_ASSERT_COMMAND_REQUIRES_A_BOOLEAN_TYPE);
 		}
-		type = (AssertType) pType;
 		value = pValue;
 	}
 

@@ -314,7 +314,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					}
 					sim.setHasClass(true);
 				} catch (ClassNotFoundException x) {
-					logger.onError(x);
+					logger.onException(x);
 				}
 				trmm.setSourceInfo(clazz, sim);
 			}
@@ -523,7 +523,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 						}
 					} 
 					if (!called) {
-						logger.onError(new Throwable("Some issue with the meta trial which wasn't called."));
+						logger.onException(new Throwable("Some issue with the meta trial which wasn't called."));
 					}
 				}
 			}
@@ -609,5 +609,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		return running.get();
 	}
 	
-	
+	public boolean isDoneDescribeingTrials() {
+		return doneDescribeingTrials.get();
+	}
 }

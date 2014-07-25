@@ -17,6 +17,7 @@ import org.adligo.tests4j.models.shared.asserts.ThrownAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
+import org.adligo.tests4j.models.shared.common.LineSeperator;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.RelevantClassesWithTrialsCalculator;
@@ -62,10 +63,9 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	
 	@Override
 	public void onMetadataCalculated(I_TrialRunMetadata p) {
-		logger.log(METADATA_CALCULATED  + TRIALS + p.getAllTrialsCount() + " " +
-				TESTS + p.getAllTestsCount());
-		logger.log(TRIALS + p.getAllTrialsCount());
-		logger.log(TESTS + p.getAllTestsCount());
+		logger.log(METADATA_CALCULATED + LineSeperator.getLineSeperator() +
+				TRIALS + p.getAllTrialsCount() + LineSeperator.getLineSeperator() +
+			 	TESTS + p.getAllTestsCount());
 			
 		metadata = p;
 	}

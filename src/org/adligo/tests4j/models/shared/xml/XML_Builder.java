@@ -1,8 +1,7 @@
 package org.adligo.tests4j.models.shared.xml;
 
-import java.util.Set;
+import java.util.Collection;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
 
 /**
  * a class to assist in building 
@@ -97,6 +96,18 @@ public class XML_Builder implements I_XML_Builder {
 		}
 	}
 	
+	@Override
+	public void addStartTagWithoutAttributes(String tagName, boolean endLine) {
+		sb.append(XML_Chars.START);
+		sb.append(tagName);
+		sb.append(XML_Chars.END);
+		if (prettyPrint) {
+			if (endLine) {
+				endLine();
+			}
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.xml.I_XML_Builder#addEndTag(java.lang.String)
 	 */
@@ -181,5 +192,29 @@ public class XML_Builder implements I_XML_Builder {
 		if (prettyPrint) {
 			endLine();
 		}
+	}
+
+
+	public void addList(Collection<String> items, String pluralTagName, String singularTagName) {
+		addIndent();
+		indent();
+		addStartTagWithoutAttributes(pluralTagName, true);
+		
+		addIndent();
+		for (String item: items) {
+			if (item != null) {
+				indent();
+				addStartTagWithoutAttributes(singularTagName, false);
+				addText(item);
+				addEndTag(singularTagName);
+				endLine();
+			}
+		}
+		removeIndent();
+		
+		indent();
+		addEndTag(pluralTagName);
+		endLine();
+		removeIndent();
 	}
 }

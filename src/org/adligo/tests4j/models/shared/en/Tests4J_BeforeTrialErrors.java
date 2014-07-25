@@ -1,9 +1,9 @@
 package org.adligo.tests4j.models.shared.en;
 
-import org.adligo.tests4j.models.shared.i18n.I_Tests4j_BeforeTrialErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_BeforeTrialErrors;
 
 public class Tests4J_BeforeTrialErrors extends AbstractTests4J_MethodErrors 
-	implements I_Tests4j_BeforeTrialErrors {
+	implements I_Tests4J_BeforeTrialErrors {
 
 	private static final String NOT_PUBLIC = "Methods Annotated with @BeforeTrial must be public.";
 	private static final String NOT_STATIC = "Methods Annotated with @BeforeTrial must be static.";

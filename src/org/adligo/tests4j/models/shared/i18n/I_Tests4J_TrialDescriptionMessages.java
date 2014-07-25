@@ -2,10 +2,10 @@ package org.adligo.tests4j.models.shared.i18n;
 
 
 public interface I_Tests4J_TrialDescriptionMessages extends I_Tests4J_AnnotationErrors {
-	public I_Tests4j_BeforeTrialErrors getBeforeTrialErrors();
+	public I_Tests4J_BeforeTrialErrors getBeforeTrialErrors();
 	public I_Tests4J_TestMethodErrors getTestMethodErrors();
 	public I_Tests4J_AfterTrialTestsErrors getAfterTrialTestsErrors();
-	public I_Tests4j_AfterTrialErrors getAfterTrialErrors();
+	public I_Tests4J_AfterTrialErrors getAfterTrialErrors();
 	
 	public String getNoUseCaseScope();
 	public String getUseCaseScopeEmptySystem();

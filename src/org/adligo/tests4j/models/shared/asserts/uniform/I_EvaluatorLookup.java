@@ -6,6 +6,8 @@ import java.util.Map;
  * This interface provides a way to lookup 
  * implementations of I_UniformAssertionEvaluator 
  * for the plug-able assertion framework (isUniform, isNotUniform).
+ * Implementations need a zero argument constructor so they
+ * can be passed between jvms.
  * 
  * @author scott
  *

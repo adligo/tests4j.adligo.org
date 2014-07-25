@@ -1,5 +1,9 @@
 package org.adligo.tests4j.models.shared.common;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * A class for reflection like code that runs the 
  * same in GWT compiled java-script as the JSE.
@@ -7,7 +11,7 @@ package org.adligo.tests4j.models.shared.common;
  * @author scott
  *
  */
-public class ClassUtils {
+public class ClassMethods {
 
 	/**
 	 * This determines if the classToCheck is a sub type
@@ -31,5 +35,27 @@ public class ClassUtils {
 				return isSubType(clazz, parentClass);
 			}
 		}
+	}
+	
+	
+	/**
+	 * 
+	 * @param classes a collection of classes, generics are working against me here.
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	public static List<String> toNames(Collection classes) {
+		List<String> toRet = new ArrayList<String>();
+		if (classes != null) {
+			if (classes.size() >= 1) {
+				for (Object obj: classes) {
+					if (obj != null) {
+						Class<?> clazz = (Class<?>) obj;
+						toRet.add(clazz.getName());
+					}
+				}
+			}
+		}
+		return toRet;
 	}
 }
