@@ -28,12 +28,12 @@ import org.adligo.tests4j.shared.report.summary.TrialsDisplay;
  * @author scott
  *
  */
-public class DefaultLogger implements I_Tests4J_Log {
+public class DefaultLog implements I_Tests4J_Log {
 	public static final String DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM = "DefaultReporter requires a non null I_System.";
 	private Map<String, Boolean>  logs = new HashMap<String,Boolean>();
 	private I_Tests4J_System system;
 	
-	public DefaultLogger() {
+	public DefaultLog() {
 		this(new DefaultSystem(), null);
 	}
 	
@@ -45,7 +45,7 @@ public class DefaultLogger implements I_Tests4J_Log {
 	 * @param pSystem
 	 * @param params
 	 */
-	public DefaultLogger(I_Tests4J_System pSystem, Map<Class<?>, Boolean> logsOn) {
+	public DefaultLog(I_Tests4J_System pSystem, Map<Class<?>, Boolean> logsOn) {
 		if (pSystem == null) {
 			throw new IllegalArgumentException(DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM);
 		}
@@ -115,6 +115,7 @@ public class DefaultLogger implements I_Tests4J_Log {
 		}
 		return false;
 	}
+
 
 
 }

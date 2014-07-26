@@ -19,7 +19,7 @@ import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.models.shared.system.DefaultLogger;
+import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.DefaultSystem;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
@@ -70,7 +70,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	public void main(String[] args, I_Tests4J_System pSystem) {
 		Integer port = null;
 		String authCode = "";
-		logger = new DefaultLogger(pSystem, null);
+		logger = new DefaultLog(pSystem, null);
 		
 		for (int i = 0; i < args.length; i++) {
 			if("-port".equalsIgnoreCase(args[i])) { //$NON-NLS-1$

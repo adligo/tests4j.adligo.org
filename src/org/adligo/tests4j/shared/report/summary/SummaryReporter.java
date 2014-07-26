@@ -28,7 +28,7 @@ import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.models.shared.system.DefaultLogger;
+import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -50,7 +50,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	private TrialsDisplay trialsReporter;
 	
 	public SummaryReporter() {
-		this(new DefaultLogger());
+		this(new DefaultLog());
 	}
 	
 	public SummaryReporter(I_Tests4J_Log p) {
@@ -66,9 +66,10 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	public synchronized  void onMetadataCalculated(I_TrialRunMetadata p) {
 		I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
 		
-		logger.log(I_Tests4J_Constants.PREFIX + " " + messages.getMetadataCalculatedHeading() + LineSeperator.getLineSeperator() +
-				messages.getTrialsHeading() + p.getAllTrialsCount() + LineSeperator.getLineSeperator() +
-			 	messages.getTestsHeading() + p.getAllTestsCount());
+		logger.log(I_Tests4J_Constants.PREFIX +  messages.getMetadataCalculatedHeading() + LineSeperator.getLineSeperator() +
+				I_Tests4J_Constants.PREFIX + messages.getTrialsHeading() + p.getAllTrialsCount() + LineSeperator.getLineSeperator() +
+			 	I_Tests4J_Constants.PREFIX + messages.getTestsHeading() + p.getAllTestsCount()
+			 	+  LineSeperator.getLineSeperator());
 			
 		metadata = p;
 	}

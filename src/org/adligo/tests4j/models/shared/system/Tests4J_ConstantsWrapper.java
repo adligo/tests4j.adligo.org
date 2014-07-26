@@ -59,8 +59,8 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public I_Tests4J_ParamReaderMessages getParamReaderConstants() {
-		return delegate.getParamReaderConstants();
+	public I_Tests4J_ParamReaderMessages getParamReaderMessages() {
+		return delegate.getParamReaderMessages();
 	}
 	public I_Tests4J_AnnotationErrors getAnnotationErrors() {
 		return delegate.getAnnotationErrors();

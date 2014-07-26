@@ -1,5 +1,6 @@
 package org.adligo.tests4j.shared.report.summary;
 
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -18,7 +19,9 @@ public class TestsDisplay {
 	
 	public void onStartingTest(String trialName, String testName) {
 		if (logger.isLogEnabled(TestsDisplay.class)) {
-			logger.log("startingTest: " + trialName + "." + testName);
+			I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getReportMessages();
+			logger.log(I_Tests4J_Constants.HEADER + 
+					messages.getStartingTest() + trialName + "." + testName);
 		}
 	}
 	
@@ -29,7 +32,9 @@ public class TestsDisplay {
 			testsFailedDisplay.onTestCompleted(trialName, testName, passed);
 		} else if (logger.isLogEnabled(TestsDisplay.class)) {
 			I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getReportMessages();
-			logger.log(messages.getTestHeading() + trialName + "." + testName + messages.getPassedEOS());
+			logger.log(
+					I_Tests4J_Constants.HEADER + messages.getTestHeading() + 
+					trialName + "." + testName + messages.getPassedEOS());
 		}
 	}
 }

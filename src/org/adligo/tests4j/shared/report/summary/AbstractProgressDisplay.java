@@ -2,6 +2,7 @@ package org.adligo.tests4j.shared.report.summary;
 
 import java.text.DecimalFormat;
 
+import org.adligo.tests4j.models.shared.common.LineSeperator;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
@@ -18,7 +19,8 @@ public abstract class AbstractProgressDisplay {
 		if (logger.isLogEnabled(this.getClass())) {
 			if (pctComplete >= 100.0) {
 				I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getReportMessages();
-				logger.log(I_Tests4J_Constants.PREFIX_HEADER +  process + messages.getDoneEOS());
+				logger.log(I_Tests4J_Constants.PREFIX_HEADER +  process + " " + messages.getDoneEOS()
+						+ LineSeperator.getLineSeperator());
 			} else {
 				DecimalFormat formatter = new DecimalFormat("###.##");
 				I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getReportMessages();

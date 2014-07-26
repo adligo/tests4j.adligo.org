@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.MethodBlocker;
-import org.adligo.tests4j.models.shared.system.DefaultLogger;
+import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 /**
@@ -22,7 +22,7 @@ public class Tests4J_UncaughtExceptionHandler implements UncaughtExceptionHandle
 	 * note this is not volatile as it will probably only change 
 	 * in the trial
 	 */
-	private static I_Tests4J_Log logger = new DefaultLogger();
+	private static I_Tests4J_Log logger = new DefaultLog();
 	public Tests4J_UncaughtExceptionHandler() {}
 	
 	@Override

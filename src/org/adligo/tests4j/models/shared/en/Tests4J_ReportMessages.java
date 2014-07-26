@@ -9,7 +9,7 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
  *
  */
 public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
-	private static final String DONE = "% done.";
+	private static final String DONE = "100.0% done.";
 	
 	private static final String FAILED = "Failed!";
 	private static final String FAILED_EOS = " failed.";
@@ -21,7 +21,7 @@ public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
 	
 	private static final String PASSED = "Passed!";
 	private static final String PASSED_EOS = " passed.";
-	private static final String PCT_COMPLETE = " complete...";
+	private static final String PCT_COMPLETE = "% complete...";
 	
 
 	private static final String TEST = " Test: ";

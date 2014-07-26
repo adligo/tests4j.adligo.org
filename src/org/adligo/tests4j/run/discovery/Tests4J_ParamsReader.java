@@ -11,7 +11,7 @@ import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
-import org.adligo.tests4j.models.shared.system.DefaultLogger;
+import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
@@ -87,7 +87,7 @@ public class Tests4J_ParamsReader {
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		}
-		logger = new DefaultLogger(pSystem, logStates);
+		logger = new DefaultLog(pSystem, logStates);
 		
 		try {
 			getTrialsFromParams(pParams);
@@ -109,7 +109,7 @@ public class Tests4J_ParamsReader {
 		}
 		
 		if (trials.size() == 0 ) {
-			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderConstants();
+			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			logger.log(constants.getNoTrialsOrRemotesToRun());
 			runnable = false;
 			return;
@@ -160,7 +160,7 @@ public class Tests4J_ParamsReader {
 		Set<String> defaultKeys = defaultEvals.keySet();
 		
 		if (!actualKeys.containsAll(defaultKeys)) {
-			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderConstants();
+			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			logger.log(constants.getTheEvaluatorsAreExpectedToContainTheDefaultKeys());
 			runnable = false;
 			return;

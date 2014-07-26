@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.MethodBlocker;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
-import org.adligo.tests4j.models.shared.system.DefaultLogger;
+import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.DefaultSystem;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;

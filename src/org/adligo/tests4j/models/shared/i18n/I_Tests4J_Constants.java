@@ -28,7 +28,7 @@ public interface I_Tests4J_Constants {
 	public I_Tests4J_AssertionResultMessages getAssertionResultMessages();
 	public I_Tests4J_EclipseErrors getEclipseErrors();
 	public I_Tests4J_LineDiffTextDisplayMessages getLineDiffTextDisplayMessages();
-	public I_Tests4J_ParamReaderMessages getParamReaderConstants();
+	public I_Tests4J_ParamReaderMessages getParamReaderMessages();
 	public I_Tests4J_ReportMessages getReportMessages();
 	
 	public String getTheMethodCanOnlyBeCalledBy_PartOne();

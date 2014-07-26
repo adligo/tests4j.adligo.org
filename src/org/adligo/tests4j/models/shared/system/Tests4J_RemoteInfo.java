@@ -51,14 +51,14 @@ public class Tests4J_RemoteInfo implements I_Tests4J_RemoteInfo {
 			authCode = defaultAuthCode;
 		}
 		if (StringMethods.isEmpty(authCode)) {
-			I_Tests4J_ParamReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderConstants();
+			I_Tests4J_ParamReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			throw new IllegalArgumentException(constants.getAuthCodeOrAuthCodeDefaultRequired());
 		}
 	}
 	
 	public Tests4J_RemoteInfo(String pHost, int pPort, String pAuthCode) {
 		if (StringMethods.isEmpty(pHost)) {
-			I_Tests4J_ParamReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderConstants();
+			I_Tests4J_ParamReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			throw new IllegalArgumentException(constants.getHostRequired());
 		}
 		host = pHost;

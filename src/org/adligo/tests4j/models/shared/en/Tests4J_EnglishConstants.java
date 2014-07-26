@@ -23,7 +23,8 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	 */
 	public static final Tests4J_EnglishConstants ENGLISH = new Tests4J_EnglishConstants();
 	
-	private static final String METHOD_BLOCKER_REQUIRES_AT_LEAST_ONE_ALLOWED_CALLER_CLASS_NAME = "MethodBlocker requires at least one Allowed Caller Class Name.";
+	private static final String METHOD_BLOCKER_REQUIRES_AT_LEAST_ONE_ALLOWED_CALLER_CLASS_NAME = 
+			"MethodBlocker requires at least one allowed caller class name.";
 	private static final String THE__METHOD_CAN_ONLY_BE_CALLED_BY_PART_ONE = "The Method ";
 	private static final String THE__METHOD_CAN_ONLY_BE_CALLED_BY_PART_TWO = " may only be called by ";
 	private static final String NULL_LISTENER_NOT_ALLOWED = "Null I_TrialRunListener parameter not allowed.";
@@ -31,17 +32,18 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	private static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = 
 			"Classes which implement I_AbstractTrial must have a zero argument constructor.";
 	
-	
-	private I_Tests4J_EclipseErrors eclipseErrors = null;
+	private Tests4J_AnnotationErrors annotationErrors = new Tests4J_AnnotationErrors();
 	private I_Tests4J_AssertionInputMessages assertionInputMessages =
 			new Tests4J_AssertionInputMessages();
 	private I_Tests4J_AssertionResultMessages assertionResultMessages =
 			new Tests4J_AssertionResultMessages();
+	
+	private I_Tests4J_EclipseErrors eclipseErrors = null;
+
 	private I_Tests4J_LineDiffTextDisplayMessages lineDiffTextMessages = 
 			new Tests4J_LineDiffTextDisplayMessages();
 	private I_Tests4J_ParamReaderMessages paramReaderConstants = 
 			new Tests4J_ParamsReaderMessages();
-	private Tests4J_AnnotationErrors annotationErrors = new Tests4J_AnnotationErrors();
 	private Tests4J_ReportMessages reportMessages = new Tests4J_ReportMessages();
 	
 	private Tests4J_EnglishConstants() {}
@@ -107,7 +109,7 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public I_Tests4J_ParamReaderMessages getParamReaderConstants() {
+	public I_Tests4J_ParamReaderMessages getParamReaderMessages() {
 		return paramReaderConstants;
 	}
 
