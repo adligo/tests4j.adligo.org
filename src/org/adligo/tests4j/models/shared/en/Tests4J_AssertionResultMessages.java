@@ -4,24 +4,24 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 
 public class Tests4J_AssertionResultMessages implements I_Tests4J_AssertionResultMessages {
 
-	private static final String AN_UNEXPECTED_EXCEPTION_WAS_THROWN = "An Unexpected Exception was thrown.";
-	private static final String NO_THROWABLES_WERE_THROWN_FROM_THE_I_THROWER = "No Throwables were thrown from the I_Thrower.";
+	private static final String AN_UNEXPECTED_EXCEPTION_WAS_THROWN = "An unexpected exception was thrown.";
+	private static final String NO_THROWABLES_WERE_THROWN_FROM_THE_I_THROWER = "No throwables were thrown from the I_Thrower.";
 	private static final String THE_TEXT_WAS_UNIFORM = "The text was uniform.";
 	private static final String THE_TEXT_WAS_NOT_UNIFORM = "The text was NOT uniform.";
 	
-	private static final String THE_EXPECTED_THROWABLE_DATA_DID_NOT_MATCH_THE_ACTUAL = "Either no Throwable was thrown or the expected Throwable was NOT uniform with the actual Throwable.";
-	private static final String THE_COLLECTION_SHOULD_CONTAIN_THE_VALUE = "The Collection should contain the Value.";
-	private static final String THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE = "The actual Value should be greater than OR equal to the expected Value.";
-	private static final String THE_OBJECTS_SHOULD_NOT_BE_UNIFORM = "The Objects should NOT be uniform.";
-	private static final String THE_OBJECTS_SHOULD_BE_UNIFORM = "The Objects should be uniform.";
-	private static final String THE_OBJECTS_SHOULD_NOT_BE_THE_SAME = "The Objects should NOT be the same.";
-	private static final String THE_OBJECTS_SHOULD_NOT_BE_EQUAL = "The Objects should NOT be equal.";
-	private static final String THE_OBJECTS_SHOULD_BE_THE_SAME = "The Objects should be the same.";
-	private static final String THE_OBJECTS_SHOULD_BE_EQUAL = "The Objects should be equal.";
-	private static final String THE_VALUE_SHOULD_NOT_BE_NULL = "The Value should NOT be null.";
-	private static final String THE_VALUE_SHOULD_BE_NULL = "The Value should be null.";
-	private static final String THE_VALUE_SHOULD_BE_TRUE = "The Value should be true.";
-	private static final String THE_VALUE_SHOULD_BE_FALSE = "The Value should be false.";
+	private static final String THE_EXPECTED_THROWABLE_DATA_DID_NOT_MATCH_THE_ACTUAL = "Either no throwable was thrown or the expected throwable was NOT uniform with the actual throwable.";
+	private static final String THE_COLLECTION_SHOULD_CONTAIN_THE_VALUE = "The collection should contain the value.";
+	private static final String THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE = "The actual value should be greater than OR equal to the expected value.";
+	private static final String THE_OBJECTS_SHOULD_NOT_BE_UNIFORM = "The objects should NOT be uniform.";
+	private static final String THE_OBJECTS_SHOULD_BE_UNIFORM = "The objects should be uniform.";
+	private static final String THE_OBJECTS_SHOULD_NOT_BE_THE_SAME = "The objects should NOT be the same.";
+	private static final String THE_OBJECTS_SHOULD_NOT_BE_EQUAL = "The objects should NOT be equal.";
+	private static final String THE_OBJECTS_SHOULD_BE_THE_SAME = "The objects should be the same.";
+	private static final String THE_OBJECTS_SHOULD_BE_EQUAL = "The objects should be equal.";
+	private static final String THE_VALUE_SHOULD_NOT_BE_NULL = "The value should NOT be null.";
+	private static final String THE_VALUE_SHOULD_BE_NULL = "The value should be null.";
+	private static final String THE_VALUE_SHOULD_BE_TRUE = "The value should be true.";
+	private static final String THE_VALUE_SHOULD_BE_FALSE = "The value should be false.";
 	
 	Tests4J_AssertionResultMessages() {}
 	

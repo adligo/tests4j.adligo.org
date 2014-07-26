@@ -8,4 +8,11 @@ public interface I_Tests4J_AnnotationErrors {
 	public String getHasNegativeTimeout();
 	public String getWasAnnotatedIncorrectly();
 
+	public String getAfterTrialHasParams();
+	public String getAfterTrialNotStatic();
+	public String getAfterTrialNotPublic();
+	
+	public String getBeforeTrialHasParams();
+	public String getBeforeTrialNotStatic();
+	public String getBeforeTrialNotPublic();
 }

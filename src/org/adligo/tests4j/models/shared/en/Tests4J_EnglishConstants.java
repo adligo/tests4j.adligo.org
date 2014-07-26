@@ -6,7 +6,6 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_MethodErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
@@ -44,21 +43,16 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 			new Tests4J_LineDiffTextDisplayMessages();
 	private I_Tests4J_ParamReaderMessages paramReaderConstants = 
 			new Tests4J_ParamsReaderMessages();
-	private Tests4J_AnnotationErrors testMethodErrors = new Tests4J_AnnotationErrors();
-	private Tests4J_MethodErrors afterTrialTestsErrors = new Tests4J_MethodErrors();
+	private Tests4J_AnnotationErrors annotationErrors = new Tests4J_AnnotationErrors();
 	private Tests4J_ReportMessages reportMessages = new Tests4J_ReportMessages();
 	
 	private Tests4J_EnglishConstants() {}
 	
 	@Override
 	public I_Tests4J_AnnotationErrors getAnnotationErrors() {
-		return testMethodErrors;
+		return annotationErrors;
 	}
 
-	@Override
-	public I_Tests4J_MethodErrors getMethodErrors() {
-		return afterTrialTestsErrors;
-	}
 
 	@Override
 	public I_Tests4J_TrialDescriptionMessages getTrialDescriptionMessages() {

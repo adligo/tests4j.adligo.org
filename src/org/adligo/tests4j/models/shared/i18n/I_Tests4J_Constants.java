@@ -19,7 +19,6 @@ package org.adligo.tests4j.models.shared.i18n;
 public interface I_Tests4J_Constants {
 	public I_Tests4J_TrialDescriptionMessages getTrialDescriptionMessages();
 	public I_Tests4J_AnnotationErrors getAnnotationErrors();
-	public I_Tests4J_MethodErrors getMethodErrors();
 	
 	
 	public I_Tests4J_AssertionInputMessages getAssertionInputMessages();

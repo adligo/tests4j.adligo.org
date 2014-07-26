@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_MethodErrors;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.AfterTrial;
 
@@ -32,34 +31,31 @@ public class AfterTrialAuditor {
 			
 			if (!Modifier.isStatic(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_MethodErrors atErrrors =  consts.getMethodErrors();
-				I_Tests4J_AnnotationErrors annoErrors = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationErrors messages = consts.getAnnotationErrors();
 				
 				verificationFailures.add(new TrialVerificationFailure(
-						atErrrors.getAfterTrialNotStatic(),
+						messages.getAfterTrialNotStatic(),
 						new IllegalArgumentException(trialName + 
-								annoErrors.getWasAnnotatedIncorrectly())));
+								messages.getWasAnnotatedIncorrectly())));
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_MethodErrors atErrrors =  consts.getMethodErrors();
-				I_Tests4J_AnnotationErrors annoErrors = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationErrors messages = consts.getAnnotationErrors();
 				
 				verificationFailures.add(new TrialVerificationFailure(
-						atErrrors.getAfterTrialNotPublic(),
+						messages.getAfterTrialNotPublic(),
 						new IllegalArgumentException(trialName + 
-								annoErrors.getWasAnnotatedIncorrectly())));
+								messages.getWasAnnotatedIncorrectly())));
 			}
 			Class<?> [] params = method.getParameterTypes();
 			if (params.length != 0) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_MethodErrors atErrrors =  consts.getMethodErrors();
-				I_Tests4J_AnnotationErrors annoErrors = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationErrors messages = consts.getAnnotationErrors();
 				
 				verificationFailures.add(new TrialVerificationFailure(
-								atErrrors.getAfterTrialHasParams(),
+								messages.getAfterTrialHasParams(),
 								new IllegalArgumentException(trialName + 
-										annoErrors.getWasAnnotatedIncorrectly())));
+										messages.getWasAnnotatedIncorrectly())));
 			
 			}
 			return true;

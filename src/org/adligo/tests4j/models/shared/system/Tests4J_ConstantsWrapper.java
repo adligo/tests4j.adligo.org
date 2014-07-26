@@ -6,7 +6,6 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_MethodErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
@@ -72,9 +71,6 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 		return delegate.getAnnotationErrors();
 	}
 
-	public I_Tests4J_MethodErrors getMethodErrors() {
-		return delegate.getMethodErrors();
-	}
 
 	public I_Tests4J_ReportMessages getTests4J_ReportMessages() {
 		return delegate.getTests4J_ReportMessages();
