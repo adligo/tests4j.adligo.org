@@ -14,7 +14,7 @@ public class TestsFailedDisplay {
 	public void onTestCompleted(String trialName, String testName,
 			boolean passed) {
 		if (logger.isLogEnabled(TestsFailedDisplay.class)) {
-			I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getTests4J_ReportMessages();
+			I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getReportMessages();
 			logger.log(messages.getTestHeading() + trialName + "." + testName + messages.getFailedEOS());
 		}
 	}

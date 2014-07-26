@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -20,6 +19,8 @@ import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.common.LineSeperator;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.RelevantClassesWithTrialsCalculator;
 import org.adligo.tests4j.models.shared.results.I_TestFailure;
@@ -30,21 +31,14 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.DefaultLogger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
 	
-	public static final String TESTS = "Tests: ";
-	public static final String TRIALS = "Trials: ";
-	public static final String METADATA_CALCULATED = "Metadata Calculated: ";
 
-	public static final String FAILED = "Failed!";
-	public static final String PASSED = "Passed!";
-	public static final String INDENT = "\t";
-	public static final String DEFAULT_PREFIX = "Tests4J: ";
 	
 	private Map<String,AbstractProgressDisplay> processes = new HashMap<String,AbstractProgressDisplay>();
 	
-	private String prefix = DEFAULT_PREFIX;
 	private boolean snare = false;
 	private boolean redirect = true;
 	private Set<String> enabledLogClasses = new HashSet<String>();
@@ -70,9 +64,11 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	
 	@Override
 	public synchronized  void onMetadataCalculated(I_TrialRunMetadata p) {
-		logger.log(METADATA_CALCULATED + LineSeperator.getLineSeperator() +
-				TRIALS + p.getAllTrialsCount() + LineSeperator.getLineSeperator() +
-			 	TESTS + p.getAllTestsCount());
+		I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
+		
+		logger.log(I_Tests4J_Constants.PREFIX + " " + messages.getMetadataCalculatedHeading() + LineSeperator.getLineSeperator() +
+				messages.getTrialsHeading() + p.getAllTrialsCount() + LineSeperator.getLineSeperator() +
+			 	messages.getTestsHeading() + p.getAllTestsCount());
 			
 		metadata = p;
 	}
@@ -275,13 +271,6 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		}
 	}
 
-	public String getPrefix() {
-		return prefix;
-	}
-
-	public void setPrefix(String prefix) {
-		this.prefix = prefix;
-	}
 
 	@Override
 	public synchronized void onProgress(String process, double pctComplete) {

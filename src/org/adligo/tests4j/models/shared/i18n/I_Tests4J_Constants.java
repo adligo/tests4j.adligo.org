@@ -17,7 +17,10 @@ package org.adligo.tests4j.models.shared.i18n;
  *
  */
 public interface I_Tests4J_Constants {
-	public I_Tests4J_TrialDescriptionMessages getTrialDescriptionMessages();
+	public static final String PREFIX = "Tests4J";
+	public static final String HEADER = ": ";
+	public static final String PREFIX_HEADER = PREFIX + HEADER;
+	
 	public I_Tests4J_AnnotationErrors getAnnotationErrors();
 	
 	
@@ -25,12 +28,13 @@ public interface I_Tests4J_Constants {
 	public I_Tests4J_AssertionResultMessages getAssertionResultMessages();
 	public I_Tests4J_EclipseErrors getEclipseErrors();
 	public I_Tests4J_LineDiffTextDisplayMessages getLineDiffTextDisplayMessages();
-	public I_Tests4J_ParamReaderMessages getTests4j_ParamReaderConstants();
-	public I_Tests4J_ReportMessages getTests4J_ReportMessages();
+	public I_Tests4J_ParamReaderMessages getParamReaderConstants();
+	public I_Tests4J_ReportMessages getReportMessages();
 	
 	public String getTheMethodCanOnlyBeCalledBy_PartOne();
 	public String getTheMethodCanOnlyBeCalledBy_PartTwo();
 	public String getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames();
-	public String getTests4J_NullParamsExceptionMessage();
-	public String getTests4J_NullListenerExceptionMessage();
+	public String getNullParamsExceptionMessage();
+	public String getNullListenerExceptionMessage();
+	public String getBadConstuctor();
 }

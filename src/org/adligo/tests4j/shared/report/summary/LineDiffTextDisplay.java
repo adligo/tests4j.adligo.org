@@ -22,11 +22,9 @@ public class LineDiffTextDisplay {
 			Tests4J_Constants.CONSTANTS.getLineDiffTextDisplayMessages();
 	private I_TextLines actualLines;
 	private I_TextLines exampleLines;
-	private int expected;
-	private String expectedLine;
-	private Integer actual;
-	private String actualLine;
+
 	
+	@SuppressWarnings("incomplete-switch")
 	public void display(I_Tests4J_Log out, I_TextLinesCompareResult result, int diffLimit) {
 		actualLines = result.getActualLines();
 		exampleLines = result.getExpectedLines();

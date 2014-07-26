@@ -9,22 +9,32 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
  *
  */
 public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
-	
-	private static final String TRIAL = "Trial: ";
-	private static final String TEST = "Test: ";
-	private static final String FAILED_EOS = " failed.";
-	private static final String PASSED_EOS = " passed.";
-	private static final String PCT_COMPLETE = " complete...";
 	private static final String DONE = "% done.";
-
-	private static final String TESTS = "Tests: ";
-	private static final String TRIALS = "Trials: ";
-	private static final String METADATA_CALCULATED = "Metadata Calculated: ";
 	
 	private static final String FAILED = "Failed!";
-	private static final String PASSED = "Passed!";
+	private static final String FAILED_EOS = " failed.";
+	
+	
+	
 	private static final String INDENT = "\t";
-	private static final String PREFIX = "Tests4J: ";
+	private static final String METADATA_CALCULATED = " Metadata Calculated: ";
+	
+	private static final String PASSED = "Passed!";
+	private static final String PASSED_EOS = " passed.";
+	private static final String PCT_COMPLETE = " complete...";
+	
+
+	private static final String TEST = " Test: ";
+	private static final String TESTS = " Tests: ";
+	
+	private static final String TRIAL = " Trial: ";
+	private static final String TRIALS = " Trials: ";
+	
+	private static final String STARTING_TRIAL = " starting Trial: ";
+	private static final String STARTING_TEST = " starting Test: ";
+	
+	
+
 	
 	Tests4J_ReportMessages() {}
 	
@@ -32,7 +42,7 @@ public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
 	 * @see org.adligo.tests4j.models.shared.en.I_Tests4J_ReportMessages#getPctDoneEOS()
 	 */
 	@Override
-	public String getPctDoneEOS() {
+	public String getDoneEOS() {
 		return DONE;
 	}
 	
@@ -101,15 +111,8 @@ public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
 	 * @see org.adligo.tests4j.models.shared.en.I_Tests4J_ReportMessages#getIndentFlag()
 	 */
 	@Override
-	public String getIndentFlag() {
+	public String getIndent() {
 		return INDENT;
-	}
-	/* (non-Javadoc)
-	 * @see org.adligo.tests4j.models.shared.en.I_Tests4J_ReportMessages#getPrefix()
-	 */
-	@Override
-	public String getPrefix() {
-		return PREFIX;
 	}
 
 	@Override
@@ -120,5 +123,13 @@ public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
 	@Override
 	public String getTrialHeading() {
 		return TRIAL;
+	}
+	
+	public String getStartingTrial() {
+		return STARTING_TRIAL;
+	}
+	
+	public String getStartingTest() {
+		return STARTING_TEST;
 	}
 }

@@ -64,7 +64,7 @@ public class Tests4J {
 	public static I_Tests4J_Controls run(I_Tests4J_Params pParams, I_Tests4J_Listener pListener) {
 		if (pListener == null) {
 			I_Tests4J_Constants messages = Tests4J_Constants.CONSTANTS;
-			throw new IllegalArgumentException(messages.getTests4J_NullListenerExceptionMessage());
+			throw new IllegalArgumentException(messages.getNullListenerExceptionMessage());
 		}
 		I_Tests4J_System system = new DefaultSystem();
 		//sets up logging for the run, from the params
@@ -139,7 +139,7 @@ public class Tests4J {
 		
 		if (pParams == null) {
 			I_Tests4J_Constants messages = Tests4J_Constants.CONSTANTS;
-			throw new IllegalArgumentException(messages.getTests4J_NullParamsExceptionMessage());
+			throw new IllegalArgumentException(messages.getNullParamsExceptionMessage());
 		}
 		I_Tests4J_DelegateFactory factory = FACTORY.get();
 		//I am not sure how this null is happening, 

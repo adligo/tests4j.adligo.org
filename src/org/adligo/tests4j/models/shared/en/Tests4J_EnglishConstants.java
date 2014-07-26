@@ -8,7 +8,6 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
 
 /**
  * note this does have a public constructor
@@ -29,11 +28,10 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	private static final String THE__METHOD_CAN_ONLY_BE_CALLED_BY_PART_TWO = " may only be called by ";
 	private static final String NULL_LISTENER_NOT_ALLOWED = "Null I_TrialRunListener parameter not allowed.";
 	private static final String NULL_PARAMS_ALLOWED = "Null I_Tests4J_Params parameter not allowed.";
+	private static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = 
+			"Classes which implement I_AbstractTrial must have a zero argument constructor.";
 	
 	
-	
-	private Tests4j_TrialDescriptionMessages trialDescriptionMessages =
-			new Tests4j_TrialDescriptionMessages();
 	private I_Tests4J_EclipseErrors eclipseErrors = null;
 	private I_Tests4J_AssertionInputMessages assertionInputMessages =
 			new Tests4J_AssertionInputMessages();
@@ -55,14 +53,14 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 
 
 	@Override
-	public I_Tests4J_TrialDescriptionMessages getTrialDescriptionMessages() {
-		return trialDescriptionMessages;
+	public String getBadConstuctor() {
+		return CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR;
 	}
-
+	
 	@Override
 	public I_Tests4J_EclipseErrors getEclipseErrors() {
 		if (eclipseErrors == null) {
-			eclipseErrors = new Tests4JEclipseErrors();
+			eclipseErrors = new Tests4J_EclipseErrors();
 		}
 		return eclipseErrors;
 	}
@@ -94,12 +92,12 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public String getTests4J_NullParamsExceptionMessage() {
+	public String getNullParamsExceptionMessage() {
 		return NULL_PARAMS_ALLOWED;
 	}
 	
 	@Override
-	public String getTests4J_NullListenerExceptionMessage() {
+	public String getNullListenerExceptionMessage() {
 		return NULL_LISTENER_NOT_ALLOWED;
 	}
 	
@@ -109,12 +107,12 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public I_Tests4J_ParamReaderMessages getTests4j_ParamReaderConstants() {
+	public I_Tests4J_ParamReaderMessages getParamReaderConstants() {
 		return paramReaderConstants;
 	}
 
 	@Override
-	public I_Tests4J_ReportMessages getTests4J_ReportMessages() {
+	public I_Tests4J_ReportMessages getReportMessages() {
 		return reportMessages;
 	}
 

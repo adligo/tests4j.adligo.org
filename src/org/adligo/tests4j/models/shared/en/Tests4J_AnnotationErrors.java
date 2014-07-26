@@ -18,6 +18,39 @@ public class Tests4J_AnnotationErrors implements I_Tests4J_AnnotationErrors {
 	private static final String BEFORE_TRIAL_NOT_STATIC = "Methods annotated with @BeforeTrial must be static.";
 	private static final String BEFORE_TRIAL_HAS_PARAMS = "Methods annotated with @BeforeTrial must NOT take any parameters.";
 	
+	private static final String MIN_COVERAGE_MUST_BE_BETWEEN_0_0_AND_100_0_PERCENT = "The minCoverage must be between 0.0 and 100.0 percent.";
+
+	private static final String IS_MISSING_TRIAL_TYPE_ANNOTATION = 
+			" is missing a @TrialType annotation.";
+	private static final String TRIAL_NO_TEST = 
+			"Trial classes must have at least one method annotated with @Test.";	
+	private static final String THE_TRIAL = "The trail ";
+	
+	
+	private static final String TRIALS_MAY_HAVE_ONLY_ONE_BEFORE_TRIAL = 
+			"Trials may only have one method annotated with @BeforeTrial.";
+	private static final String TRIALS_MAY_HAVE_ONLY_ONE_AFTER_TRIAL = 
+			"Trials may only have one method annotated with @AfterTrial.";
+	private static final String API_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_SCOPE_ANNOTATION = 
+			"ApiTrials must be annotated with a @PackageScope annotation.";
+	private static final String SOURCE_FILE_TRIALS_MUST_BE_ANNOTATED_WITH_SOURCE_FILE_SCOPE = 
+			"SourceFileTrials must be annotated with @SourceFileScope.";
+	
+	private static final String USE_CASE_TRIALS_MUST_BE_ANNOTATED_WITH_USE_CASE_SCOPE = 
+			"UseCaseTrials must be annotated with @UseCaseScope.";
+	private static final String USE_CASE_SCOPE_EMPTY_SYSTEM = 
+			"@UseCaseScope annotations must contain a non empty system.";
+	private static final String USE_CASE_SCOPE_EMPTY_NOWN = 
+			"@UseCaseScope annotations must contain a non empty nown.";
+	private static final String USE_CASE_SCOPE_EMPTY_VERB = 
+			"@UseCaseScope annotations must contain a non empty verb.";
+
+	private static final String SOURCE_FILE_SCOPE_EMPTY_CLASS = 
+			"@SourceFileScope annotations must contain a non empty sourceClass.";
+
+	private static final String PACKAGE_SCOPE_ANNOTATION_EMPTY_PACKAGE = 
+			"@PackageScope annotations must contain a non empty packageName.";
+	
 	Tests4J_AnnotationErrors() {
 	}
 	
@@ -81,4 +114,65 @@ public class Tests4J_AnnotationErrors implements I_Tests4J_AnnotationErrors {
 		return THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_TIMEOUT;
 	}
 	
+	@Override
+	public String getNoTests() {
+		return TRIAL_NO_TEST;
+	}
+	
+	public String getMissingTypeAnnotationPre() {
+		return THE_TRIAL;
+	}
+	
+	public String getMissingTypeAnnotationPost() {
+		return IS_MISSING_TRIAL_TYPE_ANNOTATION;
+	}
+	
+	public String getMinCoverageMustBeBetweenZeroAndOneHundred() {
+		return MIN_COVERAGE_MUST_BE_BETWEEN_0_0_AND_100_0_PERCENT;
+	}
+	
+
+	@Override
+	public String getMultipleAfterTrial() {
+		return TRIALS_MAY_HAVE_ONLY_ONE_AFTER_TRIAL;
+	}
+	
+	@Override
+	public String getMultipleBeforeTrial() {
+		return TRIALS_MAY_HAVE_ONLY_ONE_BEFORE_TRIAL;
+	}
+	
+	@Override
+	public String getNoSourceFileScope() {
+		return SOURCE_FILE_TRIALS_MUST_BE_ANNOTATED_WITH_SOURCE_FILE_SCOPE;
+	}
+	@Override
+	public String getNoPackageScope() {
+		return API_TRIALS_MUST_BE_ANNOTATED_WITH_A_PACKAGE_SCOPE_ANNOTATION;
+	}
+	
+	@Override
+	public String getNoUseCaseScope() {
+		return USE_CASE_TRIALS_MUST_BE_ANNOTATED_WITH_USE_CASE_SCOPE;
+	}
+	
+	public String getPackageScopeEmptyName() {
+		return PACKAGE_SCOPE_ANNOTATION_EMPTY_PACKAGE;
+	}
+	
+	public String getSourceFileScopeEmptyClass() {
+		return SOURCE_FILE_SCOPE_EMPTY_CLASS;
+	}	
+	
+	public String getUseCaseScopeEmptyNown() {
+		return USE_CASE_SCOPE_EMPTY_NOWN;
+	}
+
+	public String getUseCaseScopeEmptySystem() {
+		return USE_CASE_SCOPE_EMPTY_SYSTEM;
+	}
+	
+	public String getUseCaseScopeEmptyVerb() {
+		return USE_CASE_SCOPE_EMPTY_VERB;
+	}
 }

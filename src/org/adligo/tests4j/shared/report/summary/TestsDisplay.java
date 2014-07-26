@@ -28,7 +28,7 @@ public class TestsDisplay {
 		if (!passed) {
 			testsFailedDisplay.onTestCompleted(trialName, testName, passed);
 		} else if (logger.isLogEnabled(TestsDisplay.class)) {
-			I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getTests4J_ReportMessages();
+			I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getReportMessages();
 			logger.log(messages.getTestHeading() + trialName + "." + testName + messages.getPassedEOS());
 		}
 	}

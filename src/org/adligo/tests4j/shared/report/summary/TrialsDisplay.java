@@ -2,13 +2,13 @@ package org.adligo.tests4j.shared.report.summary;
 
 import java.util.List;
 
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 public class TrialsDisplay {
-	public static final String TEST = "Test: ";
-	public static final String FAILED = "Failed!";
-	public static final String PASSED = "Passed!";
 	private I_Tests4J_Log logger;
 	private TrialsFailedDisplay failuresReporter;
 	private boolean hadTrialTestsWhichDidNOTRun = false;
@@ -21,7 +21,8 @@ public class TrialsDisplay {
 	
 	public void onStartingTrial(String trialName) {
 		if (logger.isLogEnabled(TrialsDisplay.class)) {
-			logger.log("startingTrial: " + trialName);
+			I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
+			logger.log(I_Tests4J_Constants.PREFIX + messages.getStartingTrial() + trialName);
 		}
 	}
 
@@ -30,7 +31,9 @@ public class TrialsDisplay {
 			failuresReporter.onTrialCompleted(result);
 		} else {
 			if (logger.isLogEnabled(TrialsDisplay.class)) {
-				logger.log("Trial: " + result.getName() + " passed!");
+				I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
+				logger.log(I_Tests4J_Constants.PREFIX + messages.getTrialHeading() + result.getName() + 
+						messages.getPassedEOS());
 			}
 		}
 		if (result.isHadAfterTrialTests()) {

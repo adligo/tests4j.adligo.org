@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.i18n;
 
 public interface I_Tests4J_ReportMessages {
 
-	public abstract String getPctDoneEOS();
+	public abstract String getDoneEOS();
 
 	public abstract String getPctComplete();
 
@@ -24,8 +24,10 @@ public interface I_Tests4J_ReportMessages {
 
 	public abstract String getPassedFlag();
 
-	public abstract String getIndentFlag();
-
-	public abstract String getPrefix();
+	public abstract String getIndent();
+	
+	public String getStartingTrial();
+	
+	public String getStartingTest();
 
 }

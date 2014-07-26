@@ -109,8 +109,8 @@ public class Tests4J_ParamsReader {
 		}
 		
 		if (trials.size() == 0 ) {
-			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
-			logger.log(constants.getNoTrialsToRun());
+			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderConstants();
+			logger.log(constants.getNoTrialsOrRemotesToRun());
 			runnable = false;
 			return;
 		}
@@ -160,7 +160,7 @@ public class Tests4J_ParamsReader {
 		Set<String> defaultKeys = defaultEvals.keySet();
 		
 		if (!actualKeys.containsAll(defaultKeys)) {
-			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
+			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderConstants();
 			logger.log(constants.getTheEvaluatorsAreExpectedToContainTheDefaultKeys());
 			runnable = false;
 			return;

@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.en;
 
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
 
-public class Tests4JEclipseErrors implements I_Tests4J_EclipseErrors {
+public class Tests4J_EclipseErrors implements I_Tests4J_EclipseErrors {
 
 	private static final String ERROR_RUNNING_REMOTE_TESTS4J = "Known issues with running Tests4J_RemoterRunner Include;\n" +
 			"1) Multiple Project Selection breaks Classpath of Launcher @see MultiProjectSelectionLaunchHelper.";
@@ -18,5 +18,5 @@ public class Tests4JEclipseErrors implements I_Tests4J_EclipseErrors {
 		return ERROR_RUNNING_REMOTE_TESTS4J;
 	}
 
-	Tests4JEclipseErrors() {}
+	Tests4J_EclipseErrors() {}
 }

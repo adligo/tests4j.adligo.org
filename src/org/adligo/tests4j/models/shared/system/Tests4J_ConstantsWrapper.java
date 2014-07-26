@@ -8,17 +8,12 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
 
 public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	private I_Tests4J_Constants delegate;
 	
 	public Tests4J_ConstantsWrapper(I_Tests4J_Constants p) {
 		delegate = p;
-	}
-
-	public I_Tests4J_TrialDescriptionMessages getTrialDescriptionMessages() {
-		return delegate.getTrialDescriptionMessages();
 	}
 
 	public I_Tests4J_EclipseErrors getEclipseErrors() {
@@ -54,26 +49,31 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public String getTests4J_NullParamsExceptionMessage() {
-		return delegate.getTests4J_NullParamsExceptionMessage();
+	public String getNullParamsExceptionMessage() {
+		return delegate.getNullParamsExceptionMessage();
 	}
 
 	@Override
-	public String getTests4J_NullListenerExceptionMessage() {
-		return delegate.getTests4J_NullListenerExceptionMessage();
+	public String getNullListenerExceptionMessage() {
+		return delegate.getNullListenerExceptionMessage();
 	}
 
 	@Override
-	public I_Tests4J_ParamReaderMessages getTests4j_ParamReaderConstants() {
-		return delegate.getTests4j_ParamReaderConstants();
+	public I_Tests4J_ParamReaderMessages getParamReaderConstants() {
+		return delegate.getParamReaderConstants();
 	}
 	public I_Tests4J_AnnotationErrors getAnnotationErrors() {
 		return delegate.getAnnotationErrors();
 	}
 
 
-	public I_Tests4J_ReportMessages getTests4J_ReportMessages() {
-		return delegate.getTests4J_ReportMessages();
+	public I_Tests4J_ReportMessages getReportMessages() {
+		return delegate.getReportMessages();
+	}
+
+	@Override
+	public String getBadConstuctor() {
+		return delegate.getBadConstuctor();
 	}
 
 }
