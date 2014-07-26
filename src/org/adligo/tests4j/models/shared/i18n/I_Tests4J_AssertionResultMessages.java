@@ -15,13 +15,9 @@ public interface I_Tests4J_AssertionResultMessages {
 	public String getTheValueShouldBeTrue();
 	public String getTheValueShouldBeFalse();
 	
-	public String getNoEvaluatorFoundForClass();
-	public String getTheExpectedValueShouldNeverBeNull();
-	public String getTheActualValueIsNull();
-	public String getTheActualClassIsNotAssignableFromTheExpectedClass();
 	public String getTheTextWasNOT_Uniform();
 	public String getTheTextWasUniform();
 	public String getNothingWasThrown();
 	public String getAnUnexpectedExceptionWasThrown();
-	public String getIThrowerIsRequired();
+
 }

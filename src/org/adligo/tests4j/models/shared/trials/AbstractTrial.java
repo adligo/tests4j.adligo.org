@@ -33,6 +33,7 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.common.I_Platform;
 import org.adligo.tests4j.models.shared.common.Platform;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
@@ -102,14 +103,15 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	public void evaluateForNullExpected(Object expected) {
 		if (expected == null) {
-			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			
 			AssertionProcessor.onAssertionFailure(listener, null, messages.getTheExpectedValueShouldNeverBeNull());
 		}
 	}
 
 	public void evaluateForNullThrower(I_Thrower thrower) {
 		if (thrower == null) {
-			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 			AssertionProcessor.onAssertionFailure(listener, null, messages.getIThrowerIsRequired());
 		}
 	}
@@ -303,7 +305,8 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	@SuppressWarnings("unchecked")
 	private <D> I_UniformAssertionEvaluator<?, D> getEvaluator(Object expectedInstance) {
 		if (expectedInstance == null) {
-			throw new IllegalStateException(MESSAGES.getNoEvaluatorFoundForClass() + expectedInstance);
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			throw new IllegalStateException(messages.getNoEvaluatorFoundForClass() + expectedInstance);
 		}
 		
 		Class<?> expectedClass = expectedInstance.getClass();
@@ -313,11 +316,13 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	@SuppressWarnings("unchecked")
 	private <D> I_UniformAssertionEvaluator<?, D> getEvaluator(I_ExpectedThrownData data) {
 		if (data == null) {
-			throw new IllegalStateException(MESSAGES.getNoEvaluatorFoundForClass() + data);
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			throw new IllegalStateException(messages.getNoEvaluatorFoundForClass() + data);
 		}
 		Class<?> throwable = data.getThrowableClass();
 		if (throwable == null) {
-			AssertionProcessor.onAssertionFailure(listener, null, MESSAGES.getNoEvaluatorFoundForClass());
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			AssertionProcessor.onAssertionFailure(listener, null, messages.getNoEvaluatorFoundForClass());
 		}
 		return getEvaluator(throwable);
 	}
@@ -329,7 +334,8 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 			eval = evaluationLookup.findEvaluator(expectedClass);
 		}
 		if (eval == null) {
-			AssertionProcessor.onAssertionFailure(listener, null, MESSAGES.getNoEvaluatorFoundForClass());
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			AssertionProcessor.onAssertionFailure(listener, null, messages.getNoEvaluatorFoundForClass());
 		}
 		
 		return (I_UniformAssertionEvaluator<?, D>) eval;

@@ -6,6 +6,7 @@ import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
@@ -30,7 +31,8 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		super(AssertType.AssertThrown, pFailureMessage);
 		data = pData;
 		if (data == null) {
-			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			
 			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}
 	}
@@ -38,7 +40,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	@Override
 	public boolean evaluate(I_Thrower thrower) {
 		if (thrower == null) {
-			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 			throw new IllegalArgumentException(messages.getIThrowerIsRequired());
 		}
 		Class<? extends Throwable> throwableClazz = 

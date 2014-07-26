@@ -8,6 +8,7 @@ import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResu
 import org.adligo.tests4j.models.shared.asserts.uniform.I_Evaluation;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
@@ -49,7 +50,7 @@ public class UniformAssertCommand<T,D> extends AbstractAssertCommand
 			throw new IllegalArgumentException(NULL_DATA);
 		}
 		if (data.getExpected() == null) {
-			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}
 		if (pEvaluator == null) {

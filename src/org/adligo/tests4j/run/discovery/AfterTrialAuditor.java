@@ -4,7 +4,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AfterTrialErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_MethodErrors;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.AfterTrial;
 
@@ -27,28 +29,37 @@ public class AfterTrialAuditor {
 		AfterTrial at = method.getAnnotation(AfterTrial.class);
 		String trialName = trialDescription.getTrialName();
 		if (at != null) {
-			I_Tests4J_AfterTrialErrors errors = 
-					Tests4J_Constants.CONSTANTS
-					.getTrialDescriptionMessages().getAfterTrialErrors();
 			
 			if (!Modifier.isStatic(method.getModifiers())) {
+				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+				I_Tests4J_MethodErrors atErrrors =  consts.getMethodErrors();
+				I_Tests4J_AnnotationErrors annoErrors = consts.getAnnotationErrors();
+				
 				verificationFailures.add(new TrialVerificationFailure(
-						errors.getNotStatic(),
+						atErrrors.getAfterTrialNotStatic(),
 						new IllegalArgumentException(trialName + 
-								errors.getWasAnnotatedIncorrectly())));
+								annoErrors.getWasAnnotatedIncorrectly())));
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
+				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+				I_Tests4J_MethodErrors atErrrors =  consts.getMethodErrors();
+				I_Tests4J_AnnotationErrors annoErrors = consts.getAnnotationErrors();
+				
 				verificationFailures.add(new TrialVerificationFailure(
-						errors.getNotPublic(),
+						atErrrors.getAfterTrialNotPublic(),
 						new IllegalArgumentException(trialName + 
-								errors.getWasAnnotatedIncorrectly())));
+								annoErrors.getWasAnnotatedIncorrectly())));
 			}
 			Class<?> [] params = method.getParameterTypes();
 			if (params.length != 0) {
+				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+				I_Tests4J_MethodErrors atErrrors =  consts.getMethodErrors();
+				I_Tests4J_AnnotationErrors annoErrors = consts.getAnnotationErrors();
+				
 				verificationFailures.add(new TrialVerificationFailure(
-								errors.getHasParams(),
+								atErrrors.getAfterTrialHasParams(),
 								new IllegalArgumentException(trialName + 
-										errors.getWasAnnotatedIncorrectly())));
+										annoErrors.getWasAnnotatedIncorrectly())));
 			
 			}
 			return true;

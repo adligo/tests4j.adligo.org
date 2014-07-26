@@ -9,7 +9,7 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
@@ -40,7 +40,8 @@ implements I_SimpleAssertCommand, I_AssertionData {
 		super(AssertType.AssertContains, pFailureMessage);
 		collection = pCollection;
 		if (collection == null) {
-			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			
 			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}
 		value = pValue;

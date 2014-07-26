@@ -6,20 +6,20 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
-public class TrialsFailedReporter {
+public class TrialsFailedDisplay {
 	public static final String TEST = "Test: ";
 	public static final String FAILED = "Failed!";
 	private I_Tests4J_Log logger;
 	private List<I_TrialResult> failedTrials = new ArrayList<I_TrialResult>();
 	private boolean hadTrialTestsWhichDidNOTRun = false;
 	
-	public TrialsFailedReporter(I_Tests4J_Log pLogger) {
+	public TrialsFailedDisplay(I_Tests4J_Log pLogger) {
 		logger = pLogger;
 	}
 
 	public void onTrialCompleted(I_TrialResult result) {
 		failedTrials.add(result);
-		if (logger.isLogEnabled(TrialsFailedReporter.class)) {
+		if (logger.isLogEnabled(TrialsFailedDisplay.class)) {
 			logger.log("Trial: " + result.getName() + " failed!");
 		}
 	}

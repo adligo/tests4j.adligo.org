@@ -4,10 +4,10 @@ import java.text.DecimalFormat;
 
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
-public abstract class AbstractProgressReporter {
+public abstract class AbstractProgressDisplay {
 	private I_Tests4J_Log logger;
 	
-	protected AbstractProgressReporter(I_Tests4J_Log pLogger) {
+	protected AbstractProgressDisplay(I_Tests4J_Log pLogger) {
 		logger = pLogger;
 	}
 	

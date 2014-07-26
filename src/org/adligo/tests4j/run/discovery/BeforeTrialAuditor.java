@@ -4,7 +4,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_BeforeTrialErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_MethodErrors;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.BeforeTrial;
 /**
@@ -23,30 +25,37 @@ public class BeforeTrialAuditor {
 		String trialName = trialDesc.getTrialName();
 		BeforeTrial bt = method.getAnnotation(BeforeTrial.class);
 		if (bt != null) {
-			I_Tests4J_BeforeTrialErrors errors = 
-					Tests4J_Constants.CONSTANTS
-					.getTrialDescriptionMessages().getBeforeTrialErrors();
-			
+			I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+				
 			if (!Modifier.isStatic(method.getModifiers())) {
+				I_Tests4J_MethodErrors mErrors =  consts.getMethodErrors();
+				I_Tests4J_AnnotationErrors annoErrors = consts.getAnnotationErrors();
+			
 				failures.add(new TrialVerificationFailure(
-						errors.getNotStatic(),
+						mErrors.getBeforeTrialNotStatic(),
 						new IllegalArgumentException(trialName + 
-								errors.getWasAnnotatedIncorrectly())));
+								annoErrors.getWasAnnotatedIncorrectly())));
 
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
+				I_Tests4J_MethodErrors mErrors =  consts.getMethodErrors();
+				I_Tests4J_AnnotationErrors annoErrors = consts.getAnnotationErrors();
+			
 				failures.add(new TrialVerificationFailure(
-						errors.getNotPublic(),
+						mErrors.getBeforeTrialNotPublic(),
 						new IllegalArgumentException(trialName + 
-								errors.getWasAnnotatedIncorrectly())));
+								annoErrors.getWasAnnotatedIncorrectly())));
 
 			}
 			Class<?> [] params = method.getParameterTypes();
 			if (params.length != 0) {
+				I_Tests4J_MethodErrors mErrors =  consts.getMethodErrors();
+				I_Tests4J_AnnotationErrors annoErrors = consts.getAnnotationErrors();
+			
 				failures.add(new TrialVerificationFailure(
-						errors.getHasParams(),
+						mErrors.getBeforeTrialHasParams(),
 						new IllegalArgumentException(trialName + 
-								errors.getWasAnnotatedIncorrectly())));
+								annoErrors.getWasAnnotatedIncorrectly())));
 			}
 			return true;
 		}

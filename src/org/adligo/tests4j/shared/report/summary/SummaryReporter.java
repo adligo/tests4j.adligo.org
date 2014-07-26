@@ -32,17 +32,17 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
-	public static final String TEST = "Test: ";
-	public static final String FAILED = "Failed!";
-	public static final String PASSED = "Passed!";
-	public static final String INDENT = "\t";
+	
 	public static final String TESTS = "Tests: ";
 	public static final String TRIALS = "Trials: ";
 	public static final String METADATA_CALCULATED = "Metadata Calculated: ";
 
+	public static final String FAILED = "Failed!";
+	public static final String PASSED = "Passed!";
+	public static final String INDENT = "\t";
 	public static final String DEFAULT_PREFIX = "Tests4J: ";
 	
-	private Map<String,AbstractProgressReporter> processes = new HashMap<String,AbstractProgressReporter>();
+	private Map<String,AbstractProgressDisplay> processes = new HashMap<String,AbstractProgressDisplay>();
 	
 	private String prefix = DEFAULT_PREFIX;
 	private boolean snare = false;
@@ -52,8 +52,8 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	private I_Tests4J_Log logger;
 	private boolean listRelevantClassesWithoutTrials = false;
 	private I_TrialRunMetadata metadata;
-	private TestsReporter testsReporter;
-	private TrialsReporter trialsReporter;
+	private TestsDisplay testsReporter;
+	private TrialsDisplay trialsReporter;
 	
 	public SummaryReporter() {
 		this(new DefaultLogger());
@@ -61,11 +61,11 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	
 	public SummaryReporter(I_Tests4J_Log p) {
 		logger = p;
-		testsReporter = new TestsReporter(p);
-		trialsReporter = new TrialsReporter(p);
-		processes.put("setup", new SetupProgressReporter(p));
-		processes.put("trials", new TrialsProgressReporter(p));
-		processes.put("tests", new TestsProgressReporter(p));
+		testsReporter = new TestsDisplay(p);
+		trialsReporter = new TrialsDisplay(p);
+		processes.put("setup", new SetupProgressDisplay(p));
+		processes.put("trials", new TrialsProgressDisplay(p));
+		processes.put("tests", new TestsProgressDisplay(p));
 	}
 	
 	@Override
@@ -285,7 +285,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 
 	@Override
 	public synchronized void onProgress(String process, double pctComplete) {
-		AbstractProgressReporter apr = processes.get(process);
+		AbstractProgressDisplay apr = processes.get(process);
 		apr.onProgress(process, pctComplete);
 		
 	}

@@ -13,6 +13,8 @@ import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
@@ -111,36 +113,47 @@ public class TrialDescription implements I_TrialDescription {
 	}
 
 	private boolean checkTypeAnnotations() {
-		I_Tests4J_TrialDescriptionMessages messages = Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
 		
 		String trialName = trialClass.getName();
 		switch(type) {
 			case SourceFileTrial:
 					sourceFileScope = trialClass.getAnnotation(SourceFileScope.class);
 					if (sourceFileScope == null) {
+						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+						I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+						I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+						
 						resultFailureMessage = 
 								messages.getNoSourceFileScope();
 						resultException	 =
 								new IllegalArgumentException(trialName + 
-										messages.getWasAnnotatedIncorrectly());
+										annonErrors.getWasAnnotatedIncorrectly());
 						return false;
 					} else {
 						Class<?> clazz = sourceFileScope.sourceClass();
 						if (clazz == null) {
+							I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+							I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+							I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+							
 							resultFailureMessage = 
 									messages.getSourceFileScopeEmptyClass();
 							resultException	 =
 									new IllegalArgumentException(trialName + 
-											messages.getWasAnnotatedIncorrectly());
+											annonErrors.getWasAnnotatedIncorrectly());
 							return false;
 						}
 						minCoverage = sourceFileScope.minCoverage();
 						if (minCoverage > 100.0 || minCoverage < 0.0) {
+							I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+							I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+							I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+							
 							resultFailureMessage = 
 									messages.getMinCoverageMustBeBetweenZeroAndOneHundred();
 							resultException	 =
 									new IllegalArgumentException(trialName + 
-											messages.getWasAnnotatedIncorrectly());
+											annonErrors.getWasAnnotatedIncorrectly());
 							return false;
 						}
 					}
@@ -148,20 +161,28 @@ public class TrialDescription implements I_TrialDescription {
 			case ApiTrial:
 				packageScope = trialClass.getAnnotation(PackageScope.class);
 				if (packageScope == null) {
+					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+					I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					
 					resultFailureMessage = 
 							messages.getNoPackageScope();
 					resultException	 =
 							new IllegalArgumentException(trialName + 
-									messages.getWasAnnotatedIncorrectly());
+									annonErrors.getWasAnnotatedIncorrectly());
 					return false;
 				}
 				String testedPackageName = packageScope.packageName();
 				if (StringMethods.isEmpty(testedPackageName)) {
+					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+					I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					
 					resultFailureMessage = 
 							messages.getPackageScopeEmptyName();
 					resultException	 =
 							new IllegalArgumentException(trialName + 
-									messages.getWasAnnotatedIncorrectly());
+									annonErrors.getWasAnnotatedIncorrectly());
 					return false;
 				} 
 				
@@ -169,40 +190,56 @@ public class TrialDescription implements I_TrialDescription {
 			case UseCaseTrial:
 				useCaseScope = trialClass.getAnnotation(UseCaseScope.class);
 				if (useCaseScope == null) {
+					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+					I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					
 					resultFailureMessage = 
 							messages.getNoUseCaseScope();
 					resultException	 =
 							new IllegalArgumentException(trialName + 
-									messages.getWasAnnotatedIncorrectly());
+									annonErrors.getWasAnnotatedIncorrectly());
 					return false;
 				}
 				String system = useCaseScope.system();
 				if (StringMethods.isEmpty(system)) {
+					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+					I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					
 					resultFailureMessage = 
 							messages.getUseCaseScopeEmptySystem();
 					resultException	 =
 							new IllegalArgumentException(trialName + 
-									messages.getWasAnnotatedIncorrectly());
+									annonErrors.getWasAnnotatedIncorrectly());
 					return false;
 				} 
 				
 				String nown = useCaseScope.nown();
 				if (StringMethods.isEmpty(nown)) {
+					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+					I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					
 					resultFailureMessage = 
 							messages.getUseCaseScopeEmptyNown();
 					resultException	 =
 							new IllegalArgumentException(trialName + 
-									messages.getWasAnnotatedIncorrectly());
+									annonErrors.getWasAnnotatedIncorrectly());
 					return false;
 				} 
 				
 				String verb = useCaseScope.verb();
 				if (StringMethods.isEmpty(verb)) {
+					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+					I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					
 					resultFailureMessage = 
 							messages.getUseCaseScopeEmptyVerb();
 					resultException	 =
 							new IllegalArgumentException(trialName + 
-									messages.getWasAnnotatedIncorrectly());
+									annonErrors.getWasAnnotatedIncorrectly());
 					return false;
 				} 
 			default:
@@ -227,18 +264,21 @@ public class TrialDescription implements I_TrialDescription {
 			methods.add(ms[i]);
 		}
 		
-		I_Tests4J_TrialDescriptionMessages messages = 
-				Tests4J_Constants.CONSTANTS.getTrialDescriptionMessages();
+		
 		
 		for (Method method: methods) {
 			if (BeforeTrialAuditor.audit(this, failures, method)) {
 				if (beforeTrialMethod == null) {
 					beforeTrialMethod = method;
 				} else {
+					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+					I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					
 					failures.add(new TrialVerificationFailure(
 							messages.getMultipleBeforeTrial(),
 							new IllegalArgumentException(trialClass.getName() + 
-									messages.getWasAnnotatedIncorrectly())));
+									annonErrors.getWasAnnotatedIncorrectly())));
 				}
 			}
 			TestDescription testDesc = TestAuditor.audit(this, failures, method);
@@ -249,10 +289,14 @@ public class TrialDescription implements I_TrialDescription {
 				if (afterTrialMethod == null) {
 					afterTrialMethod = method;
 				} else {
+					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+					I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					
 					failures.add(new TrialVerificationFailure(
 							messages.getMultipleAfterTrial(),
 							new IllegalArgumentException(trialClass.getName() + 
-									messages.getWasAnnotatedIncorrectly())));
+									annonErrors.getWasAnnotatedIncorrectly())));
 				}
 			}
 			
@@ -260,16 +304,24 @@ public class TrialDescription implements I_TrialDescription {
 
 		if (TrialType.MetaTrial == type) {
 			if (testMethods.size() >= 1) {
+				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+				I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+				I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+				
 				failures.add(new TrialVerificationFailure(
 						messages.getNoTests(),
 						new IllegalArgumentException(trialClass.getName() + 
-								messages.getWasAnnotatedIncorrectly())));
+								annonErrors.getWasAnnotatedIncorrectly())));
 			}
 		} else if (testMethods.size() == 0 ) {
+			I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+			I_Tests4J_TrialDescriptionMessages messages = consts.getTrialDescriptionMessages();
+			I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+			
 			failures.add(new TrialVerificationFailure(
 					messages.getNoTests(),
 					new IllegalArgumentException(trialClass.getName() + 
-							messages.getWasAnnotatedIncorrectly())));
+							annonErrors.getWasAnnotatedIncorrectly())));
 		}
 		return failures;
 	}

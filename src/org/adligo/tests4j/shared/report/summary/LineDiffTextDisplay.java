@@ -9,7 +9,7 @@ import org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiffType;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayConstants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 /**
@@ -18,7 +18,7 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
  *
  */
 public class LineDiffTextDisplay {
-	private I_Tests4J_LineDiffTextDisplayConstants constants =
+	private I_Tests4J_LineDiffTextDisplayMessages constants =
 			Tests4J_Constants.CONSTANTS.getLineDiffTextDisplayMessages();
 	private I_TextLines actualLines;
 	private I_TextLines exampleLines;

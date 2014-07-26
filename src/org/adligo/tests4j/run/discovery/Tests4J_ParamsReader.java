@@ -10,7 +10,7 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderConstants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.system.DefaultLogger;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
@@ -22,15 +22,15 @@ import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
-import org.adligo.tests4j.shared.report.summary.RemoteProgressReporter;
-import org.adligo.tests4j.shared.report.summary.SetupProgressReporter;
+import org.adligo.tests4j.shared.report.summary.RemoteProgressDisplay;
+import org.adligo.tests4j.shared.report.summary.SetupProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
-import org.adligo.tests4j.shared.report.summary.TestsFailedReporter;
-import org.adligo.tests4j.shared.report.summary.TestsProgressReporter;
-import org.adligo.tests4j.shared.report.summary.TestsReporter;
-import org.adligo.tests4j.shared.report.summary.TrialsFailedReporter;
-import org.adligo.tests4j.shared.report.summary.TrialsProgressReporter;
-import org.adligo.tests4j.shared.report.summary.TrialsReporter;
+import org.adligo.tests4j.shared.report.summary.TestsFailedDisplay;
+import org.adligo.tests4j.shared.report.summary.TestsProgressDisplay;
+import org.adligo.tests4j.shared.report.summary.TestsDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialsFailedDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialsProgressDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialsDisplay;
 
 /**
  * since anyone can re implement 
@@ -109,7 +109,7 @@ public class Tests4J_ParamsReader {
 		}
 		
 		if (trials.size() == 0 ) {
-			I_Tests4J_ParamReaderConstants constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
+			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
 			logger.log(constants.getNoTrialsToRun());
 			runnable = false;
 			return;
@@ -160,7 +160,7 @@ public class Tests4J_ParamsReader {
 		Set<String> defaultKeys = defaultEvals.keySet();
 		
 		if (!actualKeys.containsAll(defaultKeys)) {
-			I_Tests4J_ParamReaderConstants constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
+			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getTests4j_ParamReaderConstants();
 			logger.log(constants.getTheEvaluatorsAreExpectedToContainTheDefaultKeys());
 			runnable = false;
 			return;
@@ -171,17 +171,17 @@ public class Tests4J_ParamsReader {
 	public Map<Class<?>, Boolean> getDefalutLogStates() {
 		Map<Class<?>, Boolean> logStates = new HashMap<Class<?>, Boolean>();
 		//set defaults;
-		logStates.put(RemoteProgressReporter.class, true);
-		logStates.put(SetupProgressReporter.class, true);
+		logStates.put(RemoteProgressDisplay.class, true);
+		logStates.put(SetupProgressDisplay.class, true);
 		logStates.put(SummaryReporter.class, true);
 		
-		logStates.put(TestsFailedReporter.class, true);
-		logStates.put(TestsProgressReporter.class, true);
-		logStates.put(TestsReporter.class, true);
+		logStates.put(TestsFailedDisplay.class, true);
+		logStates.put(TestsProgressDisplay.class, true);
+		logStates.put(TestsDisplay.class, true);
 		
-		logStates.put(TrialsFailedReporter.class, true);
-		logStates.put(TrialsProgressReporter.class, true);
-		logStates.put(TrialsReporter.class, true);
+		logStates.put(TrialsFailedDisplay.class, true);
+		logStates.put(TrialsProgressDisplay.class, true);
+		logStates.put(TrialsDisplay.class, true);
 		return logStates;
 	}
 

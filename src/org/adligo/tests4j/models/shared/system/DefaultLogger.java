@@ -6,15 +6,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.adligo.tests4j.shared.report.summary.RemoteProgressReporter;
-import org.adligo.tests4j.shared.report.summary.SetupProgressReporter;
+import org.adligo.tests4j.shared.report.summary.RemoteProgressDisplay;
+import org.adligo.tests4j.shared.report.summary.SetupProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
-import org.adligo.tests4j.shared.report.summary.TestsFailedReporter;
-import org.adligo.tests4j.shared.report.summary.TestsProgressReporter;
-import org.adligo.tests4j.shared.report.summary.TestsReporter;
-import org.adligo.tests4j.shared.report.summary.TrialsFailedReporter;
-import org.adligo.tests4j.shared.report.summary.TrialsProgressReporter;
-import org.adligo.tests4j.shared.report.summary.TrialsReporter;
+import org.adligo.tests4j.shared.report.summary.TestsFailedDisplay;
+import org.adligo.tests4j.shared.report.summary.TestsProgressDisplay;
+import org.adligo.tests4j.shared.report.summary.TestsDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialsFailedDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialsProgressDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialsDisplay;
 
 /**
  * This is the main logging class for Tests4J,

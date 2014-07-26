@@ -1,15 +1,18 @@
 package org.adligo.tests4j.models.shared.system;
 
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayConstants;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderConstants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_MethodErrors;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_TrialDescriptionMessages;
 
 public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
-	I_Tests4J_Constants delegate;
+	private I_Tests4J_Constants delegate;
 	
 	public Tests4J_ConstantsWrapper(I_Tests4J_Constants p) {
 		delegate = p;
@@ -47,7 +50,7 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public I_Tests4J_LineDiffTextDisplayConstants getLineDiffTextDisplayMessages() {
+	public I_Tests4J_LineDiffTextDisplayMessages getLineDiffTextDisplayMessages() {
 		return delegate.getLineDiffTextDisplayMessages();
 	}
 
@@ -62,7 +65,19 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public I_Tests4J_ParamReaderConstants getTests4j_ParamReaderConstants() {
+	public I_Tests4J_ParamReaderMessages getTests4j_ParamReaderConstants() {
 		return delegate.getTests4j_ParamReaderConstants();
 	}
+	public I_Tests4J_AnnotationErrors getAnnotationErrors() {
+		return delegate.getAnnotationErrors();
+	}
+
+	public I_Tests4J_MethodErrors getMethodErrors() {
+		return delegate.getMethodErrors();
+	}
+
+	public I_Tests4J_ReportMessages getTests4J_ReportMessages() {
+		return delegate.getTests4J_ReportMessages();
+	}
+
 }

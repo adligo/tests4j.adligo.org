@@ -55,7 +55,7 @@ public class UniformThrownAssertCommand<T,D> extends AbstractAssertCommand
 	@Override
 	public boolean evaluate(I_Thrower thrower) {
 		if (thrower == null) {
-			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 			throw new IllegalArgumentException(messages.getIThrowerIsRequired());
 		}
 		try {

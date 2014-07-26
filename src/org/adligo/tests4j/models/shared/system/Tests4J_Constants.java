@@ -16,6 +16,6 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
  *
  */
 public class Tests4J_Constants {
-	public static final I_Tests4J_Constants CONSTANTS = new Tests4J_ConstantsWrapper(new Tests4J_EnglishConstants());
+	public static final I_Tests4J_Constants CONSTANTS = new Tests4J_ConstantsWrapper(Tests4J_EnglishConstants.ENGLISH);
 	
 }
