@@ -1,6 +1,10 @@
 Other projects that will complement tests4j which 
 need to be implemented at some point;
 
+replace TrailInstrumentation with 
+PackageDiscovery which produces a to a I_PackageDependencyTree
+then the TrialByPackageInstrumenter can 
+
 1) tests4j_4gwt (target tests4j_v0_2) 
 			This will contain some abstract code that will help
         run tests4j tests in a web browser from a javascript runtime.

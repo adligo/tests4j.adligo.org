@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.common.TrialType;
-import org.adligo.tests4j.run.discovery.ClassDiscovery;
+import org.adligo.tests4j.run.discovery.PackageDiscovery;
 
 public class RelevantClassesWithTrialsCalculator {
 	private I_TrialRunMetadata metadata;
@@ -75,7 +75,7 @@ public class RelevantClassesWithTrialsCalculator {
 	}
 	
 	public Set<String> getSourceFileTrialNames(String testedPackageName) throws IOException {
-		ClassDiscovery discovery = new ClassDiscovery(testedPackageName);
+		PackageDiscovery discovery = new PackageDiscovery(testedPackageName);
 		Collection<String> allClasses = discovery.getClassNames();
 		
 		Set<String> trialNames = new HashSet<String>();

@@ -22,7 +22,10 @@ import org.adligo.tests4j.models.shared.trials.SourceFileScope;
  * with the number of minimum dots in the package name.
  * 
  * @author scott
- *
+ * @deprecated this was used for the original way of
+ * loading and then instrumenting classes, this is getting replaced by
+ * PackageDiscovery
+ * 
  */
 public class TopPackageSet {
 	private Set<String> packages = new HashSet<String>();
@@ -166,25 +169,6 @@ public class TopPackageSet {
 	/**
 	 * @threadsafe
 	 * 
-	 * @param classes
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static TopPackageSet getPackagesForMetadata(Collection<Class<?>> classes) {
-		TopPackageSet packages = new TopPackageSet();
-		packages.minDots = 5;
-		
-		for (Class<?> clazz: classes) {
-			if (I_Trial.class.isAssignableFrom(clazz)) {
-				addTrialTypePackage(packages,(Class<? extends I_Trial>) clazz);
-			} 
-		}
-		return packages;
-	}
-
-	/**
-	 * @threadsafe
-	 * 
 	 * @param packages
 	 * @param clazz
 	 */
@@ -206,6 +190,7 @@ public class TopPackageSet {
 	/**
 	 * @threadsafe
 	 * 
+	 * This is for the original way of 
 	 * @param classes
 	 * @return
 	 */

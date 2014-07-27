@@ -52,7 +52,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
 	private I_Tests4J_AssertListener listener;
-	private I_Tests4J_Log reporter;
+	private I_Tests4J_Log log;
 	private I_Platform platform;
 	private I_EvaluatorLookup evaluationLookup;
 	private EvaluatorLookupMutant evaluationLookupOverrides = new EvaluatorLookupMutant();
@@ -70,9 +70,9 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		//throw npe for nulls
 		listener.hashCode();
 		
-		reporter = bindings.getReporter();
+		log = bindings.getReporter();
 		//throw npe for nulls
-		reporter.hashCode();
+		log.hashCode();
 		
 		evaluationLookup = bindings.getDefalutEvaluatorLookup();
 		evaluationLookup.hashCode();
@@ -370,17 +370,17 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	
 	public void log(String p) {
-		reporter.log(p);
+		log.log(p);
 	}
 
 	@Override
 	public void log(Throwable p) {
-		reporter.onException(p);
+		log.onException(p);
 	}
 
 	@Override
 	public boolean isLogEnabled(Class<?> c) {
-		return reporter.isLogEnabled(c);
+		return log.isLogEnabled(c);
 	}
 
 	@Override
@@ -425,5 +425,9 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	public Platform getPlatform() {
 		return platform.getPlatform();
+	}
+
+	public I_Tests4J_Log getLog() {
+		return log;
 	}
 }

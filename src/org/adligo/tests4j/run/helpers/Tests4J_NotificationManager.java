@@ -35,7 +35,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.run.discovery.ClassDiscovery;
+import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 
@@ -277,7 +277,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		}
 		for (String packageName: packages) {
 			try {
-				ClassDiscovery classDiscovery = new ClassDiscovery(packageName);
+				PackageDiscovery classDiscovery = new PackageDiscovery(packageName);
 				addClasses(trmm, classDiscovery);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -298,7 +298,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	}
 
 	private void addClasses(TrialRunMetadataMutant trmm,
-			ClassDiscovery classDiscovery) {
+			PackageDiscovery classDiscovery) {
 		List<String> classes = classDiscovery.getClassNames();
 		for (String clazz: classes) {
 			if (clazz.indexOf("$") == -1) {
@@ -321,8 +321,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				trmm.setSourceInfo(clazz, sim);
 			}
 		}
-		List<ClassDiscovery> subs =  classDiscovery.getSubPackages();
-		for (ClassDiscovery sub: subs) {
+		List<PackageDiscovery> subs =  classDiscovery.getSubPackages();
+		for (PackageDiscovery sub: subs) {
 			addClasses(trmm, sub);
 		}
 	}
