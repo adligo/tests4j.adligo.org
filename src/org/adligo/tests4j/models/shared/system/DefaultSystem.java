@@ -26,4 +26,9 @@ public class DefaultSystem implements I_Tests4J_System {
 	public long getTime() {
 		return System.currentTimeMillis();
 	}
+
+	@Override
+	public String getLineSeperator() {
+		return System.lineSeparator();
+	}
 }

@@ -69,6 +69,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 
 	private String trialName;
 	private I_Tests4J_CoverageRecorder trialThreadLocalCoverageRecorder;
+	private TrialDescriptionProcessor trialDescriptionProcessor;
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
@@ -96,6 +97,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), logger);
 		bindings.setAssertListener(testsRunner);
 		
+		trialDescriptionProcessor = new TrialDescriptionProcessor(memory);
 		afterSouceFileTrialTestsProcessor = new AfterSourceFileTrialTestsProcessor(memory);
 		afterApiTrialTestsProcessor = new AfterApiTrialTestsProcessor(memory);
 		afterUseCaseTrialTestsProcessor = new AfterUseCaseTrialTestsProcessor(memory);
@@ -125,9 +127,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 						}
 					}
 					
-					//recreate the TrialDescrption, so that the zero arg constructor
-					//is called on the instrumented trial (to correctly calculate code coverage)
-					trialDescription = new TrialDescription(trialClazz, logger);
+					trialDescription = trialDescriptionProcessor.newTrailDescriptionToRun(trialClazz, notifier);
 				}
 				
 			} catch (Exception x) {

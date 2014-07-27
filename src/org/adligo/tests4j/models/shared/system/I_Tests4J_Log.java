@@ -53,5 +53,14 @@ public interface I_Tests4J_Log {
 	 * @return
 	 */
 	public boolean isMainLog();
+	
+	/**
+	 * return the underlying line separator
+	 * (usually comes from I_Tests4J_System)
+	 * so it can be fixed for testing.
+	 * 
+	 * @return
+	 */
+	public String getLineSeperator();
 
 }

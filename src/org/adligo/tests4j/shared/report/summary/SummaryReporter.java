@@ -46,8 +46,8 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	private I_Tests4J_Log logger;
 	private boolean listRelevantClassesWithoutTrials = false;
 	private I_TrialRunMetadata metadata;
-	private TestsDisplay testsReporter;
-	private TrialsDisplay trialsReporter;
+	private TestDisplay testsReporter;
+	private TrialDisplay trialsReporter;
 	
 	public SummaryReporter() {
 		this(new DefaultLog());
@@ -55,8 +55,8 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	
 	public SummaryReporter(I_Tests4J_Log p) {
 		logger = p;
-		testsReporter = new TestsDisplay(p);
-		trialsReporter = new TrialsDisplay(p);
+		testsReporter = new TestDisplay(p);
+		trialsReporter = new TrialDisplay(p);
 		processes.put("setup", new SetupProgressDisplay(p));
 		processes.put("trials", new TrialsProgressDisplay(p));
 		processes.put("tests", new TestsProgressDisplay(p));
@@ -126,9 +126,6 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 					+ result.getTrials() + " Trials with " + formatter.format(pct) + "% coverage;");
 			logger.log("");
 			logger.log("\t\t\tPassed!");
-			if (trialsReporter.isHadTrialTestsWhichDidNOTRun()) {
-				logger.log("\t\tWarning afterTrialTests methods/assertions did not run!");
-			}
 			logger.log("");
 		} else {
 			List<I_TrialResult> failedTrials = trialsReporter.getFailedTrials();

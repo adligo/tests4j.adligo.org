@@ -116,8 +116,8 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	public String getAfterTrialOutput() {
 		return afterTestOutput;
 	}
-	public void setTrialName(String testName) {
-		this.trialName = testName;
+	public void setTrialName(String pTrialName) {
+		this.trialName = pTrialName;
 	}
 	public void setType(TrialType p) {
 		this.testType = p;

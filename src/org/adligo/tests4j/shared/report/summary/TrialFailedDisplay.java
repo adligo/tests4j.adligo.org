@@ -9,29 +9,25 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
-public class TrialsFailedDisplay {
+public class TrialFailedDisplay {
 	private I_Tests4J_Log logger;
 	private List<I_TrialResult> failedTrials = new ArrayList<I_TrialResult>();
-	private boolean hadTrialTestsWhichDidNOTRun = false;
 	
-	public TrialsFailedDisplay(I_Tests4J_Log pLogger) {
+	public TrialFailedDisplay(I_Tests4J_Log pLogger) {
 		logger = pLogger;
 	}
 
-	public void onTrialCompleted(I_TrialResult result) {
+	public void onTrailFailed(I_TrialResult result) {
 		failedTrials.add(result);
-		if (logger.isLogEnabled(TrialsFailedDisplay.class)) {
+		if (logger.isLogEnabled(TrialFailedDisplay.class)) {
 			I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getReportMessages();
-			logger.log(I_Tests4J_Constants.HEADER + messages.getTrialsHeading()  + 
+			logger.log(I_Tests4J_Constants.PREFIX + messages.getTrialHeading()  + 
 					result.getName() + messages.getFailedEOS());
 		}
 	}
 
-	protected List<I_TrialResult> getFailedTrials() {
+	public List<I_TrialResult> getFailedTrials() {
 		return failedTrials;
 	}
 
-	protected boolean isHadTrialTestsWhichDidNOTRun() {
-		return hadTrialTestsWhichDidNOTRun;
-	}
 }

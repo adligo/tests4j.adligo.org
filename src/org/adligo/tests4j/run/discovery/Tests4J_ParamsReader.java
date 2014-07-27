@@ -25,12 +25,12 @@ import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.shared.report.summary.RemoteProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.SetupProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
-import org.adligo.tests4j.shared.report.summary.TestsFailedDisplay;
+import org.adligo.tests4j.shared.report.summary.TestFailedDisplay;
 import org.adligo.tests4j.shared.report.summary.TestsProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.TestsDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialsFailedDisplay;
+import org.adligo.tests4j.shared.report.summary.TestDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialFailedDisplay;
 import org.adligo.tests4j.shared.report.summary.TrialsProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialsDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialDisplay;
 
 /**
  * since anyone can re implement 
@@ -175,13 +175,13 @@ public class Tests4J_ParamsReader {
 		logStates.put(SetupProgressDisplay.class, true);
 		logStates.put(SummaryReporter.class, true);
 		
-		logStates.put(TestsFailedDisplay.class, true);
+		logStates.put(TestFailedDisplay.class, true);
 		logStates.put(TestsProgressDisplay.class, true);
-		logStates.put(TestsDisplay.class, true);
+		logStates.put(TestDisplay.class, true);
 		
-		logStates.put(TrialsFailedDisplay.class, true);
+		logStates.put(TrialFailedDisplay.class, true);
 		logStates.put(TrialsProgressDisplay.class, true);
-		logStates.put(TrialsDisplay.class, true);
+		logStates.put(TrialDisplay.class, true);
 		return logStates;
 	}
 

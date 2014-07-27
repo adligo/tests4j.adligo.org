@@ -4,6 +4,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.TrialRecursion;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 
 public class Tests4J_SetupRunnable implements Runnable {
@@ -50,14 +51,14 @@ public class Tests4J_SetupRunnable implements Runnable {
 						instrumentedClass = plugin.instrument(trialClazz);
 					}
 				}	
-				TrialDescription trialDescription = trialDescriptionProcessor.addTrialDescription(trialClazz);
+				TrialDescription trialDescription = trialDescriptionProcessor.instrumentAndAddTrialDescription(trialClazz);
 				if (trialDescription.isRunnable()) {
 					if (instrumentedClass != null) {
 						memory.addTrialToRun(instrumentedClass);
 					} else {
 						memory.addTrialToRun(trialClazz);
 					}
-				}
+				} 
 				memory.addTrialSetup();
 				notifier.checkDoneDescribingTrials();
 				

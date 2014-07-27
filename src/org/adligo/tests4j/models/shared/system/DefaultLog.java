@@ -9,12 +9,12 @@ import java.util.Set;
 import org.adligo.tests4j.shared.report.summary.RemoteProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.SetupProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
-import org.adligo.tests4j.shared.report.summary.TestsFailedDisplay;
+import org.adligo.tests4j.shared.report.summary.TestFailedDisplay;
 import org.adligo.tests4j.shared.report.summary.TestsProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.TestsDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialsFailedDisplay;
+import org.adligo.tests4j.shared.report.summary.TestDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialFailedDisplay;
 import org.adligo.tests4j.shared.report.summary.TrialsProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialsDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialDisplay;
 
 /**
  * This is the main logging class for Tests4J,
@@ -114,6 +114,11 @@ public class DefaultLog implements I_Tests4J_Log {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public String getLineSeperator() {
+		return system.getLineSeperator();
 	}
 
 

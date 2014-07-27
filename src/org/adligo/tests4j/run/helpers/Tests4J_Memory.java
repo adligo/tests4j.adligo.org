@@ -130,7 +130,7 @@ public class Tests4J_Memory {
 		Class<? extends I_MetaTrial> meta = p.getMetaTrialClass();
 		if (meta != null) {
 			TrialDescriptionProcessor trialDescProcessor = new TrialDescriptionProcessor(this);
-			trialDescProcessor.addTrialDescription(meta);
+			trialDescProcessor.instrumentAndAddTrialDescription(meta);
 			trials.add(meta);
 		}
 		coveragePlugin =  p.getCoveragePlugin();

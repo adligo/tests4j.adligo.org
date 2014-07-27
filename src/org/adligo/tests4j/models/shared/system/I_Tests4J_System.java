@@ -27,4 +27,11 @@ public interface I_Tests4J_System {
 	 * @return
 	 */
 	public long getTime();
+	
+	/**
+	 * a wrapper around System.getLineSeperator
+	 * so it can be fixed to unix for the trials/tests.
+	 * @return
+	 */
+	public String getLineSeperator();
 }
