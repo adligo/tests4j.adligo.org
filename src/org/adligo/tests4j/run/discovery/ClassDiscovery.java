@@ -91,6 +91,7 @@ public class ClassDiscovery {
 			for (int j = 0; j < throwns.length; j++) {
 				addDependencies(throwns[j], refTree);
 			}
+			//method.get
 		}
 		String clazzName = pClass.getName();
 		addReference(clazzName, refTree);
