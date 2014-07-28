@@ -7,9 +7,7 @@ package org.adligo.tests4j.models.shared.system;
  * out message from the test run.  It is basically a 
  * logging facade for tests4j internals.
  * 
- * Implementations are intended to be thread safe, and
- * have a default no argument constructor so they can
- * be passed into Tests4j via the I_Tests4j_Params.
+ * Implementations are intended to be thread safe.
  * 
  * @author scott
  *

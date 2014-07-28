@@ -1,5 +1,7 @@
 package org.adligo.tests4j.run.discovery;
 
+import org.adligo.tests4j.models.shared.common.StringMethods;
+
 
 /**
  * a simple mutable class that represents 
@@ -11,6 +13,9 @@ package org.adligo.tests4j.run.discovery;
  *
  */
 public class DependencyMutant implements I_Dependency {
+	public static final String CLASS_NAME_MAY_NOT_BE_SET_TO_A_EMPTY_VALUE = 
+			"Dependency requires a non empty class name.";
+	
 	private String clazzName;
 	private int references;
 	
@@ -35,8 +40,11 @@ public class DependencyMutant implements I_Dependency {
 	public int getReferences() {
 		return references;
 	}
-	public void setClazzName(String clazzName) {
-		this.clazzName = clazzName;
+	public void setClazzName(String pName) {
+		if (StringMethods.isEmpty(pName)) {
+			throw new IllegalArgumentException(CLASS_NAME_MAY_NOT_BE_SET_TO_A_EMPTY_VALUE);
+		}
+		this.clazzName = pName;
 	}
 	
 	public void addReference() {

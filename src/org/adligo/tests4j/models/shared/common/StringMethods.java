@@ -1,5 +1,13 @@
 package org.adligo.tests4j.models.shared.common;
 
+/**
+ * a collection of thread safe methods
+ * which do things that should probably get added to 
+ * the actual java String class.
+ * 
+ * @author scott
+ *
+ */
 public class StringMethods {
 	public static boolean isEmpty(String p) {
 		if (p == null) {
@@ -33,5 +41,9 @@ public class StringMethods {
 			return text.length();
 		}
 		return index;
+	}
+	
+	public static String toResource(String clazzName) {
+		return '/' + clazzName.replace('.', '/') + ".class";
 	}
 }
