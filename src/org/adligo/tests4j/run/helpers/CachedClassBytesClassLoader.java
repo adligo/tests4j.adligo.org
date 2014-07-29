@@ -33,12 +33,16 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	private final Set<String> packagesWithoutWarning;
 	private final Set<String> classesWithoutWarning;
 	
+	public CachedClassBytesClassLoader(I_Tests4J_Log pLog) { 
+		this(pLog,null, null);
+	}
+	
 	public CachedClassBytesClassLoader(I_Tests4J_Log pLog, Set<String> pPackagesWithoutWarning, 
 			Set<String> pClassesWithoutWarning) { 
 		
 		log = pLog;
 		if (pPackagesWithoutWarning == null) {
-			packagesWithoutWarning = Collections.emptySet();
+			packagesWithoutWarning = Collections.singleton("java.");
 		} else {
 			packagesWithoutWarning = Collections.unmodifiableSet(pPackagesWithoutWarning);
 		}

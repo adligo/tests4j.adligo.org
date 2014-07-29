@@ -139,6 +139,8 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 
 
 	private void fixInconsitentMatch(String expectedLine, String actualLine) {
+		
+		
 		String expectedMiddleMatch = null;
 		String actualMiddleMatch = null;
 		// fix matches on the inside, that are false positives
@@ -168,6 +170,28 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 				//it is a false positive, move rightToLeftMatches to the leftToRightMatchs
 				expectedRightToLeftMatch = expectedLeftToRightMatch;
 				actualRightToLeftMatch = actualLeftToRightMatch;
+				return;
+			}
+		}
+		if (expectedMiddleMatch == null && expectedMiddleMatch == null) {
+			if (expectedLeftToRightMatch != null && actualLeftToRightMatch != null) {
+				if (expectedLeftToRightMatch.intValue() == 0 && actualLeftToRightMatch.intValue() == 0) {
+					//the left side matched
+					if (expectedRightToLeftDiff != null && actualRightToLeftDiff != null) {
+						//the right to left had a diff,
+						if (expectedLine.length() - 1 == expectedRightToLeftDiff.intValue() && 
+								actualLine.length() - 1 == actualRightToLeftDiff.intValue()) {
+								//its a left only diff
+								if (actualRightToLeftMatch != null) {
+									if (actualRightToLeftMatch.intValue() < expectedRightToLeftMatch.intValue()) {
+										//if there at the end of the example and actual, its a left only match
+										actualRightToLeftMatch = expectedRightToLeftMatch;
+										return;
+									}
+								}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -228,20 +252,62 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 			//first char is different 
 			expectedLeftToRightDiff = 0;
 			actualLeftToRightDiff = 0;
+			
+			Integer firstMatchI = null;
+			Integer firstMatchJ = null;
 			for (int i = 0; i < expectedChars.length; i++) {
 				e = expectedChars[i];
 				if (expectedLeftToRightMatch == null) {
 					for (int j = 0; j < actualChars.length; j++) {
 						a = actualChars[j];
 						if (e == a) {
-							expectedLeftToRightMatch = i;
-							actualLeftToRightMatch = j;
-							break;
+							if (firstMatchI == null && firstMatchJ == null) {
+								firstMatchI = i;
+								firstMatchJ = j;
+							}
+							//i found a char match, but
+							//i want a subString match 
+							String ec = new String(expectedChars);
+							String ac = new String(actualChars);
+							
+							String eRight = ec.substring(i, ec.length());
+							String aRight = ac.substring(j, ac.length());
+							if (eRight.equals(aRight)) {
+								//its a simple right left match
+								expectedLeftToRightMatch = i;
+								actualLeftToRightMatch = j;
+								break;
+							} else if (eRight.length() > aRight.length()){
+								int idx = eRight.indexOf(aRight);
+								if (idx != -1) {
+									//its a complex right side match
+									expectedLeftToRightMatch = expectedChars.length  - aRight.length();
+									actualLeftToRightMatch = actualChars.length - aRight.length();
+									break;
+								}
+							} else {
+								if (eRight.length() != 1) {
+									int idx = aRight.indexOf(eRight);
+									if (idx != -1) {
+										//its a complex right side match
+										expectedLeftToRightMatch = expectedChars.length  - eRight.length();
+										actualLeftToRightMatch = actualChars.length - eRight.length();
+										break;
+									}
+								}
+							}
+							
 						}
 					}
 				}
 			}
-			
+			if (actualLeftToRightMatch == null) {
+				if (firstMatchI != null && firstMatchJ != null) {
+					//its a complex middle match
+					expectedLeftToRightMatch = firstMatchI;
+					actualLeftToRightMatch = firstMatchJ;
+				}
+			}
 		}
 	}
 	
