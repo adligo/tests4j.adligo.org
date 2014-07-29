@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * A class for reflection like code that runs the 
  * same in GWT compiled java-script as the JSE.
+ * Static methods are thread safe.
  * 
  * @author scott
  *
@@ -57,5 +58,32 @@ public class ClassMethods {
 			}
 		}
 		return toRet;
+	}
+	
+	/**
+	 * turns 
+	 *  org.adligo.tests4j.models.shared.system.I_Tests4J_System
+	 *  into
+	 *   /org/adligo/tests4j/models/shared/system/I_Tests4J_System.class
+	 * @param clazzName
+	 * @return
+	 */
+	public static String toResource(String clazzName) {
+		return '/' + clazzName.replace('.', '/') + ".class";
+	}
+	
+	/**
+	 * turns 
+	 *  Lorg/adligo/tests4j/models/shared/system/I_Tests4J_System;
+	 *  into
+	 *  org.adligo.tests4j.models.shared.system.I_Tests4J_System
+	 * @param clazzName
+	 * @return
+	 */
+	public static String fromTypeDescription(String clazzName) {
+		if (clazzName.length() >= 2) {
+			clazzName = clazzName.substring(1, clazzName.length() -1);
+		}
+		return clazzName.replace('/', '.');
 	}
 }

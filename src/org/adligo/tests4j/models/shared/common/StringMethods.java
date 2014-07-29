@@ -43,7 +43,5 @@ public class StringMethods {
 		return index;
 	}
 	
-	public static String toResource(String clazzName) {
-		return '/' + clazzName.replace('.', '/') + ".class";
-	}
+
 }

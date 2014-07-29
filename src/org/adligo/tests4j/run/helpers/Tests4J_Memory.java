@@ -21,6 +21,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -43,7 +44,7 @@ public class Tests4J_Memory {
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private AtomicBoolean metaTrial = new AtomicBoolean(false);
 	private AtomicBoolean hasTrialThatCanRun = new AtomicBoolean(false);
-	private CopyOnWriteArraySet<String> tests;
+	private CopyOnWriteArraySet<I_Tests4J_Selection> tests;
 	/**
 	 * The key is the class name of the trial
 	 * 
@@ -142,6 +143,7 @@ public class Tests4J_Memory {
 		}
 		allTrialCount = trials.size();
 		trialClasses.addAll(trials);
+		tests = new CopyOnWriteArraySet<I_Tests4J_Selection>(p.getTests());
 		
 		evaluationLookup = p.getEvaluatorLookup();
 		notifier = new Tests4J_NotificationManager(this);
@@ -294,9 +296,17 @@ public class Tests4J_Memory {
 	}
 	
 	public boolean runTest(Class<?> trial, String method) {
-		String trialMethod = trial.getName() + "." + method;
-		if (tests.contains(trialMethod)) {
+		if (tests.isEmpty()) {
 			return true;
+		}
+		for (I_Tests4J_Selection sel: tests) {
+			Class<?> selTrial = sel.getTrial();
+			if (trial.getName().equals(selTrial.getName())) {
+				String selMethod = sel.getTestMethodName();
+				if (method.equals(selMethod)) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}
@@ -386,7 +396,7 @@ public class Tests4J_Memory {
 	 * paramTests
 	 * @return
 	 */
-	public CopyOnWriteArraySet<String> getTests() {
+	public CopyOnWriteArraySet<I_Tests4J_Selection> getTests() {
 		return tests;
 	}
 

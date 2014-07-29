@@ -16,9 +16,11 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
+import org.adligo.tests4j.models.shared.system.Tests4J_Selection;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
@@ -61,7 +63,7 @@ public class Tests4J_ParamsReader {
 	private Class<? extends I_MetaTrial> metaTrialClass;
 	private int trialThreadCount = 0;
 	private I_EvaluatorLookup evaluatorLookup;
-	private Set<String> tests = new HashSet<String>();
+	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
 	
 	/**
 	 * turn into local instances to block further propagation of issues
@@ -124,11 +126,13 @@ public class Tests4J_ParamsReader {
 	
 		
 		try {
-			Set<String> paramTests = pParams.getTests();
+			Set<I_Tests4J_Selection> paramTests = pParams.getTests();
 			
 			//remove the at most 1 element from Set
 			paramTests.remove(null);
-			tests.addAll(paramTests);
+			for (I_Tests4J_Selection sel: paramTests) {
+				tests.add(new Tests4J_Selection(sel));
+			}
 		} catch (Throwable t) {
 			//error with tests, don't recover
 			logger.onException(t);
@@ -263,7 +267,7 @@ public class Tests4J_ParamsReader {
 		return evaluatorLookup;
 	}
 
-	public Set<String> getTests() {
+	public Set<I_Tests4J_Selection> getTests() {
 		return tests;
 	}
 

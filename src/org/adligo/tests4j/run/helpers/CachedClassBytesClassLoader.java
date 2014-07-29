@@ -57,7 +57,6 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	@Override
 	public Class<?> addCache(InputStream in, String name)
 			throws ClassNotFoundException, IOException {
-		final String resource = '/' + name.replace('.', '/') + ".class";
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			byte [] bytes = new byte[1];
@@ -115,27 +114,15 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	protected Class<?> loadClass(final String name, final boolean resolve)
 			throws ClassNotFoundException {
 		//quick return it is already loaded
-		if (classes.containsKey(name)) {
-			return classes.get(name);
+		Class<?> cached = classes.get(name);
+		if (cached != null) {
+			return cached;
 		}
 		
 		if (bytesCache.containsKey(name)) {
 			
 			
-			byte[] bytes = bytesCache.get(name);
-			//ok i must make sure
-			// http://docs.oracle.com/javase/7/docs/technotes/guides/lang/cl-mt.html
-			// If your custom class loader overrides either the protected loadClass(String, boolean) 
-			// method or the public loadClass(String) method, you must also ensure that the protected 
-			// defineClass() method is called only once for each class loader and class name pair.
-			synchronized (classes) {
-				if (classes.containsKey(name)) {
-					return classes.get(name);
-				}
-				Class<?> toRet =  defineClass(name, bytes, 0, bytes.length);
-				classes.put(name, toRet);
-				return classes.get(name);
-			}
+			return defineClassFromBytes(name);
 		}
 		if (log.isLogEnabled(CachedClassBytesClassLoader.class)) {
 			Boolean logWarning = null;
@@ -159,6 +146,28 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 			}
 		}
 		return super.loadClass(name, resolve);
+	}
+
+
+	protected Class<?> defineClassFromBytes(final String name)
+			throws ClassFormatError {
+		byte[] bytes = bytesCache.get(name);
+		//ok i must make sure
+		// http://docs.oracle.com/javase/7/docs/technotes/guides/lang/cl-mt.html
+		// If your custom class loader overrides either the protected loadClass(String, boolean) 
+		// method or the public loadClass(String) method, you must also ensure that the protected 
+		// defineClass() method is called only once for each class loader and class name pair.
+		synchronized (classes) {
+			//call this a 'map re-check' pattern 
+			//to distinguish vs double checked locking?
+			Class<?> toRet = classes.get(name);
+			if (toRet != null) {
+				return toRet;
+			}
+			toRet =  defineClass(name, bytes, 0, bytes.length);
+			classes.put(name, toRet);
+			return classes.get(name);
+		}
 	}
 
 	/**
@@ -212,5 +221,13 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 		return classesWithoutWarning;
 	}
 
+	/**
+	 * manipulate the class for testing of double 
+	 * @param className
+	 * @param bytes
+	 */
+	protected void putBytes(String className, byte [] bytes) {
+		bytesCache.put(className, bytes);
+	}
  }
 

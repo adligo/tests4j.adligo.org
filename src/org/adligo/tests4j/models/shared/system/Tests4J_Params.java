@@ -30,7 +30,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 */
 	private Class<? extends I_MetaTrial>  metaTrialClass;
 	
-	private Set<String> tests = new HashSet<String>();
+	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
 	
 	private Integer recommendedTrialThreadCount;
 	private Integer recommendedRemoteThreadCount;
@@ -171,16 +171,16 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		trials.addAll(p.getTrials());
 	}
 
-	public Set<String> getTests() {
+	public Set<I_Tests4J_Selection> getTests() {
 		return tests;
 	}
 
-	public void setTests(Set<String> p) {
+	public void setTests(Collection<? extends I_Tests4J_Selection> p) {
 		tests.clear();
 		tests.addAll(p);
 	}
 	
-	public void addTest(String p) {
+	public void addTest(I_Tests4J_Selection p) {
 		tests.add(p);
 	}
 	
@@ -234,7 +234,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		List<String> trialNames = ClassMethods.toNames(trials);
 		builder.addCollection(trialNames, I_Tests4J_Params.TRIALS_TAG_NAME, I_Tests4J_Params.TRIAL_TAG_NAME);
 		
-		builder.addCollection(tests, I_Tests4J_Params.TESTS_TAG_NAME, I_Tests4J_Params.TEST_TAG_NAME);
+		//builder.addCollection(tests, I_Tests4J_Params.TESTS_TAG_NAME, I_Tests4J_Params.TEST_TAG_NAME);
 		
 		/*
 		List<String> logClassesNames = ClassMethods.toNames(loggingStates);

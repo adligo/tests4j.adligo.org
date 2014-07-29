@@ -64,7 +64,7 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 * 
 	 * @return
 	 */
-	public Set<String> getTests();
+	public Set<I_Tests4J_Selection> getTests();
 	
 	/**
 	 * The factory for the coverage plug-in, used to compute
