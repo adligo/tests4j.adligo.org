@@ -60,16 +60,49 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		if ( !throwableClazz.equals(caught.getClass())) {
 			return false;
 		}
+		String caughtMessage = caught.getMessage();
 		if (expected_message == null) {
-			if (caught.getMessage() == null) {
-				return true;
+			if (caughtMessage != null) {
+				return false;
 			}
+		} else if (caughtMessage == null) {
+
+			return false;
 		} else {
-			if (expected_message.equals(caught.getMessage())) {
-				return true;
+			if ( !expected_message.equals(caughtMessage)) {
+				return false;
 			}
 		}
-		return false;
+		
+		Throwable cause = caught.getCause();
+		I_ExpectedThrownData ec = data.getExpectedCause();
+		while (ec != null) {
+			if (cause == null) {
+				return false;
+			}
+			Class<? extends Throwable> expectedCauseClass = ec.getThrowableClass();
+			if (!cause.getClass().equals(expectedCauseClass)) {
+				return false;
+			}
+			String expectedMessage = ec.getMessage();
+			String message = cause.getMessage();
+			if (expectedMessage == null) {
+				if (message != null) {
+					return false;
+				}
+			} else if (message == null) {
+
+				return false;
+			} else {
+				if ( !expectedMessage.equals(message)) {
+					return false;
+				}
+			}
+			ec = ec.getExpectedCause();
+			cause = cause.getCause();
+			
+		}
+		return true;
 	}
 
 	@Override

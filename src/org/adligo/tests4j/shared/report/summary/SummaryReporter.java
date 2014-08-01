@@ -48,6 +48,13 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	private I_TrialRunMetadata metadata;
 	private TestDisplay testsReporter;
 	private TrialDisplay trialsReporter;
+	/**
+	 * display the top three failures 
+	 * so you don't need to scroll up.
+	 * TODO make configurable some how.
+	 */
+	private int trialFailuresDetailDisplayCount = 3;
+	private TrialFailedDetailDisplay trialFailedDetail;
 	
 	public SummaryReporter() {
 		this(new DefaultLog());
@@ -57,6 +64,8 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		logger = p;
 		testsReporter = new TestDisplay(p);
 		trialsReporter = new TrialDisplay(p);
+		trialFailedDetail = new TrialFailedDetailDisplay(p);
+		
 		processes.put("setup", new SetupProgressDisplay(p));
 		processes.put("trials", new TrialsProgressDisplay(p));
 		processes.put("tests", new TestsProgressDisplay(p));
@@ -129,8 +138,15 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 			logger.log("");
 		} else {
 			List<I_TrialResult> failedTrials = trialsReporter.getFailedTrials();
-			for (I_TrialResult trial: failedTrials) {
-				logTrialFailure(trial);
+			if (failedTrials.size() >= trialFailuresDetailDisplayCount) {
+				for (int i = 0; i < trialFailuresDetailDisplayCount; i++) {
+					I_TrialResult tr = failedTrials.get(i);
+					trialFailedDetail.logTrialFailure(tr);
+				}
+			} else {
+				for (I_TrialResult tr: failedTrials) {
+					trialFailedDetail.logTrialFailure(tr);
+				}
 			}
 			logger.log("\t\tTests: " + result.getTestsPassed() + "/" +
 					result.getTests());
@@ -173,101 +189,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		return new BigDecimal(result.getCoveragePercentage()).round(new MathContext(2));
 	}
 
-	private void logTrialFailure(I_TrialResult trial) {
-		logger.log("" + trial + " failed!");
-		String trialName = trial.getName();
-		I_TrialFailure failure =  trial.getFailure();
-		if (failure != null) {
-			logger.log("\t" + failure.getMessage());
-			Throwable throwable = failure.getException();
-			if (throwable != null) {
-				logThrowable("\t", throwable);
-			}
-		}
-		List<I_TestResult> testResults = trial.getResults();
-		for (I_TestResult tr: testResults) {
-			if (!tr.isPassed() && !tr.isIgnored()) {
-				String testName = tr.getName();
-				logger.log("\t" + trialName + "."  + testName + " failed!");
-				I_TestFailure tf = tr.getFailure();
-				logger.log("\t" + tf.getMessage());
-				Throwable t = tf.getLocationFailed();
-				I_AssertionData ad =  tf.getData();
-				
-				if (ad instanceof ContainsAssertCommand) {
-					logger.log("\tExpected;");
-					logger.log("\t'" + ad.getData(ContainsAssertCommand.VALUE) + "'");
-				} else if (ad instanceof ThrownAssertionData) {
-					logThrowableFailure((ThrownAssertionData) ad);
-				} else if (ad instanceof StringCompareAssertionData) {
-					logCompareFailure((StringCompareAssertionData) ad);
-				} else if (ad instanceof I_CompareAssertionData) {
-					logCompareFailure((I_CompareAssertionData<?>) ad);
-				} 
-				if (t == null) {
-					logger.log("\tUnknown Location a Test4J error please try to reproduce and report it;");
-				} else {
-					logThrowable("\t",t);
-				}
-			}
-		}
-	}
 
-	private void logCompareFailure(StringCompareAssertionData ad) {
-		I_TextLinesCompareResult result =  (I_TextLinesCompareResult) ad.getData(StringCompareAssertionData.COMPARISON);
-		LineDiffTextDisplay lineDiffTextDisplay = new LineDiffTextDisplay();
-		lineDiffTextDisplay.display(logger, result, 3);
-	}
-	
-	private void logCompareFailure(I_CompareAssertionData<?> ad) {
-		logger.log("\tExpected;");
-		Object expected = ad.getExpected();
-		if (expected != null) {
-			logger.log("\t\tClass: " + expected.getClass());
-		}
-		logger.log("\t\t'" + expected + "'");
-		logger.log("\tActual;");
-		Object actual = ad.getActual();
-		if (actual != null) {
-			logger.log("\t\tClass: " + actual.getClass());
-		}
-		logger.log("\t\t'" + actual + "'");
-	}
-	
-	private void logThrowableFailure(ThrownAssertionData ad) {
-		Class<? extends Throwable> actualThrow = ad.getActualThrowable();
-		Class<? extends Throwable> expectedThrow = ad.getExpectedThrowable();
-		if (!expectedThrow.equals(actualThrow)) {
-			logger.log("\tExpected;");
-			logger.log("\t" + expectedThrow);
-			logger.log("\tActual;");
-			logger.log("\t" + actualThrow);
-		} else {
-			String expectedMessage = ad.getExpectedMessage();
-			String actualMessage = ad.getActualMessage();
-			logger.log("\tThrowable classes matched: " + expectedThrow);
-			logger.log("\tExpected;");
-			logger.log("\t" + expectedMessage);
-			logger.log("\tActual;");
-			logger.log("\t" + actualMessage);
-		}
-	}
-
-	private void logThrowable(String indentString, Throwable t) {
-		logThrowable(indentString, indentString, t);
-	}
-	
-	private void logThrowable(String currentIndent, String indentString, Throwable t) {
-		StackTraceElement [] stack = t.getStackTrace();
-		logger.log(currentIndent + t.toString());
-		for (int i = 0; i < stack.length; i++) {
-			logger.log(currentIndent +"at " + stack[i]);
-		}
-		Throwable cause = t.getCause();
-		if (cause != null) {
-			logThrowable(currentIndent + indentString, indentString,  cause);
-		}
-	}
 
 
 	@Override

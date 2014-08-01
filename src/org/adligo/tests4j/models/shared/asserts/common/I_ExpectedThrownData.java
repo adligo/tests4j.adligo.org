@@ -29,5 +29,12 @@ public interface I_ExpectedThrownData {
 	 * @return
 	 */
 	public Throwable getInstance();
+	
+	/**
+	 * allow infinite recursive testing of Throwable
+	 * causation chain.
+	 * @return
+	 */
+	public I_ExpectedThrownData getExpectedCause();
 
 }

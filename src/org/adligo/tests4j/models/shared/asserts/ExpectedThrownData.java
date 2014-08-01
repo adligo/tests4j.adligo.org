@@ -16,15 +16,66 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 	private String message;
 	private Class<? extends Throwable> throwableClass;
 	private Throwable instance;
+	private ExpectedThrownData expectedCause;
 	
 	public ExpectedThrownData() {}
 	
 	public ExpectedThrownData(I_ExpectedThrownData p) {
-		this(p.getInstance());
+		Throwable inst = p.getInstance();
+		if (inst == null) {
+			setupThrowableClass(p.getThrowableClass());
+		} else {
+			setupInstance(inst);
+		}
+	}
+	
+	/**
+	 * assert only the throwable class matches
+	 * @param clazz
+	 */
+	public ExpectedThrownData(Class<? extends Throwable> clazz) {
+		setupThrowableClass(clazz);
 	}
 
+	public ExpectedThrownData(Class<? extends Throwable> clazz, I_ExpectedThrownData p) {
+		setupThrowableClass(clazz);
+		setupCausationChain(p);
+	}
 	
+	/**
+	 * assert only the throwable class and it's message matches
+	 * @param clazz
+	 */
+	private void setupThrowableClass(Class<? extends Throwable> clazz) {
+		if (clazz == null) {
+			I_Tests4J_AssertionInputMessages messages = 
+					Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
+		}
+		throwableClass = clazz;
+	}
+	
+	/**
+	 * assert the throwable class and messages match
+	 * @param t
+	 */
 	public ExpectedThrownData(Throwable t) {
+		setupInstance(t);
+	}
+	public ExpectedThrownData(Throwable t, I_ExpectedThrownData p) {
+		setupInstance(t);
+		setupCausationChain(p);
+	}
+
+	protected void setupCausationChain(I_ExpectedThrownData p) {
+		//expect non null input
+		expectedCause = new ExpectedThrownData(p);
+		I_ExpectedThrownData dec = p.getExpectedCause();
+		if (dec != null) {
+			expectedCause.expectedCause = new ExpectedThrownData(dec);
+		}
+	}
+	private void setupInstance(Throwable t) {
 		if (t == null) {
 			I_Tests4J_AssertionInputMessages messages = 
 					Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
@@ -33,7 +84,6 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 		instance = t;
 		throwableClass = t.getClass();
 		message = t.getMessage();
-		
 	}
 	
 	/* (non-Javadoc)
@@ -63,6 +113,8 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 		result = prime * result + ((message == null) ? 0 : message.hashCode());
 		result = prime * result
 				+ ((throwableClass == null) ? 0 : throwableClass.getName().hashCode());
+		result = prime * result
+				+ ((expectedCause == null) ? 0 : expectedCause.hashCode());
 		return result;
 	}
 
@@ -72,20 +124,32 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ExpectedThrownData other = (ExpectedThrownData) obj;
-		if (message == null) {
-			if (other.message != null)
+		try {
+			I_ExpectedThrownData other = (I_ExpectedThrownData) obj;
+			if (message == null) {
+				if (other.getMessage() != null)
+					return false;
+			} else if (!message.equals(other.getMessage()))
 				return false;
-		} else if (!message.equals(other.message))
-			return false;
-		if (throwableClass == null) {
-			if (other.throwableClass != null)
+			if (throwableClass == null) {
+				if (other.getThrowableClass() != null)
+					return false;
+			} else if (!throwableClass.equals(other.getThrowableClass()))
 				return false;
-		} else if (!throwableClass.equals(other.throwableClass))
-			return false;
+			if (expectedCause == null) {
+				if (other.getExpectedCause() != null)
+					return false;
+			} else if (!expectedCause.equals(other.getExpectedCause()))
+				return false;
+		} catch (ClassCastException x) {
+			//do nothing 
+		}
 		return true;
+	}
+
+	@Override
+	public I_ExpectedThrownData getExpectedCause() {
+		return expectedCause;
 	}
 	
 }

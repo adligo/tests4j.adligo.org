@@ -14,6 +14,7 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
@@ -30,6 +31,7 @@ import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 import org.adligo.tests4j.shared.report.summary.TestFailedDisplay;
 import org.adligo.tests4j.shared.report.summary.TestsProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.TestDisplay;
+import org.adligo.tests4j.shared.report.summary.TrialFailedDetailDisplay;
 import org.adligo.tests4j.shared.report.summary.TrialFailedDisplay;
 import org.adligo.tests4j.shared.report.summary.TrialsProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.TrialDisplay;
@@ -64,6 +66,7 @@ public class Tests4J_ParamsReader {
 	private int trialThreadCount = 0;
 	private I_EvaluatorLookup evaluatorLookup;
 	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
+	private Throwable runFalseReason;
 	
 	/**
 	 * turn into local instances to block further propagation of issues
@@ -104,6 +107,7 @@ public class Tests4J_ParamsReader {
 		try {
 			getRemotes();
 		} catch (Throwable t) {
+			runFalseReason = t;
 			//some error/exception with the trials, do NOT try to recover
 			logger.onException(t);
 			runnable = false;
@@ -114,6 +118,8 @@ public class Tests4J_ParamsReader {
 			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			logger.log(constants.getNoTrialsOrRemotesToRun());
 			runnable = false;
+			runFalseReason = new IllegalArgumentException(constants.getNoTrialsOrRemotesToRun());
+			runFalseReason.fillInStackTrace();
 			return;
 		}
 		
@@ -131,9 +137,19 @@ public class Tests4J_ParamsReader {
 			//remove the at most 1 element from Set
 			paramTests.remove(null);
 			for (I_Tests4J_Selection sel: paramTests) {
-				tests.add(new Tests4J_Selection(sel));
+				Class<? extends I_Trial> trial = sel.getTrial();
+				if (trials.contains(trial)) {
+					tests.add(new Tests4J_Selection(sel));
+				} else {
+					I_Tests4J_ParamReaderMessages messages =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
+					throw new IllegalArgumentException(
+							messages.getTestSelectionsMustHaveACorrespondingTrial() +
+							logger.getLineSeperator() + 
+							trial);
+				}
 			}
 		} catch (Throwable t) {
+			runFalseReason = t;
 			//error with tests, don't recover
 			logger.onException(t);
 			runnable = false;
@@ -153,6 +169,7 @@ public class Tests4J_ParamsReader {
 		try {
 			readEvaluatorLookup();
 		} catch (Throwable t) {
+			runFalseReason = t;
 			logger.onException(t);
 			runnable = false;
 			return;
@@ -186,6 +203,7 @@ public class Tests4J_ParamsReader {
 		logStates.put(TrialFailedDisplay.class, true);
 		logStates.put(TrialsProgressDisplay.class, true);
 		logStates.put(TrialDisplay.class, true);
+		logStates.put(TrialFailedDetailDisplay.class, true);
 		return logStates;
 	}
 
@@ -273,6 +291,10 @@ public class Tests4J_ParamsReader {
 
 	public I_Tests4J_Log getLogger() {
 		return logger;
+	}
+
+	public Throwable getRunFalseReason() {
+		return runFalseReason;
 	}
 
 }

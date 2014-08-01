@@ -22,7 +22,7 @@ public class DependencyMutant implements I_Dependency {
 	public DependencyMutant() {}
 	
 	public DependencyMutant(I_Dependency p) {
-		clazzName = p.getClazzName();
+		clazzName = p.getClassName();
 		references = p.getReferences();
 	}
 	
@@ -30,7 +30,7 @@ public class DependencyMutant implements I_Dependency {
 	 * @see org.adligo.tests4j.models.shared.common.I_DependencyMutant#getClazzName()
 	 */
 	@Override
-	public String getClazzName() {
+	public String getClassName() {
 		return clazzName;
 	}
 	/* (non-Javadoc)

@@ -73,15 +73,28 @@ public class ClassMethods {
 	}
 	
 	/**
-	 * turns 
+	 * Takes the java byte code type (from a parsed .class file/ ASM)
+	 * and turns it into a regular java class name (Class.getName())
+	 * Also turns arrays into their component type.
+	 * 
+	 * ie 
 	 *  Lorg/adligo/tests4j/models/shared/system/I_Tests4J_System;
-	 *  into
+	 *  or
+	 *  [Lorg/adligo/tests4j/models/shared/system/I_Tests4J_System;
+	 *  turns into
 	 *  org.adligo.tests4j.models.shared.system.I_Tests4J_System
 	 * @param clazzName
 	 * @return
 	 */
 	public static String fromTypeDescription(String clazzName) {
-		if (clazzName.length() >= 2) {
+		if (StringMethods.isEmpty(clazzName)) {
+			return "";
+		}
+		if (clazzName.indexOf("[") == 0) {
+			// [Lorg/example;
+			clazzName = clazzName.substring(2, clazzName.length() -1);
+		} else if (clazzName.indexOf("L") == 0) {
+			// Lorg/example;
 			clazzName = clazzName.substring(1, clazzName.length() -1);
 		}
 		return clazzName.replace('/', '.');

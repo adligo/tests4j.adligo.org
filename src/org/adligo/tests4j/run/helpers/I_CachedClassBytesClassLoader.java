@@ -29,6 +29,9 @@ public interface I_CachedClassBytesClassLoader {
 	 * This loads the byte [] of the class file from the input stream.
 	 * It also should make sure the input stream passed in gets closed.
 	 * 
+	 * Implementations should close the input stream when
+	 * their done with it.
+	 * 
 	 * @param in the input stream to read from
 	 * @param name
 	 * @return

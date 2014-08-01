@@ -5,6 +5,7 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 public class Tests4J_ParamsReaderMessages implements I_Tests4J_ParamReaderMessages {
 
 
+	private static final String TEST_SELETIONS_PASSED_TO_TESTS4J_MUST_HAVE_A_CORRESPONDING_TRIAL = "Test seletions passed to tests4j MUST have a corresponding trial.";
 	private static final String THE_EVALUATORS_ARE_EXPECTED_TO_AT_LEAST_CONTAIN_THE_DEFAULT_EVALUATOR_LOOKUPS = "The evaluators are expected to at least contain the default evaluator lookups.";
 	private static final String THERE_WERE_NOT_ANY_TRIALS_OR_REMOTES_TO_RUN = "There were NO trials or remotes to run.";
 	private static final String AUTH_CODE_OR_AUTH_CODE_DEFAULT_REQUIRED = "A auth code, or auth code default is required.";
@@ -33,4 +34,7 @@ public class Tests4J_ParamsReaderMessages implements I_Tests4J_ParamReaderMessag
 		return HOST_REQUIRED;
 	}
 	
+	public String getTestSelectionsMustHaveACorrespondingTrial() {
+		return TEST_SELETIONS_PASSED_TO_TESTS4J_MUST_HAVE_A_CORRESPONDING_TRIAL;
+	}
 }

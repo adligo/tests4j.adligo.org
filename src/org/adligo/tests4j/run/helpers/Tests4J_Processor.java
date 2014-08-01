@@ -140,7 +140,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		int setupThreadCount = memory.getSetupThreadCount();
 		
 		if (logger.isLogEnabled(Tests4J_Processor.class)) {
-			logger.log("Starting setup with " + setupThreadCount + " trial threads.");
+			logger.log("Starting setup with " + setupThreadCount + " setup threads.");
 		}
 		if (setupThreadCount <= 1) {
 			//run single threaded on the main thread.

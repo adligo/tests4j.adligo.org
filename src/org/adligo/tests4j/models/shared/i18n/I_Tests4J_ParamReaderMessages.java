@@ -5,4 +5,5 @@ public interface I_Tests4J_ParamReaderMessages {
 	public String getTheEvaluatorsAreExpectedToContainTheDefaultKeys();
 	public String getAuthCodeOrAuthCodeDefaultRequired();
 	public String getHostRequired();
+	public String getTestSelectionsMustHaveACorrespondingTrial();
 }

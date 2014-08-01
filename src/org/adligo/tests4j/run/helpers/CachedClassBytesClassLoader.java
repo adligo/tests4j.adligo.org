@@ -168,8 +168,11 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 			if (toRet != null) {
 				return toRet;
 			}
-			toRet =  defineClass(name, bytes, 0, bytes.length);
-			classes.put(name, toRet);
+			toRet = super.findLoadedClass(name);
+			if (toRet == null) {
+				toRet =  defineClass(name, bytes, 0, bytes.length);
+				classes.put(name, toRet);
+			}
 			return classes.get(name);
 		}
 	}
