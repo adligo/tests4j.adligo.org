@@ -23,5 +23,8 @@ public class Dependency implements I_Dependency {
 	public int compareTo(I_Dependency o) {
 		return dm.compareTo(o);
 	}
-	
+	@Override
+	public String toString() {
+		return dm.toString(Dependency.class, this);
+	}
 }

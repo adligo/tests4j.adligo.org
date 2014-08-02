@@ -57,5 +57,14 @@ public class DependencyMutant implements I_Dependency {
 		int negFlip = -1 * (references - o.getReferences());
 		return negFlip;
 	}
+	@Override
+	public String toString() {
+		return toString(DependencyMutant.class, this);
+	}
+	
+	String toString(Class<?> c, I_Dependency p) {
+		return c.getSimpleName() + " [clazzName=" + p.getClassName() + ", references="
+				+ p.getReferences() + "]";
+	}
 	
 }

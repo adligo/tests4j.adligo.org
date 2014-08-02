@@ -182,13 +182,8 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 						if (expectedLine.length() - 1 == expectedRightToLeftDiff.intValue() && 
 								actualLine.length() - 1 == actualRightToLeftDiff.intValue()) {
 								//its a left only diff
-								if (actualRightToLeftMatch != null) {
-									if (actualRightToLeftMatch.intValue() < expectedRightToLeftMatch.intValue()) {
-										//if there at the end of the example and actual, its a left only match
-										actualRightToLeftMatch = expectedRightToLeftMatch;
-										return;
-									}
-								}
+								expectedRightToLeftMatch = expectedLeftToRightDiff - 1;
+								actualRightToLeftMatch = actualLeftToRightDiff - 1;
 						}
 					}
 				}
