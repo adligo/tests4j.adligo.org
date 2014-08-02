@@ -32,7 +32,7 @@ import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookupMutant;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.common.I_Platform;
-import org.adligo.tests4j.models.shared.common.Platform;
+import org.adligo.tests4j.models.shared.common.I_PlatformContainer;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
@@ -53,7 +53,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
 	private I_Tests4J_AssertListener listener;
 	private I_Tests4J_Log log;
-	private I_Platform platform;
+	private I_PlatformContainer platform;
 	private I_EvaluatorLookup evaluationLookup;
 	private EvaluatorLookupMutant evaluationLookupOverrides = new EvaluatorLookupMutant();
 	/**
@@ -423,7 +423,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		assertGreaterThanOrEquals(message, p, 0.0 + a);
 	}
 	
-	public Platform getPlatform() {
+	public I_Platform getPlatform() {
 		return platform.getPlatform();
 	}
 

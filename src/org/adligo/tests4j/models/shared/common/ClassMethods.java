@@ -92,10 +92,18 @@ public class ClassMethods {
 		}
 		if (clazzName.indexOf("[") == 0) {
 			// [Lorg/example;
-			clazzName = clazzName.substring(2, clazzName.length() -1);
+			if (clazzName.length() < 3) {
+				return "";
+			} else {
+				clazzName = clazzName.substring(2, clazzName.length() -1);
+			}
 		} else if (clazzName.indexOf("L") == 0) {
 			// Lorg/example;
-			clazzName = clazzName.substring(1, clazzName.length() -1);
+			if (clazzName.length() < 3) {
+				return "";
+			} else {
+				clazzName = clazzName.substring(1, clazzName.length() -1);
+			}
 		}
 		return clazzName.replace('/', '.');
 	}

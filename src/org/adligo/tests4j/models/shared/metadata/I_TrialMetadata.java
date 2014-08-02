@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.metadata;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
 import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
 
@@ -73,7 +73,7 @@ public interface I_TrialMetadata extends I_XML_Producer, I_XML_Consumer {
 	 * the type of trial
 	 * @return
 	 */
-	public TrialType getType();
+	public I_TrialType getType();
 
 	/**
 	 * from the SourceFileTrial annotation sourceClass

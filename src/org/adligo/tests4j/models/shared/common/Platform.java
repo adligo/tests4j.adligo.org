@@ -1,5 +1,9 @@
 package org.adligo.tests4j.models.shared.common;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The various platforms that tests4j will
  * run on;
@@ -10,6 +14,32 @@ package org.adligo.tests4j.models.shared.common;
  * @author scott
  *
  */
-public enum Platform {
-	JSE, GWTC, ADFM
+public enum Platform implements I_Platform {
+	JSE(0), GWTC(1), ADFM(2);
+	private static final Map<Integer, Platform> MAP = getMap();
+	
+	private static Map<Integer, Platform> getMap() {
+		Map<Integer, Platform> toRet = new HashMap<Integer, Platform>();
+		
+		toRet.put(0, JSE);
+		toRet.put(1, GWTC);
+		toRet.put(2, ADFM);
+		return Collections.unmodifiableMap(toRet);
+	}
+	
+	public Platform get(I_Platform p) {
+		return MAP.get(p.getId());
+	}
+	
+	private int id;
+	
+	
+	Platform(int i) {
+		id = i;
+	}
+
+
+	public int getId() {
+		return id;
+	}
 }

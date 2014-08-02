@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
@@ -49,7 +50,7 @@ public class TrialDescription implements I_TrialDescription {
 	private Method afterTrialTestsMethod;
 	private Method afterTrialMethod;
 	private final List<TestDescription> testMethods = new CopyOnWriteArrayList<TestDescription>();
-	private TrialType type;
+	private I_TrialType type;
 	private boolean runnable = false;
 	private String resultFailureMessage;
 	private Exception resultException;
@@ -82,6 +83,7 @@ public class TrialDescription implements I_TrialDescription {
 		} catch (IllegalArgumentException x) {
 			resultException = x;
 			resultFailureMessage = x.getMessage();
+			return false;
 		}
 		if (!checkTypeAnnotations()) {
 			return false;
@@ -114,7 +116,8 @@ public class TrialDescription implements I_TrialDescription {
 	private boolean checkTypeAnnotations() {
 		
 		String trialName = trialClass.getName();
-		switch(type) {
+		TrialType tt = TrialType.get(type);
+		switch(tt) {
 			case SourceFileTrial:
 					sourceFileScope = trialClass.getAnnotation(SourceFileScope.class);
 					if (sourceFileScope == null) {
@@ -335,7 +338,7 @@ public class TrialDescription implements I_TrialDescription {
 		return false;
 	}
 
-	public TrialType getType() {
+	public I_TrialType getType() {
 		if (type == null) {
 			return TrialType.UnknownTrialType;
 		}

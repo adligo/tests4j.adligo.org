@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.results;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.common.I_TrialType;
 
 public interface I_TrialResult {
 
@@ -23,7 +23,7 @@ public interface I_TrialResult {
 	 */
 	public abstract String getTrialClassName();
 
-	public abstract TrialType getType();
+	public abstract I_TrialType getType();
 
 	public abstract List<I_TestResult> getResults();
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 
@@ -23,7 +24,7 @@ public class RelevantClassesWithTrialsCalculator {
 		List<? extends I_TrialMetadata> trialMetas =  metadata.getAllTrialMetadata();
 		
 		for (I_TrialMetadata tm: trialMetas) {
-			TrialType type =  tm.getType();
+			I_TrialType type =  tm.getType();
 			if (type == TrialType.SourceFileTrial) {
 				relevantClassesToTrials.put(tm.getTestedSourceFile(), tm);
 			}

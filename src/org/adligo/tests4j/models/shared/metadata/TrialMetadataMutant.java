@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
@@ -18,7 +19,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 	private String beforeTrialMethodName;
 	private String afterTrialMethodName;
 	private List<TestMetadataMutant> tests = new ArrayList<TestMetadataMutant>();
-	private TrialType type;
+	private I_TrialType type;
 	private String testedSourceFile;
 	private String testedPackage;
 	private String system;
@@ -175,7 +176,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		return toRet;
 	}
 
-	public TrialType getType() {
+	public I_TrialType getType() {
 		return type;
 	}
 
@@ -199,7 +200,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		this.tests = tests;
 	}
 
-	public void setType(TrialType type) {
+	public void setType(I_TrialType type) {
 		this.type = type;
 	}
 
@@ -232,7 +233,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 			builder.addAttribute(I_TrialMetadata.TRIAL_NAME_ATTRIBUTE, tm.getTrialName());
 		}
 			
-		TrialType type = tm.getType();
+		I_TrialType type = tm.getType();
 		if (type != null) {
 			builder.addAttribute(I_TrialMetadata.TYPE_ATTRIBUTE, type.toString());
 		}

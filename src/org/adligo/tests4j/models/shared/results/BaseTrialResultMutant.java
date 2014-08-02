@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
 
@@ -24,7 +25,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 			"TrialResultMutant requires a non empty trialName.";
 	private String trialName;
 	private String trialClassName;
-	private TrialType testType;
+	private I_TrialType testType;
 	private Map<String, TestResultMutant> results = 
 			new HashMap<String,TestResultMutant> ();
 	private boolean ignored;
@@ -83,7 +84,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	 * @see org.adligo.jtests.base.shared.results.I_TrialResult#getTrialType()
 	 */
 	@Override
-	public TrialType getType() {
+	public I_TrialType getType() {
 		return testType;
 	}
 	/* (non-Javadoc)
@@ -119,7 +120,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	public void setTrialName(String pTrialName) {
 		this.trialName = pTrialName;
 	}
-	public void setType(TrialType p) {
+	public void setType(I_TrialType p) {
 		this.testType = p;
 	}
 	public void setResults(List<I_TestResult> p) {

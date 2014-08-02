@@ -2,9 +2,9 @@ package org.adligo.tests4j.models.shared.asserts.common;
 
 import java.util.Collection;
 
-import org.adligo.tests4j.models.shared.common.I_Platform;
+import org.adligo.tests4j.models.shared.common.I_PlatformContainer;
 
-public interface I_Asserts extends I_Platform {
+public interface I_Asserts extends I_PlatformContainer {
 	public void assertContains(Collection<?> p, Object a);
 	public void assertContains(String message, Collection<?> p, Object a);	
 	

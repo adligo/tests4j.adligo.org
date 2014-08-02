@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
@@ -187,10 +188,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			long timeout = td.getTimeout();
 			tmm.setTimeout(timeout);
 			
-			TrialType type = td.getType();
+			I_TrialType type = td.getType();
 			tmm.setType(type);
 
-			switch (type) {
+			TrialType tt = TrialType.get(type);
+			switch (tt) {
 				case SourceFileTrial:
 					Class<?> clazz = td.getSourceFileClass();
 					if (clazz != null) {
@@ -203,6 +205,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				case UseCaseTrial:
 						tmm.setSystem(td.getSystemName());
 						tmm.setUseCase(td.getUseCase());
+					break;
+				default:
 					break;
 			}
 			
@@ -224,8 +228,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					Class<? extends I_AbstractTrial> trialClass = td.getTrialClass();
 					
 					
-					
-					switch (type) {
+					switch (tt) {
 						case SourceFileTrial:
 							try {
 								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_SourceFileTrialResult.class);
@@ -259,6 +262,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 							testMeta.setTestName("afterNonMetaTrialsRun(I_TrialRunResult results)");
 							testMetas.add(testMeta);
 							
+							break;
+						default:
 							break;
 					}
 					tmm.setTests(testMetas);

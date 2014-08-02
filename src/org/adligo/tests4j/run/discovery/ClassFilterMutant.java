@@ -82,8 +82,12 @@ public class ClassFilterMutant implements I_ClassFilterModel {
 	 */
 	@Override 
 	public boolean isFiltered(String className) {
-		if (className.length() == 1) {
-			//ASM has a desc 'D' and 'V'
+		if (className.length() <= 1) {
+			//ASM has a desc 'D' and 'V', ClassMethods can return ''
+			return true;
+		}
+		if ("null".equals(className)) {
+			//visitTryCatchBlock(ReferenceTrackingMethodVisitor.java:114)
 			return true;
 		}
 		if (className.indexOf("(") != -1) {
@@ -93,6 +97,11 @@ public class ClassFilterMutant implements I_ClassFilterModel {
 		}
 		if (className.indexOf(")") != -1) {
 			//ASM has desc sometimes like ()
+			// is NOT a letter or digit http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8
+			return true;
+		}
+		if (className.indexOf("[") !=  -1) {
+			//ASM not sure what /[B is, a boolean[]?
 			// is NOT a letter or digit http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8
 			return true;
 		}

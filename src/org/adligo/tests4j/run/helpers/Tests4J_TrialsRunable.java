@@ -8,6 +8,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
@@ -202,7 +203,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 		
 		trialResultMutant = new BaseTrialResultMutant();
 			
-		TrialType type = trialDescription.getType();
+		I_TrialType type = trialDescription.getType();
 		trialResultMutant.setType(type);
 		trialResultMutant.setTrialName(trialName);
 		runBeforeTrial();
@@ -229,7 +230,8 @@ public class Tests4J_TrialsRunable implements Runnable,
 			logger.log("calculating trial results " + trialName);
 		}
 		
-		switch (type) {
+		TrialType tt = TrialType.get(type);
+		switch (tt) {
 			case UseCaseTrial:
 					useCaseTrialResultMutant = getUseCaseResult();
 					result = new UseCaseTrialResult(useCaseTrialResultMutant);
@@ -375,11 +377,11 @@ public class Tests4J_TrialsRunable implements Runnable,
 	
 	private BaseTrialResultMutant runAfterTrialTests() {
 		
-		TrialType type = trialDescription.getType();
+		I_TrialType type = trialDescription.getType();
 		
-		
+		TrialType tt = TrialType.get(type);
 		long tests = memory.getTestsDone();
-		switch (type) {
+		switch (tt) {
 			case SourceFileTrial:
 				afterSouceFileTrialTestsProcessor.reset(trialDescription, 
 						trialThreadLocalCoverageRecorder, trial);

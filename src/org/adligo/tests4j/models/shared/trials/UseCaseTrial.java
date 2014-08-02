@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.trials;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.results.I_UseCaseTrialResult;
 
-@TrialTypeAnnotation(type = TrialType.UseCaseTrial)
+@TrialTypeAnnotation(type = TrialType.USE_CASE_TRIAL_TYPE)
 public class UseCaseTrial extends AbstractTrial implements I_UseCaseTrial {
 
 	/**

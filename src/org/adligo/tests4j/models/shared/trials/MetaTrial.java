@@ -8,7 +8,7 @@ import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.RelevantClassesWithTrialsCalculator;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 
-@TrialTypeAnnotation(type = TrialType.MetaTrial)
+@TrialTypeAnnotation(type = TrialType.META_TRIAL_TYPE)
 public class MetaTrial extends AbstractTrial implements I_MetaTrial {
 	private RelevantClassesWithTrialsCalculator calculator;
 	private double minPercentCodeCoverage;

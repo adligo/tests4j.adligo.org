@@ -2,6 +2,7 @@ package org.adligo.tests4j.run.discovery;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -80,31 +81,10 @@ public class ClassDependenciesMutant implements I_ClassDependencies {
 	@Override
 	public List<I_Dependency> getDependencies() {
 		Collection<DependencyMutant> dms = dependencies.values();
-		int maxRefs = 0;
-		for (DependencyMutant dm: dms) {
-			if (dm.getReferences() > maxRefs) {
-				maxRefs = dm.getReferences();
-			}
-		}
-		List<I_Dependency> toRet = new ArrayList<I_Dependency>();
-		addByLevel(maxRefs, new ArrayList<DependencyMutant>(dms), toRet);
+		List<I_Dependency> toRet = new ArrayList<I_Dependency>(dms);
+		Collections.sort(toRet);
 		return toRet;
 	}
-	
-	protected void addByLevel(int level, List<DependencyMutant> clone, List<I_Dependency> toRet) {
-		Iterator<DependencyMutant> it =  clone.iterator();
-		while (it.hasNext()) {
-			DependencyMutant dm = it.next();
-			if (dm.getReferences() == level) {
-				toRet.add(new Dependency(dm));
-				it.remove();
-			}
-		}
-		if (level >= 1) {
-			addByLevel(level -1, clone, toRet);
-		}
-	}
-	
 	/**
 	 * add a dependencies 
 	 * from another class, to this one.

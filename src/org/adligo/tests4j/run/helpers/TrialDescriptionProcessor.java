@@ -1,5 +1,6 @@
 package org.adligo.tests4j.run.helpers;
 
+import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
@@ -38,7 +39,7 @@ public class TrialDescriptionProcessor {
 		// that only one thread is doing this for a specific trial at a time
 		// This allows reuse of TrialDescription instances
 		synchronized (trialClazz) {
-			TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
+			I_TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
 			
 			//try to reuse the description if another thread already described it
 			TrialDescription desc = memory.getTrialDescription(className);
@@ -60,7 +61,8 @@ public class TrialDescriptionProcessor {
 					trm.setPassed(false);
 					trm.setType(type);
 					
-					switch (type) {
+					TrialType tt = TrialType.get(type);
+					switch (tt) {
 						case UseCaseTrial:
 								UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trm);
 								mut.setSystem(desc.getSystemName());
@@ -103,7 +105,7 @@ public class TrialDescriptionProcessor {
 	public TrialDescription newTrailDescriptionToRun(Class<? extends I_AbstractTrial> trialClazz, I_Tests4J_NotificationManager notifer) {
 		String className = trialClazz.getName();
 		TrialDescription desc = new TrialDescription(trialClazz, memory.getLogger());
-		TrialType type = desc.getType();
+		I_TrialType type = desc.getType();
 		
 		if (!desc.isIgnored()) {
 			if (!desc.isRunnable()) {
@@ -117,8 +119,9 @@ public class TrialDescriptionProcessor {
 				trm.setPassed(false);
 				trm.setType(type);
 				
+				TrialType tt = TrialType.get(type);
 				I_TrialResult toSend = null;
-				switch (type) {
+				switch (tt) {
 					case UseCaseTrial:
 							UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trm);
 							mut.setSystem(desc.getSystemName());
