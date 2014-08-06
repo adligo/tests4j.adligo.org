@@ -3,11 +3,11 @@ package org.adligo.tests4j.run;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.adligo.tests4j.models.shared.common.DefaultSystem;
+import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.common.MethodBlocker;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.DefaultLog;
-import org.adligo.tests4j.models.shared.system.DefaultSystem;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_DelegateFactory;
@@ -66,7 +66,7 @@ public class Tests4J {
 			I_Tests4J_Constants messages = Tests4J_Constants.CONSTANTS;
 			throw new IllegalArgumentException(messages.getNullListenerExceptionMessage());
 		}
-		I_Tests4J_System system = new DefaultSystem();
+		I_System system = new DefaultSystem();
 		//sets up logging for the run, from the params
 		Tests4J instance = new Tests4J();
 		instance.setSystem(system);
@@ -83,7 +83,7 @@ public class Tests4J {
 	 * 
 	 */
 	public static I_Tests4J_Controls run(I_Tests4J_Params pParams) {
-		I_Tests4J_System system = new DefaultSystem();
+		I_System system = new DefaultSystem();
 		//sets up logging for the run, from the params
 		Tests4J instance = new Tests4J();
 		instance.setSystem(system);
@@ -122,7 +122,7 @@ public class Tests4J {
 	 * methods so that tests4j can make sure
 	 * it makes some System calls.
 	 */
-	private I_Tests4J_System system;
+	private I_System system;
 	/**
 	 * not part of the public api,
 	 * but used when test4j tests itself.
@@ -163,11 +163,11 @@ public class Tests4J {
 	}
 
 
-	protected I_Tests4J_System getSystem() {
+	protected I_System getSystem() {
 		return system;
 	}
 
-	protected void setSystem(I_Tests4J_System system) {
+	protected void setSystem(I_System system) {
 		this.system = system;
 	}
 	

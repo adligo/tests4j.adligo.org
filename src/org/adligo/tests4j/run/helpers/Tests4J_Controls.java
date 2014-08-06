@@ -10,7 +10,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
  *
  */
 public class Tests4J_Controls implements I_Tests4J_Controls {
-	private Tests4J_ThreadManager threadManager;
+	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notificationManager;
 	
 	public Tests4J_Controls() {

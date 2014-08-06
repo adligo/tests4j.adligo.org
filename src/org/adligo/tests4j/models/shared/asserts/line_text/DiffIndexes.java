@@ -1,7 +1,8 @@
 package org.adligo.tests4j.models.shared.asserts.line_text;
 
-import org.adligo.tests4j.models.shared.common.LineSeperator;
+import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.Tests4J_System;
 
 /**
  * a immutable class to represent 
@@ -20,10 +21,13 @@ public class DiffIndexes implements I_DiffIndexes {
 	public static final String EITHER_THE_MATCH_OF_DIFF_MUST_START_AT_THE_LEFT = "Either the Match of Diff must start at the left.";
 	public static final String FOR_LEFT_DIFFS_THE_DIFF_RIGHT_TO_LEFT_MUST_BE_IMMEDIATELY_FOLLOWED_BY_THE_RIGHT_TO_LEFT_MATCH = "For left diffs, the diff right to left must be immediately followed by the right to left match.";
 	public static final String FOR_LEFT_MATCHES_THE_MATCH_RIGHT_TO_LEFT_MUST_BE_IMMEDIATELY_FOLLOWED_BY_THE_LEFT_TO_RIGHT_DIFF = "For left matches, the match right to left must be immediately followed by the left to right diff.";
-	public static final String MATCH_L2R_DIFF_L2R_MATCH_R2L_DIFF_R2L = "The Matches and diffs may not overlap as follows;" + LineSeperator.getLineSeperator() +
+	public static final String MATCH_ERROR_PART_ONE = "The Matches and diffs may not overlap as follows;";
+	public static final String MATCH_L2R_DIFF_L2R_MATCH_R2L_DIFF_R2L = 
 			" matchLeftToRight, diffLeftToRight, matchRightToLeft, diffRightToLeft.";
-	public static final String DIFF_L2R_MATCH_L2R_DIFF_R2L_MATCH_R2L = "The Matches and diffs may not overlap as follows;" + LineSeperator.getLineSeperator() +
+	public static final String DIFF_L2R_MATCH_L2R_DIFF_R2L_MATCH_R2L = 
 			" diffLeftToRight, matchLeftToRight, diffRightToLeft, matchRightToLeft.";
+	
+	
 	public static final String WHEN_THERE_ARE_NO_MATCHES_THE_DIFFS_MUST_BOUND_THE_STRING = "When there are no matches, the diffs must bound the String.";
 	public static final String MATCH_LEFT_TO_RIGHT_NEEDS_CORRESPONDING_RIGHT_TO_LEFT_MATCH = "Match left to right, needs corresponding right to left match.";
 	public static final String DIFF_LEFT_TO_RIGHT_NEEDS_CORRESPONDING_RIGHT_TO_LEFT_DIFF = "Diff left to right, needs corresponding right to left diff.";
@@ -98,7 +102,9 @@ public class DiffIndexes implements I_DiffIndexes {
 								throw new IllegalArgumentException(FOR_LEFT_MATCHES_THE_MATCH_RIGHT_TO_LEFT_MUST_BE_IMMEDIATELY_FOLLOWED_BY_THE_LEFT_TO_RIGHT_DIFF);
 							}
 						} else if (matchRightToLeft < diffRightToLeft){
-							throw new IllegalArgumentException(MATCH_L2R_DIFF_L2R_MATCH_R2L_DIFF_R2L);
+							throw new IllegalArgumentException(MATCH_ERROR_PART_ONE + 
+									Tests4J_System.SYSTEM.getLineSeperator() +
+									MATCH_L2R_DIFF_L2R_MATCH_R2L_DIFF_R2L);
 						}
 					}
 				} else {
@@ -109,7 +115,9 @@ public class DiffIndexes implements I_DiffIndexes {
 								throw new IllegalArgumentException(FOR_LEFT_DIFFS_THE_DIFF_RIGHT_TO_LEFT_MUST_BE_IMMEDIATELY_FOLLOWED_BY_THE_RIGHT_TO_LEFT_MATCH);
 							}
 						} else if (diffRightToLeft < matchRightToLeft) {
-							throw new IllegalArgumentException(DIFF_L2R_MATCH_L2R_DIFF_R2L_MATCH_R2L);
+							throw new IllegalArgumentException(MATCH_ERROR_PART_ONE +
+									Tests4J_System.SYSTEM.getLineSeperator() +
+									DIFF_L2R_MATCH_L2R_DIFF_R2L_MATCH_R2L);
 						}
 					} else {
 						//the match start at the right

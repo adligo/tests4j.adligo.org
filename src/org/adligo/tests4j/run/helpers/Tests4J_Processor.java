@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
+import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
@@ -14,7 +15,6 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
@@ -38,7 +38,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	private Tests4J_Memory memory = new Tests4J_Memory();
 	private I_Tests4J_Log logger;
 	
-	private Tests4J_ThreadManager threadManager;
+	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private Tests4J_Controls controls;
 	
@@ -52,7 +52,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 */
 	public boolean setup(I_Tests4J_Listener pListener, I_Tests4J_Params pParams) {
 		
-		I_Tests4J_System system = memory.getSystem();
+		I_System system = memory.getSystem();
 		memory.setThreadLocalOutput(OUT);
 		Tests4J_ParamsReader reader = new Tests4J_ParamsReader(system,  pParams);
 		
@@ -262,7 +262,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	}
 
 	@Override
-	public void setSystem(I_Tests4J_System system) {
+	public void setSystem(I_System system) {
 		memory.setSystem(system);
 	}
 

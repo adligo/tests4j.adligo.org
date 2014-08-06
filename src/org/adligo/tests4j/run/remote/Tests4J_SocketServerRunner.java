@@ -15,13 +15,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.adligo.tests4j.models.shared.common.DefaultSystem;
+import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.DefaultLog;
-import org.adligo.tests4j.models.shared.system.DefaultSystem;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
@@ -54,7 +54,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
 	private AfterShutdownHandler afterShutdownHandler;
-	private I_Tests4J_System system = new DefaultSystem();
+	private I_System system = new DefaultSystem();
 	private ExecutorService listenerService;
 	private I_Tests4J_Controls controlls;
 	
@@ -67,7 +67,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 		runner.main(args, new DefaultSystem());
 	}
 	
-	public void main(String[] args, I_Tests4J_System pSystem) {
+	public void main(String[] args, I_System pSystem) {
 		Integer port = null;
 		String authCode = "";
 		logger = new DefaultLog(pSystem, null);
@@ -115,7 +115,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 		startup(new DefaultSystem());
 	}
 	
-	public void startup(I_Tests4J_System pSystem) {
+	public void startup(I_System pSystem) {
 		
 		afterShutdownHandler = new AfterShutdownHandler(pSystem);
 		
@@ -333,11 +333,11 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 
 
 
-	public I_Tests4J_System getSystem() {
+	public I_System getSystem() {
 		return system;
 	}
 
-	public void setSystem(I_Tests4J_System p) {
+	public void setSystem(I_System p) {
 		this.system = p;
 	}
 

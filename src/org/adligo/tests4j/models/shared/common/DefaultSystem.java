@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.system;
+package org.adligo.tests4j.models.shared.common;
 
 import java.io.PrintStream;
 
@@ -9,7 +9,7 @@ import java.io.PrintStream;
  * @author scott
  *
  */
-public class DefaultSystem implements I_Tests4J_System {
+public class DefaultSystem implements I_System {
 	private static final PrintStream OUT = System.out;
 
 	@Override

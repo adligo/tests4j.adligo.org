@@ -11,7 +11,7 @@ public class Tests4J_SetupRunnable implements Runnable {
 
 
 	private Tests4J_Memory memory;
-	private Tests4J_ThreadManager threadManager;
+	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private I_Tests4J_Log logger;
 	private TrialDescriptionProcessor trialDescriptionProcessor;

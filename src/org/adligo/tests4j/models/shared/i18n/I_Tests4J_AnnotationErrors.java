@@ -22,7 +22,6 @@ public interface I_Tests4J_AnnotationErrors {
 	public String getMultipleBeforeTrial();
 	public String getMultipleAfterTrial();
 	
-	public String getNoTests();
 	public String getNoSourceFileScope();
 	public String getNoPackageScope();
 	

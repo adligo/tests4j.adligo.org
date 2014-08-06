@@ -265,23 +265,6 @@ public class TrialDescription implements I_TrialDescription {
 			
 		}
 
-		if (TrialType.MetaTrial == type) {
-			if (testMethods.size() >= 1) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
-				
-				failures.add(new TrialFailure(
-						annonErrors.getNoTests(),
-						trialClass.getName() + annonErrors.getWasAnnotatedIncorrectly()));
-			}
-		} else if (testMethods.size() == 0 ) {
-			I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-			I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
-			
-			failures.add(new TrialFailure(
-					annonErrors.getNoTests(),
-					trialClass.getName() + annonErrors.getWasAnnotatedIncorrectly()));
-		}
 	}
 
 

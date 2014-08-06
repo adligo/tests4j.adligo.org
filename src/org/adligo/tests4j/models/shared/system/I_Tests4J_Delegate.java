@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
+import org.adligo.tests4j.models.shared.common.I_System;
+
 public interface I_Tests4J_Delegate {
 	/**
 	 * 
@@ -12,5 +14,5 @@ public interface I_Tests4J_Delegate {
 	public void run();
 	public I_Tests4J_Controls getControls();
 	
-	public void setSystem(I_Tests4J_System system);
+	public void setSystem(I_System system);
 }

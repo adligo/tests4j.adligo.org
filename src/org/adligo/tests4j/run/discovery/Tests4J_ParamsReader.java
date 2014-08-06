@@ -10,6 +10,7 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
+import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
@@ -18,7 +19,6 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.Tests4J_Selection;
@@ -80,7 +80,7 @@ public class Tests4J_ParamsReader {
 	 * @param pParams
 	 * @param pReporter
 	 */
-	public Tests4J_ParamsReader(I_Tests4J_System pSystem, I_Tests4J_Params pParams) {
+	public Tests4J_ParamsReader(I_System pSystem, I_Tests4J_Params pParams) {
 		params = pParams;
 		
 		Map<Class<?>, Boolean> logStates = getDefalutLogStates();

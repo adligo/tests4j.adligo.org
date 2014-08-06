@@ -22,8 +22,6 @@ public class Tests4J_AnnotationErrors implements I_Tests4J_AnnotationErrors {
 
 	private static final String TRIAL_TYPE_ANNOTATION_MISSING = 
 			"The trial is missing a @TrialType annotation.";
-	private static final String TRIAL_NO_TEST = 
-			"Trial classes must have at least one method annotated with @Test.";	
 	
 	
 	private static final String TRIALS_MAY_HAVE_ONLY_ONE_BEFORE_TRIAL = 
@@ -111,11 +109,6 @@ public class Tests4J_AnnotationErrors implements I_Tests4J_AnnotationErrors {
 	@Override
 	public String getHasNegativeTimeout() {
 		return THE_TEST_METHOD_MAY_NOT_HAVE_A_NEGATIVE_TIMEOUT;
-	}
-	
-	@Override
-	public String getNoTests() {
-		return TRIAL_NO_TEST;
 	}
 	
 	public String getMinCoverageMustBeBetweenZeroAndOneHundred() {

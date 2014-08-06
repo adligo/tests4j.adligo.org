@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
+import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
@@ -22,7 +23,6 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_System;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
@@ -96,7 +96,7 @@ public class Tests4J_Memory {
 	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private boolean hasRemoteDelegation = false;
 	private I_EvaluatorLookup evaluationLookup;
-	private I_Tests4J_System system;
+	private I_System system;
 	private int trialThreadCount;
 	private int setupThreadCount;
 	private int remoteThreadCount;
@@ -315,7 +315,7 @@ public class Tests4J_Memory {
 		return listener;
 	}
 
-	public Tests4J_ThreadManager getThreadManager() {
+	public I_Tests4J_ThreadManager getThreadManager() {
 		return threadManager;
 	}
 
@@ -377,7 +377,7 @@ public class Tests4J_Memory {
 		return evaluationLookup;
 	}
 
-	public I_Tests4J_System getSystem() {
+	public I_System getSystem() {
 		return system;
 	}
 
@@ -416,7 +416,7 @@ public class Tests4J_Memory {
 		return notifier;
 	}
 
-	protected void setSystem(I_Tests4J_System system) {
+	protected void setSystem(I_System system) {
 		this.system = system;
 	}
 

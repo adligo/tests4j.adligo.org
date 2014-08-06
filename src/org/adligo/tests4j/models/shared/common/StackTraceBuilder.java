@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.common;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 
 /**
  * a few threadsafe methods for building 
@@ -12,15 +11,17 @@ import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
  */
 public class StackTraceBuilder {
 	
+	private static final String TAB = "\t";
+
 	public static String toString(Throwable t, boolean deep) {
 		StringBuilder sb = new StringBuilder();
-		toString(t, sb, "\t");
-		StringBuilder currentIndent = new StringBuilder("\t");
+		toString(t, sb, TAB);
+		StringBuilder currentIndent = new StringBuilder(TAB);
 		if (deep) {
 			Throwable cause = t.getCause();
 			while (cause != null) {
-				toString(cause, sb, "\t" + currentIndent.toString());
-				currentIndent.append("\t");
+				toString(cause, sb, TAB + currentIndent.toString());
+				currentIndent.append(TAB);
 				cause = cause.getCause();
 			}
 		}
@@ -29,12 +30,12 @@ public class StackTraceBuilder {
 	
 	private static void toString(Throwable t, StringBuilder sb, String currentIndent) {
 		
-		sb.append(currentIndent + t.toString()  + LineSeperator.getLineSeperator());
+		sb.append(currentIndent + t.toString()  + Tests4J_System.SYSTEM.getLineSeperator());
 		StackTraceElement [] stack = t.getStackTrace();
 		if (stack != null) {
 			//stack trace will, be null in GWT client
 			for (int i = 0; i < stack.length; i++) {
-				sb.append(currentIndent +"at " + stack[i] + LineSeperator.getLineSeperator());
+				sb.append(currentIndent +"at " + stack[i] + Tests4J_System.SYSTEM.getLineSeperator());
 			}
 		}
 	}

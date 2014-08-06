@@ -202,9 +202,6 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		if (Boolean.FALSE.equals(passed)) {
 			return false;
 		}
-		if (results.size() == 0) {
-			return false;
-		}
 		for (I_TestResult result: results.values()) {
 			if (!result.isIgnored()) {
 				if (!result.isPassed()) {

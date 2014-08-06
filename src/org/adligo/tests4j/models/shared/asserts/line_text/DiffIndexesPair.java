@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.asserts.line_text;
 
 import java.io.IOException;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.I_System;
 
 
 

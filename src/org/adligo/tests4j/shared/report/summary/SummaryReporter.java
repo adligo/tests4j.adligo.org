@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.adligo.tests4j.models.shared.common.LineSeperator;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
@@ -66,10 +65,10 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	public synchronized  void onMetadataCalculated(I_TrialRunMetadata p) {
 		I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
 		
-		logger.log(I_Tests4J_Constants.PREFIX +  messages.getMetadataCalculatedHeading() + LineSeperator.getLineSeperator() +
-				I_Tests4J_Constants.PREFIX + messages.getTrialsHeading() + p.getAllTrialsCount() + LineSeperator.getLineSeperator() +
+		logger.log(I_Tests4J_Constants.PREFIX +  messages.getMetadataCalculatedHeading() + logger.getLineSeperator() +
+				I_Tests4J_Constants.PREFIX + messages.getTrialsHeading() + p.getAllTrialsCount() + logger.getLineSeperator() +
 			 	I_Tests4J_Constants.PREFIX + messages.getTestsHeading() + p.getAllTestsCount()
-			 	+  LineSeperator.getLineSeperator());
+			 	+  logger.getLineSeperator());
 			
 		metadata = p;
 	}

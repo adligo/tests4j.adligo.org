@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.common.DefaultSystem;
+import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.shared.report.summary.RemoteProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.SetupProgressDisplay;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
@@ -31,7 +33,7 @@ import org.adligo.tests4j.shared.report.summary.TrialDisplay;
 public class DefaultLog implements I_Tests4J_Log {
 	public static final String DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM = "DefaultReporter requires a non null I_System.";
 	private Map<String, Boolean>  logs = new HashMap<String,Boolean>();
-	private I_Tests4J_System system;
+	private I_System system;
 	
 	public DefaultLog() {
 		this(new DefaultSystem(), null);
@@ -45,7 +47,7 @@ public class DefaultLog implements I_Tests4J_Log {
 	 * @param pSystem
 	 * @param params
 	 */
-	public DefaultLog(I_Tests4J_System pSystem, Map<Class<?>, Boolean> logsOn) {
+	public DefaultLog(I_System pSystem, Map<Class<?>, Boolean> logsOn) {
 		if (pSystem == null) {
 			throw new IllegalArgumentException(DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM);
 		}

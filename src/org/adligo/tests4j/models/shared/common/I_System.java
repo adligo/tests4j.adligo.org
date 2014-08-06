@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.system;
+package org.adligo.tests4j.models.shared.common;
 
 /**
  * simple wrapper for System.out/System.err exc
@@ -8,7 +8,7 @@ package org.adligo.tests4j.models.shared.system;
  * @author scott
  *
  */
-public interface I_Tests4J_System {
+public interface I_System {
 	/**
 	 * just like System.out.println(p)
 	 * stubbed for testing
