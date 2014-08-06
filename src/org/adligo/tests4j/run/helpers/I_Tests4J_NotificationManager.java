@@ -46,5 +46,9 @@ public interface I_Tests4J_NotificationManager {
 	public abstract void onDescibeTrialError();
 
 	public abstract boolean isRunning();
+	
+	public boolean isDoneDescribeingTrials();
+	
+	public boolean isDoneRunningTrials();
 
 }

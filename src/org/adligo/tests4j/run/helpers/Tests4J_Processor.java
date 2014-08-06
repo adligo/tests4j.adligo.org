@@ -35,13 +35,11 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 * in the I_TrialResults.
 	 */
 	private static final ThreadLocalOutputStream OUT = new ThreadLocalOutputStream();
-	private Tests4J_ParamsReader reader;
-	private DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 	private Tests4J_Memory memory = new Tests4J_Memory();
 	private I_Tests4J_Log logger;
 	
 	private Tests4J_ThreadManager threadManager;
-	private Tests4J_NotificationManager notifier;
+	private I_Tests4J_NotificationManager notifier;
 	private Tests4J_Controls controls;
 	
 	/**
@@ -50,15 +48,13 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 *  
 	 * @param pListener
 	 * @param pParams
-	 * @param pLogger
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
 	public boolean setup(I_Tests4J_Listener pListener, I_Tests4J_Params pParams) {
 		
 		I_Tests4J_System system = memory.getSystem();
 		memory.setThreadLocalOutput(OUT);
-		reader = new Tests4J_ParamsReader(system,  pParams);
+		Tests4J_ParamsReader reader = new Tests4J_ParamsReader(system,  pParams);
 		
 		I_Tests4J_Log logger = reader.getLogger();
 		memory.setLogger(logger);
@@ -93,10 +89,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		
 		long time = memory.getTime();
 		memory.setStartTime(time);
-		if (logger.isLogEnabled(Tests4J_Processor.class)) {
-			
-			logger.log("Start: " + dateFormat.format(new Date(time)));
-		}
+		
 		threadManager = memory.getThreadManager();
 		notifier = memory.getNotifier();
 		submitSetupRunnables();
