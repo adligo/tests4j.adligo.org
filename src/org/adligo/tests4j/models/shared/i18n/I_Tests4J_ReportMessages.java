@@ -30,4 +30,15 @@ public interface I_Tests4J_ReportMessages {
 	
 	public String getStartingTest();
 
+	public String getExpected();
+	
+	public String getActual();
+	
+	public String getClassHeadding();
+	
+	public String getDifferences();
+	
+	public String getTheFollowingExpectedLineNumbersWereMissing();
+	
+	public String getTheFollowingActualLineNumberNotExpected();
 }

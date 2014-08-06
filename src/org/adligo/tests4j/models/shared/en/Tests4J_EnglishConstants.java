@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.en;
 
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
@@ -35,8 +35,8 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	private Tests4J_AnnotationErrors annotationErrors = new Tests4J_AnnotationErrors();
 	private I_Tests4J_AssertionInputMessages assertionInputMessages =
 			new Tests4J_AssertionInputMessages();
-	private I_Tests4J_AssertionResultMessages assertionResultMessages =
-			new Tests4J_AssertionResultMessages();
+	private I_Tests4J_ResultMessages assertionResultMessages =
+			new Tests4J_ResultMessages();
 	
 	private I_Tests4J_EclipseErrors eclipseErrors = null;
 
@@ -73,7 +73,7 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public I_Tests4J_AssertionResultMessages getAssertionResultMessages() {
+	public I_Tests4J_ResultMessages getResultMessages() {
 		return assertionResultMessages;
 	}
 

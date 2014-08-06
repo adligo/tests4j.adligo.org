@@ -3,6 +3,8 @@ package org.adligo.tests4j.models.shared.results;
 import java.util.Collections;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
+
 public class TestResult implements I_TestResult {
 	private TestResultMutant mutant;
 	
@@ -28,11 +30,7 @@ public class TestResult implements I_TestResult {
 	}
 
 	public I_TestFailure getFailure() {
-		I_TestFailure toRetOrNull = mutant.getFailure();
-		if (toRetOrNull == null) {
-			return null;
-		}
-		return new TestFailure(toRetOrNull);
+		return mutant.getFailure();
 	}
 
 	public String getBeforeOutput() {

@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts;
 
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
+import org.adligo.tests4j.models.shared.asserts.common.CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertCommand;
 
@@ -18,7 +18,6 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 	public static final String BAD_TYPE = 
 			"DoubleAssertCommand requires it's type to be one of AssertType.AssertGreaterThanOrEquals";
 	private CompareAssertionData<Double> data;
-	private AssertType type;
 	
 	/**
 	 * 
@@ -27,11 +26,11 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 	 * @param failureMessage
 	 * @param pData
 	 */
-	public DoubleAssertCommand(I_AssertType pType, String failureMessage, CompareAssertionData<Double> pData) {
-		super(pType, failureMessage, pData);
+	public DoubleAssertCommand(String failureMessage, CompareAssertionData<Double> pData) {
+		super(failureMessage, pData);
 		
 		//copy it between classloaders
-		type = AssertType.getType(pType);
+		AssertType type = super.getTypeEnum();
 		if (AssertType.AssertGreaterThanOrEquals != type) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
@@ -44,6 +43,7 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 		Double expected = data.getExpected();
 		Double actual = data.getActual();
 		
+		AssertType type = super.getTypeEnum();
 		switch (type) {
 			case AssertGreaterThanOrEquals:
 				if (expected == null || actual == null) {
@@ -63,7 +63,6 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((data == null) ? 0 : data.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -80,8 +79,6 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 			if (other.data != null)
 				return false;
 		} else if (!data.equals(other.data))
-			return false;
-		if (type != other.type)
 			return false;
 		return true;
 	}

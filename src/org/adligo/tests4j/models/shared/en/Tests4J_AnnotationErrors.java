@@ -20,11 +20,10 @@ public class Tests4J_AnnotationErrors implements I_Tests4J_AnnotationErrors {
 	
 	private static final String MIN_COVERAGE_MUST_BE_BETWEEN_0_0_AND_100_0_PERCENT = "The minCoverage must be between 0.0 and 100.0 percent.";
 
-	private static final String IS_MISSING_TRIAL_TYPE_ANNOTATION = 
-			" is missing a @TrialType annotation.";
+	private static final String TRIAL_TYPE_ANNOTATION_MISSING = 
+			"The trial is missing a @TrialType annotation.";
 	private static final String TRIAL_NO_TEST = 
 			"Trial classes must have at least one method annotated with @Test.";	
-	private static final String THE_TRIAL = "The trail ";
 	
 	
 	private static final String TRIALS_MAY_HAVE_ONLY_ONE_BEFORE_TRIAL = 
@@ -119,14 +118,6 @@ public class Tests4J_AnnotationErrors implements I_Tests4J_AnnotationErrors {
 		return TRIAL_NO_TEST;
 	}
 	
-	public String getMissingTypeAnnotationPre() {
-		return THE_TRIAL;
-	}
-	
-	public String getMissingTypeAnnotationPost() {
-		return IS_MISSING_TRIAL_TYPE_ANNOTATION;
-	}
-	
 	public String getMinCoverageMustBeBetweenZeroAndOneHundred() {
 		return MIN_COVERAGE_MUST_BE_BETWEEN_0_0_AND_100_0_PERCENT;
 	}
@@ -175,4 +166,9 @@ public class Tests4J_AnnotationErrors implements I_Tests4J_AnnotationErrors {
 	public String getUseCaseScopeEmptyVerb() {
 		return USE_CASE_SCOPE_EMPTY_VERB;
 	}
+	
+	public String getTrialTypeMissing() {
+		return TRIAL_TYPE_ANNOTATION_MISSING;
+	}
+	
 }

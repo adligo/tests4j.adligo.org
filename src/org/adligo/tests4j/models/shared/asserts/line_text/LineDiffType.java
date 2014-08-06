@@ -14,16 +14,16 @@ import java.util.Map;
  *
  */
 public enum LineDiffType implements I_LineDiffType {
-	MATCH(0), PARTIAL_MATCH(1), MISSING_EXPECTED_LINE(2), MISSING_ACTUAL_LINE(3);
+	Match(0), PartialMatch(1), MissingExpectedLine(2), MissingActualLine(3);
 	
 	public static final Map<Integer, LineDiffType> TYPES_BY_ID = getTypesById();
 	
 	public static Map<Integer, LineDiffType> getTypesById() {
 		Map<Integer, LineDiffType> toRet = new HashMap<Integer, LineDiffType>();
-		toRet.put(MATCH.getId(), MATCH);
-		toRet.put(PARTIAL_MATCH.getId(), PARTIAL_MATCH);
-		toRet.put(MISSING_EXPECTED_LINE.getId(), MISSING_EXPECTED_LINE);
-		toRet.put(MISSING_ACTUAL_LINE.getId(), MISSING_ACTUAL_LINE);
+		toRet.put(Match.getId(), Match);
+		toRet.put(PartialMatch.getId(), PartialMatch);
+		toRet.put(MissingExpectedLine.getId(), MissingExpectedLine);
+		toRet.put(MissingActualLine.getId(), MissingActualLine);
 		return Collections.unmodifiableMap(toRet);
 	}
 	

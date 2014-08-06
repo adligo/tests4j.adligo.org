@@ -2,25 +2,29 @@ package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.Platform;
+import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
 import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
+import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
-import org.adligo.tests4j.models.shared.results.TestFailure;
-import org.adligo.tests4j.models.shared.results.TestFailureMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
@@ -30,6 +34,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
@@ -60,7 +65,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 	private ExecutorService testRunService;
 	private Future<?> testResultFuture;
 	private ArrayBlockingQueue<TestResult> blocking = new ArrayBlockingQueue<TestResult>(100);
-	private TestRunable testsRunner;
+	private Tests4J_TestRunable testsRunner;
 	private boolean finished = false;
 	private ApiTrialResultMutant apiTrialResultMutant;
 	private SourceFileTrialResultMutant sourceFileTrialResultMutant;
@@ -91,7 +96,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 		logger = p.getLogger();
 		threadManager = p.getThreadManager();
 		
-		testsRunner = new TestRunable(memory);
+		testsRunner = new Tests4J_TestRunable(memory);
 		testsRunner.setListener(this);
 		testRunService = threadManager.createNewTestRunService();
 		
@@ -176,8 +181,9 @@ public class Tests4J_TrialsRunable implements Runnable,
 	
 	private void failTrialOnException(String message, Throwable p, TrialType type) {
 		trialResultMutant.setPassed(false);
-		TrialFailure failure = new TrialFailure(message, p);
-		trialResultMutant.setFailure(failure);
+		String stack = StackTraceBuilder.toString(p, true);
+		TrialFailure failure = new TrialFailure(message, stack);
+		trialResultMutant.addFailure(failure);
 		if (type != null) {
 			trialResultMutant.setType(type);
 		}
@@ -208,7 +214,9 @@ public class Tests4J_TrialsRunable implements Runnable,
 		trialResultMutant.setTrialName(trialName);
 		runBeforeTrial();
 		I_TrialResult result;
-		if (this.trialResultMutant.getFailure() == null) {
+		List<I_TrialFailure> failures =  trialResultMutant.getFailures();
+		
+		if (failures.size() == 0) {
 		
 			testsRunner.setTrial(trial);
 			if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
@@ -358,10 +366,10 @@ public class Tests4J_TrialsRunable implements Runnable,
 					} else {
 						TestResultMutant trm = new TestResultMutant(
 								testsRunner.getTestResult());
+						I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
+						
 						TestFailureMutant tfm = new TestFailureMutant();
-						String message = "Test Timedout at " + tm.getTimeoutMillis() + " milliseconds.";
-						tfm.setMessage(message);
-						tfm.setException(new IllegalStateException(message));
+						tfm.setFailureMessage(messages.getTestTimedOut());
 						trm.setFailure(new TestFailure(tfm));
 					
 						trialResultMutant.addResult(new TestResult(trm));
@@ -390,9 +398,11 @@ public class Tests4J_TrialsRunable implements Runnable,
 				if (trm != null) {
 					result.addResult(trm);
 				}
-				TestResultMutant minCoverageResult = afterSouceFileTrialTestsProcessor.testMinCoverage(result);
-				result.addResult(minCoverageResult);
-				memory.addTestsDone();
+				if (result.hasRecordedCoverage()) {
+					TestResult minCoverageResult = afterSouceFileTrialTestsProcessor.testMinCoverage(result);
+					result.addResult(minCoverageResult);
+					memory.addTestsDone();
+				}
 				return result;
 			case ApiTrial:
 				afterApiTrialTestsProcessor.reset(trialDescription, 

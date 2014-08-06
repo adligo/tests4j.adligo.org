@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.asserts;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertCommand;
@@ -14,22 +13,13 @@ import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertComm
  *
  */
 public abstract class AbstractCompareAssertCommand extends AbstractAssertCommand implements I_SimpleCompareAssertCommand {
-	public static final String NULL_DATA = "AbstractCompareAssertCommand requires non null data.";
 	private I_CompareAssertionData<?> data;
 	
-	public AbstractCompareAssertCommand(I_AssertType pType, String failureMessage, I_CompareAssertionData<?> pData) {
-		super(pType, failureMessage);
+	public AbstractCompareAssertCommand(String failureMessage, I_CompareAssertionData<?> pData) {
+		super(pData.getType(), failureMessage);
 		data = pData;
-		if (data == null) {
-			throw new IllegalArgumentException(NULL_DATA);
-		}
 	}
 	
-	@Override
-	public I_AssertionData getData() {
-		return data;
-	}
-
 	@Override
 	public Object getExpected() {
 		return data.getExpected();
@@ -40,5 +30,8 @@ public abstract class AbstractCompareAssertCommand extends AbstractAssertCommand
 		return data.getActual();
 	}
 
+	public I_AssertionData getData() {
+		return data;
+	}
 	
 }

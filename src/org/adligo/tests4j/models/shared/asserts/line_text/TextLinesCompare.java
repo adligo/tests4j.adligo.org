@@ -57,11 +57,11 @@ public class TextLinesCompare  {
 		for (Integer lineNbr: exampleLinesWithoutMatch) {
 			LineDiffMutant ldm = new LineDiffMutant();
 			ldm.setExpectedLineNbr(lineNbr);
-			ldm.setType(LineDiffType.MISSING_EXPECTED_LINE);
+			ldm.setType(LineDiffType.MissingExpectedLine);
 		}
 		boolean matched = true;
 		for (I_LineDiff ld: diffs) {
-			if (ld.getType() != LineDiffType.MATCH) {
+			if (ld.getType() != LineDiffType.Match) {
 				matched = false;
 			}
 		}
@@ -92,7 +92,7 @@ public class TextLinesCompare  {
 				ldm.setExpectedLineNbr(i);
 			}
 			ldm.setActualLineNbr(lineNbr);
-			ldm.setType(LineDiffType.MISSING_ACTUAL_LINE);
+			ldm.setType(LineDiffType.MissingActualLine);
 			
 			LineDiff ld = new LineDiff(ldm);
 			
@@ -141,7 +141,7 @@ public class TextLinesCompare  {
 					ldm.setActualLineNbr(i);
 				}
 			}
-			ldm.setType(LineDiffType.MISSING_EXPECTED_LINE);
+			ldm.setType(LineDiffType.MissingExpectedLine);
 			LineDiff ld = new LineDiff(ldm);
 			
 			
@@ -272,7 +272,7 @@ public class TextLinesCompare  {
 				LineDiffMutant ldm = new LineDiffMutant();
 				ldm.setExpectedLineNbr(i);
 				ldm.setActualLineNbr(j);
-				ldm.setType(LineDiffType.PARTIAL_MATCH);
+				ldm.setType(LineDiffType.PartialMatch);
 				ldm.setIndexes(dip);
 				LineDiff ld = new LineDiff(ldm);
 				diffs.add(ld);
@@ -301,7 +301,7 @@ public class TextLinesCompare  {
 					LineDiffMutant ldm = new LineDiffMutant();
 					ldm.setExpectedLineNbr(i);
 					ldm.setActualLineNbr(j);
-					ldm.setType(LineDiffType.MATCH);
+					ldm.setType(LineDiffType.Match);
 					LineDiff ld = new LineDiff(ldm);
 					expectedToDiffs.put(i, ld);
 					actualToDiffs.put(j, ld);

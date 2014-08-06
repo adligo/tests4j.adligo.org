@@ -1,7 +1,6 @@
 package org.adligo.tests4j.models.shared.xml;
 
 import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.metadata.I_TestMetadata;
 
 public class XML_Parser {
 	

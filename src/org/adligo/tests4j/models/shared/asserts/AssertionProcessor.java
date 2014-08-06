@@ -1,14 +1,19 @@
 package org.adligo.tests4j.models.shared.asserts;
 
+import org.adligo.tests4j.models.shared.asserts.common.AssertCompareFailure;
+import org.adligo.tests4j.models.shared.asserts.common.AssertThrownFailure;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertCompareFailure;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertThrownFailure;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
+import org.adligo.tests4j.models.shared.asserts.common.I_TestFailureType;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionCommand;
-import org.adligo.tests4j.models.shared.results.TestFailure;
-import org.adligo.tests4j.models.shared.results.TestFailureMutant;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailureBuilder;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailureType;
+import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 
 /**
@@ -50,12 +55,29 @@ public class AssertionProcessor {
 
 	public static void onAssertionFailure(I_Tests4J_AssertListener listener,
 			I_AssertionData data, String failureMessage) {
-		TestFailureMutant fm = new TestFailureMutant();
-		fm.setMessage(failureMessage);
-		fm.setLocationFailed(new AssertionFailureLocation());
-		fm.setData(data);
-		TestFailure tf = new TestFailure(fm);
-		listener.assertFailed(tf);
+		
+		TestFailureBuilder builder = new TestFailureBuilder();
+		TestFailureMutant tfm =  builder.build(data, failureMessage);
+		
+		AssertionFailureLocation afl = new AssertionFailureLocation();
+		String locationFailedStackTrace = StackTraceBuilder.toString(afl, true);
+		tfm.setFailureDetail(locationFailedStackTrace);
+		
+		I_TestFailureType tft = tfm.getType();
+		TestFailureType type = TestFailureType.get(tft);
+		switch(type) {
+			case TestFailure:
+					TestFailure failure = new TestFailure(tfm);
+					listener.assertFailed(failure);
+				break;
+			case AssertCompareFailure:
+					AssertCompareFailure acf = new AssertCompareFailure((I_AssertCompareFailure) tfm);
+					listener.assertFailed(acf);
+				break;
+			default:
+					AssertThrownFailure atf = new AssertThrownFailure((I_AssertThrownFailure) tfm);
+					listener.assertFailed(atf);
+		}
 	}
 	
 }

@@ -162,4 +162,5 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 */
 	public Class<? extends I_EvaluatorLookup> getEvaluatorLookup();
 
+
 }

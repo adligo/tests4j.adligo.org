@@ -57,8 +57,8 @@ public class BaseTrialResult implements I_TrialResult {
 		return mutant.equals(obj);
 	}
 
-	public I_TrialFailure getFailure() {
-		return mutant.getFailure();
+	public List<I_TrialFailure> getFailures() {
+		return mutant.getFailures();
 	}
 
 	@Override

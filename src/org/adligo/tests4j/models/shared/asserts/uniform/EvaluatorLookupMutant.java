@@ -21,6 +21,7 @@ public class EvaluatorLookupMutant implements I_EvaluatorLookup {
 	 * to evaluators
 	 */
 	private Map<String, I_UniformAssertionEvaluator<?,?>> lookup;
+	private I_UniformThrownAssertionEvaluator thrownEvaulator = new UniformThrownAssertionEvaluator();
 	
 	public EvaluatorLookupMutant() {
 		lookup =
@@ -54,5 +55,13 @@ public class EvaluatorLookupMutant implements I_EvaluatorLookup {
 	
 	public void removeEvaluator(String className) {
 		lookup.remove(className);
+	}
+
+	public I_UniformThrownAssertionEvaluator getThrownEvaulator() {
+		return thrownEvaulator;
+	}
+
+	public void setThrownEvaulator(I_UniformThrownAssertionEvaluator thrownEvaulator) {
+		this.thrownEvaulator = thrownEvaulator;
 	}
 }

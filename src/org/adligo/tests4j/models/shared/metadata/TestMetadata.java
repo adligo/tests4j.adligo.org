@@ -13,6 +13,10 @@ public class TestMetadata implements I_TestMetadata {
 		mutant = new TestMetadataMutant(p);
 	}
 
+	public TestMetadata(String xml) {
+		mutant = new TestMetadataMutant(xml);
+	}
+	
 	public String getTestName() {
 		return mutant.getTestName();
 	}

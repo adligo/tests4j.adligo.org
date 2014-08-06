@@ -17,8 +17,6 @@ public interface I_Tests4J_AnnotationErrors {
 	public String getBeforeTrialNotPublic();
 	
 	
-	public String getMissingTypeAnnotationPre();
-	public String getMissingTypeAnnotationPost();
 	public String getMinCoverageMustBeBetweenZeroAndOneHundred();
 	
 	public String getMultipleBeforeTrial();
@@ -36,6 +34,5 @@ public interface I_Tests4J_AnnotationErrors {
 	public String getUseCaseScopeEmptySystem();
 	public String getUseCaseScopeEmptyVerb();
 	public String getWasAnnotatedIncorrectly();
-	
-	
+	public String getTrialTypeMissing();
 }

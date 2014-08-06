@@ -3,6 +3,7 @@ package org.adligo.tests4j.models.shared.results;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 
 public class TestResultMutant implements I_TestResult {
@@ -13,7 +14,7 @@ public class TestResultMutant implements I_TestResult {
 	private Set<Integer> uniqueAsserts = new HashSet<Integer>();
 	private boolean passed = false;
 	private boolean ignored = false;
-	private TestFailureMutant failure;
+	private I_TestFailure failure;
 	private String beforeOutput;
 	private String output;
 	private String afterOutput;
@@ -29,10 +30,7 @@ public class TestResultMutant implements I_TestResult {
 		
 		passed = p.isPassed();
 		ignored = p.isIgnored();
-		I_TestFailure pFailure = p.getFailure();
-		if (pFailure != null) {
-			failure = new TestFailureMutant(pFailure);
-		}
+		failure = p.getFailure();
 		beforeOutput = p.getBeforeOutput();
 		output = p.getOutput();
 		afterOutput = p.getAfterOutput();
@@ -96,7 +94,7 @@ public class TestResultMutant implements I_TestResult {
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getFailure()
 	 */
 	@Override
-	public TestFailureMutant getFailure() {
+	public I_TestFailure getFailure() {
 		return failure;
 	}
 	/* (non-Javadoc)
@@ -134,7 +132,7 @@ public class TestResultMutant implements I_TestResult {
 		this.ignored = ignored;
 	}
 	public void setFailure(I_TestFailure p) {
-		this.failure = new TestFailureMutant(p);
+		this.failure = p;
 	}
 	public void setBeforeOutput(String beforeOutput) {
 		this.beforeOutput = beforeOutput;

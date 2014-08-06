@@ -1,17 +1,12 @@
 package org.adligo.tests4j.models.shared.asserts.common;
 
 public interface I_ThrownAssertionData extends I_AssertionData {
-	public static final String EXPECTED_THROWABLE_CLASS = "expected_throwable_class";
-	public static final String EXPECTED_MESSAGE = "expected_message";
-	public static final String ACTUAL_THROWABLE_CLASS = "actual_throwable_class";
-	public static final String ACTUAL_MESSAGE = "actual_message";
-	
-	public abstract Class<? extends Throwable> getExpectedThrowable();
+	public abstract I_ExpectedThrownData getExpected();
 
-	public abstract String getExpectedMessage();
+	public abstract Throwable getActual();
 
-	public abstract Class<? extends Throwable> getActualThrowable();
+	public String getFailureReason();
 
-	public abstract String getActualMessage();
+	public int getFailureThrowable();
 
 }

@@ -101,11 +101,14 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		notifier = memory.getNotifier();
 		submitSetupRunnables();
 		
-		startRecordingAllTrialsRun();
+		
 		
 		//sleep this thread until it can start running trials
-		
-		submitTrialsRunnables();
+		if (memory.getTrialsToRun() >= 1) {
+			startRecordingAllTrialsRun();
+			
+			submitTrialsRunnables();
+		}
 		/*
 		Collection<I_Tests4J_RemoteInfo> remotes = params.getRemoteInfo();
 		for (I_Tests4J_RemoteInfo remote: remotes) {

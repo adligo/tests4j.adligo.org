@@ -1,6 +1,8 @@
 package org.adligo.tests4j.models.shared.metadata;
 
 import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.models.shared.xml.XML_Parser;
 
@@ -11,15 +13,23 @@ import org.adligo.tests4j.models.shared.xml.XML_Parser;
  *
  */
 public class UseCaseMetadata implements I_UseCaseMetadata {
-	public static final String A_USE_CASE_REQUIRES_A_NOWN_AND_A_VERB = "A Use Case requires a nown and a verb.";
 	private String nown;
 	private String verb;
 	
 	public UseCaseMetadata(String pNown, String pVerb) {
+		setup(pNown, pVerb);
+	}
+
+	protected void setup(String pNown, String pVerb) {
 		nown = pNown;
 		verb = pVerb;
-		if (StringMethods.isEmpty(nown) || StringMethods.isEmpty(verb)) {
-			throw new IllegalArgumentException(A_USE_CASE_REQUIRES_A_NOWN_AND_A_VERB);
+		if (StringMethods.isEmpty(nown)) {
+			I_Tests4J_AnnotationErrors messages = Tests4J_Constants.CONSTANTS.getAnnotationErrors();
+			throw new IllegalArgumentException(messages.getUseCaseScopeEmptyNown());
+		}
+		if (StringMethods.isEmpty(verb)) {
+			I_Tests4J_AnnotationErrors messages = Tests4J_Constants.CONSTANTS.getAnnotationErrors();
+			throw new IllegalArgumentException(messages.getUseCaseScopeEmptyVerb());
 		}
 	}
 
@@ -30,9 +40,7 @@ public class UseCaseMetadata implements I_UseCaseMetadata {
 	public UseCaseMetadata(String xml) {
 		nown = XML_Parser.getAttributeValue(xml, I_UseCaseMetadata.NOWN_ATTRIBUTE);
 		verb = XML_Parser.getAttributeValue(xml, I_UseCaseMetadata.VERB_ATTRIBUTE);
-		if (StringMethods.isEmpty(nown) || StringMethods.isEmpty(verb)) {
-			throw new IllegalArgumentException(A_USE_CASE_REQUIRES_A_NOWN_AND_A_VERB);
-		}
+		setup(nown, verb);
 	}
 	
 	public String getNown() {

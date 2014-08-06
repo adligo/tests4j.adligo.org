@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.models.shared.results.I_TrialFailure;
+import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.BeforeTrial;
 /**
@@ -18,7 +20,7 @@ public class BeforeTrialAuditor {
 
 	
 	public static boolean audit(I_TrialDescription trialDesc,
-			List<TrialVerificationFailure> failures,
+			List<I_TrialFailure> failures,
 			Method method) {
 		
 		String trialName = trialDesc.getTrialName();
@@ -29,20 +31,18 @@ public class BeforeTrialAuditor {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 				I_Tests4J_AnnotationErrors messages = consts.getAnnotationErrors();
 			
-				failures.add(new TrialVerificationFailure(
+				failures.add(new TrialFailure(
 						messages.getBeforeTrialNotStatic(),
-						new IllegalArgumentException(trialName + 
-								messages.getWasAnnotatedIncorrectly())));
+						trialName + messages.getWasAnnotatedIncorrectly()));
 
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 				I_Tests4J_AnnotationErrors messages = consts.getAnnotationErrors();
 			
-				failures.add(new TrialVerificationFailure(
+				failures.add(new TrialFailure(
 						messages.getBeforeTrialNotPublic(),
-						new IllegalArgumentException(trialName + 
-								messages.getWasAnnotatedIncorrectly())));
+						trialName + messages.getWasAnnotatedIncorrectly()));
 
 			}
 			Class<?> [] params = method.getParameterTypes();
@@ -50,10 +50,9 @@ public class BeforeTrialAuditor {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 				I_Tests4J_AnnotationErrors messages = consts.getAnnotationErrors();
 			
-				failures.add(new TrialVerificationFailure(
+				failures.add(new TrialFailure(
 						messages.getBeforeTrialHasParams(),
-						new IllegalArgumentException(trialName + 
-								messages.getWasAnnotatedIncorrectly())));
+						trialName + messages.getWasAnnotatedIncorrectly()));
 			}
 			return true;
 		}

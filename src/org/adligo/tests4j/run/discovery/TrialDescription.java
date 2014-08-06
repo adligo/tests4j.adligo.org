@@ -3,6 +3,7 @@ package org.adligo.tests4j.run.discovery;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.adligo.tests4j.models.shared.common.I_TrialType;
+import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
@@ -18,6 +20,8 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
+import org.adligo.tests4j.models.shared.results.I_TrialFailure;
+import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -52,20 +56,17 @@ public class TrialDescription implements I_TrialDescription {
 	private final List<TestDescription> testMethods = new CopyOnWriteArrayList<TestDescription>();
 	private I_TrialType type;
 	private boolean runnable = false;
-	private String resultFailureMessage;
-	private Exception resultException;
 	private boolean ignored;
-	private long duration;
 	private long timeout;
 	private I_Tests4J_Log reporter;
 	private SourceFileScope sourceFileScope;
 	private UseCaseScope useCaseScope;
 	private PackageScope packageScope;
 	private double minCoverage = 100.0;
+	private List<I_TrialFailure> failures = new ArrayList<I_TrialFailure>();
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
 			I_Tests4J_Log pLog) {
-		long start = System.currentTimeMillis();
 		reporter = pLog;
 		trialClass = pTrialClass;
 		if (reporter.isLogEnabled(TrialDescription.class)) {
@@ -73,16 +74,11 @@ public class TrialDescription implements I_TrialDescription {
 		}
 		
 		runnable = checkTestClass();
-		long end = System.currentTimeMillis();
-		duration = end - start;
 	}
 
 	private boolean checkTestClass() {
-		try {
-			type = TrialTypeFinder.getTypeInternal(trialClass);
-		} catch (IllegalArgumentException x) {
-			resultException = x;
-			resultFailureMessage = x.getMessage();
+		type = TrialTypeFinder.getTypeInternal(trialClass, failures);
+		if (failures.size() >= 1) {
 			return false;
 		}
 		if (!checkTypeAnnotations()) {
@@ -99,12 +95,8 @@ public class TrialDescription implements I_TrialDescription {
 		} else {
 			timeout = 0;
 		}
-		
-		List<TrialVerificationFailure> failures = locateTestMethods();
+		findTestMethods();
 		if (failures.size() >= 1) {
-			TrialVerificationFailure topFailure = failures.get(0);
-			resultFailureMessage = topFailure.getFailureMessage();
-			resultException = topFailure.getException();
 			return false;
 		}
 		if (!createInstance()) {
@@ -124,11 +116,9 @@ public class TrialDescription implements I_TrialDescription {
 						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 						I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 						
-						resultFailureMessage = 
-								annonErrors.getNoSourceFileScope();
-						resultException	 =
-								new IllegalArgumentException(trialName + 
-										annonErrors.getWasAnnotatedIncorrectly());
+						failures.add(new TrialFailure(
+								annonErrors.getNoSourceFileScope(),
+								trialName + annonErrors.getWasAnnotatedIncorrectly()));
 						return false;
 					} else {
 						Class<?> clazz = sourceFileScope.sourceClass();
@@ -136,11 +126,9 @@ public class TrialDescription implements I_TrialDescription {
 							I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 							I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 							
-							resultFailureMessage = 
-									annonErrors.getSourceFileScopeEmptyClass();
-							resultException	 =
-									new IllegalArgumentException(trialName + 
-											annonErrors.getWasAnnotatedIncorrectly());
+							failures.add(new TrialFailure(
+									annonErrors.getSourceFileScopeEmptyClass(),
+									trialName + annonErrors.getWasAnnotatedIncorrectly()));
 							return false;
 						}
 						minCoverage = sourceFileScope.minCoverage();
@@ -148,11 +136,9 @@ public class TrialDescription implements I_TrialDescription {
 							I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 							I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 							
-							resultFailureMessage = 
-									annonErrors.getMinCoverageMustBeBetweenZeroAndOneHundred();
-							resultException	 =
-									new IllegalArgumentException(trialName + 
-											annonErrors.getWasAnnotatedIncorrectly());
+							failures.add(new TrialFailure( 
+									annonErrors.getMinCoverageMustBeBetweenZeroAndOneHundred(),
+									trialName + annonErrors.getWasAnnotatedIncorrectly()));
 							return false;
 						}
 					}
@@ -163,11 +149,9 @@ public class TrialDescription implements I_TrialDescription {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
-					resultFailureMessage = 
-							annonErrors.getNoPackageScope();
-					resultException	 =
-							new IllegalArgumentException(trialName + 
-									annonErrors.getWasAnnotatedIncorrectly());
+					failures.add(new TrialFailure(
+							annonErrors.getNoPackageScope(),
+							trialName + annonErrors.getWasAnnotatedIncorrectly()));
 					return false;
 				}
 				String testedPackageName = packageScope.packageName();
@@ -175,11 +159,9 @@ public class TrialDescription implements I_TrialDescription {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
-					resultFailureMessage = 
-							annonErrors.getPackageScopeEmptyName();
-					resultException	 =
-							new IllegalArgumentException(trialName + 
-									annonErrors.getWasAnnotatedIncorrectly());
+					failures.add(new TrialFailure(
+							annonErrors.getPackageScopeEmptyName(),
+							trialName + annonErrors.getWasAnnotatedIncorrectly()));
 					return false;
 				} 
 				
@@ -190,11 +172,9 @@ public class TrialDescription implements I_TrialDescription {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
-					resultFailureMessage = 
-							annonErrors.getNoUseCaseScope();
-					resultException	 =
-							new IllegalArgumentException(trialName + 
-									annonErrors.getWasAnnotatedIncorrectly());
+					failures.add(new TrialFailure(
+							annonErrors.getNoUseCaseScope(),
+							trialName + annonErrors.getWasAnnotatedIncorrectly()));
 					return false;
 				}
 				String system = useCaseScope.system();
@@ -202,11 +182,9 @@ public class TrialDescription implements I_TrialDescription {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
-					resultFailureMessage = 
-							annonErrors.getUseCaseScopeEmptySystem();
-					resultException	 =
-							new IllegalArgumentException(trialName + 
-									annonErrors.getWasAnnotatedIncorrectly());
+					failures.add(new TrialFailure(
+							annonErrors.getUseCaseScopeEmptySystem()
+							, trialName + annonErrors.getWasAnnotatedIncorrectly()));
 					return false;
 				} 
 				
@@ -215,11 +193,10 @@ public class TrialDescription implements I_TrialDescription {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
-					resultFailureMessage = 
-							annonErrors.getUseCaseScopeEmptyNown();
-					resultException	 =
-							new IllegalArgumentException(trialName + 
-									annonErrors.getWasAnnotatedIncorrectly());
+					failures.add(new TrialFailure(
+							annonErrors.getUseCaseScopeEmptyNown(), 
+							trialName + 
+									annonErrors.getWasAnnotatedIncorrectly()));
 					return false;
 				} 
 				
@@ -228,11 +205,9 @@ public class TrialDescription implements I_TrialDescription {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
-					resultFailureMessage = 
-							annonErrors.getUseCaseScopeEmptyVerb();
-					resultException	 =
-							new IllegalArgumentException(trialName + 
-									annonErrors.getWasAnnotatedIncorrectly());
+					failures.add(new TrialFailure(
+							annonErrors.getUseCaseScopeEmptyVerb(),
+							trialName + annonErrors.getWasAnnotatedIncorrectly()));
 					return false;
 				} 
 			default:
@@ -241,8 +216,7 @@ public class TrialDescription implements I_TrialDescription {
 		return true;
 	}
 
-	private List<TrialVerificationFailure> locateTestMethods() {
-		List<TrialVerificationFailure> failures = new ArrayList<TrialVerificationFailure>();
+	private void findTestMethods() {
 		/**
 		 * since all tests must take 
 		 * no params, we can rely on it's hashCode
@@ -267,10 +241,9 @@ public class TrialDescription implements I_TrialDescription {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
-					failures.add(new TrialVerificationFailure(
+					failures.add(new TrialFailure(
 							annonErrors.getMultipleBeforeTrial(),
-							new IllegalArgumentException(trialClass.getName() + 
-									annonErrors.getWasAnnotatedIncorrectly())));
+							trialClass.getName() + annonErrors.getWasAnnotatedIncorrectly()));
 				}
 			}
 			TestDescription testDesc = TestAuditor.audit(this, failures, method);
@@ -284,10 +257,9 @@ public class TrialDescription implements I_TrialDescription {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
-					failures.add(new TrialVerificationFailure(
+					failures.add(new TrialFailure(
 							annonErrors.getMultipleAfterTrial(),
-							new IllegalArgumentException(trialClass.getName() + 
-									annonErrors.getWasAnnotatedIncorrectly())));
+							trialClass.getName() + annonErrors.getWasAnnotatedIncorrectly()));
 				}
 			}
 			
@@ -298,21 +270,18 @@ public class TrialDescription implements I_TrialDescription {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 				I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 				
-				failures.add(new TrialVerificationFailure(
+				failures.add(new TrialFailure(
 						annonErrors.getNoTests(),
-						new IllegalArgumentException(trialClass.getName() + 
-								annonErrors.getWasAnnotatedIncorrectly())));
+						trialClass.getName() + annonErrors.getWasAnnotatedIncorrectly()));
 			}
 		} else if (testMethods.size() == 0 ) {
 			I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 			I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 			
-			failures.add(new TrialVerificationFailure(
+			failures.add(new TrialFailure(
 					annonErrors.getNoTests(),
-					new IllegalArgumentException(trialClass.getName() + 
-							annonErrors.getWasAnnotatedIncorrectly())));
+					trialClass.getName() + annonErrors.getWasAnnotatedIncorrectly()));
 		}
-		return failures;
 	}
 
 
@@ -332,8 +301,9 @@ public class TrialDescription implements I_TrialDescription {
 			trial =  (I_AbstractTrial) o;
 			return true;
 		} catch (Exception x) {
-			resultFailureMessage = Tests4J_Constants.CONSTANTS.getBadConstuctor(); 
-			resultException	= x;
+			failures.add(new TrialFailure(
+					Tests4J_Constants.CONSTANTS.getBadConstuctor(),
+					StackTraceBuilder.toString(x, true)));
 		}
 		return false;
 	}
@@ -353,32 +323,12 @@ public class TrialDescription implements I_TrialDescription {
 		return runnable;
 	}
 
-	public String getResultFailureMessage() {
-		return resultFailureMessage;
-	}
-
-	public Exception getResultException() {
-		return resultException;
-	}
-
 	public void setRunnable(boolean trialCanRun) {
 		this.runnable = trialCanRun;
 	}
 
-	public void setResultFailureMessage(String resultFailureMessage) {
-		this.resultFailureMessage = resultFailureMessage;
-	}
-
-	public void setResultException(IllegalArgumentException resultException) {
-		this.resultException = resultException;
-	}
-
 	public boolean isIgnored() {
 		return ignored;
-	}
-
-	public long getDuration() {
-		return duration;
 	}
 
 	/**
@@ -516,5 +466,9 @@ public class TrialDescription implements I_TrialDescription {
 
 	public I_AbstractTrial getTrial() {
 		return trial;
+	}
+
+	public List<I_TrialFailure> getFailures() {
+		return Collections.unmodifiableList(failures);
 	}
 }

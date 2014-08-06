@@ -1,19 +1,14 @@
 package org.adligo.tests4j.models.shared.asserts;
 
-import java.util.Set;
-
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
-import org.adligo.tests4j.models.shared.asserts.uniform.Evaluation;
-import org.adligo.tests4j.models.shared.asserts.uniform.EvaluationMutant;
+import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertionData;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_Evaluation;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionCommand;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionEvaluator;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
@@ -26,20 +21,30 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
  * @author scott
  *
  */
-public class UniformThrownAssertCommand<T,D> extends AbstractAssertCommand 
-	implements I_UniformThrownAssertionCommand<D> {
+public class UniformThrownAssertCommand extends AbstractAssertCommand 
+	implements I_UniformThrownAssertionCommand<I_ThrownAssertionData> {
 	
 	public static final String UNIFORM_THROWN_ASSERT_COMMAND_REQUIRES_A_EVALUATOR = 
 			"UniformThrownAssertCommand requires a evaluator.";
-	private I_ExpectedThrownData data;
-	private I_UniformAssertionEvaluator<Throwable, D> evaluator;
-	private I_Evaluation<D> result;
+	private I_ExpectedThrownData expected;
+	private I_UniformThrownAssertionEvaluator<I_ThrownAssertionData> evaluator;
+	private I_Evaluation<I_ThrownAssertionData> result;
 	private Throwable actual;
+	/**
+	 * which exception in the chain 
+	 * didn't match, one based (not zero based).
+	 */
+	private Integer failureThrowable;
+	/**
+	 * the reason the throwable wasn't a match.
+	 */
+	private String failureReason;
 	
-	public UniformThrownAssertCommand(String failureMessage, I_ExpectedThrownData pData,  I_UniformAssertionEvaluator<Throwable, D> pEvaluator) {
+	public UniformThrownAssertCommand(String failureMessage, I_ExpectedThrownData pData,  
+			I_UniformThrownAssertionEvaluator<I_ThrownAssertionData> pEvaluator) {
 		super(AssertType.AssertThrownUniform, failureMessage);
-		data = pData;
-		if (data == null) {
+		expected = pData;
+		if (expected == null) {
 			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
 		}
@@ -63,23 +68,14 @@ public class UniformThrownAssertCommand<T,D> extends AbstractAssertCommand
 		} catch (Throwable t) {
 			actual = t;
 		}
-		I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
-		
-		EvaluationMutant<D> em = new EvaluationMutant<D>();
-		if (actual == null) {
-			em.setSuccess(false);
-			em.setFailureReason(messages.getNothingWasThrown());
-			result = new Evaluation<D>(em);
-			return false;
-		}
-		result = evaluator.isUniform(new CompareAssertionData<Throwable>(data.getInstance(),actual));
+		result = evaluator.isUniform(expected, actual);
 		if (result.isSuccess()) {
 			return true;
 		} 
 		return false;
 	}
 	
-	public I_Evaluation<D> getEvaluation() {
+	public I_Evaluation<I_ThrownAssertionData> getEvaluation() {
 		return result;
 	}
 
@@ -88,7 +84,7 @@ public class UniformThrownAssertCommand<T,D> extends AbstractAssertCommand
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((actual == null) ? 0 : actual.hashCode());
-		result = prime * result + ((data == null) ? 0 : data.hashCode());
+		result = prime * result + ((expected == null) ? 0 : expected.hashCode());
 		result = prime * result
 				+ ((this.result == null) ? 0 : this.result.hashCode());
 		return result;
@@ -100,17 +96,16 @@ public class UniformThrownAssertCommand<T,D> extends AbstractAssertCommand
 			return true;
 		if (!super.equals(obj))
 			return false;
-		@SuppressWarnings("unchecked")
-		UniformThrownAssertCommand<T,D> other = (UniformThrownAssertCommand<T,D>) obj;
+		UniformThrownAssertCommand other = (UniformThrownAssertCommand) obj;
 		if (actual == null) {
 			if (other.actual != null)
 				return false;
 		} else if (!actual.equals(other.actual))
 			return false;
-		if (data == null) {
-			if (other.data != null)
+		if (expected == null) {
+			if (other.expected != null)
 				return false;
-		} else if (!data.equals(other.data))
+		} else if (!expected.equals(other.expected))
 			return false;
 		if (result == null) {
 			if (other.result != null)
@@ -122,16 +117,15 @@ public class UniformThrownAssertCommand<T,D> extends AbstractAssertCommand
 
 	@Override
 	public I_AssertionData getData() {
-		ThrownAssertionDataMutant tadm = new ThrownAssertionDataMutant();
-		tadm.setExpectedMessage(data.getMessage());
-		tadm.setExpectedThrowable(data.getThrowableClass());
-		
-		//there may not have been a caught exception
-		if (actual != null) {
-			tadm.setActualThrowable(actual.getClass());
-			tadm.setActualMessage(actual.getMessage());
-		}
-		return new ThrownAssertionData(tadm);
+		return (I_AssertionData) result.getData();
+	}
+
+	public Integer getFailureThrowable() {
+		return failureThrowable;
+	}
+
+	public String getFailureReason() {
+		return failureReason;
 	}
 
 }

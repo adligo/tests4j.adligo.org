@@ -59,8 +59,8 @@ public class TestMetadataMutant implements I_TestMetadata {
 	public void setTimeout(Long timeout) {
 		this.timeout = timeout;
 	}
-	public void setIgnored(boolean skipped) {
-		this.ignored = skipped;
+	public void setIgnored(boolean pIgnroed) {
+		this.ignored = pIgnroed;
 	}
 
 	@Override

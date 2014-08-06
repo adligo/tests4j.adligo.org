@@ -7,4 +7,5 @@ public interface I_Tests4J_AssertionInputMessages {
 	public String getTheActualValueIsNull();
 	public String getTheActualClassIsNotAssignableFromTheExpectedClass();
 	public String getIThrowerIsRequired();
+	public String getTheUniformThrownEvaluatorIsNull();
 }

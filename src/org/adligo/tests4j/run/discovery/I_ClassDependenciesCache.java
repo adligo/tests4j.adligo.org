@@ -1,5 +1,7 @@
 package org.adligo.tests4j.run.discovery;
 
+import org.adligo.tests4j.models.shared.dependency.I_ClassDependencies;
+
 /**
  * Note the I_ClassDependencies in the
  * cache should always contain zero references 

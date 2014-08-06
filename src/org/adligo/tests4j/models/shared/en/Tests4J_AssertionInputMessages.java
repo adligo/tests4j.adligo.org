@@ -10,6 +10,7 @@ public class Tests4J_AssertionInputMessages implements I_Tests4J_AssertionInputM
 	private static final String THE_CLASS_OF_THE_ACTUAL_VALUE_IS_NOT_ASSIGNABLE_FROM_THE_CLASS_OF_THE_EXPECTED_VALUE = "The class of the actual value is not assignable from the class of the expected value.";
 	private static final String THE_ACTUAL_VALUE_IS_NULL_AND_SHOULD_NOT_BE = "The actual value is null and should NOT be.";
 	private static final String I_THROWER_IS_REQUIRED = "I_Thrower is required.";
+	private static final String THE_UNIFORM_THROWN_EVALUATOR_IS_NULL = "The uniform thown evaluator is null.";
 	
 	Tests4J_AssertionInputMessages() {
 	}
@@ -37,8 +38,12 @@ public class Tests4J_AssertionInputMessages implements I_Tests4J_AssertionInputM
 		return THE_EXPECTED_VALUE_SHOULD_NEVER_BE_NULL_TRY_ASSERT_NULL;
 	}
 	
-
 	public String getIThrowerIsRequired() {
 		return I_THROWER_IS_REQUIRED;
 	}
+	
+	public String getTheUniformThrownEvaluatorIsNull() {
+		return THE_UNIFORM_THROWN_EVALUATOR_IS_NULL;
+	}
+	
 }

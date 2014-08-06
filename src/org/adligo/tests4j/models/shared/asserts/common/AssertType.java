@@ -22,7 +22,11 @@ import java.util.Set;
  *     The same could be done for other types of data comparisons
  *         ie BigDecimal with out precision 0 vs 0.0 vs 0.00 are all really zero
  *         and therefore Uniform.
- *      
+ *     
+ * Extension plug-ins to the framework will only be done via assertUniform, assertNotUniform
+ * and assertUniformThrown, therefore only the assert types in this enum
+ * will be needed for any sort of rendering of test results.
+ * 
  * @author scott
  *
  */

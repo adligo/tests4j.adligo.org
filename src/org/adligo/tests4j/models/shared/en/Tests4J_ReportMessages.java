@@ -9,12 +9,22 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
  *
  */
 public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
+	private static final String THE_FOLLOWING_ACTUAL_LINE_NUMBERS_NOT_IN_THE_EXPECTED_TEXT = "The following actual line numbers not in the expected text: ";
+
+	private static final String THE_FOLLOWING_EXPECTED_LINE_NUMBERS_WERE_MISSING = "The following expected line numbers were missing: ";
+
+	private static final String DIFFERENCES = "Differences;";
+
+	private static final String CLASS = "Class: ";
+
+	private static final String ACTUAL = "Actual;";
+
+	private static final String EXPECTED = "Expected;";
+
 	private static final String DONE = "100.0% done.";
 	
 	private static final String FAILED = "Failed!";
 	private static final String FAILED_EOS = " failed.";
-	
-	
 	
 	private static final String INDENT = "\t";
 	private static final String METADATA_CALCULATED = " Metadata Calculated: ";
@@ -131,5 +141,29 @@ public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
 	
 	public String getStartingTest() {
 		return STARTING_TEST;
+	}
+	
+	public String getExpected() {
+		return EXPECTED;
+	}
+	
+	public String getActual() {
+		return ACTUAL;
+	}
+	
+	public String getClassHeadding() {
+		return CLASS;
+	}
+	
+	public String getDifferences() {
+		return DIFFERENCES;
+	}
+	
+	public String getTheFollowingExpectedLineNumbersWereMissing() {
+		return THE_FOLLOWING_EXPECTED_LINE_NUMBERS_WERE_MISSING;
+	}
+	
+	public String getTheFollowingActualLineNumberNotExpected() {
+		return THE_FOLLOWING_ACTUAL_LINE_NUMBERS_NOT_IN_THE_EXPECTED_TEXT;
 	}
 }

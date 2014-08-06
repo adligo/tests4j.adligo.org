@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.asserts.common;
 
-import org.adligo.tests4j.models.shared.asserts.ExpectedThrownData;
 
 /**
  * a interface which represents expected thrown 

@@ -1,11 +1,16 @@
 package org.adligo.tests4j.run.helpers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.adligo.tests4j.models.shared.common.I_TrialType;
+import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
 import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
+import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
@@ -39,7 +44,6 @@ public class TrialDescriptionProcessor {
 		// that only one thread is doing this for a specific trial at a time
 		// This allows reuse of TrialDescription instances
 		synchronized (trialClazz) {
-			I_TrialType type = TrialTypeFinder.getTypeInternal(trialClazz);
 			
 			//try to reuse the description if another thread already described it
 			TrialDescription desc = memory.getTrialDescription(className);
@@ -52,38 +56,42 @@ public class TrialDescriptionProcessor {
 				if (!desc.isRunnable()) {
 					BaseTrialResultMutant trm = new BaseTrialResultMutant();
 					trm.setTrialName(className);
-					String failureMessage = desc.getResultFailureMessage();
-					if (failureMessage != null) {
-						TrialFailure tf = new TrialFailure(failureMessage, desc.getResultException());
-						trm.setFailure(tf);
+					List<I_TrialFailure> failures = desc.getFailures();
+					if (failures.size() >= 1) {
+						trm.setFailures(failures);
 					}
-					
 					trm.setPassed(false);
-					trm.setType(type);
+					I_TrialType type = desc.getType();
+					if (type == null) {
+						memory.addResultBeforeMetadata(new BaseTrialResult(trm));
+					} else {
 					
-					TrialType tt = TrialType.get(type);
-					switch (tt) {
-						case UseCaseTrial:
-								UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trm);
-								mut.setSystem(desc.getSystemName());
-								mut.setUseCase(desc.getUseCase());
-								memory.addResultBeforeMetadata(new UseCaseTrialResult(mut));
-							break;
-						case ApiTrial:
-								ApiTrialResultMutant api = new ApiTrialResultMutant(trm);
-								api.setPackageName(desc.getPackageName());
-								memory.addResultBeforeMetadata(new ApiTrialResult(api));
-							break;
-						case SourceFileTrial:
-								SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trm);
-								Class<?> clazz = desc.getSourceFileClass();
-								if (clazz != null) {
-									src.setSourceFileName(clazz.getName());
-								}
-								memory.addResultBeforeMetadata(new SourceFileTrialResult(src));
+						trm.setType(type);
+						
+						TrialType tt = TrialType.get(type);
+						switch (tt) {
+							case UseCaseTrial:
+									UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trm);
+									mut.setSystem(desc.getSystemName());
+									mut.setUseCase(desc.getUseCase());
+									memory.addResultBeforeMetadata(new UseCaseTrialResult(mut));
 								break;
-						default:
-							memory.addResultBeforeMetadata(new BaseTrialResult(trm));
+							case ApiTrial:
+									ApiTrialResultMutant api = new ApiTrialResultMutant(trm);
+									api.setPackageName(desc.getPackageName());
+									memory.addResultBeforeMetadata(new ApiTrialResult(api));
+								break;
+							case SourceFileTrial:
+									SourceFileTrialResultMutant src = new SourceFileTrialResultMutant(trm);
+									Class<?> clazz = desc.getSourceFileClass();
+									if (clazz != null) {
+										src.setSourceFileName(clazz.getName());
+									}
+									memory.addResultBeforeMetadata(new SourceFileTrialResult(src));
+									break;
+							default:
+								memory.addResultBeforeMetadata(new BaseTrialResult(trm));
+						}
 					}
 				}
 			}
@@ -105,17 +113,17 @@ public class TrialDescriptionProcessor {
 	public TrialDescription newTrailDescriptionToRun(Class<? extends I_AbstractTrial> trialClazz, I_Tests4J_NotificationManager notifer) {
 		String className = trialClazz.getName();
 		TrialDescription desc = new TrialDescription(trialClazz, memory.getLogger());
-		I_TrialType type = desc.getType();
 		
 		if (!desc.isIgnored()) {
 			if (!desc.isRunnable()) {
 				BaseTrialResultMutant trm = new BaseTrialResultMutant();
 				trm.setTrialName(className);
-				String failureMessage = desc.getResultFailureMessage();
-				if (failureMessage != null) {
-					TrialFailure tf = new TrialFailure(failureMessage, desc.getResultException());
-					trm.setFailure(tf);
+				List<I_TrialFailure> failures = desc.getFailures();
+				if (failures.size() >= 1) {
+					trm.setFailures(failures);
 				}
+				I_TrialType type = desc.getType();
+				
 				trm.setPassed(false);
 				trm.setType(type);
 				

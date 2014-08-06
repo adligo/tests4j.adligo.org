@@ -9,7 +9,7 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_Evaluation;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
@@ -31,17 +31,16 @@ public class UniformAssertCommand<T,D> extends AbstractAssertCommand
 	public static final String BAD_TYPE = 
 			"UniformAssertCommand requires it's type to be one of AssertType.UNIFORM_TYPES";
 	private I_CompareAssertionData<?> data;
-	private AssertType type;
 	private I_Evaluation<D> result;
 	private I_UniformAssertionEvaluator<T, D> evaluator;
 	
 	
-	public UniformAssertCommand(I_AssertType pType, String failureMessage, 
+	public UniformAssertCommand( String failureMessage, 
 			I_CompareAssertionData<T> pData, I_UniformAssertionEvaluator<T, D> pEvaluator) {
-		super(pType, failureMessage);
+		super(pData.getType(), failureMessage);
 		
 		//copy it between classloaders
-		type = AssertType.getType(pType);
+		AssertType type = super.getTypeEnum();
 		if (!AssertType.UNIFORM_TYPES.contains(type)) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
@@ -81,6 +80,7 @@ public class UniformAssertCommand<T,D> extends AbstractAssertCommand
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean evaluate() {
+		AssertType type = getTypeEnum();
 		switch (type) {
 			case AssertUniform:
 					result = evaluator.isUniform((I_CompareAssertionData<T>) data);

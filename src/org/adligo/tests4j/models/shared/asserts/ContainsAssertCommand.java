@@ -1,13 +1,11 @@
 package org.adligo.tests4j.models.shared.asserts;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
+import org.adligo.tests4j.models.shared.asserts.common.I_CollectionContainsAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -20,21 +18,11 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
  *
  */
 public class ContainsAssertCommand extends AbstractAssertCommand 
-implements I_SimpleAssertCommand, I_AssertionData {
+implements I_SimpleAssertCommand, I_CollectionContainsAssertionData {
 		
-	public static final String VALUE = "value";
-	public static final String COLLECTION = "collection";
-	public static final Set<String> KEYS = getKeysStatic();
-	
 	private Object value;
 	private Collection<?> collection;
 	
-	private static Set<String> getKeysStatic() {
-		Set<String> toRet = new HashSet<String>();
-		toRet.add(VALUE);
-		toRet.add(COLLECTION);
-		return Collections.unmodifiableSet(toRet);
-	}
 	
 	public ContainsAssertCommand(String pFailureMessage,Collection<?> pCollection, Object pValue) {
 		super(AssertType.AssertContains, pFailureMessage);
@@ -77,22 +65,6 @@ implements I_SimpleAssertCommand, I_AssertionData {
 		return result;
 	}
 	
-	
-	public Set<String> getKeys() {
-		return KEYS;
-	}
-
-	public Object getData(String key) {
-		if (VALUE.equals(key)) {
-			return value;
-		}
-		if (COLLECTION.equals(key)) {
-			return collection;
-		}
-		return null;
-	}
-	
-	
 	@Override
 	public I_AssertionData getData() {
 		return this;
@@ -134,5 +106,15 @@ implements I_SimpleAssertCommand, I_AssertionData {
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
+	}
+
+
+	public Object getValue() {
+		return value;
+	}
+
+
+	public Collection<?> getCollection() {
+		return collection;
 	}
 }

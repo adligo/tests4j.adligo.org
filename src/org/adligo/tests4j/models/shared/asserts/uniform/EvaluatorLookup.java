@@ -77,14 +77,17 @@ public class EvaluatorLookup implements I_EvaluatorLookup {
 	 * to evaluators
 	 */
 	private Map<String, I_UniformAssertionEvaluator<?,?>> lookup;
+	private I_UniformThrownAssertionEvaluator<?> thrownEvaluator;
 	
 	@SuppressWarnings("unchecked")
 	public EvaluatorLookup() {
 		lookup = Collections.EMPTY_MAP;
+		thrownEvaluator = new UniformThrownAssertionEvaluator();
 	}
 	
 	public EvaluatorLookup(I_EvaluatorLookup other) {
 		lookup = Collections.unmodifiableMap(other.getLookupData());
+		thrownEvaluator = other.getThrownEvaulator();
 	}
 
 	@Override
@@ -96,5 +99,10 @@ public class EvaluatorLookup implements I_EvaluatorLookup {
 	@Override
 	public Map<String, I_UniformAssertionEvaluator<?,?>> getLookupData() {
 		return lookup;
+	}
+
+	@Override
+	public I_UniformThrownAssertionEvaluator<?> getThrownEvaulator() {
+		return thrownEvaluator;
 	}
 }

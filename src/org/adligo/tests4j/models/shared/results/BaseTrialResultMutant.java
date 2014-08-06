@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared.results;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	//skip classCoverage because there is no ClassCoverageMutant yet
 	private String beforeTestOutput;
 	private String afterTestOutput;
-	private TrialFailure failure;
+	private List<I_TrialFailure> failures = Collections.emptyList();
 	private Boolean passed = null;
 	private boolean hadAfterTrialTests = false;
 	private boolean ranAfterTrialTests = false;
@@ -64,10 +65,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		passed = p.isPassed();
 		beforeTestOutput = p.getBeforeTrialOutput();
 		afterTestOutput = p.getAfterTrialOutput();
-		I_TrialFailure pFailure = p.getFailure();
-		if (pFailure != null) {
-			failure = new TrialFailure(pFailure);
-		}
+		setFailures(p.getFailures());
 		hadAfterTrialTests = p.isHadAfterTrialTests();
 		ranAfterTrialTests = p.isRanAfterTrialTests();
 	}
@@ -172,12 +170,25 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		sb.append(c.getAfterTrialOutput());
 	}
 
-	public I_TrialFailure getFailure() {
-		return failure;
+	public List<I_TrialFailure> getFailures() {
+		return failures;
 	}
 
-	public void setFailure(TrialFailure failure) {
-		this.failure = failure;
+	public void setFailures(List<I_TrialFailure> pFailures) {
+		if (pFailures != null) {
+			for (I_TrialFailure tf: pFailures) {
+				addFailure(tf);
+			}
+		}
+	}
+
+	public void addFailure(I_TrialFailure tf) {
+		if (tf != null) {
+			if (failures.isEmpty()) {
+				failures = new ArrayList<I_TrialFailure>();
+			}
+			failures.add(tf);
+		}
 	}
 
 

@@ -152,6 +152,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				onTrialCompetedInternal(result);
 				result = memory.pollFailureResults();
 			}
+			checkDoneRunningNonMetaTrials();
 		}
 	}
 

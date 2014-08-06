@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.models.shared.results.I_TrialFailure;
+import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.IgnoreTest;
 import org.adligo.tests4j.models.shared.trials.Test;
@@ -29,7 +31,7 @@ public class TestAuditor {
 	 * @return
 	 */
 	public static TestDescription audit(I_TrialDescription trialDesc,
-			List<TrialVerificationFailure> failures,
+			List<I_TrialFailure> failures,
 			Method method) {
 		Test test = method.getAnnotation(Test.class);
 		if (test != null) {
@@ -39,47 +41,47 @@ public class TestAuditor {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
 				
-				failures.add(new TrialVerificationFailure(
+				failures.add(new TrialFailure(
 						errors.getHasParams(),
-						new IllegalArgumentException(trialName + "." + method.getName() + 
-								errors.getWasAnnotatedIncorrectly())));
+						trialName + "." + method.getName() + 
+								errors.getWasAnnotatedIncorrectly()));
 			}
 			if (Modifier.isAbstract(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
 				
-				failures.add(new TrialVerificationFailure(
+				failures.add(new TrialFailure(
 						errors.getIsAbstract(),
-						new IllegalArgumentException(trialName + "." + method.getName() + 
-								errors.getWasAnnotatedIncorrectly())));
+						trialName + "." + method.getName() + 
+								errors.getWasAnnotatedIncorrectly()));
 			}
 			if (Modifier.isStatic(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
 				
-				failures.add(new TrialVerificationFailure(
+				failures.add(new TrialFailure(
 						errors.getIsStatic(),
-						new IllegalArgumentException(trialName + "." + method.getName() + 
-								errors.getWasAnnotatedIncorrectly())));
+						trialName + "." + method.getName() + 
+								errors.getWasAnnotatedIncorrectly()));
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
 				
-				failures.add(new TrialVerificationFailure(
+				failures.add(new TrialFailure(
 						errors.getIsNotPublic(),
-						new IllegalArgumentException(trialName + "." + method.getName() + 
-								errors.getWasAnnotatedIncorrectly())));
+						trialName + "." + method.getName() + 
+								errors.getWasAnnotatedIncorrectly()));
 			}
 			long timeout = test.timeout();
 			if (timeout < 0) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
 				
-				failures.add(new TrialVerificationFailure(
+				failures.add(new TrialFailure(
 						errors.getHasNegativeTimeout(),
-						new IllegalArgumentException(trialName + "." + method.getName() + 
-								errors.getWasAnnotatedIncorrectly())));
+						trialName + "." + method.getName() + 
+								errors.getWasAnnotatedIncorrectly()));
 			}
 			IgnoreTest it = method.getAnnotation(IgnoreTest.class);
 			return new TestDescription(method, timeout, it != null);

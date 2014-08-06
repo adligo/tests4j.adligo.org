@@ -42,7 +42,7 @@ public class LineDiffTextDisplay {
 				I_DiffIndexesPair pair = diff.getIndexes();
 				if (type == null) {
 					out.log(constants.getError());
-				} else if ( type != LineDiffType.MATCH) {
+				} else if ( type != LineDiffType.Match) {
 					
 					Integer expected = diff.getExpectedLineNbr();
 					Integer actual = diff.getActualLineNbr();
@@ -57,7 +57,7 @@ public class LineDiffTextDisplay {
 					} else {
 					
 						switch (type) {
-							case PARTIAL_MATCH:
+							case PartialMatch:
 								if (pair == null) {
 									out.log(constants.getError());
 									break;
@@ -97,7 +97,7 @@ public class LineDiffTextDisplay {
 									out.log(constants.getError());
 								}
 								break;
-							case MISSING_ACTUAL_LINE:
+							case MissingActualLine:
 								if (actualLine != null) {
 									diffCount++;
 									out.log(constants.getTheFollowingActualLineOfTextIsMissing() + actual);
@@ -106,7 +106,7 @@ public class LineDiffTextDisplay {
 									out.log(constants.getError());
 								}
 								break;
-							case MISSING_EXPECTED_LINE:
+							case MissingExpectedLine:
 								if (expectedLine != null) {
 									diffCount++;
 									out.log(constants.getTheFollowingExpectedLineOfTextIsMissing() + expected);

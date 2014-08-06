@@ -6,17 +6,19 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
+import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.common.Platform;
+import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
-import org.adligo.tests4j.models.shared.results.I_TestFailure;
-import org.adligo.tests4j.models.shared.results.TestFailureMutant;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
-import org.adligo.tests4j.models.shared.trials.TrialRecursion;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 
 /**
@@ -111,13 +113,18 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_Tests4J_Asse
 		flushAssertionHashes(delegatedTestResultMutant, delegatedTestAssertionHashes);
 		delegatedTestResultMutant.setName(method);
 		TestFailureMutant tfm = new TestFailureMutant();
-		tfm.setException(x);
+		String stack = StackTraceBuilder.toString(x, true);
+		tfm.setFailureDetail(stack);
 		String message = x.getMessage();
 		if (StringMethods.isEmpty(message)) {
-			message = "Unknown Error message.";
+			I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
+			tfm.setFailureMessage(messages.getAnUnexpectedExceptionWasThrown());
+		} else {
+			tfm.setFailureMessage(message);
 		}
-		tfm.setMessage(message);
-		delegatedTestResultMutant.setFailure(tfm);
+		
+		TestFailure tf = new TestFailure(tfm);
+		delegatedTestResultMutant.setFailure(tf);
 	}
 	
 }

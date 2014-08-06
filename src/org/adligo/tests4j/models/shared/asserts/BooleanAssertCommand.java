@@ -6,6 +6,7 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
+import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
 
 
@@ -18,14 +19,7 @@ import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
  *
  */
 public class BooleanAssertCommand extends AbstractAssertCommand 
-	implements I_SimpleAssertCommand, I_AssertionData {
-	/**
-	 * the expected value ie 
-	 * true if this is a {@link AssertType#AssertTrue}
-	 * false if this is a {@link AssertType#AssertFalse}
-	 */
-	public static final String EXPECTED_VALUE = "expected_value";
-	public static final String VALUE = "value";
+	implements I_SimpleAssertCommand, I_CompareAssertionData<Object> {
 	
 	public static final String BOOLEAN_ASSERT_COMMAND_REQUIRES_A_BOOLEAN_TYPE = "BooleanAssertCommand requires a boolean type.";
 	private Object value;
@@ -97,32 +91,32 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 		return false;
 	}
 
-	public Set<String> getKeys() {
-		// TODO Auto-generated method stub
-		return Collections.singleton(VALUE);
-	}
-
-	public Object getData(String key) {
-		if (VALUE.equals(key)) {
-			return value;
-		} else if (EXPECTED_VALUE.equals(key)) {
-			switch (type) {
-				case AssertTrue:
-					return true;
-				case AssertFalse:
-					return false;
-				case AssertNull:
-					return null;
-				case AssertNotNull:
-					return this;
-			}
-		}
-		return null;
-	}
 
 
 	@Override
 	public I_AssertionData getData() {
 		return this;
+	}
+
+
+	@Override
+	public Object getExpected() {
+		switch (type) {
+			case AssertTrue:
+				return true;
+			case AssertFalse:
+				return false;
+			case AssertNull:
+				return null;
+			case AssertNotNull:
+				return "";
+		}
+		return "";
+	}
+
+
+	@Override
+	public Object getActual() {
+		return value;
 	}
 }

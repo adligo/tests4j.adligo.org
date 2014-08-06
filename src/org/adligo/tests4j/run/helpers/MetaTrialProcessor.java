@@ -6,19 +6,22 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
+import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.common.Platform;
+import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
 import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
-import org.adligo.tests4j.models.shared.results.I_TestFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.models.shared.results.TestFailureMutant;
-import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 
@@ -119,14 +122,18 @@ public class MetaTrialProcessor implements I_Tests4J_AssertListener {
 		flushAssertionHashes(metaTrialTestResultMutant, metaTrialAssertionHashes);
 		metaTrialTestResultMutant.setName(method);
 		TestFailureMutant tfm = new TestFailureMutant();
-		tfm.setException(x);
+		String stack = StackTraceBuilder.toString(x, true);
+		tfm.setFailureDetail(stack);
 		String message = x.getMessage();
 		if (StringMethods.isEmpty(message)) {
-			tfm.setMessage("Unknown exception message in onMetaTrialAfterMethodException.");
+			I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
+			
+			tfm.setFailureMessage(messages.getAnUnexpectedExceptionWasThrown());
 		} else {
-			tfm.setMessage(x.getMessage());
+			tfm.setFailureMessage(x.getMessage());
 		}
-		metaTrialTestResultMutant.setFailure(tfm);
+		TestFailure tf = new TestFailure(tfm);
+		metaTrialTestResultMutant.setFailure(tf);
 	}
 	
 	@Override

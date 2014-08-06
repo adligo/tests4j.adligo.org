@@ -26,4 +26,11 @@ public interface I_EvaluatorLookup {
 	 * class to prevent class loading conflicts.
 	 */
 	public Map<String, I_UniformAssertionEvaluator<?,?>> getLookupData();
+	
+	
+	/**
+	 * return the evaluator for assertThrownUniform
+	 * @return
+	 */
+	public I_UniformThrownAssertionEvaluator getThrownEvaulator();
 }

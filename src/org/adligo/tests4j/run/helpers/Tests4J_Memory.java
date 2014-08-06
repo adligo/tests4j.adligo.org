@@ -430,6 +430,10 @@ public class Tests4J_Memory {
 		return trialsToRun.poll();
 	}
 	
+	public int getTrialsToRun() {
+		return trialsToRun.size();
+	}
+	
 	protected boolean hasTrialThatCanRun() {
 		return hasTrialThatCanRun.get();
 	}

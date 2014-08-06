@@ -13,6 +13,9 @@ import java.util.List;
 public class TextLines implements I_TextLines {
 	private List<String> lines = new ArrayList<String>();
 	
+	public TextLines(String text) {
+		this(text, true);
+	}
 	/**
 	 * 
 	 * @param text

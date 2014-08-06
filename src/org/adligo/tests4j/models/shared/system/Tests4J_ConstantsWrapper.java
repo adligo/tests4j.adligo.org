@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.system;
 
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
@@ -26,8 +26,8 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public I_Tests4J_AssertionResultMessages getAssertionResultMessages() {
-		return delegate.getAssertionResultMessages();
+	public I_Tests4J_ResultMessages getResultMessages() {
+		return delegate.getResultMessages();
 	}
 
 	public String getTheMethodCanOnlyBeCalledBy_PartOne() {

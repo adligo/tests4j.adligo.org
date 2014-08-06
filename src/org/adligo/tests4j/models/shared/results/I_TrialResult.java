@@ -33,7 +33,7 @@ public interface I_TrialResult {
 
 	public abstract String getAfterTrialOutput();
 	
-	public I_TrialFailure getFailure();
+	public List<I_TrialFailure> getFailures();
 	public boolean isPassed();
 	public int getTestCount();
 	public int getTestFailureCount();

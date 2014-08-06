@@ -1,12 +1,10 @@
 package org.adligo.tests4j.models.shared.asserts.common;
 
-import java.util.Set;
-
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionCommand;
 
 /**
- * This is a interface that represents data 
+ * This is a marker interface that represents data 
  * that is input to the assert* method.
  * It should return all information about the objects (primitives)
  * passed into the assert* command except for the FailureMessage
@@ -21,6 +19,5 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertion
  *
  */
 public interface I_AssertionData {
-	public Set<String> getKeys();
-	public Object getData(String key);
+	public I_AssertType getType();
 }

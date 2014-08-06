@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.asserts.common;
 
+
 /**
  * The common Interface of AssertCommands @see Command Pattern.
  * Implementations must also implement hashCode() for correct unique assertion hashes!

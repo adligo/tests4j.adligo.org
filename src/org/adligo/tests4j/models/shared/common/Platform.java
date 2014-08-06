@@ -27,7 +27,7 @@ public enum Platform implements I_Platform {
 		return Collections.unmodifiableMap(toRet);
 	}
 	
-	public Platform get(I_Platform p) {
+	public static Platform get(I_Platform p) {
 		return MAP.get(p.getId());
 	}
 	

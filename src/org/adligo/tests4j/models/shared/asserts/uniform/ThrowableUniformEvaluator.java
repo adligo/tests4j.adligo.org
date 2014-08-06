@@ -4,7 +4,7 @@ import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.TextLinesCompare;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionResultMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Throwable, I_TextLinesCompareResult> {
@@ -45,7 +45,7 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		I_TextLinesCompareResult lineTextResult = 
 				tlc.compare(expected.getMessage(), actual.getMessage(), true);
 		if (!lineTextResult.isMatched()) {
-			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
 			
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheTextWasNOT_Uniform());
@@ -86,7 +86,7 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		I_TextLinesCompareResult lineTextResult = 
 				tlc.compare(expected.getMessage(), actual.getMessage(), true);
 		if (lineTextResult.isMatched()) {
-			I_Tests4J_AssertionResultMessages messages = Tests4J_Constants.CONSTANTS.getAssertionResultMessages();
+			I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
 			
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheTextWasUniform());
