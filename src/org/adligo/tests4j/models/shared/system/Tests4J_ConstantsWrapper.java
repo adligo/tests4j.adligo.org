@@ -76,4 +76,14 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 		return delegate.getBadConstuctor();
 	}
 
+	@Override
+	public String getMethodBlockerRequiresABlockingClass() {
+		return delegate.getMethodBlockerRequiresABlockingClass();
+	}
+
+	@Override
+	public String getMethodBlockerRequiresABlockingMethod() {
+		return delegate.getMethodBlockerRequiresABlockingMethod();
+	}
+
 }

@@ -6,17 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.DefaultSystem;
 import org.adligo.tests4j.models.shared.common.I_System;
-import org.adligo.tests4j.shared.report.summary.RemoteProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.SetupProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.SummaryReporter;
-import org.adligo.tests4j.shared.report.summary.TestFailedDisplay;
-import org.adligo.tests4j.shared.report.summary.TestsProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.TestDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialFailedDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialsProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialDisplay;
+import org.adligo.tests4j.models.shared.common.DefaultSystem;
+import org.adligo.tests4j.models.shared.common.Tests4J_System;
 
 /**
  * This is the main logging class for Tests4J,
@@ -36,7 +28,7 @@ public class DefaultLog implements I_Tests4J_Log {
 	private I_System system;
 	
 	public DefaultLog() {
-		this(new DefaultSystem(), null);
+		this(Tests4J_System.SYSTEM, null);
 	}
 	
 	/**

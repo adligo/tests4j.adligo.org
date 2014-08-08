@@ -22,7 +22,7 @@ public class TrialBindings implements I_TrialBindings {
 	}
 
 	@Override
-	public I_Tests4J_Log getReporter() {
+	public I_Tests4J_Log getLog() {
 		return reporter;
 	}
 

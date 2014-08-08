@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.adligo.tests4j.models.shared.common.ClassMethods;
+
 /**
  * This is a mutable implementation of {@link I_EvaluatorLookup}
  * and is not threadsafe.  It is used to provide a pluggable
@@ -46,7 +48,8 @@ public class EvaluatorLookupMutant implements I_EvaluatorLookup {
 	public void setEvaluator(Class<?> clazz, I_UniformAssertionEvaluator<?,?> p) {
 		String className = clazz.getName();
 		Class<?> type =  p.getType();
-		if (!type.isAssignableFrom(clazz)) {
+
+		if (!ClassMethods.isSubType(clazz, type)) {
 			throw new IllegalArgumentException(
 					THE_CLAZZ_PARAMETER_IN_SET_LOOKUP_MUST_BE_ASSIGNABLE_TO_THE_I_UNIFORM_ASSERTION_EVALUATOR_S_TYPE);
 		}

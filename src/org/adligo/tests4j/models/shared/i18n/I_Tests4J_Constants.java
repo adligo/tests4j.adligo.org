@@ -31,10 +31,15 @@ public interface I_Tests4J_Constants {
 	public I_Tests4J_ParamReaderMessages getParamReaderMessages();
 	public I_Tests4J_ReportMessages getReportMessages();
 	
-	public String getTheMethodCanOnlyBeCalledBy_PartOne();
-	public String getTheMethodCanOnlyBeCalledBy_PartTwo();
+	public String getBadConstuctor();
 	public String getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames();
+	public String getMethodBlockerRequiresABlockingClass();
+	public String getMethodBlockerRequiresABlockingMethod();
+	
 	public String getNullParamsExceptionMessage();
 	public String getNullListenerExceptionMessage();
-	public String getBadConstuctor();
+	
+	public String getTheMethodCanOnlyBeCalledBy_PartOne();
+	public String getTheMethodCanOnlyBeCalledBy_PartTwo();
+	
 }

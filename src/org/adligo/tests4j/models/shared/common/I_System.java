@@ -20,7 +20,7 @@ public interface I_System {
 	 * this is just so that 
 	 * System.exit(0) can be tested for
 	 */
-	public void doSystemExit(int p);
+	public void exitJvm(int p);
 	
 	/**
 	 * just a wrapper for System.currentTimeMillis

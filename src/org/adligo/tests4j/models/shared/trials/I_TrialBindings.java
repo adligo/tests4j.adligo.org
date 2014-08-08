@@ -15,6 +15,6 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
  */
 public interface I_TrialBindings extends I_PlatformContainer {
 	public I_Tests4J_AssertListener getAssertListener();
-	public I_Tests4J_Log getReporter();
+	public I_Tests4J_Log getLog();
 	public I_EvaluatorLookup getDefalutEvaluatorLookup();
 }

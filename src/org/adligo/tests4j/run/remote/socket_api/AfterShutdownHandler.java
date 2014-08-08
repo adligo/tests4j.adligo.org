@@ -25,6 +25,6 @@ public class AfterShutdownHandler implements I_AfterMessageHandler {
 				x.printStackTrace();
 			}
 		}
-		system.doSystemExit(0);
+		system.exitJvm(0);
 	}
 }

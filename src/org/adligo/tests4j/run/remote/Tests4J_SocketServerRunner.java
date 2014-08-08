@@ -15,17 +15,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.adligo.tests4j.models.shared.common.DefaultSystem;
 import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.xml.XML_Builder;
@@ -37,7 +37,6 @@ import org.adligo.tests4j.run.remote.socket_api.AfterShutdownHandler;
 import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
-import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
 public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	private BlockingQueue<Tests4J_SocketMessage> messages = new ArrayBlockingQueue<>(100);
@@ -54,7 +53,6 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
 	private AfterShutdownHandler afterShutdownHandler;
-	private I_System system = new DefaultSystem();
 	private ExecutorService listenerService;
 	private I_Tests4J_Controls controlls;
 	
@@ -64,7 +62,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 		Tests4J_SocketServerRunner runner = new Tests4J_SocketServerRunner();
 		
 		
-		runner.main(args, new DefaultSystem());
+		runner.main(args, Tests4J_System.SYSTEM);
 	}
 	
 	public void main(String[] args, I_System pSystem) {
@@ -112,7 +110,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	
 	public void startup() {
 		
-		startup(new DefaultSystem());
+		startup(Tests4J_System.SYSTEM);
 	}
 	
 	public void startup(I_System pSystem) {
@@ -227,7 +225,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 				x.printStackTrace();
 			}
 		}
-		system.doSystemExit(0);
+		Tests4J_System.exitJvm(0);
 	}
 	@Override
 	public void onMetadataCalculated(I_TrialRunMetadata metadata) {
@@ -332,14 +330,6 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	}
 
 
-
-	public I_System getSystem() {
-		return system;
-	}
-
-	public void setSystem(I_System p) {
-		this.system = p;
-	}
 
 
 	public void send(Tests4J_SocketMessage message) {

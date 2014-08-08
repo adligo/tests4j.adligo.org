@@ -2,7 +2,6 @@ package org.adligo.tests4j.shared.report.summary;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -98,13 +97,13 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	public synchronized void onRunCompleted(I_TrialRunResult result) {
 		logger.log("------------------------Test Results-------------------------");
 		logger.log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds on ");
-		DecimalFormat formatter = new DecimalFormat("###.##");
+		//DecimalFormat formatter = new DecimalFormat("###.##");
 		
 		RelevantClassesWithTrialsCalculator calc = new RelevantClassesWithTrialsCalculator(metadata);
 		
 		double pctD = calc.getPct();
 		
-		logger.log("\t\t" + formatter.format(pctD) + 
+		logger.log("\t\t" + PercentFormat.format(pctD, 2) + 
 				"% of relevant classes have corresponding trials.");
 		if (listRelevantClassesWithoutTrials) {
 			Set<String> classes = calc.getClassesWithOutTrials();
@@ -112,7 +111,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 				logger.log("\t\t" + clazz);
 			}
 		}
-		BigDecimal pct = logCoverage(result,  formatter );
+		BigDecimal pct = logCoverage(result );
 		
 		
 		if (result.getTrialsPassed() == result.getTrials()) {
@@ -122,7 +121,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 					result.getUniqueAsserts() + "/" +
 					result.getAsserts());
 			logger.log("\t\tAll Trials " + result.getTrialsPassed()  + "/" 
-					+ result.getTrials() + " Trials with " + formatter.format(pct) + "% coverage;");
+					+ result.getTrials() + " Trials with " + pct + "% coverage;");
 			logger.log("");
 			logger.log("\t\t\tPassed!");
 			logger.log("");
@@ -144,7 +143,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 					result.getUniqueAsserts() + "/" +
 					result.getAsserts());
 			logger.log("\t\t" + result.getTrialFailures()  + "/" 
-					+ result.getTrials() + " Trials with " + formatter.format(pct) + "% coverage;");
+					+ result.getTrials() + " Trials with " + pct + "% coverage;");
 			logger.log("");
 			logger.log("\t\t\tFAILED!");
 			logger.log("");
@@ -156,7 +155,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 
 	
 
-	private BigDecimal logCoverage(I_TrialRunResult result, DecimalFormat formatter) {
+	private BigDecimal logCoverage(I_TrialRunResult result) {
 		List<I_PackageCoverage> coverage = result.getCoverage();
 		if (coverage.size() >= 1) {
 			logger.log("\t\tPackage Coverage;");
@@ -168,8 +167,9 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		Collection<I_PackageCoverage> ordered =  treeMap.values();
 		for (I_PackageCoverage cover: ordered) {
 			Set<String> sourceFileNames = cover.getSourceFileNames();
+			//todo bridge formatting with GWT
 			logger.log("\t\t\t+" + cover.getPackageName() + " was covered " + 
-						formatter.format(cover.getPercentageCovered()) + "% with " +
+						cover.getPercentageCovered() + "% with " +
 						sourceFileNames.size() + " source files, " +
 						cover.getChildPackageCoverage().size() + " child packages and " +
 						cover.getCoveredCoverageUnits().get() + "/" +

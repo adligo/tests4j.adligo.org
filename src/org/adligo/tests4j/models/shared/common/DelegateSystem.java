@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.common;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * a tricky way to have a constant,
@@ -12,10 +13,26 @@ import java.util.Collections;
  */
 public class DelegateSystem implements I_System {
 	private I_System delegate;
-
-	protected DelegateSystem() {
+	private final MethodBlocker methodBlocker = getMethodBlocker();
+	
+	private MethodBlocker getMethodBlocker() {
+		List<String> allowedCallers = new ArrayList<String>();
+		allowedCallers.add("org.adligo.tests4j.run.Tests4J");
+		allowedCallers.add("org.adligo.tests4j_tests.models.shared.common.mocks.ThreadLocalSystemMock");
 		
+		return new MethodBlocker(DelegateSystem.class, "setDelegate", allowedCallers);
 	}
+	
+	/**
+	 * only for mock
+	 */
+	protected DelegateSystem() {
+	}
+	
+	/**
+	 * only for Tests4J_System
+	 * @param p
+	 */
 	protected DelegateSystem(I_System p) {
 		delegate = p;
 	}
@@ -24,18 +41,20 @@ public class DelegateSystem implements I_System {
 		return delegate;
 	}
 
-	public void setDelegate(I_System delegate) {
-		new MethodBlocker(DelegateSystem.class, "setDelegate", 
-				Collections.singleton("org.adligo.tests4j_tests.models.shared.common.mocks.ThreadlocalSystemMock"));
-		this.delegate = delegate;
+	public synchronized void setDelegate(I_System pDelegate) {
+		methodBlocker.checkAllowed();
+		if (pDelegate != null) {
+			this.delegate = pDelegate;
+		}
 	}
+	
 
 	public void println(String p) {
 		delegate.println(p);
 	}
 
-	public void doSystemExit(int p) {
-		delegate.doSystemExit(p);
+	public void exitJvm(int p) {
+		delegate.exitJvm(p);
 	}
 
 	public long getTime() {

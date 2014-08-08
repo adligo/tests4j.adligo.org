@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.trials;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_Asserts;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 /**
  * classes that implement this class must also contain the
@@ -38,19 +39,16 @@ public interface I_AbstractTrial extends I_Asserts {
 	 * ie ConsoleReporter -> System.out
 	 * @param p
 	 */
-	public void log(String p);
-	/**
-	 * log to the reporter
-	 * ie ConsoleReporter -> System.out
-	 * @param p
-	 */
-	public void log(Throwable p);
-	/**
-	 * check if a specific class 
-	 * has it's log enabled
-	 * ie ConsoleReporter -> isLogEnabled(Class<?> c)
-	 * @param p
-	 */
-	public boolean isLogEnabled(Class<?> c);
+	public I_Tests4J_Log getLog();
 
+	/**
+	 * This will allow the view of a tests4j gui to view a
+	 * widget during the trial/test run.  
+	 * for GWT this should be a com.google.gwt.user.client.ui.Widget
+	 * for Mobile http://www.codenameone.com/ this should be a com.codename1.ui.Component
+	 * for Eclipse org.eclipse.swt.widgets.Widget
+	 * for Swing javax.swing.JComponent
+	 * @param o
+	 */
+	public void showWidget(Object o);
 }

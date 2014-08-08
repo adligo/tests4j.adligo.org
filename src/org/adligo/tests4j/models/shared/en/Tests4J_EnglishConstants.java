@@ -18,6 +18,10 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
  *
  */
 public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
+	private static final String METHOD_BLOCKER_REQUIRES_A_BLOCKING_METHOD_NAME = "MethodBlocker requires a blocking method name.";
+
+	private static final String METHOD_BLOCKER_REQUIRES_A_BLOCKING_CLASS = "MethodBlocker requires a blocking class.";
+
 	/**
 	 * for use in test code and Tests4J_ConstantsWrapper default.
 	 */
@@ -101,6 +105,16 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	@Override
 	public String getNullListenerExceptionMessage() {
 		return NULL_LISTENER_NOT_ALLOWED;
+	}
+	
+	@Override
+	public String getMethodBlockerRequiresABlockingClass() {
+		return METHOD_BLOCKER_REQUIRES_A_BLOCKING_CLASS;
+	}
+	
+	@Override
+	public String getMethodBlockerRequiresABlockingMethod() {
+		return METHOD_BLOCKER_REQUIRES_A_BLOCKING_METHOD_NAME;
 	}
 	
 	@Override

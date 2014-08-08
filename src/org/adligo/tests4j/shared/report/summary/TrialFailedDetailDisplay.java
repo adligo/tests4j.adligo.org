@@ -238,8 +238,6 @@ public class TrialFailedDetailDisplay {
 			sb.append(messages.getIndent() + messages.getExpected() + log.getLineSeperator());
 			sb.append(messages.getIndent() + exp.getClassName() + log.getLineSeperator());
 			
-			sb.append(messages.getIndent() + exp.getClassName() +  log.getLineSeperator());
-			
 			sb.append(messages.getIndent() + messages.getActual() + log.getLineSeperator());
 			sb.append(messages.getIndent() + "null" +  log.getLineSeperator());
 		} else {

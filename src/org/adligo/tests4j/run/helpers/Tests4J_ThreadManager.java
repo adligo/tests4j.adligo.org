@@ -99,7 +99,7 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 		
 		
 		//shutdown remotes
-		system.doSystemExit(0);	
+		system.exitJvm(0);	
 	}
 
 
@@ -228,7 +228,7 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 		
 		if (remoteService == null) {
 			monitorService.shutdownNow();
-			system.doSystemExit(0);	
+			system.exitJvm(0);	
 		}
 	}
 }

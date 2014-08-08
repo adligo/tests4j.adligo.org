@@ -15,7 +15,7 @@ import java.util.Map;
  *
  */
 public enum Platform implements I_Platform {
-	JSE(0), GWTC(1), ADFM(2);
+	JSE(0), GWTC(1), MOBILE(2);
 	private static final Map<Integer, Platform> MAP = getMap();
 	
 	private static Map<Integer, Platform> getMap() {
@@ -23,7 +23,7 @@ public enum Platform implements I_Platform {
 		
 		toRet.put(0, JSE);
 		toRet.put(1, GWTC);
-		toRet.put(2, ADFM);
+		toRet.put(2, MOBILE);
 		return Collections.unmodifiableMap(toRet);
 	}
 	

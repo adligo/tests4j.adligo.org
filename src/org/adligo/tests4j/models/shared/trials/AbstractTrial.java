@@ -72,7 +72,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		//throw npe for nulls
 		listener.hashCode();
 		
-		log = bindings.getReporter();
+		log = bindings.getLog();
 		//throw npe for nulls
 		log.hashCode();
 		
@@ -362,15 +362,6 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		log.log(p);
 	}
 
-	@Override
-	public void log(Throwable p) {
-		log.onException(p);
-	}
-
-	@Override
-	public boolean isLogEnabled(Class<?> c) {
-		return log.isLogEnabled(c);
-	}
 
 	@Override
 	public void assertGreaterThanOrEquals(double p, float a) {
@@ -418,5 +409,9 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	public I_Tests4J_Log getLog() {
 		return log;
+	}
+	
+	public void showWidget(Object o) {
+		throw new IllegalStateException("This feature has not yet been implemented");
 	}
 }

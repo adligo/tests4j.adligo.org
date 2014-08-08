@@ -15,7 +15,6 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
@@ -25,16 +24,7 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Selection;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
-import org.adligo.tests4j.shared.report.summary.RemoteProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.SetupProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.SummaryReporter;
-import org.adligo.tests4j.shared.report.summary.TestFailedDisplay;
-import org.adligo.tests4j.shared.report.summary.TestsProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.TestDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialFailedDetailDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialFailedDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialsProgressDisplay;
-import org.adligo.tests4j.shared.report.summary.TrialDisplay;
+import org.adligo.tests4j.shared.report.summary.DefaultReporterStates;
 
 /**
  * since anyone can re implement 
@@ -83,7 +73,8 @@ public class Tests4J_ParamsReader {
 	public Tests4J_ParamsReader(I_System pSystem, I_Tests4J_Params pParams) {
 		params = pParams;
 		
-		Map<Class<?>, Boolean> logStates = getDefalutLogStates();
+		Map<Class<?>, Boolean> logStates = new HashMap<Class<?>, Boolean>();
+		logStates.putAll(DefaultReporterStates.getDefalutLogStates());
 		try {
 			Map<Class<?>, Boolean>  paramStates = pParams.getLogStates();
 			if (paramStates != null) {
@@ -187,24 +178,6 @@ public class Tests4J_ParamsReader {
 			return;
 		}
 		
-	}
-
-	public Map<Class<?>, Boolean> getDefalutLogStates() {
-		Map<Class<?>, Boolean> logStates = new HashMap<Class<?>, Boolean>();
-		//set defaults;
-		logStates.put(RemoteProgressDisplay.class, true);
-		logStates.put(SetupProgressDisplay.class, true);
-		logStates.put(SummaryReporter.class, true);
-		
-		logStates.put(TestFailedDisplay.class, true);
-		logStates.put(TestsProgressDisplay.class, true);
-		logStates.put(TestDisplay.class, true);
-		
-		logStates.put(TrialFailedDisplay.class, true);
-		logStates.put(TrialsProgressDisplay.class, true);
-		logStates.put(TrialDisplay.class, true);
-		logStates.put(TrialFailedDetailDisplay.class, true);
-		return logStates;
 	}
 
 	private void readEvaluatorLookup() throws InstantiationException,

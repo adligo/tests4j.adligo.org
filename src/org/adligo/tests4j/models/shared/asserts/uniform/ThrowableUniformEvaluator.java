@@ -35,7 +35,10 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		Class<? extends Throwable> eClazz = expected.getClass();
 		Class<? extends Throwable> aClazz = actual.getClass();
 		
-		if (!eClazz.isAssignableFrom(aClazz)) {
+		String eClazzName = eClazz.getName();
+		String aClassName = aClazz.getName();
+		
+		if (!eClazzName.equals(aClassName)) {
 			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheActualClassIsNotAssignableFromTheExpectedClass());
@@ -78,7 +81,10 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		Class<? extends Throwable> eClazz = expected.getClass();
 		Class<? extends Throwable> aClazz = actual.getClass();
 		
-		if (!eClazz.isAssignableFrom(aClazz)) {
+		String eClazzName = eClazz.getName();
+		String aClassName = aClazz.getName();
+		
+		if (!eClazzName.equals(aClassName)) {
 			result.setSuccess(true);
 			return new Evaluation<I_TextLinesCompareResult>(result);
 		}
