@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.metadata;
+package org.adligo.tests4j.run.discovery;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -11,7 +11,9 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.TrialType;
-import org.adligo.tests4j.run.discovery.PackageDiscovery;
+import org.adligo.tests4j.models.shared.metadata.I_SourceInfoMetadata;
+import org.adligo.tests4j.models.shared.metadata.I_TrialMetadata;
+import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 
 public class RelevantClassesWithTrialsCalculator {
 	private I_TrialRunMetadata metadata;

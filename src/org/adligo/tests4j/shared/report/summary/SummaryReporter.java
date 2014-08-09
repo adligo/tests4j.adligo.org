@@ -14,7 +14,6 @@ import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
-import org.adligo.tests4j.models.shared.metadata.RelevantClassesWithTrialsCalculator;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.DefaultLog;
@@ -96,22 +95,27 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	@Override
 	public synchronized void onRunCompleted(I_TrialRunResult result) {
 		logger.log("------------------------Test Results-------------------------");
-		logger.log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds on ");
+		logger.log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds.");
 		//DecimalFormat formatter = new DecimalFormat("###.##");
 		
-		RelevantClassesWithTrialsCalculator calc = new RelevantClassesWithTrialsCalculator(metadata);
-		
+		/*
 		double pctD = calc.getPct();
 		
 		logger.log("\t\t" + PercentFormat.format(pctD, 2) + 
 				"% of relevant classes have corresponding trials.");
+				
 		if (listRelevantClassesWithoutTrials) {
 			Set<String> classes = calc.getClassesWithOutTrials();
 			for (String clazz: classes) {
 				logger.log("\t\t" + clazz);
 			}
 		}
-		BigDecimal pct = logCoverage(result );
+		*/
+		
+		BigDecimal pct = null;
+		if (result.hasCoverage()) {
+			logCoverage(result );
+		}
 		
 		
 		if (result.getTrialsPassed() == result.getTrials()) {
@@ -120,8 +124,13 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 			logger.log("\t\tUnique/Assertions: " + 
 					result.getUniqueAsserts() + "/" +
 					result.getAsserts());
-			logger.log("\t\tAll Trials " + result.getTrialsPassed()  + "/" 
-					+ result.getTrials() + " Trials with " + pct + "% coverage;");
+			StringBuilder sb = new StringBuilder();
+			sb.append("\t\tAll Trials " + result.getTrialsPassed()  + "/" 
+					+ result.getTrials() + " Trials");
+			if (result.hasCoverage()) {
+				sb.append(" with " + PercentFormat.format(result.getCoveragePercentage(), 2) + "% coverage;");
+			}
+			logger.log(sb.toString());
 			logger.log("");
 			logger.log("\t\t\tPassed!");
 			logger.log("");
@@ -142,8 +151,13 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 			logger.log("\t\tUnique/Assertions: " + 
 					result.getUniqueAsserts() + "/" +
 					result.getAsserts());
-			logger.log("\t\t" + result.getTrialFailures()  + "/" 
-					+ result.getTrials() + " Trials with " + pct + "% coverage;");
+			StringBuilder sb = new StringBuilder();
+			sb.append("\t\t" + result.getTrialFailures()  + "/" 
+					+ result.getTrials() + " Trials");
+			if (result.hasCoverage()) {
+				sb.append(" with " + PercentFormat.format(result.getCoveragePercentage(), 2) + "% coverage;");
+			}
+			logger.log(sb.toString());
 			logger.log("");
 			logger.log("\t\t\tFAILED!");
 			logger.log("");
