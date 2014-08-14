@@ -9,7 +9,7 @@ public class Dependency implements I_Dependency {
 		String name = p.getClassName();
 		dm = new DependencyMutant(p);
 		//throw a IllegalArgumentException if name is empty
-		dm.setClazzName(name);
+		dm.setClassName(name);
 	}
 	
 	public String getClassName() {

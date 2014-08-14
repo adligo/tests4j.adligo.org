@@ -3,30 +3,27 @@ package org.adligo.tests4j.models.shared.dependency;
 import java.util.Collections;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
-
 /**
  * immutable impl of I_ClassReferences
  * @author scott
  *
  */
-public class ClassReferences implements I_ClassReferences {
-	public static final String UNKNOWN_CLASS_NAME = "UnknownClassName in ClassReferences";
-	/**
-	 * really a final feild, but don't want to retype 
-	 */
-	private String className;
+public class ClassReferences extends ClassCircularReferences implements I_ClassReferences {
+	
 	/**
 	 * really a final feild, but don't want to retype 
 	 */
 	private Set<String> references;
+	private Set<String> circularReferences;
 	
 	public ClassReferences() {
-		className = UNKNOWN_CLASS_NAME;
+		super();
 		references = Collections.emptySet();
+		circularReferences = Collections.emptySet();
 	}
 	
 	public ClassReferences(I_ClassReferences other) {
+		super(other);
 		copy(other);
 	}
 
@@ -38,12 +35,6 @@ public class ClassReferences implements I_ClassReferences {
 	 * @param other
 	 */
 	private void copy(I_ClassReferences other) {
-		String inName = other.getClassName();
-		if (StringMethods.isEmpty(inName)) {
-			className = UNKNOWN_CLASS_NAME;
-		} else {
-			className = inName;
-		}
 		references = Collections.unmodifiableSet(other.getReferences());
 	}
 	
@@ -56,7 +47,4 @@ public class ClassReferences implements I_ClassReferences {
 		return references;
 	}
 
-	public String getClassName() {
-		return className;
-	}
 }

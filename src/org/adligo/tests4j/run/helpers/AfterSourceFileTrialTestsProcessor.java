@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.asserts.common.AssertCompareFailureMutant;
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
@@ -36,7 +35,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 	private static final String TEST_MIN_COVERAGE =
 			"testMinCoverage";
 	
-	public AfterSourceFileTrialTestsProcessor(Tests4J_Memory memory) {
+	public AfterSourceFileTrialTestsProcessor(I_Tests4J_Memory memory) {
 		super(memory);
 	}
 	

@@ -16,13 +16,13 @@ public class DependencyMutant implements I_Dependency {
 	public static final String CLASS_NAME_MAY_NOT_BE_SET_TO_A_EMPTY_VALUE = 
 			"Dependency requires a non empty class name.";
 	
-	private String clazzName;
+	private String className;
 	private int references;
 	
 	public DependencyMutant() {}
 	
 	public DependencyMutant(I_Dependency p) {
-		clazzName = p.getClassName();
+		className = p.getClassName();
 		references = p.getReferences();
 	}
 	
@@ -31,7 +31,7 @@ public class DependencyMutant implements I_Dependency {
 	 */
 	@Override
 	public String getClassName() {
-		return clazzName;
+		return className;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.common.I_DependencyMutant#getReferences()
@@ -40,11 +40,11 @@ public class DependencyMutant implements I_Dependency {
 	public int getReferences() {
 		return references;
 	}
-	public void setClazzName(String pName) {
+	public void setClassName(String pName) {
 		if (StringMethods.isEmpty(pName)) {
 			throw new IllegalArgumentException(CLASS_NAME_MAY_NOT_BE_SET_TO_A_EMPTY_VALUE);
 		}
-		this.clazzName = pName;
+		this.className = pName;
 	}
 	
 	public void addReference() {
@@ -55,6 +55,10 @@ public class DependencyMutant implements I_Dependency {
 	public int compareTo(I_Dependency o) {
 		//higher references mean lower order
 		int negFlip = -1 * (references - o.getReferences());
+		if (negFlip == 0) {
+			String otherClassName = o.getClassName();
+			return className.compareToIgnoreCase(otherClassName);
+		}
 		return negFlip;
 	}
 	@Override

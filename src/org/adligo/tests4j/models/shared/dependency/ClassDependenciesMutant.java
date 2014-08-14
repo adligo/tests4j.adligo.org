@@ -13,14 +13,13 @@ import java.util.Map;
  * @author scott
  *
  */
-public class ClassDependenciesMutant implements I_ClassDependencies {
-	private String clazzName;
+public class ClassDependenciesMutant extends ClassCircularReferencesMutant implements I_ClassDependencies {
 	private Map<String,DependencyMutant> dependencies = new HashMap<String, DependencyMutant>();
 	
 	public ClassDependenciesMutant() {}
 	
 	public ClassDependenciesMutant(I_ClassDependencies c) {
-		clazzName = c.getClassName();
+		super(c);
 		List<I_Dependency> deps = c.getDependencies();
 		if (deps != null) {
 			for (I_Dependency dep: deps) {
@@ -29,17 +28,6 @@ public class ClassDependenciesMutant implements I_ClassDependencies {
 		}
 		
 	}
-	/* (non-Javadoc)
-	 * @see org.adligo.tests4j.run.discovery.I_ClassDependencies#getClazzName()
-	 */
-	@Override
-	public String getClassName() {
-		return clazzName;
-	}
-	public void setClazzName(String clazzName) {
-		this.clazzName = clazzName;
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.run.discovery.I_ClassDependencies#getDependency(java.lang.String)
 	 */
@@ -65,7 +53,8 @@ public class ClassDependenciesMutant implements I_ClassDependencies {
 			if (di != -1) {
 				sourceFileClassName = sourceFileClassName.substring(0, di);
 			}
-			if (clazzName.indexOf(sourceFileClassName) != -1) {
+			String className = super.getClassName();
+			if (className.indexOf(sourceFileClassName) != -1) {
 				//its a reference from a innner class back to the parent source file class
 				// or vice versa, so ignore it
 			} else {
@@ -94,7 +83,7 @@ public class ClassDependenciesMutant implements I_ClassDependencies {
 	public void add(I_ClassDependencies other) {
 		String clazzName = other.getClassName();
 		DependencyMutant dm = new DependencyMutant();
-		dm.setClazzName(clazzName);
+		dm.setClassName(clazzName);
 		dm.addReference();
 		addDependency(dm);
 		

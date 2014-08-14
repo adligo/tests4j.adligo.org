@@ -15,25 +15,26 @@ import org.adligo.tests4j.models.shared.common.StringMethods;
  * @author scott
  *
  */
-public class ClassReferencesMutant implements I_ClassReferences {
+public class ClassReferencesMutant  extends ClassCircularReferencesMutant implements I_ClassReferences {
 	private String className;
 	private Set<String> references = new HashSet<String>();
 	
 	public ClassReferencesMutant() {}
 	
 	public ClassReferencesMutant(I_ClassReferences other) {
+		super(other);
 		className = other.getClassName();
 		setReferences(other.getReferences());
 	}
 	
 	public ClassReferencesMutant(I_ClassDependencies deps) {
+		super(deps);
 		className = deps.getClassName();
 		List<I_Dependency> dl = deps.getDependencies();
 		for (I_Dependency d: dl) {
 			String ref = d.getClassName();
 			addReference(ref);
 		}
-		
 	}
 	
 	public void addReference(String className) {
@@ -67,4 +68,6 @@ public class ClassReferencesMutant implements I_ClassReferences {
 	public void setClassName(String className) {
 		this.className = className;
 	}
+
+	
 }

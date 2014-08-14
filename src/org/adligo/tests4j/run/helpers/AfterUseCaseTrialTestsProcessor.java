@@ -23,7 +23,7 @@ public class AfterUseCaseTrialTestsProcessor extends AbstractAfterTrialTestsProc
 	private static final String AFTER_USE_CASE_TRIAL_TESTS_METHOD =
 			"afterTrialTests(I_UseCaseTrialResult p)";
 	
-	public AfterUseCaseTrialTestsProcessor(Tests4J_Memory memory) {
+	public AfterUseCaseTrialTestsProcessor(I_Tests4J_Memory memory) {
 		super(memory);
 	}
 	

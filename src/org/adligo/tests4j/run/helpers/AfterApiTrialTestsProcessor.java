@@ -23,7 +23,7 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 	private static final String AFTER_API_TRIAL_TESTS_METHOD =
 			"afterTrialTests(I_ApiTrialResult p)";
 	
-	public AfterApiTrialTestsProcessor(Tests4J_Memory memory) {
+	public AfterApiTrialTestsProcessor(I_Tests4J_Memory memory) {
 		super(memory);
 	}
 	

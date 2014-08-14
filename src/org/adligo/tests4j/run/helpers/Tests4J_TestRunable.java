@@ -37,7 +37,7 @@ public class Tests4J_TestRunable implements Runnable, I_Tests4J_AssertListener {
 	private TestResultMutant testResultMutant;
 	private boolean assertFailed = false;
 	
-	public Tests4J_TestRunable(Tests4J_Memory pMemory) {
+	public Tests4J_TestRunable(I_Tests4J_Memory pMemory) {
 		reporter = pMemory.getLogger();
 	}
 	

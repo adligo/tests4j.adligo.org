@@ -39,7 +39,7 @@ import org.adligo.tests4j.run.discovery.TrialDescription;
  * @author scott
  *
  */
-public class Tests4J_Memory {
+public class Tests4J_Memory implements I_Tests4J_Memory {
 	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private AtomicBoolean metaTrial = new AtomicBoolean(false);
@@ -269,6 +269,10 @@ public class Tests4J_Memory {
 		return toRet;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_Memory#getLogger()
+	 */
+	@Override
 	public I_Tests4J_Log getLogger() {
 		return logger;
 	}
@@ -373,6 +377,10 @@ public class Tests4J_Memory {
 		return hasRemoteDelegation;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_Memory#getEvaluationLookup()
+	 */
+	@Override
 	public I_EvaluatorLookup getEvaluationLookup() {
 		return evaluationLookup;
 	}
