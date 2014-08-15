@@ -139,10 +139,15 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 			}
 		}
 		if (logWarning) {
-			log.log(super.toString() + 
+			String message = super.toString() + 
 					" the following class should to be cached at this point," + log.getLineSeperator() +
 					" using the parent classloader (which can mess up code coverage assertions);" +
-					log.getLineSeperator() + name);
+					log.getLineSeperator() + name; 
+			//not really a exception, but this is generally something that needs to be
+			//fixed when it happens, and this gets your attention in the log
+			IllegalStateException x = new IllegalStateException(message);
+			x.fillInStackTrace();
+			log.onException(x);
 		}
 		return super.loadClass(name, resolve);
 	}
