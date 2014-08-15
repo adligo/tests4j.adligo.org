@@ -59,20 +59,12 @@ public class ClassAlias implements I_ClassAlias {
 			return true;
 		if (obj == null)
 			return false;
-		String oClassName = obj.getClass().getName();
-		switch (oClassName) {
-			case "java.lang.String":
-					return name.equals((String) obj);
-			case "java.lang.Class":
-					String className = ((Class<?>) obj).getName();
-					return name.equals(className);
-			default:
-				try {
-					I_ClassAlias other = (I_ClassAlias) obj;
-					return name.equals(other.getName());
-				} catch (ClassCastException x) {
-					//do nothing 
-				}
+		
+		try {
+			I_ClassAlias other = (I_ClassAlias) obj;
+			return name.equals(other.getName());
+		} catch (ClassCastException x) {
+			//do nothing 
 		}
 		return false;
 	}

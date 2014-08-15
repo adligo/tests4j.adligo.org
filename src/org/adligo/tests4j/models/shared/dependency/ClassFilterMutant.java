@@ -7,6 +7,7 @@ import java.util.Set;
 public class ClassFilterMutant implements I_ClassFilterModel {
 	private Set<String> ignoredPackageNames = new HashSet<String>(Collections.singleton("java."));
 	private Set<String> ignoredClassNames = new HashSet<String>();
+	private Set<String> learnedFilteredClasses = new HashSet<String>();
 	
 	public ClassFilterMutant() {}
 	
@@ -44,11 +45,13 @@ public class ClassFilterMutant implements I_ClassFilterModel {
 			className = className.substring(0, di);
 		}
 		if (ignoredClassNames.contains(className)) {
+			learnedFilteredClasses.add(className);
 			return true;
 		}
 		if (ignoredPackageNames != null) {
 			for (String pkg: ignoredPackageNames) {
 				if (className.indexOf(pkg) == 0) {
+					learnedFilteredClasses.add(className);
 					return true;
 				}
 			}
@@ -64,7 +67,11 @@ public class ClassFilterMutant implements I_ClassFilterModel {
 		if (clazz == null) {
 			return true;
 		}
+		if (learnedFilteredClasses.contains(clazz.getName())) {
+			return true;
+		}
 		if (clazz.isPrimitive()) {
+			learnedFilteredClasses.add(clazz.getName());
 			return true;
 		}
 		if (clazz.isArray()) {
@@ -72,6 +79,7 @@ public class ClassFilterMutant implements I_ClassFilterModel {
 		}
 		String className = clazz.getName();
 		if (Void.TYPE == clazz || Void.class == clazz) {
+			learnedFilteredClasses.add(clazz.getName());
 			return true;
 		}
 		return isFilteredIn(className);
@@ -82,27 +90,38 @@ public class ClassFilterMutant implements I_ClassFilterModel {
 	 */
 	@Override 
 	public boolean isFiltered(String className) {
+		if (className == null) {
+			return true;
+		}
+		if (learnedFilteredClasses.contains(className)) {
+			return true;
+		}
 		if (className.length() <= 1) {
 			//ASM has a desc 'D' and 'V', ClassMethods can return ''
+			learnedFilteredClasses.add(className);
 			return true;
 		}
 		if ("null".equals(className)) {
 			//visitTryCatchBlock(ReferenceTrackingMethodVisitor.java:114)
+			learnedFilteredClasses.add(className);
 			return true;
 		}
 		if (className.indexOf("(") != -1) {
 			//ASM has desc sometimes like ()
 			// is NOT a letter or digit http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8
+			learnedFilteredClasses.add(className);
 			return true;
 		}
 		if (className.indexOf(")") != -1) {
 			//ASM has desc sometimes like ()
 			// is NOT a letter or digit http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8
+			learnedFilteredClasses.add(className);
 			return true;
 		}
 		if (className.indexOf("[") !=  -1) {
 			//ASM not sure what /[B is, a boolean[]?
 			// is NOT a letter or digit http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8
+			learnedFilteredClasses.add(className);
 			return true;
 		}
 		try {
