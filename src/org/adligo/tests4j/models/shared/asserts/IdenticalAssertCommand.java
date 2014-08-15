@@ -31,7 +31,8 @@ public class IdenticalAssertCommand extends AbstractCompareAssertCommand
 			
 			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}
-		AssertType type = super.getTypeEnum();
+		//classloader issues
+		AssertType type = AssertType.getType(super.getType());
 		if (!AssertType.IDENTICAL_TYPES.contains(type)) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
@@ -45,7 +46,8 @@ public class IdenticalAssertCommand extends AbstractCompareAssertCommand
 		Object expected = data.getExpected();
 		Object actual = data.getActual();
 		
-		AssertType type = super.getTypeEnum();
+		//classloader issues
+		AssertType type = AssertType.getType(super.getType());
 		switch (type) {
 			case AssertEquals:
 				   if(expected == null) {

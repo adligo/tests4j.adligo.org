@@ -6,14 +6,14 @@ public class Dependency implements I_Dependency {
 	private DependencyMutant dm;
 
 	public Dependency(I_Dependency p) {
-		String name = p.getClassName();
+		I_ClassAlias name = p.getAlias();
 		dm = new DependencyMutant(p);
 		//throw a IllegalArgumentException if name is empty
-		dm.setClassName(name);
+		dm.setAlias(name);
 	}
 	
-	public String getClassName() {
-		return dm.getClassName();
+	public I_ClassAlias getAlias() {
+		return dm.getAlias();
 	}
 
 	public int getReferences() {

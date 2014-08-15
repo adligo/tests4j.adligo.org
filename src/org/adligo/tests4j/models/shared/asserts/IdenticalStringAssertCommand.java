@@ -33,7 +33,8 @@ public class IdenticalStringAssertCommand extends AbstractCompareAssertCommand
 			
 			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}
-		AssertType type = super.getTypeEnum();
+		//classloader issues
+		AssertType type = AssertType.getType(super.getType());
 		if (!AssertType.EQUAL_TYPES.contains(type)) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
@@ -48,7 +49,9 @@ public class IdenticalStringAssertCommand extends AbstractCompareAssertCommand
 		
 		TextLinesCompare tlc = new TextLinesCompare();
 		result = tlc.compare(expected, actual, false);
-		AssertType type = super.getTypeEnum();
+		
+		//classloader issues
+		AssertType type = AssertType.getType(super.getType());
 		switch (type) {
 			case AssertEquals:
 				   if(expected == null) {
@@ -111,7 +114,8 @@ public class IdenticalStringAssertCommand extends AbstractCompareAssertCommand
 		if (result == null) {
 			return data;
 		}
-		AssertType type = super.getTypeEnum();
+		//classloader issues
+		AssertType type = AssertType.getType(super.getType());
 		CompareAssertionData<String> toRet = new CompareAssertionData<String>(
 				data.getExpected(), data.getActual(), type);
 		return toRet;

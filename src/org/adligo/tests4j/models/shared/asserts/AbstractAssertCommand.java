@@ -1,11 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts;
 
-import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
-import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
-import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 
 /**
@@ -34,10 +30,6 @@ public abstract class AbstractAssertCommand implements I_AssertCommand {
 	@Override
 	public I_AssertType getType() {
 		return type;
-	}
-	
-	public AssertType getTypeEnum() {
-		return AssertType.getType(type);
 	}
 	
 	@Override

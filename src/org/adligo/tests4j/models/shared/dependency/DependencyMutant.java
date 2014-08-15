@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.dependency;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
 
 
 /**
@@ -13,25 +12,25 @@ import org.adligo.tests4j.models.shared.common.StringMethods;
  *
  */
 public class DependencyMutant implements I_Dependency {
-	public static final String CLASS_NAME_MAY_NOT_BE_SET_TO_A_EMPTY_VALUE = 
-			"Dependency requires a non empty class name.";
+	public static final String CLASS_ALIAS_MAY_NOT_BE_SET_TO_A_NULL_VALUE = 
+			"DependencyMutant requires a non null class alias.";
 	
-	private String className;
+	private I_ClassAlias alias;
 	private int references;
 	
 	public DependencyMutant() {}
 	
 	public DependencyMutant(I_Dependency p) {
-		className = p.getClassName();
+		alias = p.getAlias();
 		references = p.getReferences();
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.adligo.tests4j.models.shared.common.I_DependencyMutant#getClazzName()
+	 * @see org.adligo.tests4j.models.shared.common.I_Dependenc#getAlias()
 	 */
 	@Override
-	public String getClassName() {
-		return className;
+	public I_ClassAlias getAlias() {
+		return alias;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.common.I_DependencyMutant#getReferences()
@@ -40,11 +39,11 @@ public class DependencyMutant implements I_Dependency {
 	public int getReferences() {
 		return references;
 	}
-	public void setClassName(String pName) {
-		if (StringMethods.isEmpty(pName)) {
-			throw new IllegalArgumentException(CLASS_NAME_MAY_NOT_BE_SET_TO_A_EMPTY_VALUE);
+	public void setAlias(I_ClassAlias pAlias) {
+		if (pAlias == null) {
+			throw new IllegalArgumentException(CLASS_ALIAS_MAY_NOT_BE_SET_TO_A_NULL_VALUE);
 		}
-		this.className = pName;
+		this.alias = pAlias;
 	}
 	
 	public void addReference() {
@@ -56,8 +55,8 @@ public class DependencyMutant implements I_Dependency {
 		//higher references mean lower order
 		int negFlip = -1 * (references - o.getReferences());
 		if (negFlip == 0) {
-			String otherClassName = o.getClassName();
-			return className.compareToIgnoreCase(otherClassName);
+			I_ClassAlias otherClassName = o.getAlias();
+			return alias.compareTo(otherClassName);
 		}
 		return negFlip;
 	}
@@ -67,7 +66,7 @@ public class DependencyMutant implements I_Dependency {
 	}
 	
 	String toString(Class<?> c, I_Dependency p) {
-		return c.getSimpleName() + " [clazzName=" + p.getClassName() + ", references="
+		return c.getSimpleName() + " [alias=" + p.getAlias() + ", references="
 				+ p.getReferences() + "]";
 	}
 	

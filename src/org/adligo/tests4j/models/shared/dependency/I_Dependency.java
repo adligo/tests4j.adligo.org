@@ -13,7 +13,7 @@ public interface I_Dependency extends Comparable<I_Dependency> {
 	 * the name of the class which is depended on
 	 * @return
 	 */
-	public abstract String getClassName();
+	public abstract I_ClassAlias getAlias();
 
 	/**
 	 * the number of references to the class

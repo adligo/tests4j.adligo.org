@@ -15,6 +15,12 @@ import java.util.List;
 public interface I_CachedClassBytesClassLoader {
 	
 	/**
+	 * the number of classes cached, 
+	 * mostly for test verification.
+	 * @return
+	 */
+	public int getCacheSize();
+	/**
 	 * Add a in-memory representation of a class file bytes.
 	 * Implementations should load the class
 	 * after they store the byte[].

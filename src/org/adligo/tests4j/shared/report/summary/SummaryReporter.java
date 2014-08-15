@@ -43,6 +43,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	 */
 	private int trialFailuresDetailDisplayCount = 3;
 	private TrialFailedDetailDisplay trialFailedDetail;
+	private ThreadDisplay threadDisplay;
 	
 	public SummaryReporter() {
 		this(new DefaultLog());
@@ -50,7 +51,8 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	
 	public SummaryReporter(I_Tests4J_Log p) {
 		logger = p;
-		testsReporter = new TestDisplay(p);
+		threadDisplay = new ThreadDisplay(p);
+		testsReporter = new TestDisplay(p, threadDisplay);
 		trialsReporter = new TrialDisplay(p);
 		trialFailedDetail = new TrialFailedDetailDisplay(p);
 		

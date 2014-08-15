@@ -17,22 +17,17 @@ import java.util.Set;
  * @author scott
  *
  */
-public interface I_ClassCircluarReferences {
+public interface I_ClassReferencesLocal extends I_ClassReferences, I_ClassParentsLocal {
 
-	/**
-	 * the name of the class which references other classes
-	 * @return
-	 */
-	public abstract String getClassName();
-	/**
-	 * if this class has circular dependencies
-	 * @return
-	 */
-	public boolean hasCircularReferences();
-	
 	/**
 	 * the names of the circular dependencies
 	 * @return
 	 */
-	public Set<String> getCircularReferences();
+	public Set<I_ClassAliasLocal> getCircularReferencesLocal();
+	
+	/**
+	 * the class names of the referenced classes.
+	 * @return
+	 */
+	public abstract Set<I_ClassParentsLocal> getReferencesLocal();
 }

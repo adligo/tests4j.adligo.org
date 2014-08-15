@@ -15,6 +15,7 @@ public class DefaultReporterStates {
 		logStates.put(TestFailedDisplay.class, true);
 		logStates.put(TestsProgressDisplay.class, true);
 		logStates.put(TestDisplay.class, true);
+		logStates.put(ThreadDisplay.class, true);
 		
 		logStates.put(TrialFailedDisplay.class, true);
 		logStates.put(TrialsProgressDisplay.class, true);

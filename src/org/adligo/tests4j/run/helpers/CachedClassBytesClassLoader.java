@@ -30,8 +30,8 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	private final ConcurrentHashMap<String, byte[]> bytesCache = new ConcurrentHashMap<String, byte[]>();
 	private final ConcurrentHashMap<String, Class<?>> classes = new ConcurrentHashMap<String, Class<?>>();
 	private final I_Tests4J_Log log;
-	private final Set<String> packagesWithoutWarning;
-	private final Set<String> classesWithoutWarning;
+	private final Set<String> packagesNotRequired;
+	private final Set<String> classesNotRequired;
 	
 	public CachedClassBytesClassLoader(I_Tests4J_Log pLog) { 
 		this(pLog,null, null);
@@ -42,15 +42,15 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 		
 		log = pLog;
 		if (pPackagesWithoutWarning == null) {
-			packagesWithoutWarning = Collections.singleton("java.");
+			packagesNotRequired = Collections.singleton("java.");
 		} else {
-			packagesWithoutWarning = Collections.unmodifiableSet(pPackagesWithoutWarning);
+			packagesNotRequired = Collections.unmodifiableSet(pPackagesWithoutWarning);
 		}
 		
 		if (pClassesWithoutWarning == null) {
-			classesWithoutWarning = Collections.emptySet();
+			classesNotRequired = Collections.emptySet();
 		} else {
-			classesWithoutWarning = Collections.unmodifiableSet(pClassesWithoutWarning);
+			classesNotRequired = Collections.unmodifiableSet(pClassesWithoutWarning);
 		}
 	}
 	
@@ -80,8 +80,9 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	 * @see I_CachedClassBytesClassLoader#addCache(String, byte[])
 	 */
 	public Class<?> addCache(final String name, final byte[] bytes) throws ClassNotFoundException {
+		Class<?> toRet = defineClassFromBytes(name, bytes);
 		bytesCache.putIfAbsent(name, bytes);
-		return loadClass(name, true);
+		return toRet;
 	}
 
 	/**
@@ -123,39 +124,32 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 			return cached;
 		}
 		
-		if (bytesCache.containsKey(name)) {
-			
-			
-			return defineClassFromBytes(name);
+		Boolean logWarning = null;
+		for (String pkg: packagesNotRequired) {
+			if (name.indexOf(pkg) == 0) {
+				logWarning = false;
+				break;
+			}
 		}
-		if (log.isLogEnabled(CachedClassBytesClassLoader.class)) {
-			Boolean logWarning = null;
-			for (String pkg: packagesWithoutWarning) {
-				if (name.indexOf(pkg) == 0) {
-					logWarning = false;
-					break;
-				}
+		if (logWarning == null) {
+			if (classesNotRequired.contains(name)) {
+				logWarning = false;
+			} else {
+				logWarning = true;
 			}
-			if (logWarning == null) {
-				if (classesWithoutWarning.contains(name)) {
-					logWarning = false;
-				} else {
-					logWarning = true;
-				}
-			}
-			if (logWarning) {
-				log.log(super.toString() + 
-						" using parent class loader for the following class;" +
-						log.getLineSeperator() + name);
-			}
+		}
+		if (logWarning) {
+			log.log(super.toString() + 
+					" the following class should to be cached at this point," + log.getLineSeperator() +
+					" using the parent classloader (which can mess up code coverage assertions);" +
+					log.getLineSeperator() + name);
 		}
 		return super.loadClass(name, resolve);
 	}
 
 
-	protected Class<?> defineClassFromBytes(final String name)
+	protected Class<?> defineClassFromBytes(final String name, byte[] bytes)
 			throws ClassFormatError {
-		byte[] bytes = bytesCache.get(name);
 		//ok i must make sure
 		// http://docs.oracle.com/javase/7/docs/technotes/guides/lang/cl-mt.html
 		// If your custom class loader overrides either the protected loadClass(String, boolean) 
@@ -213,6 +207,9 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	@Override
 	public InputStream getCachedBytesStream(String name) {
 		byte[] bytes = bytesCache.get(name);
+		if (bytes == null) {
+			throw new IllegalArgumentException("error obtaining cache for " + name);
+		}
 		return new ByteArrayInputStream(bytes);
 	}
 
@@ -220,12 +217,12 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 		return log;
 	}
 
-	public Set<String> getPackagesWithoutWarning() {
-		return packagesWithoutWarning;
+	public Set<String> getPackagesNotRequired() {
+		return packagesNotRequired;
 	}
 
-	public Set<String> getClassesWithoutWarning() {
-		return classesWithoutWarning;
+	public Set<String> getClassesNotRequired() {
+		return classesNotRequired;
 	}
 
 	/**
@@ -234,7 +231,13 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	 * @param bytes
 	 */
 	protected void putBytes(String className, byte [] bytes) {
+		defineClassFromBytes(className, bytes);
 		bytesCache.put(className, bytes);
+	}
+
+	@Override
+	public int getCacheSize() {
+		return bytesCache.size();
 	}
  }
 

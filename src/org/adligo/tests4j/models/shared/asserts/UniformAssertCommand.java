@@ -40,7 +40,8 @@ public class UniformAssertCommand<T,D> extends AbstractAssertCommand
 		super(pData.getType(), failureMessage);
 		
 		//copy it between classloaders
-		AssertType type = super.getTypeEnum();
+		//classloader issues
+		AssertType type = AssertType.getType(super.getType());
 		if (!AssertType.UNIFORM_TYPES.contains(type)) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
@@ -80,7 +81,8 @@ public class UniformAssertCommand<T,D> extends AbstractAssertCommand
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean evaluate() {
-		AssertType type = getTypeEnum();
+		//classloader issues
+		AssertType type = AssertType.getType(super.getType());
 		switch (type) {
 			case AssertUniform:
 					result = evaluator.isUniform((I_CompareAssertionData<T>) data);

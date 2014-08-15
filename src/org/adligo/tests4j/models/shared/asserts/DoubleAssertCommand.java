@@ -30,7 +30,7 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 		super(failureMessage, pData);
 		
 		//copy it between classloaders
-		AssertType type = super.getTypeEnum();
+		AssertType type = AssertType.getType(super.getType());
 		if (AssertType.AssertGreaterThanOrEquals != type) {
 			throw new IllegalArgumentException(BAD_TYPE);
 		}
@@ -43,7 +43,8 @@ public class DoubleAssertCommand extends AbstractCompareAssertCommand
 		Double expected = data.getExpected();
 		Double actual = data.getActual();
 		
-		AssertType type = super.getTypeEnum();
+		//class loader issues
+		AssertType type = AssertType.getType(super.getType());
 		switch (type) {
 			case AssertGreaterThanOrEquals:
 				if (expected == null || actual == null) {
