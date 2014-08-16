@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.adligo.tests4j.models.shared.common.I_CacheControl;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 
@@ -34,11 +35,22 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	private final Set<String> classesNotRequired;
 	
 	public CachedClassBytesClassLoader(I_Tests4J_Log pLog) { 
-		this(pLog,null, null);
+		this(pLog,null, null, null);
 	}
 	
 	public CachedClassBytesClassLoader(I_Tests4J_Log pLog, Set<String> pPackagesWithoutWarning, 
-			Set<String> pClassesWithoutWarning) { 
+			Set<String> pClassesWithoutWarning, I_CacheControl cacheControl) { 
+		
+		if (cacheControl != null) {
+			cacheControl.addClearRunnable(new Runnable() {
+				
+				@Override
+				public void run() {
+					bytesCache.clear();
+					classes.clear();
+				}
+			});
+		}
 		
 		log = pLog;
 		if (pPackagesWithoutWarning == null) {

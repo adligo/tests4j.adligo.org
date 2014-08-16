@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared.system;
 
 import java.util.List;
 
+import org.adligo.tests4j.models.shared.dependency.I_ClassReferencesLocal;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
 /**
@@ -21,6 +22,11 @@ public interface I_Tests4J_CoveragePlugin {
 	 */
 	public Class<? extends I_AbstractTrial> instrument(Class<? extends I_AbstractTrial> trial);
 	
+	/**
+	 * give the plugin a chance to clean up the instrumentation
+	 * work (caches exc)
+	 */
+	public void instrumentationComplete();
 	/**
 	 *
 	 * @return
@@ -42,4 +48,14 @@ public interface I_Tests4J_CoveragePlugin {
 	 */
 	public I_Tests4J_CoverageRecorder createRecorder();
 	
+	/**
+	 * returns the references from one class to another
+	 * for circular reference detection
+	 * and dependency assertion (make sure the class is only using certain other classes).
+	 * @param className
+	 * @return
+	 */
+	public I_ClassReferencesLocal getClassReferences(String className);
+	
+
 }

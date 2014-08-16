@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.system;
 
+import org.adligo.tests4j.models.shared.dependency.I_ClassReferencesLocal;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
 public class CoveragePluginDelegator implements I_Tests4J_CoveragePlugin {
@@ -43,6 +44,23 @@ public class CoveragePluginDelegator implements I_Tests4J_CoveragePlugin {
 	public I_Tests4J_CoverageRecorder createRecorder() {
 		try {
 			return delegate.createRecorder();
+		} catch (Throwable t) {
+			reporter.onException(t);
+		}
+		return null;
+	}
+
+	public void instrumentationComplete() {
+		try {
+			delegate.instrumentationComplete();
+		} catch (Throwable t) {
+			reporter.onException(t);
+		}
+	}
+
+	public I_ClassReferencesLocal getClassReferences(String className) {
+		try {
+			return delegate.getClassReferences(className);
 		} catch (Throwable t) {
 			reporter.onException(t);
 		}

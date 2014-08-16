@@ -246,6 +246,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	private void startRecordingAllTrialsRun() {
 		I_Tests4J_CoveragePlugin coveragePlugin = memory.getCoveragePlugin();
 		if (coveragePlugin != null) {
+			coveragePlugin.instrumentationComplete();
 			//@adligo.diagram_sync with Overview.seq on 7/5/2014
 			I_Tests4J_CoverageRecorder allCoverageRecorder = coveragePlugin.createRecorder();
 			//@adligo.diagram_sync with Overview.seq on 7/5/2014
