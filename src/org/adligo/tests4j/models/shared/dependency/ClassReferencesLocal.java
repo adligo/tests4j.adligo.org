@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared.dependency;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
@@ -14,6 +15,20 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 public class ClassReferencesLocal extends ClassParentsLocal implements I_ClassReferencesLocal {
 	private Set<I_ClassAliasLocal> circularReferences;
 	private Set<I_ClassParentsLocal> references;
+	
+	public ClassReferencesLocal(I_ClassParentsLocal p) {
+		super(p);
+		List<I_ClassParentsLocal> refs = p.getParentsLocal();
+		if (refs != null && refs.size() >= 1) {
+			references = new HashSet<I_ClassParentsLocal>();
+			for (I_ClassParentsLocal loc: refs) {
+				references.add(new ClassParentsLocal(loc));
+			}
+			references = Collections.unmodifiableSet(references);
+		} else {
+			references = Collections.emptySet();
+		}
+	}
 	
 	public ClassReferencesLocal(I_ClassReferencesLocal p) {
 		super(p);
