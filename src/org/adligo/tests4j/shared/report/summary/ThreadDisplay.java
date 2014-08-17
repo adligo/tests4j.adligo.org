@@ -1,5 +1,6 @@
 package org.adligo.tests4j.shared.report.summary;
 
+import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 
 public class ThreadDisplay {
@@ -14,6 +15,6 @@ public class ThreadDisplay {
 	}
 	
 	public String getThreadInfo() {
-		return Thread.currentThread().getName();
+		return Tests4J_System.getCurrentThreadName();
 	}
 }

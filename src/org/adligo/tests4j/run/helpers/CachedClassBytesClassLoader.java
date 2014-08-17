@@ -159,7 +159,7 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 			//fixed when it happens, and this gets your attention in the log
 			IllegalStateException x = new IllegalStateException(message);
 			x.fillInStackTrace();
-			log.onException(x);
+			log.onThrowable(x);
 		}
 		return super.loadClass(name, resolve);
 	}

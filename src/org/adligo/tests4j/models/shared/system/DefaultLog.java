@@ -68,7 +68,7 @@ public class DefaultLog implements I_Tests4J_Log {
 	}
 
 	@Override
-	public synchronized void onException(Throwable p) {
+	public synchronized void onThrowable(Throwable p) {
 		logThrowable("\t", p);
 	}
 

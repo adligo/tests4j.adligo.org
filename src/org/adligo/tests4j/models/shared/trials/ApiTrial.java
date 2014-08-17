@@ -17,11 +17,5 @@ public class ApiTrial extends AbstractTrial implements I_ApiTrial  {
 	 * assertGreaterThanOrEquals(50.00, p.getPercentageCoveredDouble());
 	 * @param p
 	 */
-	public void afterTrialTests(I_ApiTrialResult p) {
-		if (p.hasRecordedCoverage()) {
-			I_PackageCoverage cover = p.getPackageCoverage();
-			assertGreaterThanOrEquals(90.0, cover.getPercentageCoveredDouble());
-		}
-		
-	}
+	public void afterTrialTests(I_ApiTrialResult p) {}
 }

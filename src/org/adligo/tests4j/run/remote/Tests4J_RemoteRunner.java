@@ -59,15 +59,15 @@ public class Tests4J_RemoteRunner implements Runnable {
 						acceptMessage();
 					}
 				} catch (IOException x) {
-					reporter.onException(x);
+					reporter.onThrowable(x);
 					return;
 				} catch (InterruptedException e) {
-					reporter.onException(e);
+					reporter.onThrowable(e);
 					return;
 				}
 			}
 		} catch (IOException x) {
-			reporter.onException(x);
+			reporter.onThrowable(x);
 		}
 	}
 	

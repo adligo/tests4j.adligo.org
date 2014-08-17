@@ -17,42 +17,43 @@ import java.util.Set;
  * @author scott
  *
  */
-public interface I_ClassReferences extends I_ClassParents {
+public interface I_ClassDependencies extends I_ClassParents {
 
 	/**
 	 * if this class has circular dependencies
 	 * @return
 	 */
-	public boolean hasCircularReferences();
+	public boolean hasCircularDependencies();
 	
 	/**
-	 * the circular references
+	 * the circular dependencies
 	 * @return
 	 */
-	public Set<I_ClassAlias> getCircularReferences();
+	public Set<I_ClassAlias> getCircularDependencies();
 	
 	/**
-	 * the names of the circular references
+	 * the names of the circular dependencies
 	 * @return
 	 */
-	public Set<String> getCircularReferenceNames();
+	public Set<String> getCircularDependenciesNames();
 	
 	/**
-	 * if there are references
+	 * if there are dependencies
 	 * @return
 	 */
-	public boolean hasReferences();
+	public boolean hasDependencies();
 	
 	/**
-	 * the class names of the referenced classes.
+	 * the class names of the classes which are 
+	 * depended on.
 	 * @return
 	 */
-	public abstract Set<I_ClassAlias> getReferences();
+	public abstract Set<I_ClassAlias> getDependencies();
 	
 	/**
 	 * this turns the getReferences set into Strings,
 	 * mostly for ease of testing.
 	 * @return
 	 */
-	public abstract Set<String> getReferenceNames();
+	public abstract Set<String> getDependencyNames();
 }

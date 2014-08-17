@@ -44,6 +44,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * null or true.
 	 */
 	private Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginFactoryClass;
+	private I_Tests4J_CoveragePluginParams coverageParams = new Tests4J_CoveragePluginParams();
 	/**
 	 * these classes get reporting turned on or off,
 	 * the defaults are in the Tests4J_ParamsReader
@@ -305,5 +306,14 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	@Override
 	public Integer getRecommendedSetupThreadCount() {
 		return recommendedSetupThreadCount;
+	}
+
+	@Override
+	public I_Tests4J_CoveragePluginParams getCoverageParams() {
+		return coverageParams;
+	}
+
+	public void setCoverageParams(I_Tests4J_CoveragePluginParams coverageParams) {
+		this.coverageParams = coverageParams;
 	}
 }

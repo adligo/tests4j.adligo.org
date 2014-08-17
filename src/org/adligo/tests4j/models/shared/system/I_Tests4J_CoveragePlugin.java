@@ -1,8 +1,9 @@
 package org.adligo.tests4j.models.shared.system;
 
+import java.io.IOException;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.dependency.I_ClassReferencesLocal;
+import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
 /**
@@ -20,7 +21,7 @@ public interface I_Tests4J_CoveragePlugin {
 	 * This method should be executable by multiple threads, 
 	 * so that each thread is instrumenting classes, to a shared classloader.
 	 */
-	public Class<? extends I_AbstractTrial> instrument(Class<? extends I_AbstractTrial> trial);
+	public Class<? extends I_AbstractTrial> instrument(Class<? extends I_AbstractTrial> trial) throws IOException;
 	
 	/**
 	 * give the plugin a chance to clean up the instrumentation
@@ -33,7 +34,7 @@ public interface I_Tests4J_CoveragePlugin {
 	 *    true if this coverage plugin 
 	 *    has the ability to record code coverage local to the thread.
 	 */
-	public boolean canThreadGroupLocalRecord();
+	public boolean isCanThreadGroupLocalRecord();
 	
 	/**
 	 * Create a new recorder that records either 
@@ -55,7 +56,7 @@ public interface I_Tests4J_CoveragePlugin {
 	 * @param className
 	 * @return
 	 */
-	public I_ClassReferencesLocal getClassReferences(String className);
+	public I_ClassDependenciesLocal getClassReferences(String className);
 	
 
 }

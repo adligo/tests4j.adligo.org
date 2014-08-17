@@ -40,7 +40,6 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 	}
 	
 	public TestResult testMinCoverage(SourceFileTrialResultMutant trialResultMutant) {
-		I_AbstractTrial trial = super.getTrial();
 		TrialDescription trialDesc = super.getTrialDescription();
 		
 		TestResultMutant testResultMutant = new TestResultMutant();

@@ -8,7 +8,7 @@ package org.adligo.tests4j.models.shared.dependency;
  * @author scott
  *
  */
-public interface I_ClassReferencesCache {
-	public void putReferencesIfAbsent(I_ClassReferencesLocal p);
-	public I_ClassReferencesLocal getReferences(String name);
+public interface I_ClassDependenciesCache {
+	public void putDependenciesIfAbsent(I_ClassDependenciesLocal p);
+	public I_ClassDependenciesLocal getDependencies(String name);
 }

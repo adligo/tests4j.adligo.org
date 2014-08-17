@@ -64,4 +64,9 @@ public class DelegateSystem implements I_System {
 	public String getLineSeperator() {
 		return delegate.getLineSeperator();
 	}
+
+	@Override
+	public String getCurrentThreadName() {
+		return delegate.getCurrentThreadName();
+	}
 }

@@ -20,15 +20,10 @@ public interface I_Tests4J_Log {
 	public void log(String p);
 
 	/**
-	 * Notify the reporter that a 
-	 * internal Test4J
-	 * Error has been thrown.
-	 * 
-	 * This should generally not occur.
-	 * 
+	 * Log a Throwable including it's stack trace.
 	 * @param p
 	 */
-	public void onException(Throwable p);
+	public void onThrowable(Throwable p);
 	/**
 	 * If the log is enabled, used to optimize string 
 	 * creation of log messages.

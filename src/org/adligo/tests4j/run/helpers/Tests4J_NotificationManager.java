@@ -322,7 +322,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					}
 					sim.setHasClass(true);
 				} catch (ClassNotFoundException x) {
-					logger.onException(x);
+					logger.onThrowable(x);
 				}
 				trmm.setSourceInfo(clazz, sim);
 			}
@@ -532,7 +532,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 						}
 					} 
 					if (!called) {
-						logger.onException(new Throwable("Some issue with the meta trial which wasn't called."));
+						logger.onThrowable(new Throwable("Some issue with the meta trial which wasn't called."));
 					}
 				}
 			}

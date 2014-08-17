@@ -32,11 +32,13 @@ public interface I_CachedClassBytesClassLoader {
 	public Class<?> addCache(final String name, final byte[] bytes) throws ClassNotFoundException;
 	
 	/**
+	 * 
 	 * This loads the byte [] of the class file from the input stream.
 	 * It also should make sure the input stream passed in gets closed.
 	 * 
 	 * Implementations should close the input stream when
 	 * their done with it.
+	 * @diagram_sync with tests4j_4jacoco/InstrumentationOverview on 8/14/2014
 	 * 
 	 * @param in the input stream to read from
 	 * @param name
@@ -47,8 +49,12 @@ public interface I_CachedClassBytesClassLoader {
 			throws ClassNotFoundException, IOException;
 	
 	/**
+	 * 
 	 * if the byte [] of the class file has 
 	 * been cached return true.
+	 * 
+	 * @diagram_sync with tests4j_4jacoco/InstrumentationOverview on 8/14/2014
+	 * 
 	 * @param name
 	 * @return
 	 */
@@ -82,6 +88,8 @@ public interface I_CachedClassBytesClassLoader {
 	 */
 	public  List<String> getAllCachedClasses();
 	/**
+	 * @diagram_sync with tests4j_4jacoco/InstrumentationOverview on 8/14/2014
+	 * 
 	 * @return a InputStream for the 
 	 * cached class byte[] in Memory.  Throws a illegal argument exception
 	 * if the class has not been loaded by this class loader.  

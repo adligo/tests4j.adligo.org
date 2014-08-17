@@ -9,71 +9,71 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 
 /**
- * a mutable implementation of {@link I_ClassReferences}
+ * a mutable implementation of {@link I_ClassDependencies}
  * @author scott
  *
  */
-public class ClassReferencesLocalMutant extends ClassParentsLocalMutant 
-	implements I_ClassReferencesLocal {
+public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant 
+	implements I_ClassDependenciesLocal {
 	
-	private Set<I_ClassAliasLocal> circularReferences;
-	private Set<I_ClassParentsLocal> references;
+	private Set<I_ClassAliasLocal> circularDependencies;
+	private Set<I_ClassParentsLocal> dependencies;
 	
-	public ClassReferencesLocalMutant(Class<?> c) {
+	public ClassDependenciesLocalMutant(Class<?> c) {
 		super(c);
 	}
 	
-	public ClassReferencesLocalMutant(I_ClassParentsLocal p) {
+	public ClassDependenciesLocalMutant(I_ClassParentsLocal p) {
 		super(p);
 		List<I_ClassParentsLocal> cpus = p.getParentsLocal();
 		setReferences(cpus);
 	}
 	
-	public ClassReferencesLocalMutant(I_ClassReferencesLocal p) {
+	public ClassDependenciesLocalMutant(I_ClassDependenciesLocal p) {
 		super(p);
-		setCircularReferences(p.getCircularReferencesLocal());
-		setReferences(p.getReferencesLocal());
+		setCircularReferences(p.getCircularDependenciesLocal());
+		setReferences(p.getDependenciesLocal());
 	}
 	
 	/**
-	 * @see I_ClassReferences#hasCircularReferences()
+	 * @see I_ClassDependencies#hasCircularDependencies()
 	 */
 	@Override
-	public boolean hasCircularReferences() {
-		if (circularReferences == null) {
+	public boolean hasCircularDependencies() {
+		if (circularDependencies == null) {
 			return false;
 		}
-		if (circularReferences.size() >= 1) {
+		if (circularDependencies.size() >= 1) {
 			return true;
 		}
 		return false;
 	}
 	/**
-	 * @see I_ClassReferences#getCircularReferences()
+	 * @see I_ClassDependencies#getCircularDependencies()
 	 */
 	@Override
-	public Set<I_ClassAlias> getCircularReferences() {
-		if (circularReferences == null) {
+	public Set<I_ClassAlias> getCircularDependencies() {
+		if (circularDependencies == null) {
 			return Collections.emptySet();
 		}
-		return new HashSet<I_ClassAlias>(circularReferences);
+		return new HashSet<I_ClassAlias>(circularDependencies);
 	}
 	
 	/**
-	 * @see I_ClassReferencesLocal#getCircularReferencesLocal()
+	 * @see I_ClassDependenciesLocal#getCircularDependenciesLocal()
 	 */
 	@Override
-	public Set<I_ClassAliasLocal> getCircularReferencesLocal() {
-		if (circularReferences == null) {
+	public Set<I_ClassAliasLocal> getCircularDependenciesLocal() {
+		if (circularDependencies == null) {
 			return Collections.emptySet();
 		}
-		return circularReferences;
+		return circularDependencies;
 	}
 	
 	public void setCircularReferences(Collection<I_ClassAliasLocal> other) {
 		if (other != null) {
-			if (circularReferences != null) {
-				circularReferences.clear();
+			if (circularDependencies != null) {
+				circularDependencies.clear();
 			}
 			for (I_ClassAliasLocal cr: other) {
 				addCircularReferences(cr);
@@ -83,10 +83,10 @@ public class ClassReferencesLocalMutant extends ClassParentsLocalMutant
 
 	public void addCircularReferences(I_ClassAliasLocal other) {
 		if (other != null) {
-			if (circularReferences == null) {
-				circularReferences = new HashSet<I_ClassAliasLocal>();
+			if (circularDependencies == null) {
+				circularDependencies = new HashSet<I_ClassAliasLocal>();
 			}
-			circularReferences.add(new ClassAliasLocal(other));
+			circularDependencies.add(new ClassAliasLocal(other));
 		}
 	}
 
@@ -95,11 +95,11 @@ public class ClassReferencesLocalMutant extends ClassParentsLocalMutant
 		return toString(this);
 	}
 	
-	public static String toString(I_ClassReferencesLocal p) {
+	public static String toString(I_ClassDependenciesLocal p) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ClassParentsLocalMutant.toString(p));
-		if (p.hasCircularReferences()) {
-			Set<I_ClassAliasLocal> refs =  p.getCircularReferencesLocal();
+		if (p.hasCircularDependencies()) {
+			Set<I_ClassAliasLocal> refs =  p.getCircularDependenciesLocal();
 			
 			sb.append(", circularRefs=[");
 			boolean first = true;
@@ -117,8 +117,8 @@ public class ClassReferencesLocalMutant extends ClassParentsLocalMutant
 			}
 			sb.append("]");
 		}
-		if (p.hasReferences()) {
-			Set<I_ClassAlias> refs =  p.getReferences();
+		if (p.hasDependencies()) {
+			Set<I_ClassAlias> refs =  p.getDependencies();
 			
 			sb.append(", references=[");
 			boolean first = true;
@@ -148,22 +148,22 @@ public class ClassReferencesLocalMutant extends ClassParentsLocalMutant
 	}
 
 	@Override
-	public Set<I_ClassAlias> getReferences() {
-		if (references == null) {
+	public Set<I_ClassAlias> getDependencies() {
+		if (dependencies == null) {
 			return Collections.emptySet();
 		}
-		return new HashSet<I_ClassAlias>(references);
+		return new HashSet<I_ClassAlias>(dependencies);
 	}
 
 	@Override
-	public Set<I_ClassParentsLocal> getReferencesLocal() {
-		return references;
+	public Set<I_ClassParentsLocal> getDependenciesLocal() {
+		return dependencies;
 	}
 	
 	public void setReferences(Collection<I_ClassParentsLocal> p) {
 		if (p != null) {
-			if (references != null) {
-				references.clear();
+			if (dependencies != null) {
+				dependencies.clear();
 			}
 			addReferences(p);
 		}
@@ -179,44 +179,44 @@ public class ClassReferencesLocalMutant extends ClassParentsLocalMutant
 	
 	public void addReference(I_ClassParentsLocal p) {
 		if (p != null) {
-			if (references == null) {
-				references = new HashSet<I_ClassParentsLocal>();
+			if (dependencies == null) {
+				dependencies = new HashSet<I_ClassParentsLocal>();
 			}
-			references.add(p);
+			dependencies.add(p);
 		}
 	}
 
 
 	@Override
-	public boolean hasReferences() {
-		if (references == null) {
+	public boolean hasDependencies() {
+		if (dependencies == null) {
 			return false;
 		}
-		if (references.size() >= 1) {
+		if (dependencies.size() >= 1) {
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public Set<String> getReferenceNames() {
-		if (references == null || references.size() == 0) {
+	public Set<String> getDependencyNames() {
+		if (dependencies == null || dependencies.size() == 0) {
 			return Collections.emptySet();
 		}
 		Set<String> toRet = new HashSet<String>();
-		for (I_ClassAliasLocal alias: references) {
+		for (I_ClassAliasLocal alias: dependencies) {
 			toRet.add(alias.getName());
 		}
 		return toRet;
 	}
 	
 	@Override
-	public Set<String> getCircularReferenceNames() {
-		if (circularReferences == null || circularReferences.size() == 0) {
+	public Set<String> getCircularDependenciesNames() {
+		if (circularDependencies == null || circularDependencies.size() == 0) {
 			return Collections.emptySet();
 		}
 		Set<String> toRet = new HashSet<String>();
-		for (I_ClassAliasLocal alias: circularReferences) {
+		for (I_ClassAliasLocal alias: circularDependencies) {
 			toRet.add(alias.getName());
 		}
 		return toRet;

@@ -23,4 +23,9 @@ public class JseSystem implements I_System {
 		return System.lineSeparator();
 	}
 
+	@Override
+	public String getCurrentThreadName() {
+		return Thread.currentThread().getName();
+	}
+
 }

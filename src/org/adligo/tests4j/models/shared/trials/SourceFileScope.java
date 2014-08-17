@@ -23,9 +23,21 @@ public @interface SourceFileScope {
 	/**
 	 * This is the minimum code coverage expected
 	 * on the sourceClass by the trial with this annotation.
+	 * This will only work when a coverage plug-in is present.
+	 * 
 	 * @return a percentage 0.0 - 100.0 representing the minimum 
 	 * code coverage expected on the sourceClass by the trial 
 	 * with this annotation.
 	 */
 	 double minCoverage() default 100.0;
+	 
+	 /**
+	  * if this is set to true,
+	  * classes that depend on the sourceClass
+	  * may also be depended on by the sourceClass.
+	  * Dependency is provided by the coverage plug-in,
+	  * so this will only work when a coverage plug-in is present.
+	  * @return
+	  */
+	 boolean allowCircularDependencies() default false;
 }

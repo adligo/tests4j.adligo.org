@@ -125,7 +125,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 					//code cover the creation of the class, in the trialDescrption
 					I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
 					if (plugin != null) {
-						if (plugin.canThreadGroupLocalRecord()) {
+						if (plugin.isCanThreadGroupLocalRecord()) {
 							//@diagram sync on 7/5/2014
 							// for Overview.seq 
 							trialThreadLocalCoverageRecorder = plugin.createRecorder();
@@ -137,7 +137,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 				}
 				
 			} catch (Exception x) {
-				logger.onException(x);
+				logger.onThrowable(x);
 			} 
 			
 			if (trialDescription != null) {
@@ -155,11 +155,11 @@ public class Tests4J_TrialsRunable implements Runnable,
 								runTrial();
 							}	
 						} catch (RejectedExecutionException x) {
-							memory.getLogger().onException(x);
+							memory.getLogger().onThrowable(x);
 						} catch (Exception x) {
-							memory.getLogger().onException(x);
+							memory.getLogger().onThrowable(x);
 						} catch (Error x) {
-							memory.getLogger().onException(x);
+							memory.getLogger().onThrowable(x);
 						} 
 					}
 				}

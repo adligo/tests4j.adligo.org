@@ -74,6 +74,12 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 * @return
 	 */
 	public Class<? extends I_Tests4J_CoveragePluginFactory> getCoveragePluginFactoryClass();
+	
+	/**
+	 * parameters for the coverge plug-in.
+	 * @return
+	 */
+	public I_Tests4J_CoveragePluginParams getCoverageParams();
 
 	/**
 	 * a recommendation for the number of TrailThreads for
@@ -162,5 +168,6 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 */
 	public Class<? extends I_EvaluatorLookup> getEvaluatorLookup();
 
+	
 
 }

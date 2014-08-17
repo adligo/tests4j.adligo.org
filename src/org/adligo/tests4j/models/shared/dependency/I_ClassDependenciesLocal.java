@@ -3,7 +3,12 @@ package org.adligo.tests4j.models.shared.dependency;
 import java.util.Set;
 
 /**
- * A circular a reference loop ie;
+ * This interface contains information
+ * about which classes/interfaces/enum/annotation
+ * a particular class/interface/enum/annotation
+ * depends on.
+ * 
+ * A circular a dependency loop ie;
  * ClassA.init()  calls -> ClassB.foo();
  * ClassB.init()  calls -> ClassA.bar();
  * 
@@ -17,17 +22,18 @@ import java.util.Set;
  * @author scott
  *
  */
-public interface I_ClassReferencesLocal extends I_ClassReferences, I_ClassParentsLocal {
+public interface I_ClassDependenciesLocal extends I_ClassDependencies, I_ClassParentsLocal {
 
 	/**
 	 * the names of the circular dependencies
 	 * @return
 	 */
-	public Set<I_ClassAliasLocal> getCircularReferencesLocal();
+	public Set<I_ClassAliasLocal> getCircularDependenciesLocal();
 	
 	/**
-	 * the class names of the referenced classes.
+	 * the class names of the classes
+	 * which are dependend on.
 	 * @return
 	 */
-	public abstract Set<I_ClassParentsLocal> getReferencesLocal();
+	public abstract Set<I_ClassParentsLocal> getDependenciesLocal();
 }

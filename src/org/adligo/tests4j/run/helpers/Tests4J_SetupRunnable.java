@@ -1,10 +1,11 @@
 package org.adligo.tests4j.run.helpers;
 
+import java.io.IOException;
+
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.TrialRecursion;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 
 public class Tests4J_SetupRunnable implements Runnable {
@@ -63,11 +64,8 @@ public class Tests4J_SetupRunnable implements Runnable {
 				notifier.checkDoneDescribingTrials();
 				
 				
-			} catch (Exception x) {
-				logger.onException(x);
-				notifier.onDescibeTrialError();
-			} catch (Error x) {
-				logger.onException(x);
+			} catch (IOException x) {
+				logger.onThrowable(x);
 				notifier.onDescibeTrialError();
 			}
 			trialClazz = memory.pollTrialClasses();

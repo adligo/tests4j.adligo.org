@@ -89,7 +89,7 @@ public class Tests4J_ParamsReader {
 			getTrialsFromParams(pParams);
 		} catch (Throwable t) {
 			//some error/exception with the trials, do NOT try to recover
-			logger.onException(t);
+			logger.onThrowable(t);
 			runnable = false;
 			return;
 		}
@@ -100,7 +100,7 @@ public class Tests4J_ParamsReader {
 		} catch (Throwable t) {
 			runFalseReason = t;
 			//some error/exception with the trials, do NOT try to recover
-			logger.onException(t);
+			logger.onThrowable(t);
 			runnable = false;
 			return;
 		}
@@ -118,7 +118,7 @@ public class Tests4J_ParamsReader {
 			coveragePlugin = createCoveragePlugin();
 		} catch (Throwable t) {
 			//some error/exception with the coveragePlugin, try to recover
-			logger.onException(t);
+			logger.onThrowable(t);
 		}
 	
 		
@@ -142,7 +142,7 @@ public class Tests4J_ParamsReader {
 		} catch (Throwable t) {
 			runFalseReason = t;
 			//error with tests, don't recover
-			logger.onException(t);
+			logger.onThrowable(t);
 			runnable = false;
 			return;
 		}
@@ -153,7 +153,7 @@ public class Tests4J_ParamsReader {
 			recommendedTrialThreads = pParams.getRecommendedTrialThreadCount();
 		} catch (Throwable t) {
 			//some error/exception with the trials, do try to recover
-			logger.onException(t);
+			logger.onThrowable(t);
 		}
 		trialThreadCount = determineTrialThreads(recommendedTrialThreads);
 		
@@ -161,7 +161,7 @@ public class Tests4J_ParamsReader {
 			readEvaluatorLookup();
 		} catch (Throwable t) {
 			runFalseReason = t;
-			logger.onException(t);
+			logger.onThrowable(t);
 			runnable = false;
 			return;
 		}
@@ -225,7 +225,7 @@ public class Tests4J_ParamsReader {
 		}
 		
 		I_Tests4J_CoveragePluginFactory factory = coveragePluginFactoryClass.newInstance();
-		I_Tests4J_CoveragePlugin plugin = factory.create(logger);
+		I_Tests4J_CoveragePlugin plugin = factory.create(params.getCoverageParams(), logger);
 		
 		return plugin;
 	}

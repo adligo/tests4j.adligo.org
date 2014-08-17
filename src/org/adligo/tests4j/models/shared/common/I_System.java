@@ -34,4 +34,12 @@ public interface I_System {
 	 * @return
 	 */
 	public String getLineSeperator();
+	
+	/**
+	 * this should default to 'main'
+	 * when Thread.currentThread.getName()
+	 * isn't available (ie in GWT).
+	 * @return
+	 */
+	public String getCurrentThreadName();
 }
