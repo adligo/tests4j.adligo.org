@@ -30,6 +30,29 @@ public interface I_CachedClassBytesClassLoader {
 	 *            class definition
 	 */
 	public Class<?> addCache(final String name, final byte[] bytes) throws ClassNotFoundException;
+	/**
+	 * Add a in-memory representation of a class file bytes
+	 * for a class that has already been defined by another class loader,
+	 * this was added to get around a weird issue where
+	 * a implementation of this interface called;
+	 * defineClass(name, bytes, 0, bytes.length);
+	 * 
+	 * and then the native method defineClass1 called load class, before it was defined?
+	 * not sure why this was since it seems defineClass1 would just create a Class instance to load.
+	 * 
+	 * at org.adligo.tests4j.run.helpers.CachedClassBytesClassLoader.loadClass(CachedClassBytesClassLoader.java:161)
+	 * at java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+	 * at java.lang.ClassLoader.defineClass1(Native Method)
+	 * at java.lang.ClassLoader.defineClass(ClassLoader.java:800)
+	 * at java.lang.ClassLoader.defineClass(ClassLoader.java:643)
+	 * at org.adligo.tests4j.run.helpers.CachedClassBytesClassLoader.defineClassFromBytes(CachedClassBytesClassLoader.java:187)
+	 * 
+	 * @param name
+	 *            name of the class
+	 * @param bytes
+	 *            class definition
+	 */
+	public void addCache(final Class<?> clazz, final byte[] bytes);
 	
 	/**
 	 * 
@@ -47,6 +70,18 @@ public interface I_CachedClassBytesClassLoader {
 	 */
 	public Class<?> addCache(InputStream in, final String name) 
 			throws ClassNotFoundException, IOException;
+	
+	/**
+	 * @see #addCache(Class, byte[])
+	 * @diagram_sync with tests4j_4jacoco/DiscoveryOverview.seq on 8/18
+	 * 
+	 * @param in
+	 * @param clazz
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public void addCache(InputStream in, Class<?> clazz) 
+			throws IOException;
 	
 	/**
 	 * 

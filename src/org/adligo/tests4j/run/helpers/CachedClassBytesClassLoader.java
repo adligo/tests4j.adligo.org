@@ -89,6 +89,26 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	}
 	
 	/**
+	 * @see I_CachedClassBytesClassLoader#addCache(InputStream, String)
+	 */
+	@Override
+	public void addCache(InputStream in, Class<?> clazz)
+			throws IOException {
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			byte [] bytes = new byte[1];
+			while(in.read(bytes) != -1) {
+				baos.write(bytes);
+			}
+			bytes = baos.toByteArray();
+			addCache(clazz, bytes);
+		} catch (IOException x) {
+			throw x;
+		} finally {
+			in.close();
+		}
+	}
+	/**
 	 * @see I_CachedClassBytesClassLoader#addCache(String, byte[])
 	 */
 	public Class<?> addCache(final String name, final byte[] bytes) throws ClassNotFoundException {
@@ -97,6 +117,13 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 		return toRet;
 	}
 
+	/**
+	 * @see I_CachedClassBytesClassLoader#addCache(String, byte[], Class<?> clazz)
+	 */
+	public void addCache(final Class<?> clazz, final byte[] bytes) {
+		classes.put(clazz.getName(), clazz);
+		bytesCache.putIfAbsent(clazz.getName(), bytes);
+	}
 	/**
 	 * @see I_CachedClassBytesClassLoader#hasCache(String)
 	 */

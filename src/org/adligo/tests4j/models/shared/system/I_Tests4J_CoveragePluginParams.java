@@ -37,4 +37,12 @@ public interface I_Tests4J_CoveragePluginParams extends I_XML_Consumer, I_XML_Pr
 	 * @return
 	 */
 	public String getInstrumentedClassOutputFolder();
+	
+	/**
+	 * this tells the coverage plug-in if the 
+	 * recordings need to pay attention to concurrency
+	 * because there are multiple threads using the plug-in.
+	 * @return
+	 */
+	public boolean isConcurrentRecording();
 }

@@ -19,8 +19,6 @@ public interface I_Tests4J_ThreadManager {
 
 	public ExecutorService getSetupService();
 
-	public ExecutorService getMonitorService();
-
 	public ExecutorService getRemoteService();
 
 	public ExecutorService getTrialRunService();

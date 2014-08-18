@@ -23,18 +23,27 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 public final class Tests4J_ThreadFactory implements ThreadFactory {
 	public static final String BASE_THREAD_NAME = "tests4j-";
 	/**
-	 * for the runService which runs the TrialInstanceProcessor runnables
+	 * for the Tests4J_TrialsRunnables
 	 */
 	public static final String TRIAL_THREAD_NAME = BASE_THREAD_NAME + "trial";
 	/**
-	 * for the testRunner which runs the TestRunable runnables
+	 * for the Tests4J_TestRunnables
 	 */
 	public static final String TEST_THREAD_NAME = BASE_THREAD_NAME + "test";
+	/**
+	 * for the Tests4J_SetupRunnables
+	 */
+	public static final String SETUP_THREAD_NAME = BASE_THREAD_NAME + "setup";
 	
 	/**
-	 * for the testRunner which runs the TestRunable runnables
+	 * for the Tests4J_RemoteRunnables
 	 */
-	public static final String SERVER_THREAD_NAME = BASE_THREAD_NAME + "runner";
+	public static final String REMOTE_THREAD_NAME = BASE_THREAD_NAME + "remote";
+	
+	/**
+	 * for the Tests4J_ServerRunnables
+	 */
+	public static final String SERVER_THREAD_NAME = BASE_THREAD_NAME + "server";
 	
 	
 	private List<Thread> threads = new CopyOnWriteArrayList<Thread>();
@@ -47,6 +56,8 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 		reporter = pReporter;
 		if (pName.contains(TRIAL_THREAD_NAME) || 
 				pName.contains(TEST_THREAD_NAME) ||
+				pName.contains(SETUP_THREAD_NAME) ||
+				pName.contains(REMOTE_THREAD_NAME) ||
 				pName.contains(SERVER_THREAD_NAME)) {
 			name = pName;
 		} else {

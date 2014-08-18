@@ -37,14 +37,8 @@ public interface I_Tests4J_CoveragePlugin {
 	public boolean isCanThreadGroupLocalRecord();
 	
 	/**
-	 * Create a new recorder that records either 
-	 * all code coverage from all threads, or
-	 * code coverage for this thread only.
-	 * 
-	 * @param scope
+	 * Create a new recorder.
 	 * @return
-	 * 
-	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
 	public I_Tests4J_CoverageRecorder createRecorder();

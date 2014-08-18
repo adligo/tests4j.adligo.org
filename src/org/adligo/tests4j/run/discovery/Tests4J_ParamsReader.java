@@ -14,9 +14,11 @@ import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginParams;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.system.Tests4J_CoveragePluginParams;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.Tests4J_Selection;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -116,12 +118,7 @@ public class Tests4J_ParamsReader {
 			return;
 		}
 		
-		try {
-			coveragePlugin = createCoveragePlugin();
-		} catch (Throwable t) {
-			//some error/exception with the coveragePlugin, try to recover
-			logger.onThrowable(t);
-		}
+		
 	
 		
 		try {
@@ -149,22 +146,14 @@ public class Tests4J_ParamsReader {
 			return;
 		}
 		
-		//determine the threads
-		Integer recommendedTrialThreads = null;
+		determineThreadCounts();
+		
 		try {
-			recommendedTrialThreads = pParams.getRecommendedTrialThreadCount();
+			coveragePlugin = createCoveragePlugin();
 		} catch (Throwable t) {
-			//some error/exception with the trials, do try to recover
+			//some error/exception with the coveragePlugin, try to recover
 			logger.onThrowable(t);
 		}
-		trialThreadCount = determineTrialThreads(recommendedTrialThreads);
-		Integer recomendedSetupThreads = pParams.getRecommendedSetupThreadCount();
-		if (recomendedSetupThreads == null) {
-			setupThreadCount = trialThreadCount;
-		} else if (trialThreadCount >= recomendedSetupThreads) {
-			setupThreadCount = recomendedSetupThreads;
-		}
-		
 		try {
 			readEvaluatorLookup();
 		} catch (Throwable t) {
@@ -186,6 +175,30 @@ public class Tests4J_ParamsReader {
 			return;
 		}
 		
+	}
+
+	protected void determineThreadCounts() {
+		Integer recommendedTrialThreads = null;
+		try {
+			recommendedTrialThreads = params.getRecommendedTrialThreadCount();
+		} catch (Throwable t) {
+			//some error/exception with the trials, do try to recover
+			logger.onThrowable(t);
+		}
+		trialThreadCount = determineTrialThreads(recommendedTrialThreads);
+		Integer recomendedSetupThreads = null;
+		
+		try {
+			recomendedSetupThreads = params.getRecommendedSetupThreadCount();
+		} catch (Throwable t) {
+			//some error/exception with the trials, do try to recover
+			logger.onThrowable(t);
+		}
+		if (recomendedSetupThreads == null) {
+			setupThreadCount = trialThreadCount;
+		} else if (trialThreadCount >= recomendedSetupThreads) {
+			setupThreadCount = recomendedSetupThreads;
+		}
 	}
 
 	private void readEvaluatorLookup() throws InstantiationException,
@@ -227,13 +240,29 @@ public class Tests4J_ParamsReader {
 	}
 	
 	public I_Tests4J_CoveragePlugin createCoveragePlugin() throws Exception {
-		Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginFactoryClass = params.getCoveragePluginFactoryClass();
+		Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginFactoryClass = null;
+		
+		
+		Tests4J_CoveragePluginParams coverageParams = null;
+		try {
+			coveragePluginFactoryClass = params.getCoveragePluginFactoryClass();
+			I_Tests4J_CoveragePluginParams coverageParamsIn = params.getCoverageParams();
+			if (coverageParamsIn == null) {
+				coverageParamsIn = new Tests4J_CoveragePluginParams();
+			}
+			coverageParams = new Tests4J_CoveragePluginParams(coverageParamsIn);
+		} catch (Throwable t) {
+			logger.onThrowable(t);
+			return null;
+		}
 		if (coveragePluginFactoryClass == null) {
 			return null;
 		}
-		
+		if (trialThreadCount <= 1) {
+			coverageParams.setConcurrentRecording(false);
+		}
 		I_Tests4J_CoveragePluginFactory factory = coveragePluginFactoryClass.newInstance();
-		I_Tests4J_CoveragePlugin plugin = factory.create(params.getCoverageParams(), logger);
+		I_Tests4J_CoveragePlugin plugin = factory.create(coverageParams, logger);
 		
 		return plugin;
 	}

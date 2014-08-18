@@ -8,5 +8,9 @@ public interface I_Tests4J_Memory {
 	public abstract I_Tests4J_Log getLogger();
 
 	public abstract I_EvaluatorLookup getEvaluationLookup();
+	
+	public int getTrialThreadCount();
+	public int getSetupThreadCount();
+	public int getRemoteThreadCount();
 
 }

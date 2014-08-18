@@ -73,19 +73,21 @@ public class DelegatingLog implements I_Tests4J_Log {
 	}
 
 	private void logThrowable(String indentString, Throwable t) {
-		logThrowable(indentString, indentString, t);
+		logThrowable(indentString, indentString, t, new StringBuilder());
 	}
 	
-	private void logThrowable(String currentIndent, String indentString, Throwable t) {
+	private void logThrowable(String currentIndent, String indentString, Throwable t, StringBuilder sb) {
 		StackTraceElement [] stack = t.getStackTrace();
 		log(currentIndent + t.toString());
 		for (int i = 0; i < stack.length; i++) {
-			log(currentIndent +"at " + stack[i]);
+			sb.append(currentIndent +"at " + stack[i]);
+			sb.append(lineSeperator);
 		}
 		Throwable cause = t.getCause();
 		if (cause != null) {
-			logThrowable(currentIndent + indentString, indentString,  cause);
+			logThrowable(currentIndent + indentString, indentString,  cause, sb);
 		}
+		log(sb.toString());
 	}
 	
 	@Override

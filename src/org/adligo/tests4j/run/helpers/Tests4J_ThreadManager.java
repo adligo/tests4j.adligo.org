@@ -27,10 +27,11 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	private Tests4J_ThreadFactory trialFactory;
 	private Tests4J_ThreadFactory testFactory;
+	private Tests4J_ThreadFactory setupFactory;
+	private Tests4J_ThreadFactory remoteFactory;
 	private ExecutorService setupService;
 	private ExecutorService trialRunService;
 	private ExecutorService remoteService;
-	private ExecutorService monitorService;
 	
 	private List<ExecutorService> testExecutorServices = new CopyOnWriteArrayList<ExecutorService>();
 	private List<Future<?>> setupFutures = new CopyOnWriteArrayList<Future<?>>();
@@ -44,22 +45,27 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	private I_Tests4J_Log reporter;
 	
 	
-	public Tests4J_ThreadManager(int trialThreads, int remoteThreads, I_System pSystem, I_Tests4J_Log pReporter) {
+	public Tests4J_ThreadManager(I_Tests4J_Memory memory, I_System pSystem, I_Tests4J_Log pReporter) {
 		system = pSystem;
 		reporter = pReporter;
-		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
 		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,reporter);
+		
+		int setupThreads = memory.getSetupThreadCount();
+		if (setupThreads >= 1) {
+			setupFactory  = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SETUP_THREAD_NAME,reporter);
+			setupService = Executors.newFixedThreadPool(setupThreads, setupFactory);
+		}
+		int trialThreads = memory.getTrialThreadCount();
 		if (trialThreads >= 1) {
-			//it could be 0 if there were only remotes
-			setupService = Executors.newFixedThreadPool(trialThreads, trialFactory);
+			trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
 			trialRunService = Executors.newFixedThreadPool(trialThreads, trialFactory);
 		}
-		monitorService = Executors.newSingleThreadExecutor();
-		/**
-		if (remoteThreads >= 0) {
-			remoteService = Executors.newFixedThreadPool(remoteThreads, remoteThreads);
+		int remoteThreads = memory.getRemoteThreadCount();
+		if (remoteThreads >= 1) {
+			remoteFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
+			remoteService = Executors.newFixedThreadPool(remoteThreads, remoteFactory);
 		}
-		*/
+		
 	}
 	
 	
@@ -180,15 +186,6 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 
 
 	/* (non-Javadoc)
-	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_ThreadManager#getMonitorService()
-	 */
-	@Override
-	public ExecutorService getMonitorService() {
-		return monitorService;
-	}
-
-
-	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_ThreadManager#getRemoteService()
 	 */
 	@Override
@@ -227,7 +224,6 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 		}
 		
 		if (remoteService == null) {
-			monitorService.shutdownNow();
 			system.exitJvm(0);	
 		}
 	}

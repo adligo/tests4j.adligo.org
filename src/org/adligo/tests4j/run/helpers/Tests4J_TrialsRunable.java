@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
@@ -51,7 +52,7 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  * @author scott
  *
  */
-public class Tests4J_TrialsRunable implements Runnable,  
+public class Tests4J_TrialsRunable implements Runnable,
 	I_Tests4J_TestFinishedListener {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
@@ -120,62 +121,63 @@ public class Tests4J_TrialsRunable implements Runnable,
 	 */
 	@Override
 	public void run() {
-		outputDelegator.setDelegate(out);
-		
-		Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialsToRun();
-		while (trialClazz != null) {
-			try {
-				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
-					//start recording the trial coverage,
-					//code cover the creation of the class, in the trialDescrption
-					I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
-					if (plugin != null) {
-						if (plugin.isCanThreadGroupLocalRecord()) {
-							//@diagram sync on 7/5/2014
-							// for Overview.seq 
-							trialThreadLocalCoverageRecorder = plugin.createRecorder();
-							trialThreadLocalCoverageRecorder.startRecording();
+		try {
+			memory.addTrialsRunnablesStarted();
+			outputDelegator.setDelegate(out);
+			
+			Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialsToRun();
+			while (trialClazz != null) {
+				try {
+					if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
+						//start recording the trial coverage,
+						//code cover the creation of the class, in the trialDescrption
+						I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
+						if (plugin != null) {
+							if (plugin.isCanThreadGroupLocalRecord()) {
+								//@diagram sync on 7/5/2014
+								// for Overview.seq 
+								trialThreadLocalCoverageRecorder = plugin.createRecorder();
+								trialThreadLocalCoverageRecorder.startRecording();
+							}
 						}
+						
+						trialDescription = trialDescriptionProcessor.newTrailDescriptionToRun(trialClazz, notifier);
 					}
 					
-					trialDescription = trialDescriptionProcessor.newTrailDescriptionToRun(trialClazz, notifier);
-				}
+				} catch (Exception x) {
+					logger.onThrowable(x);
+				} 
 				
-			} catch (Exception x) {
-				logger.onThrowable(x);
-			} 
-			
-			if (trialDescription != null) {
-				if (trialDescription.isRunnable()) {
-					if (trialDescription.getType() != TrialType.MetaTrial) {
-						try {
-							//synchronized here so that each trial can only be running
-							//once in all of the trial threads, having a trial running
-							//in two threads at the same time would be confusing to the users
-							synchronized (trialClazz) {
-								if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
-									logger.log("Thread " + Thread.currentThread().getName() +
-											" is running trial;\n" +trialDescription.getTrialName());
-								}
-								runTrial();
-							}	
-						} catch (RejectedExecutionException x) {
-							memory.getLogger().onThrowable(x);
-						} catch (Exception x) {
-							memory.getLogger().onThrowable(x);
-						} catch (Error x) {
-							memory.getLogger().onThrowable(x);
-						} 
+				if (trialDescription != null) {
+					if (trialDescription.isRunnable()) {
+						if (trialDescription.getType() != TrialType.MetaTrial) {
+							try {
+								//synchronized here so that each trial can only be running
+								//once in all of the trial threads, having a trial running
+								//in two threads at the same time would be confusing to the users
+								synchronized (trialClazz) {
+									if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+										logger.log("Thread " + Thread.currentThread().getName() +
+												" is running trial;\n" +trialDescription.getTrialName());
+									}
+									runTrial();
+								}	
+							} catch (Exception x) {
+								logger.onThrowable(x);
+							} 
+						}
 					}
 				}
+				trialClazz = memory.pollTrialsToRun();
 			}
-			trialClazz = memory.pollTrialsToRun();
+			memory.addTrialsRunnablesFinished();
+			notifier.checkDoneRunningNonMetaTrials();
+			
+			testRunService.shutdownNow();
+			finished = true;
+		} catch (Exception x) {
+			logger.onThrowable(x);
 		}
-		
-		notifier.checkDoneRunningNonMetaTrials();
-		
-		testRunService.shutdownNow();
-		finished = true;
 	}
 
 
@@ -487,7 +489,5 @@ public class Tests4J_TrialsRunable implements Runnable,
 	public void setOutputDelegator(I_OutputDelegateor outputDelegator) {
 		this.outputDelegator = outputDelegator;
 	}
-
-
 
 }

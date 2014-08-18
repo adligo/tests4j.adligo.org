@@ -27,9 +27,10 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialDescription;
-import org.adligo.tests4j.run.output.ConcurrentOutputDelegateor;
-import org.adligo.tests4j.shared.output.I_OutputDelegateor;
+import org.adligo.tests4j.shared.output.CurrentLog;
+import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.shared.output.I_Tests4J_LogObtainer;
 
 /**
  * Instances of this class represent the main
@@ -72,11 +73,14 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
 	private int allTrialCount;
 	private I_Tests4J_CoveragePlugin coveragePlugin;
-	private I_Tests4J_Log logger;
+	private CurrentLog log;
+	private volatile I_Tests4J_Log currentLogDelegate = new DefaultLog();
 	private CopyOnWriteArrayList<Tests4J_TrialsRunable> trialInstancesProcessors = 
 			new CopyOnWriteArrayList<Tests4J_TrialsRunable>();
-
-	
+	private AtomicInteger setupRunnablesStarted = new AtomicInteger(0);
+	private AtomicInteger setupRunnablesFinished = new AtomicInteger(0);
+	private AtomicInteger trialsRunnablesStarted = new AtomicInteger(0);
+	private AtomicInteger trialsRunnablesFinished = new AtomicInteger(0);
 	/**
 	 * a safe wrapper around the I_TrialRunListener passed to Test4J.run
 	 * this should never be null during the trial run
@@ -104,8 +108,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private AtomicLong setupEndTime = new AtomicLong();
 	private AtomicLong trialEndTime = new AtomicLong();
 	private AtomicLong remoteEndTime = new AtomicLong();
-	private AtomicLong trialsSetup = new AtomicLong();
-	private AtomicLong trialsDone = new AtomicLong();
+	private AtomicInteger trialsDone = new AtomicInteger();
 	private AtomicLong testsDone = new AtomicLong();
 	private Tests4J_NotificationManager notifier;
 	/**
@@ -115,14 +118,20 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	 * @diagram sync on 7/21/2014 with Overview.seq 
 	 */
 	public Tests4J_Memory() {
-		
+		log = new CurrentLog(new I_Tests4J_LogObtainer() {
+			
+			@Override
+			public I_Tests4J_Log getLog() {
+				return currentLogDelegate;
+			}
+		});
 	}
 	
-	protected void initialize(Tests4J_ParamsReader p) {
+	protected synchronized void initialize(Tests4J_ParamsReader p) {
 		trialThreadCount = p.getTrialThreadCount();
 		setupThreadCount = p.getSetupThreadCount();
 		//TODO pass remote count into the thread manager
-		threadManager = new Tests4J_ThreadManager(trialThreadCount, 0, system, logger);
+		threadManager = new Tests4J_ThreadManager(this, system, log);
 		
 		List<Class<? extends I_AbstractTrial>> trials = p.getInstrumentedTrials();
 		if (trials.size() == 0) {
@@ -173,8 +182,8 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		if (!trialRuns.containsKey(name)) {
 			trialRuns.put(name, new AtomicInteger(0));
 		}
-		if (logger.isLogEnabled(Tests4J_Memory.class)) {
-			logger.log("added trial description for " + name);
+		if (log.isLogEnabled(Tests4J_Memory.class)) {
+			log.log("added trial description for " + name);
 		}
 	}
 	public TrialDescription getTrialDescription(String name) {
@@ -182,8 +191,8 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	}
 	
 	public int incrementTrialRun(String trialName) {
-		if (logger.isLogEnabled(Tests4J_Memory.class)) {
-			logger.log("incrementTrialRun for " + trialName);
+		if (log.isLogEnabled(Tests4J_Memory.class)) {
+			log.log("incrementTrialRun for " + trialName);
 		}
 		AtomicInteger next = trialRuns.get(trialName);
 		return next.getAndAdd(1);
@@ -271,7 +280,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	 */
 	@Override
 	public I_Tests4J_Log getLogger() {
-		return logger;
+		return log;
 	}
 
 	public List<Tests4J_TrialsRunable> getTrialInstancesProcessors() {
@@ -395,7 +404,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	}
 
 	protected void setListener(I_Tests4J_Listener p) {
-		listener = new Tests4J_ListenerDelegator(p, logger);
+		listener = new Tests4J_ListenerDelegator(p, log);
 	}
 	/**
 	 * paramTests
@@ -405,8 +414,8 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return tests;
 	}
 
-	protected void setLogger(I_Tests4J_Log logger) {
-		this.logger = logger;
+	protected void setLog(I_Tests4J_Log logger) {
+		this.currentLogDelegate = logger;
 	}
 
 
@@ -440,11 +449,11 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return hasTrialThatCanRun.get();
 	}
 
-	protected int getSetupThreadCount() {
+	public int getSetupThreadCount() {
 		return setupThreadCount;
 	}
 
-	protected int getRemoteThreadCount() {
+	public int getRemoteThreadCount() {
 		return remoteThreadCount;
 	}
 	
@@ -484,11 +493,11 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		remoteEndTime.set(p);
 	}
 
-	protected Long getTrialsSetup() {
-		return trialsSetup.get();
+	protected int getTrialsToSetup() {
+		return trialClasses.size();
 	}
-
-	protected Long getTrialsDone() {
+	
+	protected int getTrialsDone() {
 		return trialsDone.get();
 	}
 
@@ -496,12 +505,10 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return testsDone.get();
 	}
 
-	protected void addTrialSetup() {
-		this.trialsSetup.addAndGet(1L);
-	}
+	
 
 	protected void addTrialsDone() {
-		this.trialsDone.addAndGet(1L);
+		this.trialsDone.addAndGet(1);
 	}
 
 	protected void addTestsDone() {
@@ -511,5 +518,43 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	public int getAllTestsCount() {
 		return metadata.getAllTestsCount();
 	}
+
+
+	protected int getSetupRunnablesStarted() {
+		return setupRunnablesStarted.get();
+	}
+
+	protected int getSetupRunnablesFinished() {
+		return setupRunnablesFinished.get();
+	}
+
+	protected int getTrialsRunnablesStarted() {
+		return trialsRunnablesStarted.get();
+	}
+
+	protected int getTrialsRunnablesFinished() {
+		return trialsRunnablesFinished.get();
+	}
+
+	protected void addSetupRunnablesStarted() {
+		setupRunnablesStarted.addAndGet(1);
+	}
+
+	protected void addSetupRunnablesFinished() {
+		setupRunnablesFinished.addAndGet(1);
+	}
+
+	protected void addTrialsRunnablesStarted() {
+		trialsRunnablesStarted.addAndGet(1);
+	}
+
+	protected void addTrialsRunnablesFinished() {
+		trialsRunnablesFinished.addAndGet(1);
+	}
+
+	protected synchronized I_Tests4J_Log getLog() {
+		return log;
+	}
+
 
 }

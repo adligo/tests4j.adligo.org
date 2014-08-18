@@ -25,27 +25,27 @@ public class Tests4J_ProgressMonitor {
 		total = pTotal;
 	}
 	
-	public synchronized void notifyIfProgressedTime() {
+	public synchronized void incrementAndNotify() {
 		complete++;
-		long time = memory.getTime();
-		if (time >= startTime + timeBetweenLongs) {
-			startTime = time;
-			double progress = complete/ total * 100.0;
-			notifier.onProgress(process, progress);
+		if (notifyProgress) {
+			long time = memory.getTime();
+			if (time >= startTime + timeBetweenLongs) {
+				startTime = time;
+				double progress = getProgress(complete);
+				notifier.onProgress(process, progress);
+			}
 		}
 	}
-	
-	public synchronized void notifyIfProgressedTime(double numberComplete) {
-		long time = memory.getTime();
-		if (time >= startTime + timeBetweenLongs) {
-			startTime = time;
-			double progress = numberComplete/ total;
-			notifier.onProgress(process, progress * 100.0);
-		}
+
+	public synchronized double getProgress(double numberComplete) {
+		double progress = numberComplete/ total * 100.0;
+		return progress;
 	}
 	
 	public void notifyDone() {
-		notifier.onProgress(process, 100.0);
+		if (notifyProgress) {
+			notifier.onProgress(process, 100.0);
+		}
 	}
 
 	protected boolean isNotifyProgress() {
