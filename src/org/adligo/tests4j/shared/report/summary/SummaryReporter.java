@@ -16,10 +16,10 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.shared.output.DefaultLog;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
 	

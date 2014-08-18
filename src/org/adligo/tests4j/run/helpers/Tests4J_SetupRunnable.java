@@ -3,16 +3,15 @@ package org.adligo.tests4j.run.helpers;
 import java.io.IOException;
 
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class Tests4J_SetupRunnable implements Runnable {
 
 
 	private Tests4J_Memory memory;
-	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private I_Tests4J_Log logger;
 	private TrialDescriptionProcessor trialDescriptionProcessor;

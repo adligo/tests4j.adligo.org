@@ -12,10 +12,8 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
-import org.adligo.tests4j.models.shared.system.DefaultLog;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
@@ -24,6 +22,8 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Selection;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.shared.output.DefaultLog;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.report.summary.DefaultReporterStates;
 
 /**
@@ -42,6 +42,7 @@ import org.adligo.tests4j.shared.report.summary.DefaultReporterStates;
  */
 public class Tests4J_ParamsReader {
 	private I_Tests4J_Params params;
+	private Map<Class<?>, Boolean> logStates;
 	private I_Tests4J_Log logger;
 	/**
 	 * if this boolean gets set to false
@@ -54,6 +55,7 @@ public class Tests4J_ParamsReader {
 	private List<Class<? extends I_AbstractTrial>> instrumentedTrials = new ArrayList<Class<? extends I_AbstractTrial>>();
 	private Class<? extends I_MetaTrial> metaTrialClass;
 	private int trialThreadCount = 0;
+	private int setupThreadCount = 0;
 	private I_EvaluatorLookup evaluatorLookup;
 	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
 	private Throwable runFalseReason;
@@ -73,7 +75,7 @@ public class Tests4J_ParamsReader {
 	public Tests4J_ParamsReader(I_System pSystem, I_Tests4J_Params pParams) {
 		params = pParams;
 		
-		Map<Class<?>, Boolean> logStates = new HashMap<Class<?>, Boolean>();
+		logStates = new HashMap<Class<?>, Boolean>();
 		logStates.putAll(DefaultReporterStates.getDefalutLogStates());
 		try {
 			Map<Class<?>, Boolean>  paramStates = pParams.getLogStates();
@@ -156,6 +158,12 @@ public class Tests4J_ParamsReader {
 			logger.onThrowable(t);
 		}
 		trialThreadCount = determineTrialThreads(recommendedTrialThreads);
+		Integer recomendedSetupThreads = pParams.getRecommendedSetupThreadCount();
+		if (recomendedSetupThreads == null) {
+			setupThreadCount = trialThreadCount;
+		} else if (trialThreadCount >= recomendedSetupThreads) {
+			setupThreadCount = recomendedSetupThreads;
+		}
 		
 		try {
 			readEvaluatorLookup();
@@ -250,6 +258,10 @@ public class Tests4J_ParamsReader {
 		return trialThreadCount;
 	}
 
+	public int getSetupThreadCount() {
+		return setupThreadCount;
+	}
+	
 	public List<Class<? extends I_AbstractTrial>> getInstrumentedTrials() {
 		return instrumentedTrials;
 	}
@@ -268,6 +280,10 @@ public class Tests4J_ParamsReader {
 
 	public Throwable getRunFalseReason() {
 		return runFalseReason;
+	}
+
+	public Map<Class<?>, Boolean> getLogStates() {
+		return logStates;
 	}
 
 }

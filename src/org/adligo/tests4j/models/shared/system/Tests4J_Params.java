@@ -316,4 +316,12 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	public void setCoverageParams(I_Tests4J_CoveragePluginParams coverageParams) {
 		this.coverageParams = coverageParams;
 	}
+
+	public void setRecommendedRemoteThreadCount(Integer recommendedRemoteThreadCount) {
+		this.recommendedRemoteThreadCount = recommendedRemoteThreadCount;
+	}
+
+	public void setRecommendedSetupThreadCount(Integer recommendedSetupThreadCount) {
+		this.recommendedSetupThreadCount = recommendedSetupThreadCount;
+	}
 }

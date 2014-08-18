@@ -1,8 +1,6 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.PrintStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
@@ -13,9 +11,13 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
+import org.adligo.tests4j.run.output.ConcurrentOutputDelegateor;
+import org.adligo.tests4j.run.output.JsePrintOutputStream;
+import org.adligo.tests4j.run.output.OutputDelegateor;
+import org.adligo.tests4j.shared.output.DelegatingLog;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
 
 /**
@@ -28,20 +30,18 @@ import org.adligo.tests4j.shared.report.summary.SummaryReporter;
  */
 public class Tests4J_Processor implements I_Tests4J_Delegate {
 	public static final String REQUIRES_SETUP_IS_CALLED_BEFORE_RUN = " requires setup is called before run.";
-	/**
-	 * note this is static and final, so that 
-	 * when Tests4J tests itself the ThreadLocalOutputStream
-	 * is shared, so that the correct output will show up 
-	 * in the I_TrialResults.
-	 */
-	private static final ThreadLocalOutputStream OUT = new ThreadLocalOutputStream();
+	private final PrintStream out;
 	private Tests4J_Memory memory = new Tests4J_Memory();
 	private I_Tests4J_Log logger;
 	
+	private Tests4J_ParamsReader reader;
 	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private Tests4J_Controls controls;
 	
+	public Tests4J_Processor(PrintStream pOut) {
+		out = pOut;
+	}
 	/**
 	 * This method sets up everything for the run,
 	 * assumes all other setters have been called.
@@ -53,16 +53,13 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	public boolean setup(I_Tests4J_Listener pListener, I_Tests4J_Params pParams) {
 		
 		I_System system = memory.getSystem();
-		memory.setThreadLocalOutput(OUT);
-		Tests4J_ParamsReader reader = new Tests4J_ParamsReader(system,  pParams);
+		reader = new Tests4J_ParamsReader(system,  pParams);
 		
 		I_Tests4J_Log logger = reader.getLogger();
 		memory.setLogger(logger);
 		
 		memory.setListener(pListener);
 		memory.setReporter(new SummaryReporter(logger));
-		
-		
 		
 		if (reader.isRunnable()) {
 			memory.initialize(reader);
@@ -102,21 +99,6 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 			
 			submitTrialsRunnables();
 		}
-		/*
-		Collection<I_Tests4J_RemoteInfo> remotes = params.getRemoteInfo();
-		for (I_Tests4J_RemoteInfo remote: remotes) {
-			I_Tests4J_Params remoteParams = params.getRemoteParams(remote);
-			Tests4J_RemoteRunner remoteRunner = new Tests4J_RemoteRunner(remote, remoteParams, reporter);
-			Future<?> future = runService.submit(remoteRunner);
-			threadManager.addRemoteFuture(future);
-			threadManager.addRemoteRunner(remoteRunner);
-		}
-		if (runService instanceof ThreadPoolExecutor) {
-			ThreadPoolExecutor tpe = (ThreadPoolExecutor) runService;
-			tpe.setKeepAliveTime(1000, TimeUnit.MILLISECONDS);
-			tpe.allowCoreThreadTimeOut(true);
-		}
-		*/
 	}
 
 	/**
@@ -140,9 +122,21 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		}
 		if (setupThreadCount <= 1) {
 			//run single threaded on the main thread.
+			OutputDelegateor od = new OutputDelegateor(out);
+			JsePrintOutputStream jpos = new JsePrintOutputStream(od);
+			System.setOut(jpos);
+			System.setErr(jpos);
+			
 			Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier); 
 			sr.run();
 		} else {
+			ConcurrentOutputDelegateor cod = new ConcurrentOutputDelegateor();
+			JsePrintOutputStream jpos = new JsePrintOutputStream(cod);
+			System.setOut(jpos);
+			System.setErr(jpos);
+			logger = new DelegatingLog(memory.getSystem(), reader.getLogStates(), cod);
+			memory.setLogger(logger);
+			
 			ExecutorService runService = threadManager.getTrialRunService();
 			
 			int allTrials = memory.getAllTrialCount();
@@ -162,11 +156,18 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 					// it must have to do with shutdown, but it happens intermittently.
 				}
 			}
+			
 			while (!notifier.isDoneDescribeingTrials()) {
 				try {
 					Thread.sleep(500);
 					long trialsSetup = memory.getTrialsSetup();
 					progressMonitor.notifyIfProgressedTime(trialsSetup);
+					
+					String next = cod.poll();
+					while (next != null) {
+						out.println(next);
+						next = cod.poll();
+					}
 				} catch (InterruptedException x) {
 					throw new RuntimeException(x);
 				}
@@ -189,7 +190,15 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 			logger.log("Starting submitTrialRunnables with " + trialThreadCount + " trial threads.");
 		}
 		if (trialThreadCount <= 1) {
+			OutputDelegateor od = new OutputDelegateor(out);
+			JsePrintOutputStream jpos = new JsePrintOutputStream(od);
+			System.setOut(jpos);
+			System.setErr(jpos);
+			I_Tests4J_Log logger = reader.getLogger();
+			memory.setLogger(logger);
+			
 			Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
+			tip.setOutputDelegator(od);
 			
 			tip.run();
 			long now = memory.getTime();
@@ -200,12 +209,18 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 				logger.log("Finised trials after " + secs + " seconds.");
 			}
 		} else {
+			ConcurrentOutputDelegateor cod = new ConcurrentOutputDelegateor();
+			JsePrintOutputStream jpos = new JsePrintOutputStream(cod);
+			System.setOut(jpos);
+			System.setErr(jpos);
+			logger = new DelegatingLog(memory.getSystem(), reader.getLogStates(), cod);
+			memory.setLogger(logger);
+			
 			ExecutorService runService = threadManager.getTrialRunService();
-			
-			
 			
 			for (int i = 0; i < trialThreadCount; i++) {
 				Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
+				tip.setOutputDelegator(cod);
 				try {
 					Future<?> future = runService.submit(tip);
 					threadManager.addTrialFuture(future);
@@ -218,8 +233,6 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 			
 			int trials = memory.getAllTrialCount();
 			Tests4J_ProgressMonitor  trialProgressMonitor = new Tests4J_ProgressMonitor(memory, notifier, trials, "trials");
-			int tests = memory.getAllTestsCount();
-			Tests4J_ProgressMonitor  testsProgressMonitor = new Tests4J_ProgressMonitor(memory, notifier, tests, "tests");
 			
 			while (!notifier.isDoneRunningTrials()) {
 				try {
@@ -227,8 +240,12 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 					
 					long trialsRan = memory.getTrialsDone();
 					trialProgressMonitor.notifyIfProgressedTime(trialsRan);
-					long testsRan = memory.getTestsDone();
-					testsProgressMonitor.notifyIfProgressedTime(testsRan);
+					
+					String next = cod.poll();
+					while (next != null) {
+						out.println(next);
+						next = cod.poll();
+					}
 				} catch (InterruptedException x) {
 					throw new RuntimeException(x);
 				}

@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.models.shared.common.I_Platform;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * this is a simple class for extracting 

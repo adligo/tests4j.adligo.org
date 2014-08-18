@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.system;
+package org.adligo.tests4j.shared.output;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,10 +35,9 @@ public class ByteListOutputStream  extends OutputStream {
 
 	/**
 	 * returns a string representing all the bytes in this
-	 * output stream
+	 * output stream, and removes all data from it
 	 */
-	@Override
-	public String toString() {
+	public String flushString() {
 		int size = (bytes.size() * chunckSize) + currentChunk;
 		byte [] all = new byte[size];
 		int counter = 0;

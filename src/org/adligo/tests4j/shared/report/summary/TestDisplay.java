@@ -2,8 +2,8 @@ package org.adligo.tests4j.shared.report.summary;
 
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class TestDisplay {
 	public static final String TEST = "Test: ";

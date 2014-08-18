@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.trials;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_Asserts;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * classes that implement this class must also contain the

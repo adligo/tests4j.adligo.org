@@ -3,6 +3,7 @@ package org.adligo.tests4j.models.shared.system;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * just catches any sort of error/exception and loggs it to the I_Tests4J_Reporter

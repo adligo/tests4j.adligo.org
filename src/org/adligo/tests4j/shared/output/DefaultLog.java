@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.system;
+package org.adligo.tests4j.shared.output;
 
 import java.util.Collections;
 import java.util.HashMap;

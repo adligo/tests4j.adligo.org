@@ -22,7 +22,6 @@ import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
@@ -30,6 +29,7 @@ import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
 import org.adligo.tests4j.models.shared.trials.TrialTimeout;
 import org.adligo.tests4j.models.shared.trials.UseCaseScope;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * a generally immutable class that represents/wrapps

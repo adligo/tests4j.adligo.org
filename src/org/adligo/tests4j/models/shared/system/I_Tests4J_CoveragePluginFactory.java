@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+
 /**
  * a interface to configure a coverage plugin
  * after it has been constructed.

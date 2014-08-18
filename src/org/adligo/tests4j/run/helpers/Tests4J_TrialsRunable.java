@@ -32,7 +32,6 @@ import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -40,6 +39,9 @@ import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.run.output.TrialOutput;
+import org.adligo.tests4j.shared.output.I_OutputDelegateor;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * A Runnable that polls the queue of trials that 
@@ -71,14 +73,16 @@ public class Tests4J_TrialsRunable implements Runnable,
 	private SourceFileTrialResultMutant sourceFileTrialResultMutant;
 	private UseCaseTrialResultMutant useCaseTrialResultMutant;
 	private TrialBindings bindings;
+	private TrialOutput out = new TrialOutput();
+	private I_OutputDelegateor outputDelegator;
 	
-
 	private String trialName;
 	private I_Tests4J_CoverageRecorder trialThreadLocalCoverageRecorder;
 	private TrialDescriptionProcessor trialDescriptionProcessor;
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
+	
 	/**
 	 * 
 	 * @param p
@@ -116,6 +120,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 	 */
 	@Override
 	public void run() {
+		outputDelegator.setDelegate(out);
 		
 		Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialsToRun();
 		while (trialClazz != null) {
@@ -307,7 +312,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 						trialDescription.getTrialName() + 
 						"." + beforeTrial.getName(), e, null);
 			}
-			trialResultMutant.setBeforeTestOutput(memory.getThreadLocalOutput());
+			trialResultMutant.setBeforeTestOutput(out.getResults());
 		}
 	}
 
@@ -444,14 +449,14 @@ public class Tests4J_TrialsRunable implements Runnable,
 						trialName + 
 						"." + afterTrial.getName(), e, null);
 			}
-			trialResultMutant.setAfterTestOutput(memory.getThreadLocalOutput());
+			trialResultMutant.setAfterTestOutput(out.getResults());
 		}
 	}
 	
 	@Override
 	public void testFinished(I_TestResult p) {
 		TestResultMutant forOut = new TestResultMutant(p);
-		forOut.setOutput(memory.getThreadLocalOutput());
+		forOut.setOutput(out.getResults());
 		TestResult result = new TestResult(forOut);
 		
 		blocking.add(result);
@@ -473,6 +478,14 @@ public class Tests4J_TrialsRunable implements Runnable,
 
 	public synchronized TrialDescription getTrialDescription() {
 		return trialDescription;
+	}
+
+	public I_OutputDelegateor getOutputDelegator() {
+		return outputDelegator;
+	}
+
+	public void setOutputDelegator(I_OutputDelegateor outputDelegator) {
+		this.outputDelegator = outputDelegator;
 	}
 
 

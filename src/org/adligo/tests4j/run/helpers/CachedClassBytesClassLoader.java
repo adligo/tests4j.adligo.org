@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.adligo.tests4j.models.shared.common.I_CacheControl;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 
 /**
@@ -181,6 +181,9 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 			}
 			toRet = super.findLoadedClass(name);
 			if (toRet == null) {
+				if (log.isLogEnabled(CachedClassBytesClassLoader.class)) {
+					log.log("CachedClassBytesClassLoader.defineClassFromBytes " + name);
+				}
 				toRet =  defineClass(name, bytes, 0, bytes.length);
 				classes.put(name, toRet);
 			}

@@ -21,14 +21,15 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.run.output.ConcurrentOutputDelegateor;
+import org.adligo.tests4j.shared.output.I_OutputDelegateor;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * Instances of this class represent the main
@@ -72,7 +73,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private int allTrialCount;
 	private I_Tests4J_CoveragePlugin coveragePlugin;
 	private I_Tests4J_Log logger;
-	private ThreadLocalOutputStream out;
 	private CopyOnWriteArrayList<Tests4J_TrialsRunable> trialInstancesProcessors = 
 			new CopyOnWriteArrayList<Tests4J_TrialsRunable>();
 
@@ -107,7 +107,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private AtomicLong trialsSetup = new AtomicLong();
 	private AtomicLong trialsDone = new AtomicLong();
 	private AtomicLong testsDone = new AtomicLong();
-	
 	private Tests4J_NotificationManager notifier;
 	/**
 	 * 
@@ -121,6 +120,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	
 	protected void initialize(Tests4J_ParamsReader p) {
 		trialThreadCount = p.getTrialThreadCount();
+		setupThreadCount = p.getSetupThreadCount();
 		//TODO pass remote count into the thread manager
 		threadManager = new Tests4J_ThreadManager(trialThreadCount, 0, system, logger);
 		
@@ -246,9 +246,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return mainRecorder;
 	}
 	
-	public String getThreadLocalOutput() {
-		return out.get().toString();
-	}
 
 	public Iterator<TrialDescription> getAllTrialDescriptions() {
 		return allTrialDescriptions.iterator();
@@ -412,9 +409,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		this.logger = logger;
 	}
 
-	protected void setThreadLocalOutput(ThreadLocalOutputStream p) {
-		this.out = p;
-	}
 
 	public int getTrialThreadCount() {
 		return trialThreadCount;
@@ -452,14 +446,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 
 	protected int getRemoteThreadCount() {
 		return remoteThreadCount;
-	}
-
-	protected void setSetupThreadCount(int setupThreadCount) {
-		this.setupThreadCount = setupThreadCount;
-	}
-
-	protected void setRemoteThreadCount(int remoteThreadCount) {
-		this.remoteThreadCount = remoteThreadCount;
 	}
 	
 	public long getTime() {
@@ -525,4 +511,5 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	public int getAllTestsCount() {
 		return metadata.getAllTestsCount();
 	}
+
 }

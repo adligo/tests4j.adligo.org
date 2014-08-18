@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Log;
 import org.adligo.tests4j.models.shared.xml.XML_Builder;
 import org.adligo.tests4j.models.shared.xml.XML_Chars;
 import org.adligo.tests4j.run.remote.io.I_CharacterInputStream;
@@ -20,6 +19,7 @@ import org.adligo.tests4j.run.remote.io.UTF8_InputStream;
 import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 
 public class Tests4J_RemoteRunner implements Runnable {

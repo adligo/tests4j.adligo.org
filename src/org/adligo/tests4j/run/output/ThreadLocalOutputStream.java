@@ -1,9 +1,9 @@
-package org.adligo.tests4j.run.helpers;
+package org.adligo.tests4j.run.output;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.adligo.tests4j.models.shared.system.ByteListOutputStream;
+import org.adligo.tests4j.shared.output.ByteListOutputStream;
 
 
 public class ThreadLocalOutputStream extends OutputStream  {
