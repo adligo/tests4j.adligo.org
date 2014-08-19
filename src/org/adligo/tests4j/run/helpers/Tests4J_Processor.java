@@ -1,11 +1,15 @@
 package org.adligo.tests4j.run.helpers;
 
+import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.adligo.tests4j.models.shared.common.I_System;
+import org.adligo.tests4j.models.shared.common.SystemWithPrintStreamDelegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
@@ -16,11 +20,15 @@ import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.output.ConcurrentOutputDelegateor;
 import org.adligo.tests4j.run.output.JsePrintOutputStream;
 import org.adligo.tests4j.run.output.OutputDelegateor;
+import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.DelegatingLog;
+import org.adligo.tests4j.shared.output.I_OutputBuffer;
+import org.adligo.tests4j.shared.output.I_OutputDelegateor;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.shared.report.summary.SetupProgressDisplay;
+import org.adligo.tests4j.shared.output.ListDelegateOutputBuffer;
+import org.adligo.tests4j.shared.output.PrintStreamOutputBuffer;
+import org.adligo.tests4j.shared.output.SafeOutputStremBuffer;
 import org.adligo.tests4j.shared.report.summary.SummaryReporter;
-import org.adligo.tests4j.shared.report.summary.TrialsProgressDisplay;
 
 /**
  * ok this is the main processing class which does this;
@@ -32,7 +40,7 @@ import org.adligo.tests4j.shared.report.summary.TrialsProgressDisplay;
  */
 public class Tests4J_Processor implements I_Tests4J_Delegate {
 	public static final String REQUIRES_SETUP_IS_CALLED_BEFORE_RUN = " requires setup is called before run.";
-	private final PrintStream out;
+	private PrintStream out;
 	private Tests4J_Memory memory = new Tests4J_Memory();
 	private I_Tests4J_Log log;
 	private long logSleepTime = 1000;
@@ -41,6 +49,8 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private Tests4J_Controls controls;
+	Tests4J_ProgressMonitor setupProgressMonitor;
+	Tests4J_ProgressMonitor trialsProgressMonitor;
 	
 	public Tests4J_Processor(PrintStream pOut) {
 		out = pOut;
@@ -56,9 +66,24 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	public boolean setup(I_Tests4J_Listener pListener, I_Tests4J_Params pParams) {
 		
 		I_System system = memory.getSystem();
-		reader = new Tests4J_ParamsReader(system,  pParams);
+
 		
+		reader = new Tests4J_ParamsReader(system,  pParams);
 		log = reader.getLogger();
+		
+		List<OutputStream> outs =  pParams.getAdditionalReportOutputStreams();
+		if (outs.size() >= 1) {
+			List<I_OutputBuffer> outputBuffers = new ArrayList<I_OutputBuffer>();
+			for (OutputStream ob: outs) {
+				outputBuffers.add(new SafeOutputStremBuffer(log, ob));
+			}
+			outputBuffers.add(new PrintStreamOutputBuffer(out));
+			out = new  JsePrintOutputStream(new ListDelegateOutputBuffer(outputBuffers));
+			
+			SystemWithPrintStreamDelegate sysPs = new SystemWithPrintStreamDelegate(system, out);
+			log = new DefaultLog(sysPs, pParams.getLogStates());
+		}
+		
 		memory.setLog(log);
 		//use the dynamic log
 		memory.setReporter(new SummaryReporter(memory.getLog()));
@@ -93,18 +118,79 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		
 		threadManager = memory.getThreadManager();
 		notifier = memory.getNotifier();
-		submitSetupRunnables();
+		int trials = memory.getAllTrialCount();
 		
 		
-		
-		//sleep this thread until it can start running trials
-		if (memory.getTrialsToRun() >= 1) {
+		Tests4J_ProcessInfo setupProcessInfo = memory.getSetupProcessInfo();
+		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
+		Tests4J_ProcessInfo remoteProcessInfo = memory.getTrialProcessInfo();
+		setupProgressMonitor = new Tests4J_ProgressMonitor(
+				memory.getSystem(), notifier, setupProcessInfo);
+		trialsProgressMonitor = new Tests4J_ProgressMonitor(
+				memory.getSystem(), notifier, trialProcessInfo);
+		I_OutputDelegateor od = setupLogging(setupProcessInfo, trialProcessInfo, remoteProcessInfo);
+		try {
 			startRecordingAllTrialsRun();
-			
-			submitTrialsRunnables();
+			submitSetupRunnables(setupProcessInfo);
+			submitTrialsRunnables(trialProcessInfo, od);
+		} catch (Throwable t) {
+			log.onThrowable(t);
 		}
+		if (ConcurrentOutputDelegateor.class.getName().equals(od.getClass().getName())) {
+			monitorThenShutdown((ConcurrentOutputDelegateor) od);
+		} else {
+			threadManager.shutdown();
+		}
+		
 	}
 
+	/**
+	 * @param setupProcessInfo
+	 * @param trialProcessInfo
+	 * @param remoteProcessInfo
+	 * @return null if single threaded
+	 */
+	private ConcurrentOutputDelegateor setupLogging(Tests4J_ProcessInfo setupProcessInfo, Tests4J_ProcessInfo trialProcessInfo ,
+			Tests4J_ProcessInfo remoteProcessInfo) {
+		if (setupProcessInfo.getThreadCount() <= 1 &&
+				trialProcessInfo.getThreadCount() <= 1 &&
+				remoteProcessInfo.getThreadCount() <= 1) {
+			
+			//run single threaded on the main thread.
+			I_OutputDelegateor od = new OutputDelegateor(out);
+			
+			JsePrintOutputStream jpos = new JsePrintOutputStream(od);
+			System.setOut(jpos);
+			System.setErr(jpos);
+			return null;
+		} else {
+			ConcurrentOutputDelegateor cod = new ConcurrentOutputDelegateor();
+			JsePrintOutputStream jpos = new JsePrintOutputStream(cod);
+			System.setOut(jpos);
+			System.setErr(jpos);
+			log = new DelegatingLog(memory.getSystem(), reader.getLogStates(), cod);
+			memory.setLog(log);
+			return cod;
+		}
+	}
+	
+	/**
+	 * @adligo.diagram_sync with Overview.seq on 7/5/2014
+	 * @param plugin
+	 */
+	private void startRecordingAllTrialsRun() {
+		I_Tests4J_CoveragePlugin coveragePlugin = memory.getCoveragePlugin();
+		if (coveragePlugin != null) {
+			//@adligo.diagram_sync with Overview.seq on 7/5/2014
+			I_Tests4J_CoverageRecorder allCoverageRecorder = coveragePlugin.createRecorder();
+			//@adligo.diagram_sync with Overview.seq on 7/5/2014
+			allCoverageRecorder.startRecording();
+			//@adligo.diagram_sync with Overview.seq on 7/5/2014
+			memory.setMainRecorder(allCoverageRecorder);
+		}
+		
+	}
+	
 	/**
 	 * 
 	 * @diagram_sync with Overview.seq on 7/24/2014
@@ -117,43 +203,27 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 *                9.2 seconds with 8 threads
 	 *                8.7 seconds with 16 threads
 	 */
-	private void submitSetupRunnables() {
-		//memory.getS
-		int setupThreadCount = memory.getSetupThreadCount();
+	private void submitSetupRunnables(Tests4J_ProcessInfo info) {
+		notifier.onProcessStateChange(info);
+		int setupThreadCount = info.getThreadCount();
 		
 		int allTrials = memory.getAllTrialCount();
 		if (log.isLogEnabled(Tests4J_Processor.class)) {
 			log.log("Starting setup with " + setupThreadCount + " setup threads.");
 		}
 		
-		Tests4J_ProgressMonitor progressMonitor = new Tests4J_ProgressMonitor(
-							memory, notifier, allTrials, "setup");
-		progressMonitor.setTimeBetweenLongs(logSleepTime);
-		
 		if (setupThreadCount <= 1) {
-			//run single threaded on the main thread.
-			OutputDelegateor od = new OutputDelegateor(out);
-			JsePrintOutputStream jpos = new JsePrintOutputStream(od);
-			System.setOut(jpos);
-			System.setErr(jpos);
-			
-			Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier, progressMonitor); 
+			Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier, setupProgressMonitor); 
+			info.addRunnable(sr);
 			
 			sr.run();
 		} else {
-			ConcurrentOutputDelegateor cod = new ConcurrentOutputDelegateor();
-			JsePrintOutputStream jpos = new JsePrintOutputStream(cod);
-			System.setOut(jpos);
-			System.setErr(jpos);
-			log = new DelegatingLog(memory.getSystem(), reader.getLogStates(), cod);
-			memory.setLog(log);
 			
 			ExecutorService runService = threadManager.getSetupService();
 			
-			progressMonitor.setNotifyProgress(false);
-			
 			for (int i = 0; i < setupThreadCount; i++) {
-				Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier, progressMonitor); 
+				Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier, null); 
+				info.addRunnable(sr);
 				
 				try {
 					Future<?> future = runService.submit(sr);
@@ -163,41 +233,9 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 					// it must have to do with shutdown, but it happens intermittently.
 				}
 			}
-			SetupProgressDisplay setupDisplay = new SetupProgressDisplay(log);
-			boolean displayed100 = false;
-			while (!notifier.isDoneDescribeingTrials()) {
-				try {
-					Thread.sleep(logSleepTime);
-					long trialsSetup = allTrials -  memory.getTrialsToSetup();
-					double pct =  progressMonitor.getProgress(trialsSetup);
-					if (pct == 100.0) {
-						if (!displayed100) {
-							displayed100 = true;
-							setupDisplay.onProgress("setup ",pct);
-						}
-					} else {
-						setupDisplay.onProgress("setup ",pct);
-					}
-					String next = cod.poll();
-					while (next != null) {
-						out.println(next);
-						next = cod.poll();
-					}
-				} catch (InterruptedException x) {
-					throw new RuntimeException(x);
-				}
-			}
-			progressMonitor.notifyDone();
-			String next = cod.poll();
-			while (next != null) {
-				out.println(next);
-				next = cod.poll();
-			}
+
 		}
 		
-		if (notifier.hasDescribeTrialError()) {
-			
-		}
 		long now = memory.getTime();
 		memory.setSetupEndTime(now);
 		if (log.isLogEnabled(Tests4J_Processor.class)) {
@@ -207,21 +245,16 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		}
 	}
 	
-	private void submitTrialsRunnables() {
-		int trialThreadCount = memory.getTrialThreadCount();
+	private void submitTrialsRunnables(Tests4J_ProcessInfo info, I_OutputDelegateor od) {
+		notifier.onProcessStateChange(info);
+		int trialThreadCount = info.getThreadCount();
 		
 		if (log.isLogEnabled(Tests4J_Processor.class)) {
 			log.log("Starting submitTrialRunnables with " + trialThreadCount + " trial threads.");
 		}
 		if (trialThreadCount <= 1) {
-			OutputDelegateor od = new OutputDelegateor(out);
-			JsePrintOutputStream jpos = new JsePrintOutputStream(od);
-			System.setOut(jpos);
-			System.setErr(jpos);
-			log = new DelegatingLog(memory.getSystem(), reader.getLogStates(), od);
-			memory.setLog(log);
-			
-			Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
+			Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier, null); 
+			info.addRunnable(tip);
 			tip.setOutputDelegator(od);
 			
 			tip.run();
@@ -233,76 +266,66 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 				log.log("Finised trials after " + secs + " seconds.");
 			}
 		} else {
-			ConcurrentOutputDelegateor cod = new ConcurrentOutputDelegateor();
-			JsePrintOutputStream jpos = new JsePrintOutputStream(cod);
-			System.setOut(jpos);
-			System.setErr(jpos);
-			log = new DelegatingLog(memory.getSystem(), reader.getLogStates(), cod);
-			memory.setLog(log);
-			memory.setReporter(new SummaryReporter(log));
-			
 			ExecutorService runService = threadManager.getTrialRunService();
 			
 			for (int i = 0; i < trialThreadCount; i++) {
-				Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
-				tip.setOutputDelegator(cod);
+				Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier, null); 
+				info.addRunnable(tip);
+				tip.setOutputDelegator(od);
 				try {
 					Future<?> future = runService.submit(tip);
 					threadManager.addTrialFuture(future);
-					memory.addTrialInstancesProcessors(tip);
 				} catch (RejectedExecutionException x) {
 					//do nothing, not sure why this exception is happening for me
 					// it must have to do with shutdown, but it happens intermittently.
 				}
 			}
 			
-			int trials = memory.getAllTrialCount();
-			Tests4J_ProgressMonitor  trialsProgressMonitor = new Tests4J_ProgressMonitor(memory, notifier, trials, "trials");
-			
-			TrialsProgressDisplay trialsDisplay = new TrialsProgressDisplay(log);
-			while (!notifier.isDoneRunningTrials()) {
-				try {
-					Thread.sleep(logSleepTime);
-					
-					long trialsRan = memory.getTrialsDone();
-					trialsDisplay.onProgress("trials", trialsProgressMonitor.getProgress(trialsRan));
-					
-					String next = cod.poll();
-					while (next != null) {
-						out.println(next);
-						next = cod.poll();
-					}
-				} catch (InterruptedException x) {
-					throw new RuntimeException(x);
-				}
-			}
-			
-			String next = cod.poll();
-			while (next != null) {
-				out.println(next);
-				next = cod.poll();
-			}
-			
 		}
-		threadManager.shutdown();
 	}
 
-	/**
-	 * @adligo.diagram_sync with Overview.seq on 7/5/2014
-	 * @param plugin
-	 */
-	private void startRecordingAllTrialsRun() {
-		I_Tests4J_CoveragePlugin coveragePlugin = memory.getCoveragePlugin();
-		if (coveragePlugin != null) {
-			coveragePlugin.instrumentationComplete();
-			//@adligo.diagram_sync with Overview.seq on 7/5/2014
-			I_Tests4J_CoverageRecorder allCoverageRecorder = coveragePlugin.createRecorder();
-			//@adligo.diagram_sync with Overview.seq on 7/5/2014
-			allCoverageRecorder.startRecording();
-			//@adligo.diagram_sync with Overview.seq on 7/5/2014
-			memory.setMainRecorder(allCoverageRecorder);
+	private boolean allDone() {
+		if (notifier.isDoneDescribeingTrials()) {
+			if (notifier.isDoneRunningTrials()) {
+				return true;
+			}
 		}
+		return false;
+	}
+	private void monitorThenShutdown(ConcurrentOutputDelegateor cod) {
+		Tests4J_ProcessInfo setupProcessInfo = memory.getSetupProcessInfo();
+		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
 		
+		boolean sentSetup100 = false;
+		boolean sentTrial100 = false;
+		while (!allDone()) {
+			try {
+				Thread.sleep(logSleepTime);
+				if (!sentSetup100) {
+					if (setupProcessInfo.getPercentDone() >= 100.0) {
+						sentSetup100 = true;
+					}
+					notifier.onProgress(setupProcessInfo);
+					
+				}
+				notifier.onProgress(trialProcessInfo);
+				
+				String next = cod.poll();
+				while (next != null) {
+					out.println(next);
+					next = cod.poll();
+				}
+			} catch (InterruptedException x) {
+				throw new RuntimeException(x);
+			}
+		}
+		String next = cod.poll();
+		while (next != null) {
+			out.println(next);
+			next = cod.poll();
+		}
+
+		threadManager.shutdown();
 	}
 
 	@Override

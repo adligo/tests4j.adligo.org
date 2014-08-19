@@ -33,6 +33,7 @@ import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Runnable;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -53,7 +54,7 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  *
  */
 public class Tests4J_TrialsRunable implements Runnable,
-	I_Tests4J_TestFinishedListener {
+	I_Tests4J_TestFinishedListener, I_Tests4J_Runnable {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
 	
@@ -83,6 +84,11 @@ public class Tests4J_TrialsRunable implements Runnable,
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
+	private Tests4J_ProcessInfo processInfo;
+	/**
+	 * only used for single threaded operation may be null
+	 */
+	private Tests4J_ProgressMonitor progressMonitor;
 	
 	/**
 	 * 
@@ -93,10 +99,11 @@ public class Tests4J_TrialsRunable implements Runnable,
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
 	public Tests4J_TrialsRunable(Tests4J_Memory p, 
-			I_Tests4J_NotificationManager pNotificationManager) {
+			I_Tests4J_NotificationManager pNotificationManager, Tests4J_ProgressMonitor pProgressMonitor) {
 		memory = p;
+		processInfo = p.getTrialProcessInfo();
 		notifier = pNotificationManager;
-		
+		progressMonitor = pProgressMonitor;
 		
 		logger = p.getLogger();
 		threadManager = p.getThreadManager();
@@ -122,10 +129,10 @@ public class Tests4J_TrialsRunable implements Runnable,
 	@Override
 	public void run() {
 		try {
-			memory.addTrialsRunnablesStarted();
+			processInfo.addRunnableStarted();
 			outputDelegator.setDelegate(out);
 			
-			Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialsToRun();
+			Class<? extends I_AbstractTrial> trialClazz = memory.takeTrialsToRun();
 			while (trialClazz != null) {
 				try {
 					if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
@@ -168,9 +175,21 @@ public class Tests4J_TrialsRunable implements Runnable,
 						}
 					}
 				}
-				trialClazz = memory.pollTrialsToRun();
+				if (progressMonitor != null) {
+					progressMonitor.incrementAndNotify();
+				}
+				processInfo.addDone();
+				int total = processInfo.getCount();
+				int done = processInfo.getDone();
+				int threadCount = processInfo.getThreadCount();
+				if (total >= done + threadCount) {
+					trialClazz = memory.takeTrialsToRun();
+				} else {
+					trialClazz = memory.pollTrialsToRun();
+				}
 			}
-			memory.addTrialsRunnablesFinished();
+			trialName = null;
+			processInfo.addRunnableFinished();
 			notifier.checkDoneRunningNonMetaTrials();
 			
 			testRunService.shutdownNow();
@@ -488,6 +507,11 @@ public class Tests4J_TrialsRunable implements Runnable,
 
 	public void setOutputDelegator(I_OutputDelegateor outputDelegator) {
 		this.outputDelegator = outputDelegator;
+	}
+
+	@Override
+	public synchronized String getTrial() {
+		return trialName;
 	}
 
 }

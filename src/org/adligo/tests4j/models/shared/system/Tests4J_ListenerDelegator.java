@@ -41,12 +41,12 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 	}
 	
 	@Override
-	public void onProgress(String process, double pctComplete) {
+	public void onProgress(I_Tests4J_ProcessInfo process) {
 		if (delegate == null) {
 			return;
 		}
 		try {
-			delegate.onProgress(process, pctComplete);
+			delegate.onProgress(process);
 		} catch (Throwable t) {
 			logger.onThrowable(t);
 		}
@@ -103,6 +103,18 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 		}
 		try {
 			delegate.onRunCompleted(result);
+		} catch (Throwable t) {
+			logger.onThrowable(t);
+		}
+	}
+
+	@Override
+	public void onProccessStateChange(I_Tests4J_ProcessInfo info) {
+		if (delegate == null) {
+			return;
+		}
+		try {
+			delegate.onProccessStateChange(info);
 		} catch (Throwable t) {
 			logger.onThrowable(t);
 		}

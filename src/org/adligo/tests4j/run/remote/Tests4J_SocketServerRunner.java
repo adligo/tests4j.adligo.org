@@ -23,6 +23,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
@@ -384,9 +385,16 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	}
 
 	@Override
-	public void onProgress(String process, double pctComplete) {
+	public void onProgress(I_Tests4J_ProcessInfo info) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onProccessStateChange(I_Tests4J_ProcessInfo info) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }

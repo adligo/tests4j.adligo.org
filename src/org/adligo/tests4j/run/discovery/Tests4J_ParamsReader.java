@@ -1,5 +1,7 @@
 package org.adligo.tests4j.run.discovery;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,14 +56,13 @@ public class Tests4J_ParamsReader {
 	private boolean runnable = true;
 	private I_Tests4J_CoveragePlugin coveragePlugin;
 	private List<Class<? extends I_AbstractTrial>> trials = new ArrayList<Class<? extends I_AbstractTrial>>();
-	private List<Class<? extends I_AbstractTrial>> instrumentedTrials = new ArrayList<Class<? extends I_AbstractTrial>>();
 	private Class<? extends I_MetaTrial> metaTrialClass;
 	private int trialThreadCount = 0;
 	private int setupThreadCount = 0;
 	private I_EvaluatorLookup evaluatorLookup;
 	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
 	private Throwable runFalseReason;
-	
+	private List<OutputStream> additionalReportOutputStreams = new ArrayList<OutputStream>();
 	/**
 	 * turn into local instances to block further propagation of issues
 	 * with external implementations.  Also this recurses 
@@ -118,8 +119,20 @@ public class Tests4J_ParamsReader {
 			return;
 		}
 		
-		
-	
+		List<OutputStream> outs = params.getAdditionalReportOutputStreams();
+		int counter = 0;
+		for (OutputStream out: outs) {
+			if (out != null) {
+				counter++;
+				String testLine = this.getClass().getName() + " " + counter + "/" + outs.size();
+				try {
+					out.write(testLine.getBytes());
+					additionalReportOutputStreams.add(out);
+				} catch (IOException x) {
+					logger.onThrowable(x);
+				}
+			}
+		}
 		
 		try {
 			Set<I_Tests4J_Selection> paramTests = pParams.getTests();
@@ -291,9 +304,6 @@ public class Tests4J_ParamsReader {
 		return setupThreadCount;
 	}
 	
-	public List<Class<? extends I_AbstractTrial>> getInstrumentedTrials() {
-		return instrumentedTrials;
-	}
 
 	public I_EvaluatorLookup getEvaluatorLookup() {
 		return evaluatorLookup;
@@ -313,6 +323,10 @@ public class Tests4J_ParamsReader {
 
 	public Map<Class<?>, Boolean> getLogStates() {
 		return logStates;
+	}
+
+	public List<OutputStream> getAdditionalReportOutputStreams() {
+		return additionalReportOutputStreams;
 	}
 
 }

@@ -285,9 +285,9 @@ public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
 		
 		return Collections.unmodifiableMap(toRet);
 	}
-	
+
 	@Override
-	public boolean isInGroup(String className) {
+	public boolean isInGroup(I_MethodSignature method) {
 		// TODO Auto-generated method stub
 		return false;
 	}

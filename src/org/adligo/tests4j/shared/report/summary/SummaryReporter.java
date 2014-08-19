@@ -17,16 +17,12 @@ import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
-	
-
-	
-	private Map<String,AbstractProgressDisplay> processes = new HashMap<String,AbstractProgressDisplay>();
-	
 	private boolean snare = false;
 	private boolean redirect = true;
 	private Set<String> enabledLogClasses = new HashSet<String>();
@@ -44,6 +40,9 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	private int trialFailuresDetailDisplayCount = 3;
 	private TrialFailedDetailDisplay trialFailedDetail;
 	private ThreadDisplay threadDisplay;
+	private SetupProcessDisplay setupProcessDisplay = new SetupProcessDisplay();
+	private TrialsProcessDisplay trialsProcessDisplay = new TrialsProcessDisplay();
+	private RemoteProcessDisplay remoteProcessDisplay = new RemoteProcessDisplay();
 	
 	public SummaryReporter() {
 		this(new DefaultLog());
@@ -55,10 +54,6 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		testsReporter = new TestDisplay(p, threadDisplay);
 		trialsReporter = new TrialDisplay(p);
 		trialFailedDetail = new TrialFailedDetailDisplay(p);
-		
-		processes.put("setup", new SetupProgressDisplay(p));
-		processes.put("trials", new TrialsProgressDisplay(p));
-		processes.put("tests", new TestsProgressDisplay(p));
 	}
 	
 	@Override
@@ -199,10 +194,33 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 
 
 	@Override
-	public synchronized void onProgress(String process, double pctComplete) {
-		AbstractProgressDisplay apr = processes.get(process);
-		apr.onProgress(process, pctComplete);
-		
+	public synchronized void onProgress(I_Tests4J_ProcessInfo info) {
+		String processName = info.getProcessName();
+		switch (processName) {
+			case I_Tests4J_ProcessInfo.SETUP:
+					setupProcessDisplay.onProgress(logger, info);
+				break;
+			case I_Tests4J_ProcessInfo.TRIALS:
+				trialsProcessDisplay.onProgress(logger, info);
+				break;
+			default:
+				remoteProcessDisplay.onProgress(logger, info);
+		}
+	}
+
+	@Override
+	public void onProccessStateChange(I_Tests4J_ProcessInfo info) {
+		String processName = info.getProcessName();
+		switch (processName) {
+			case I_Tests4J_ProcessInfo.SETUP:
+					setupProcessDisplay.onProccessStateChange(logger, info);
+				break;
+			case I_Tests4J_ProcessInfo.TRIALS:
+				trialsProcessDisplay.onProccessStateChange(logger, info);
+				break;
+			default:
+				remoteProcessDisplay.onProccessStateChange(logger, info);
+		}
 	}
 
 

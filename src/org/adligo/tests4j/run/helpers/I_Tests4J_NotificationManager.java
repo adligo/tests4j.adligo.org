@@ -2,6 +2,7 @@ package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public interface I_Tests4J_NotificationManager {
@@ -16,7 +17,7 @@ public interface I_Tests4J_NotificationManager {
 	 */
 	public abstract void sendMetadata();
 
-	public abstract void onProgress(String processName, double pctDone);
+	public void onProgress(I_Tests4J_ProcessInfo info);
 	
 	public abstract void startingTrial(String name);
 
@@ -53,5 +54,7 @@ public interface I_Tests4J_NotificationManager {
 	public boolean isDoneRunningTrials();
 	
 	public boolean hasDescribeTrialError();
+	
+	public void onProcessStateChange(I_Tests4J_ProcessInfo info);
 
 }

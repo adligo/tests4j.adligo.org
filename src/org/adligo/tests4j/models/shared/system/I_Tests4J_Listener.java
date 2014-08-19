@@ -63,9 +63,15 @@ public interface I_Tests4J_Listener {
 	public void onRunCompleted(I_TrialRunResult result);
 	
 	/**
-	 * @param
+	 * @param process the name of the process, @see I_Tests4J_ProcessInfo
 	 * 
-	 * @diagram Overview.seq sync on 7/25/2014
+	 * @diagram_sync BROKEN changed type on 8/19/2014 Overview.seq sync on 7/25/2014
 	 */
-	public void onProgress(String process, double pctComplete);
+	public void onProgress(I_Tests4J_ProcessInfo info);
+	
+	/**
+	 * @param process the name of the process, @see I_Tests4J_ProcessInfo
+	 * 
+	 */
+	public void onProccessStateChange(I_Tests4J_ProcessInfo info);
 }

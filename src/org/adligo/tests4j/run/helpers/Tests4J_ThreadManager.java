@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.adligo.tests4j.models.shared.common.I_System;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.run.remote.RemoteRunnerStateEnum;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -45,29 +46,27 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	private I_Tests4J_Log reporter;
 	
 	
-	public Tests4J_ThreadManager(I_Tests4J_Memory memory, I_System pSystem, I_Tests4J_Log pReporter) {
+	public Tests4J_ThreadManager(I_System pSystem, I_Tests4J_Log pReporter) {
 		system = pSystem;
 		reporter = pReporter;
 		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,reporter);
-		
-		int setupThreads = memory.getSetupThreadCount();
-		if (setupThreads >= 1) {
-			setupFactory  = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SETUP_THREAD_NAME,reporter);
-			setupService = Executors.newFixedThreadPool(setupThreads, setupFactory);
-		}
-		int trialThreads = memory.getTrialThreadCount();
-		if (trialThreads >= 1) {
-			trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
-			trialRunService = Executors.newFixedThreadPool(trialThreads, trialFactory);
-		}
-		int remoteThreads = memory.getRemoteThreadCount();
-		if (remoteThreads >= 1) {
-			remoteFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
-			remoteService = Executors.newFixedThreadPool(remoteThreads, remoteFactory);
-		}
-		
+
 	}
 	
+	public void setupSetupProcess(I_Tests4J_ProcessInfo info) {
+		setupFactory  = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SETUP_THREAD_NAME,reporter);
+		setupService = Executors.newFixedThreadPool(info.getThreadCount(), setupFactory);
+	}
+	
+	public void setupTrialsProcess(I_Tests4J_ProcessInfo info) {
+		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
+		trialRunService = Executors.newFixedThreadPool(info.getThreadCount(), trialFactory);
+	}
+	
+	public void setupRemoteProcess(I_Tests4J_ProcessInfo info) {
+		remoteFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
+		remoteService = Executors.newFixedThreadPool(info.getThreadCount(), remoteFactory);
+	}
 	
 	public void shutdown() {
 		if (reporter.isLogEnabled(Tests4J_ThreadManager.class)) {

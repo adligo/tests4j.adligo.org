@@ -9,6 +9,14 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
  *
  */
 public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
+	private static final String TRIAL_DESCRIPTIONS_IN_STMT = "trial descriptions";
+
+	private static final String NON_META_TRIALS = "non-meta trials";
+
+	private static final String PROCESS_V_HAS_X_RUNNABLES_RUNNING_AND_Y_Z_DONE = "Process <V/> has <X/> runnables running and <Y/> <Z/> done.";
+
+	private static final String STARTING_PROCESS_X_WITH_Y_THREADS = "Starting process <X/> with <Y/> threads.";
+
 	private static final String THE_FOLLOWING_ACTUAL_LINE_NUMBERS_NOT_IN_THE_EXPECTED_TEXT = "The following actual line numbers not in the expected text: ";
 
 	private static final String THE_FOLLOWING_EXPECTED_LINE_NUMBERS_WERE_MISSING = "The following expected line numbers were missing: ";
@@ -165,5 +173,21 @@ public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
 	
 	public String getTheFollowingActualLineNumberNotExpected() {
 		return THE_FOLLOWING_ACTUAL_LINE_NUMBERS_NOT_IN_THE_EXPECTED_TEXT;
+	}
+	
+	public String getStartingProcessXWithYThreads() {
+		return STARTING_PROCESS_X_WITH_Y_THREADS;
+	}
+	
+	public String getProcessVhasXRunnablesRunningAndYZdone() {
+		return PROCESS_V_HAS_X_RUNNABLES_RUNNING_AND_Y_Z_DONE;
+	}
+	
+	public String getNonMetaTrials() {
+		return NON_META_TRIALS;
+	}
+	
+	public String getTrialDescriptionsInStatement() {
+		return TRIAL_DESCRIPTIONS_IN_STMT;
 	}
 }

@@ -33,6 +33,7 @@ import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
@@ -106,30 +107,21 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			}
 			return;
 		}
-		int trialToSetup = memory.getTrialsToSetup();
-		int trialCount = memory.getAllTrialCount();
-		int started = memory.getSetupRunnablesStarted();
-		int finished = memory.getSetupRunnablesFinished();
-		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-			log.log("checkDoneDescribingTrials() trialCount = " + trialCount + 
-					" trialToSetup = " +trialToSetup + " runnables started " + started +
-					" runnables finished " + finished);
-		}
-		if (trialToSetup == 0) {
-			
-			if (started != finished) {
-				return;
-			}
-			synchronized (doneDescribeingTrials) {
-				
-				if (!doneDescribeingTrials.get()) {
-					doneDescribeingTrials.set(true);
-					if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-						log.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
-					}
-					onTrialDefinitionsDone();
-					return;
-				}	
+		I_Tests4J_ProcessInfo processInfo = memory.getSetupProcessInfo();
+		onProcessStateChange(processInfo);
+		if (processInfo.hasStartedAll()) {
+			if (processInfo.hasFinishedAll()) {
+				synchronized (doneDescribeingTrials) {
+					if (!doneDescribeingTrials.get()) {
+						
+						doneDescribeingTrials.set(true);
+						if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
+							log.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
+						}
+						onTrialDefinitionsDone();
+						return;
+					}	
+				}
 			}
 		}
 		return;
@@ -427,36 +419,23 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	public void checkDoneRunningNonMetaTrials() {
 		if (doneDescribeingTrials.get()) {
 			
-			int trialsToRun = memory.getTrialsToRun();
-		
-			int started = memory.getTrialsRunnablesStarted();
-			int finished = memory.getTrialsRunnablesFinished();
-			if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-				String message = "checkDoneRunningNonMetaTrials() trialsToRun " + trialsToRun + " with MetaTrial " +
-						memory.hasMetaTrial() + " runnables started " + started + " runnables finished " + finished; 
-				log.log(message);
+			I_Tests4J_ProcessInfo processInfo = memory.getTrialProcessInfo();
+			
+			boolean done = false;
+			onProcessStateChange(processInfo);
+			if (processInfo.hasStartedAll()) {
+				if (processInfo.hasFinishedAll()) {
+					done = true;
+				}
 			}
-			if (trialsToRun == 0 && started != finished) {
+			if (done) {
 				synchronized (doneRunningTrials) {
-					
 					if (!doneRunningTrials.get()) {
 						onDoneRunningNonMetaTrials();
 						doneRunningTrials.set(true);
 					}
 				}
-			} else {
-				List<Tests4J_TrialsRunable> tips =  memory.getTrialInstancesProcessors();
-				for (Tests4J_TrialsRunable tip: tips) {
-					if (!tip.isFinished()) {
-						TrialDescription td =  tip.getTrialDescription();
-						if (td != null) {
-							if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-								log.log("currently working on " + td);
-							}
-						}
-					}
-				}
-			}
+			} 
 		}
 	}
 
@@ -562,8 +541,6 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			double secs = millis/1000.0;
 			log.log("Finised trials after " + secs + " seconds.");
 		}
-		onProgress("tests", 100.0);
-		onProgress("trials", 100.0);
 		
 		listener.onRunCompleted(endResult);
 		reporter.onRunCompleted(endResult);
@@ -631,11 +608,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	}
 
 	@Override
-	public void onProgress(String processName, double pctDone) {
-		if (pctDone <= 100.0) {
+	public void onProgress(I_Tests4J_ProcessInfo info) {
+		if (info.getPercentDone() <= 100.0) {
 			if (!doneRunningTrials.get()) {
-				listener.onProgress(processName, pctDone);
-				reporter.onProgress(processName, pctDone);
+				listener.onProgress(info);
+				reporter.onProgress(info);
 			}
 			
 		}
@@ -647,5 +624,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 
 	public boolean hasDescribeTrialError() {
 		return describeTrialError.get();
+	}
+
+	@Override
+	public void onProcessStateChange(I_Tests4J_ProcessInfo info) {
+		listener.onProccessStateChange(info);
+		reporter.onProccessStateChange(info);
 	}
 }

@@ -41,4 +41,12 @@ public interface I_Tests4J_ReportMessages {
 	public String getTheFollowingExpectedLineNumbersWereMissing();
 	
 	public String getTheFollowingActualLineNumberNotExpected();
+	
+	public String getStartingProcessXWithYThreads();
+	
+	public String getProcessVhasXRunnablesRunningAndYZdone();
+	
+	public String getNonMetaTrials();
+	
+	public String getTrialDescriptionsInStatement();
 }

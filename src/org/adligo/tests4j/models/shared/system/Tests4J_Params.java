@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.system;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,6 +36,12 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private Integer recommendedTrialThreadCount;
 	private Integer recommendedRemoteThreadCount;
 	private Integer recommendedSetupThreadCount;
+	
+	/**
+	 * OutputStreams are not passed between jvms of course.
+	 * 
+	 */
+	private transient List<OutputStream> additionalReportOutputStreams = new ArrayList<OutputStream>();
 	
 	/**
 	 * All coverage is always recorded if there is a plugin,
@@ -323,5 +330,21 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 	public void setRecommendedSetupThreadCount(Integer recommendedSetupThreadCount) {
 		this.recommendedSetupThreadCount = recommendedSetupThreadCount;
+	}
+
+	@Override
+	public List<OutputStream> getAdditionalReportOutputStreams() {
+		return additionalReportOutputStreams;
+	}
+
+	@Override
+	public void setAdditionalReportOutputStreams(Collection<OutputStream> out) {
+		additionalReportOutputStreams.clear();
+		additionalReportOutputStreams.addAll(out);
+	}
+
+	@Override
+	public void addAdditionalReportOutputStreams(OutputStream out) {
+		additionalReportOutputStreams.add(out);
 	}
 }

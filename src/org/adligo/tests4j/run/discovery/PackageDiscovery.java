@@ -12,6 +12,8 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.adligo.tests4j.run.helpers.I_CachedClassBytesClassLoader;
+
 /**
  * A immutable class that  discovers .class files
  * that are on the classpath in folders or .jar files.
@@ -31,6 +33,7 @@ public class PackageDiscovery  {
 	 */
 	private List<String> classNames = new ArrayList<String>();
 	private List<PackageDiscovery> subpackages = new ArrayList<PackageDiscovery>();
+	private ClassLoader classLoader;
 	/**
 	 * either loading from a jar or the file system
 	 */
@@ -46,8 +49,35 @@ public class PackageDiscovery  {
 	
 	public PackageDiscovery(String pkgName) throws IOException {
 		setPackageName(pkgName);
+		
+		classLoader = getClassLoader(null);
 		classNames = getPackageClasses(pkgName);
 		
+	}
+	/**
+	 * this should never be using the cached class laoder
+	 * @param cl
+	 * @return
+	 */
+	public ClassLoader getClassLoader(ClassLoader cl) {
+		if (cl == null) { 
+			cl = this.getClass().getClassLoader();
+		}
+		Class<?>[] interfaces = cl.getClass().getInterfaces();
+		Set<String> interNames = new HashSet<String>();
+		for (int i = 0; i < interfaces.length; i++) {
+			interNames.add(interfaces[i].getName());
+		}
+		if (interNames.contains(I_CachedClassBytesClassLoader.class.getName())) {
+			return cl.getParent();
+		}
+		return cl;
+	}
+	
+	public PackageDiscovery(String pkgName, ClassLoader pClassLoader) throws IOException {
+		setPackageName(pkgName);
+		classLoader = pClassLoader;
+		classNames = getPackageClasses(pkgName);
 	}
 	
 	private List<String> getSubPackages(String pkg, Set<String> pkgs) throws IOException {
@@ -116,7 +146,7 @@ public class PackageDiscovery  {
 	            		String className = entryName.substring(packageName.length() + 1, entryName.length());
 	            		if (!className.contains(".")) {
 	            			try {
-	            				Class<?> c = Class.forName(entryName);
+	            				Class<?> c = Class.forName(entryName, true, classLoader);
 								Package pkg = c.getPackage();
 								addPackages(subPackages, pkg.getName());
 	            				names.add(entryName);
@@ -152,12 +182,13 @@ public class PackageDiscovery  {
 					String className = packageName + "." + file.getName() + "." + 
 								fileName.substring(0, classIndex);
 					try {
-						Class<?> c = Class.forName(className);
+						Class<?> c = Class.forName(className, true, classLoader);
 						Package pkg = c.getPackage();
 						addPackages(subPackages, pkg.getName());
 					} catch (ClassNotFoundException e) {
 						throw new IOException("problem loading file " + 
-								file.getAbsolutePath() + File.separator + fileName + " with name " + className,e);
+								file.getAbsolutePath() + File.separator + fileName + " with name " + className +
+								" and class laoder " + classLoader,e);
 					}
 				}
 			}

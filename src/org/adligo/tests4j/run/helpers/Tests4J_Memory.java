@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -21,6 +22,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -64,7 +66,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	 * the queue of trials to run,
 	 * they should be instrumented if there is a coverage plugin
 	 */
-	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialsToRun = new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
+	private ArrayBlockingQueue<Class<? extends I_AbstractTrial>> trialsToRun;
 	
 	private ConcurrentHashMap<String,AtomicInteger> trialRuns = new ConcurrentHashMap<String,AtomicInteger>();
 	
@@ -73,14 +75,11 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
 	private int allTrialCount;
 	private I_Tests4J_CoveragePlugin coveragePlugin;
-	private CurrentLog log;
+	private final CurrentLog log;
 	private volatile I_Tests4J_Log currentLogDelegate = new DefaultLog();
-	private CopyOnWriteArrayList<Tests4J_TrialsRunable> trialInstancesProcessors = 
-			new CopyOnWriteArrayList<Tests4J_TrialsRunable>();
-	private AtomicInteger setupRunnablesStarted = new AtomicInteger(0);
-	private AtomicInteger setupRunnablesFinished = new AtomicInteger(0);
-	private AtomicInteger trialsRunnablesStarted = new AtomicInteger(0);
-	private AtomicInteger trialsRunnablesFinished = new AtomicInteger(0);
+	private Tests4J_ProcessInfo setupProcessInfo;
+	private Tests4J_ProcessInfo trialProcessInfo;
+	private Tests4J_ProcessInfo remoteProcessInfo;
 	/**
 	 * a safe wrapper around the I_TrialRunListener passed to Test4J.run
 	 * this should never be null during the trial run
@@ -101,9 +100,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private boolean hasRemoteDelegation = false;
 	private I_EvaluatorLookup evaluationLookup;
 	private I_System system;
-	private int trialThreadCount;
-	private int setupThreadCount;
-	private int remoteThreadCount;
 	private AtomicLong startTime = new AtomicLong();
 	private AtomicLong setupEndTime = new AtomicLong();
 	private AtomicLong trialEndTime = new AtomicLong();
@@ -128,29 +124,46 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	}
 	
 	protected synchronized void initialize(Tests4J_ParamsReader p) {
-		trialThreadCount = p.getTrialThreadCount();
-		setupThreadCount = p.getSetupThreadCount();
-		//TODO pass remote count into the thread manager
-		threadManager = new Tests4J_ThreadManager(this, system, log);
 		
-		List<Class<? extends I_AbstractTrial>> trials = p.getInstrumentedTrials();
-		if (trials.size() == 0) {
-			trials = p.getTrials();
-		} 
+		
+		List<Class<? extends I_AbstractTrial>> trials = p.getTrials();
+		
+		
+		threadManager = new Tests4J_ThreadManager(system, log);
+		
 		Class<? extends I_MetaTrial> meta = p.getMetaTrialClass();
 		if (meta != null) {
 			TrialDescriptionProcessor trialDescProcessor = new TrialDescriptionProcessor(this);
 			trialDescProcessor.instrumentAndAddTrialDescription(meta);
 			trials.add(meta);
+			metaTrial.set(true);
 		}
 		coveragePlugin =  p.getCoveragePlugin();
 		
-		for (Class<? extends I_AbstractTrial> clazz: trials) {
-			if (I_MetaTrial.class.isAssignableFrom(clazz)) {
-				metaTrial.set(true);
-			}
-		}
+		
 		allTrialCount = trials.size();
+		trialsToRun = 
+				new ArrayBlockingQueue<Class<? extends I_AbstractTrial>>(allTrialCount);
+		setupProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.SETUP, 
+				p.getSetupThreadCount(), allTrialCount);
+		/**
+		 * note this includes the ignored trials,
+		 * so that the trial process can overlap with the setup
+		 * process, which allows for much faster execution of the entire process
+		 */
+		int trialCount = allTrialCount;
+		if (meta != null) {
+			trialCount--;
+		}
+		trialProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.TRIALS, 
+				p.getTrialThreadCount(), trialCount);
+		//todo when remote functionality is added
+		remoteProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.REMOTES, 
+				0, 0);
+		threadManager.setupSetupProcess(setupProcessInfo);
+		threadManager.setupTrialsProcess(trialProcessInfo);
+		//threadManager.setupRemoteProcess(remoteProcessInfo);
+		
 		trialClasses.addAll(trials);
 		tests = new CopyOnWriteArraySet<I_Tests4J_Selection>(p.getTests());
 		
@@ -283,21 +296,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return log;
 	}
 
-	public List<Tests4J_TrialsRunable> getTrialInstancesProcessors() {
-		return new ArrayList<Tests4J_TrialsRunable>(trialInstancesProcessors);
-	}
-
-	public void setTrialInstancesProcessors(
-			Collection<Tests4J_TrialsRunable> p) {
-		trialInstancesProcessors.clear();
-		trialInstancesProcessors.addAll(p);
-	}
-	
-	public void addTrialInstancesProcessors(Tests4J_TrialsRunable p) {
-		trialInstancesProcessors.add(p);
-	}
-	
-	
 	public boolean hasTestsFilter() {
 		if (tests != null) {
 			return true;
@@ -336,6 +334,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	public synchronized void setMetaTrialData(I_TrialRunMetadata md) {
 		metadata = md;
 		metaTrialDataBlock.add(md);
+		
 	}
 	/**
 	 * @diagram_sync on 5/26/2014 with Overview.seq
@@ -414,13 +413,8 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return tests;
 	}
 
-	protected void setLog(I_Tests4J_Log logger) {
+	protected synchronized void setLog(I_Tests4J_Log logger) {
 		this.currentLogDelegate = logger;
-	}
-
-
-	public int getTrialThreadCount() {
-		return trialThreadCount;
 	}
 
 	public Tests4J_NotificationManager getNotifier() {
@@ -441,20 +435,16 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return trialsToRun.poll();
 	}
 	
+	protected Class<? extends I_AbstractTrial> takeTrialsToRun() throws InterruptedException {
+		return trialsToRun.take();
+	}
+	
 	public int getTrialsToRun() {
 		return trialsToRun.size();
 	}
 	
 	protected boolean hasTrialThatCanRun() {
 		return hasTrialThatCanRun.get();
-	}
-
-	public int getSetupThreadCount() {
-		return setupThreadCount;
-	}
-
-	public int getRemoteThreadCount() {
-		return remoteThreadCount;
 	}
 	
 	public long getTime() {
@@ -519,41 +509,20 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return metadata.getAllTestsCount();
 	}
 
-
-	protected int getSetupRunnablesStarted() {
-		return setupRunnablesStarted.get();
-	}
-
-	protected int getSetupRunnablesFinished() {
-		return setupRunnablesFinished.get();
-	}
-
-	protected int getTrialsRunnablesStarted() {
-		return trialsRunnablesStarted.get();
-	}
-
-	protected int getTrialsRunnablesFinished() {
-		return trialsRunnablesFinished.get();
-	}
-
-	protected void addSetupRunnablesStarted() {
-		setupRunnablesStarted.addAndGet(1);
-	}
-
-	protected void addSetupRunnablesFinished() {
-		setupRunnablesFinished.addAndGet(1);
-	}
-
-	protected void addTrialsRunnablesStarted() {
-		trialsRunnablesStarted.addAndGet(1);
-	}
-
-	protected void addTrialsRunnablesFinished() {
-		trialsRunnablesFinished.addAndGet(1);
-	}
-
-	protected synchronized I_Tests4J_Log getLog() {
+	protected I_Tests4J_Log getLog() {
 		return log;
+	}
+
+	protected Tests4J_ProcessInfo getSetupProcessInfo() {
+		return setupProcessInfo;
+	}
+
+	protected Tests4J_ProcessInfo getTrialProcessInfo() {
+		return trialProcessInfo;
+	}
+
+	protected Tests4J_ProcessInfo getRemoteProcessInfo() {
+		return remoteProcessInfo;
 	}
 
 

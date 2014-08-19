@@ -22,5 +22,5 @@ public interface I_DependencyGroup {
 	 * @param className
 	 * @return
 	 */
-	public boolean isInGroup(String className);
+	public boolean isInGroup(I_MethodSignature method);
 }

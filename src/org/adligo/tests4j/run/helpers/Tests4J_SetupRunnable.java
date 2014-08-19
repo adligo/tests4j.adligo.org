@@ -1,22 +1,25 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_Runnable;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
-public class Tests4J_SetupRunnable implements Runnable {
+public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 
 
 	private Tests4J_Memory memory;
 	private I_Tests4J_NotificationManager notifier;
 	private I_Tests4J_Log logger;
 	private TrialDescriptionProcessor trialDescriptionProcessor;
+	/**
+	 * only used for single threaded operation may be null
+	 */
 	private Tests4J_ProgressMonitor progressMonitor;
+	private Tests4J_ProcessInfo processInfo;
+	private String trialName;
 	
 	/**
 	 * 
@@ -28,7 +31,7 @@ public class Tests4J_SetupRunnable implements Runnable {
 		memory = p;
 		notifier = pNotificationManager;
 		logger = p.getLogger();
-		
+		processInfo = memory.getSetupProcessInfo();
 		
 		progressMonitor = pProgressMonitor;
 		trialDescriptionProcessor = new TrialDescriptionProcessor(memory);
@@ -39,14 +42,17 @@ public class Tests4J_SetupRunnable implements Runnable {
 		if (logger.isLogEnabled(Tests4J_SetupRunnable.class)) {
 			logger.log("" + this + " on " + Thread.currentThread().getName() + " starting.");
 		}
-		memory.addSetupRunnablesStarted();
+		processInfo.addRunnableStarted();
 		Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClasses();
 		
 		while (trialClazz != null && !notifier.hasDescribeTrialError()) {
+			trialName = trialClazz.getName();
 			try {
 				
 				Class<? extends I_AbstractTrial> instrumentedClass = null;
-				progressMonitor.incrementAndNotify();
+				if (progressMonitor != null) {
+					progressMonitor.incrementAndNotify();
+				}
 				//no need to instrument the meta trial
 				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
 					//instrument the classes first, so that 
@@ -69,19 +75,20 @@ public class Tests4J_SetupRunnable implements Runnable {
 				logger.onThrowable(x);
 				notifier.onDescibeTrialError();
 			}
+			processInfo.addDone();
 			trialClazz = memory.pollTrialClasses();
 		}
 		if (logger.isLogEnabled(Tests4J_SetupRunnable.class)) {
 			logger.log("" + this + " on " + Thread.currentThread().getName() + " finished.");
 		}
-		memory.addSetupRunnablesFinished();
+		trialName = null;
+		processInfo.addRunnableFinished();
 		notifier.checkDoneDescribingTrials();
-		progressMonitor.notifyDone();
-		try {
-			Thread.currentThread().join();
-		} catch (InterruptedException e) {
-			logger.onThrowable(e);
-		}
+	}
+
+	@Override
+	public synchronized String getTrial() {
+		return trialName;
 	}
 
 }

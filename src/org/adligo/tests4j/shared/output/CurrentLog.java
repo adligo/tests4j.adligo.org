@@ -9,27 +9,32 @@ public class CurrentLog implements I_Tests4J_Log {
 	
 	@Override
 	public void log(String p) {
-		obtainer.getLog().log(p);
+		I_Tests4J_Log log = obtainer.getLog();
+		log.log(p);
 	}
 
 	@Override
 	public void onThrowable(Throwable p) {
-		obtainer.getLog().onThrowable(p);
+		I_Tests4J_Log log = obtainer.getLog();
+		log.onThrowable(p);
 	}
 
 	@Override
 	public boolean isLogEnabled(Class<?> clazz) {
-		return obtainer.getLog().isLogEnabled(clazz);
+		I_Tests4J_Log log = obtainer.getLog();
+		return log.isLogEnabled(clazz);
 	}
 
 	@Override
 	public boolean isMainLog() {
-		return obtainer.getLog().isMainLog();
+		I_Tests4J_Log log = obtainer.getLog();
+		return log.isMainLog();
 	}
 
 	@Override
 	public String getLineSeperator() {
-		return obtainer.getLog().getLineSeperator();
+		I_Tests4J_Log log = obtainer.getLog();
+		return log.getLineSeperator();
 	}
 
 }

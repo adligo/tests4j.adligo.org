@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.system;
 
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -168,6 +169,18 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 */
 	public Class<? extends I_EvaluatorLookup> getEvaluatorLookup();
 
+	/**
+	 * additional report streams are useful when you want to duplicate
+	 * the results you see from the console log, to a file
+	 * or some other location.  This could be useful in the 
+	 * remote tests4j runners as well, to broadcast the log over 
+	 * the network, for a fancy gui someday.
+	 * 
+	 * @return
+	 */
+	public List<OutputStream> getAdditionalReportOutputStreams();
 	
-
+	public void setAdditionalReportOutputStreams(Collection<OutputStream> out);
+	
+	public void addAdditionalReportOutputStreams(OutputStream out);
 }
