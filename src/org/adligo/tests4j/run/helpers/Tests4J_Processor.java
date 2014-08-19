@@ -108,7 +108,6 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 * @diagram Overview.seq sync on 7/21/2014
 	 * 
 	 */
-	@SuppressWarnings("unchecked")
 	public void run() {
 		
 		log = memory.getLogger();
@@ -118,20 +117,22 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		
 		threadManager = memory.getThreadManager();
 		notifier = memory.getNotifier();
-		int trials = memory.getAllTrialCount();
 		
 		
 		Tests4J_ProcessInfo setupProcessInfo = memory.getSetupProcessInfo();
 		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
-		Tests4J_ProcessInfo remoteProcessInfo = memory.getTrialProcessInfo();
+		//Tests4J_ProcessInfo remoteProcessInfo = memory.getTrialProcessInfo();
 		setupProgressMonitor = new Tests4J_ProgressMonitor(
 				memory.getSystem(), notifier, setupProcessInfo);
 		trialsProgressMonitor = new Tests4J_ProgressMonitor(
 				memory.getSystem(), notifier, trialProcessInfo);
-		I_OutputDelegateor od = setupLogging(setupProcessInfo, trialProcessInfo, remoteProcessInfo);
+		I_OutputDelegateor od = setupLogging(setupProcessInfo);
 		try {
 			startRecordingAllTrialsRun();
 			submitSetupRunnables(setupProcessInfo);
+			
+			//allow setup on a single thread
+			od = setupLogging(trialProcessInfo);
 			submitTrialsRunnables(trialProcessInfo, od);
 		} catch (Throwable t) {
 			log.onThrowable(t);
@@ -150,11 +151,8 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 * @param remoteProcessInfo
 	 * @return null if single threaded
 	 */
-	private ConcurrentOutputDelegateor setupLogging(Tests4J_ProcessInfo setupProcessInfo, Tests4J_ProcessInfo trialProcessInfo ,
-			Tests4J_ProcessInfo remoteProcessInfo) {
-		if (setupProcessInfo.getThreadCount() <= 1 &&
-				trialProcessInfo.getThreadCount() <= 1 &&
-				remoteProcessInfo.getThreadCount() <= 1) {
+	private I_OutputDelegateor setupLogging(Tests4J_ProcessInfo processInfo) {
+		if (processInfo.getThreadCount() <= 1) {
 			
 			//run single threaded on the main thread.
 			I_OutputDelegateor od = new OutputDelegateor(out);
@@ -162,7 +160,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 			JsePrintOutputStream jpos = new JsePrintOutputStream(od);
 			System.setOut(jpos);
 			System.setErr(jpos);
-			return null;
+			return od;
 		} else {
 			ConcurrentOutputDelegateor cod = new ConcurrentOutputDelegateor();
 			JsePrintOutputStream jpos = new JsePrintOutputStream(cod);
@@ -207,7 +205,6 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		notifier.onProcessStateChange(info);
 		int setupThreadCount = info.getThreadCount();
 		
-		int allTrials = memory.getAllTrialCount();
 		if (log.isLogEnabled(Tests4J_Processor.class)) {
 			log.log("Starting setup with " + setupThreadCount + " setup threads.");
 		}
@@ -253,7 +250,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 			log.log("Starting submitTrialRunnables with " + trialThreadCount + " trial threads.");
 		}
 		if (trialThreadCount <= 1) {
-			Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier, null); 
+			Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier, trialsProgressMonitor); 
 			info.addRunnable(tip);
 			tip.setOutputDelegator(od);
 			
@@ -297,7 +294,6 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
 		
 		boolean sentSetup100 = false;
-		boolean sentTrial100 = false;
 		while (!allDone()) {
 			try {
 				Thread.sleep(logSleepTime);

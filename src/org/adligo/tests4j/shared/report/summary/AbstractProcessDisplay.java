@@ -93,8 +93,7 @@ public abstract class AbstractProcessDisplay {
 				I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
 				String message = "";
 				if (processInfo.getPercentDone() >= 100.0) {
-					message =  " " + 
-					messages.getDoneEOS() +log.getLineSeperator();
+					message =  messages.getDoneEOS() +log.getLineSeperator();
 				} else {
 					message = PercentFormat.format(processInfo.getPercentDone(), 2) + messages.getPctComplete();
 				}

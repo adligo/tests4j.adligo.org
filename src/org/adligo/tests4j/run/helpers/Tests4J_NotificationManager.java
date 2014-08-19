@@ -31,6 +31,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
@@ -136,6 +137,10 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		}
 		sendMetadata();
 		
+		I_Tests4J_CoveragePlugin plugin =  memory.getCoveragePlugin();
+		if (plugin != null) {
+			plugin.instrumentationComplete();
+		}
 		int defFailures = memory.getFailureResultsSize();
 		trialClassDefFailures.set(defFailures);
 		Iterator<TrialDescription> it = memory.getAllTrialDescriptions();

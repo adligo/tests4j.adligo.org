@@ -50,9 +50,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 			try {
 				
 				Class<? extends I_AbstractTrial> instrumentedClass = null;
-				if (progressMonitor != null) {
-					progressMonitor.incrementAndNotify();
-				}
+				
 				//no need to instrument the meta trial
 				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
 					//instrument the classes first, so that 
@@ -75,7 +73,11 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 				logger.onThrowable(x);
 				notifier.onDescibeTrialError();
 			}
-			processInfo.addDone();
+			if (progressMonitor != null) {
+				progressMonitor.incrementAndNotify();
+			} else {
+				processInfo.addDone();
+			}
 			trialClazz = memory.pollTrialClasses();
 		}
 		if (logger.isLogEnabled(Tests4J_SetupRunnable.class)) {

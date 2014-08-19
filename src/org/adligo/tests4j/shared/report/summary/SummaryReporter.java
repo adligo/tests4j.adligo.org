@@ -3,7 +3,6 @@ package org.adligo.tests4j.shared.report.summary;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,10 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	private TrialsProcessDisplay trialsProcessDisplay = new TrialsProcessDisplay();
 	private RemoteProcessDisplay remoteProcessDisplay = new RemoteProcessDisplay();
 	
+	private SetupProgressDisplay setupProgressDisplay = new SetupProgressDisplay();
+	private TrialsProgressDisplay trialsProgressDisplay = new TrialsProgressDisplay();
+	private RemoteProgressDisplay remoteProgressDisplay = new RemoteProgressDisplay();
+	
 	public SummaryReporter() {
 		this(new DefaultLog());
 	}
@@ -52,7 +55,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		logger = p;
 		threadDisplay = new ThreadDisplay(p);
 		testsReporter = new TestDisplay(p, threadDisplay);
-		trialsReporter = new TrialDisplay(p);
+		trialsReporter = new TrialDisplay(p, threadDisplay);
 		trialFailedDetail = new TrialFailedDetailDisplay(p);
 	}
 	
@@ -198,13 +201,13 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		String processName = info.getProcessName();
 		switch (processName) {
 			case I_Tests4J_ProcessInfo.SETUP:
-					setupProcessDisplay.onProgress(logger, info);
+					setupProgressDisplay.onProgress(logger, info);
 				break;
 			case I_Tests4J_ProcessInfo.TRIALS:
-				trialsProcessDisplay.onProgress(logger, info);
+				trialsProgressDisplay.onProgress(logger, info);
 				break;
 			default:
-				remoteProcessDisplay.onProgress(logger, info);
+				remoteProgressDisplay.onProgress(logger, info);
 		}
 	}
 

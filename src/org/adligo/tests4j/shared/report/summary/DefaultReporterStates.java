@@ -9,6 +9,7 @@ public class DefaultReporterStates {
 		Map<Class<?>, Boolean> logStates = new HashMap<Class<?>, Boolean>();
 		//set defaults;
 		logStates.put(RemoteProgressDisplay.class, true);
+		logStates.put(SetupProcessDisplay.class, true);
 		logStates.put(SetupProgressDisplay.class, true);
 		logStates.put(SummaryReporter.class, true);
 		
@@ -19,8 +20,11 @@ public class DefaultReporterStates {
 		
 		logStates.put(TrialFailedDisplay.class, true);
 		logStates.put(TrialsProgressDisplay.class, true);
+		logStates.put(TrialsProcessDisplay.class, true);
 		logStates.put(TrialDisplay.class, true);
 		logStates.put(TrialFailedDetailDisplay.class, true);
+		
+		
 		return Collections.unmodifiableMap(logStates);
 	}
 }

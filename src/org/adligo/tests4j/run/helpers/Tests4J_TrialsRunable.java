@@ -177,8 +177,9 @@ public class Tests4J_TrialsRunable implements Runnable,
 				}
 				if (progressMonitor != null) {
 					progressMonitor.incrementAndNotify();
+				} else {
+					processInfo.addDone();
 				}
-				processInfo.addDone();
 				int total = processInfo.getCount();
 				int done = processInfo.getDone();
 				int threadCount = processInfo.getThreadCount();
