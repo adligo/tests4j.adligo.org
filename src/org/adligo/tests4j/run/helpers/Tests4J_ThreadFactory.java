@@ -21,6 +21,8 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  *
  */
 public final class Tests4J_ThreadFactory implements ThreadFactory {
+	public static final String THREAD_NAME = "tests4j-main";
+	
 	public static final String BASE_THREAD_NAME = "tests4j-";
 	/**
 	 * for the Tests4J_TrialsRunnables
@@ -54,7 +56,8 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	
 	public Tests4J_ThreadFactory(String pName, I_Tests4J_Log pReporter) {
 		reporter = pReporter;
-		if (pName.contains(TRIAL_THREAD_NAME) || 
+		if (pName.contains(THREAD_NAME) || 
+				pName.contains(TRIAL_THREAD_NAME) || 
 				pName.contains(TEST_THREAD_NAME) ||
 				pName.contains(SETUP_THREAD_NAME) ||
 				pName.contains(REMOTE_THREAD_NAME) ||

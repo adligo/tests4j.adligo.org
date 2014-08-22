@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.common;
 
+import java.io.PrintStream;
+
 /**
  * simple wrapper for System.out/System.err exc
  * implementations are required to have a no
@@ -42,4 +44,11 @@ public interface I_System {
 	 * @return
 	 */
 	public String getCurrentThreadName();
+	
+	/**
+	 * the print stream for this system,
+	 * ie System.out
+	 * @return
+	 */
+	public PrintStream getOut();
 }

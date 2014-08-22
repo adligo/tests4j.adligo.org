@@ -32,7 +32,7 @@ public class DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin {
 	}
 	
 	@Override
-	public Class<? extends I_AbstractTrial> instrument(
+	public I_Tests4J_CoverageTrialInstrumentation instrument(
 			Class<? extends I_AbstractTrial> trial)  throws IOException {
 		try {
 			return delegate.instrument(trial);
@@ -70,15 +70,4 @@ public class DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin {
 		}
 	}
 
-	public I_ClassDependenciesLocal getClassReferences(String className) {
-		try {
-			return delegate.getClassReferences(className);
-		} catch (Throwable t) {
-			reporter.onThrowable(t);
-		}
-		return null;
-	}
-
-	
-	
 }

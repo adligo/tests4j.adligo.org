@@ -1,10 +1,15 @@
 package org.adligo.tests4j.run.helpers;
 
+import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrumentation;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Runnable;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
+import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
+import org.adligo.tests4j.run.discovery.TrialState;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
@@ -14,10 +19,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 	private I_Tests4J_NotificationManager notifier;
 	private I_Tests4J_Log logger;
 	private TrialDescriptionProcessor trialDescriptionProcessor;
-	/**
-	 * only used for single threaded operation may be null
-	 */
-	private Tests4J_ProgressMonitor progressMonitor;
+	private TrialQueueDecisionTree trialQueueDecisionTree;
 	private Tests4J_ProcessInfo processInfo;
 	private String trialName;
 	
@@ -27,13 +29,13 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 	 * @param pNotificationManager
 	 */
 	public Tests4J_SetupRunnable(Tests4J_Memory p, 
-			I_Tests4J_NotificationManager pNotificationManager, Tests4J_ProgressMonitor pProgressMonitor) {
+			I_Tests4J_NotificationManager pNotificationManager) {
 		memory = p;
+		trialQueueDecisionTree = p.getTrialQueueDecisionTree();
 		notifier = pNotificationManager;
-		logger = p.getLogger();
+		logger = p.getLog();
 		processInfo = memory.getSetupProcessInfo();
 		
-		progressMonitor = pProgressMonitor;
 		trialDescriptionProcessor = new TrialDescriptionProcessor(memory);
 	}
 	
@@ -47,37 +49,10 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 		
 		while (trialClazz != null && !notifier.hasDescribeTrialError()) {
 			trialName = trialClazz.getName();
-			try {
-				
-				Class<? extends I_AbstractTrial> instrumentedClass = null;
-				
-				//no need to instrument the meta trial
-				if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
-					//instrument the classes first, so that 
-					// they are loaded before the TrialDescrpion processing code
-					I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
-					
-					if (plugin != null) {
-						instrumentedClass = plugin.instrument(trialClazz);
-					}
-				}	
-				TrialDescription trialDescription = trialDescriptionProcessor.instrumentAndAddTrialDescription(trialClazz);
-				if (trialDescription.isRunnable()) {
-					if (instrumentedClass != null) {
-						memory.addTrialToRun(instrumentedClass);
-					} else {
-						memory.addTrialToRun(trialClazz);
-					}
-				} 
-			} catch (Throwable x) {
-				logger.onThrowable(x);
-				notifier.onDescibeTrialError();
-			}
-			if (progressMonitor != null) {
-				progressMonitor.incrementAndNotify();
-			} else {
-				processInfo.addDone();
-			}
+			TrialState states = new TrialState(trialName, trialClazz);
+			checkAndApprove(trialClazz, states);
+			processInfo.addDone();
+			trialQueueDecisionTree.addTrial(states);
 			trialClazz = memory.pollTrialClasses();
 		}
 		if (logger.isLogEnabled(Tests4J_SetupRunnable.class)) {
@@ -85,7 +60,48 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 		}
 		trialName = null;
 		processInfo.addRunnableFinished();
-		notifier.checkDoneDescribingTrials();
+		//its not on the main thread so join
+		try {
+			Thread.currentThread().join();
+		} catch (InterruptedException e) {
+			logger.onThrowable(e);
+		}
+	}
+
+	protected void checkAndApprove(Class<? extends I_AbstractTrial> trialClazz, TrialState states) {
+		try {
+			
+			
+			TrialDescription trialDescription =  trialDescriptionProcessor.createAndRemberNotRunnableTrials(trialClazz);
+			states.setDescApprovedForInstrumentation(trialDescription);
+			if (trialDescription.isRunnable()) {
+				TrialType type = TrialType.get(trialDescription.getType());
+				if (TrialType.MetaTrial == type) {
+					//don't instrument the metatrial, as it doesn't need to do  do any code coverage
+					states.setDescApprovedForRun(trialDescription);
+				} else {
+					I_Tests4J_CoverageTrialInstrumentation instrumention = null;
+					//no need to instrument the meta trial
+					I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
+					
+					if (plugin != null) {
+						if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
+							//instrument the classes first, so that 
+							// they are loaded before the TrialDescrpion processing code
+							
+							instrumention = plugin.instrument(trialClazz);
+							trialDescription = trialDescriptionProcessor.createAndRemberNotRunnableTrials(instrumention);
+							states.setDescApprovedForRun(trialDescription);
+						}
+					} else {
+						states.setDescApprovedForRun(trialDescription);
+					} 
+				}
+			} 
+		} catch (Throwable x) {
+			logger.onThrowable(x);
+			notifier.onDescibeTrialError();
+		}
 	}
 
 	@Override

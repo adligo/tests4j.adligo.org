@@ -21,7 +21,7 @@ public interface I_Tests4J_CoveragePlugin {
 	 * This method should be executable by multiple threads, 
 	 * so that each thread is instrumenting classes, to a shared classloader.
 	 */
-	public Class<? extends I_AbstractTrial> instrument(Class<? extends I_AbstractTrial> trial) throws IOException;
+	public I_Tests4J_CoverageTrialInstrumentation instrument(Class<? extends I_AbstractTrial> trial) throws IOException;
 	
 	/**
 	 * give the plugin a chance to clean up the instrumentation
@@ -42,15 +42,6 @@ public interface I_Tests4J_CoveragePlugin {
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
 	public I_Tests4J_CoverageRecorder createRecorder();
-	
-	/**
-	 * returns the references from one class to another
-	 * for circular reference detection
-	 * and dependency assertion (make sure the class is only using certain other classes).
-	 * @param className
-	 * @return
-	 */
-	public I_ClassDependenciesLocal getClassReferences(String className);
 	
 
 }

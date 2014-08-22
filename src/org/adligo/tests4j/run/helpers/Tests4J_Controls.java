@@ -1,5 +1,9 @@
 package org.adligo.tests4j.run.helpers;
 
+import java.io.PrintStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 
 /**
@@ -10,8 +14,10 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
  *
  */
 public class Tests4J_Controls implements I_Tests4J_Controls {
+	private static final PrintStream ps = System.out;
 	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notificationManager;
+	private Future<?> future;
 	
 	public Tests4J_Controls() {
 	}
@@ -34,6 +40,23 @@ public class Tests4J_Controls implements I_Tests4J_Controls {
 			return false;
 		}
 		return notificationManager.isRunning();
+	}
+
+	public synchronized Future<?> getFuture() {
+		return future;
+	}
+
+	public synchronized void setFuture(Future<?> future) {
+		this.future = future;
+	}
+
+	@Override
+	public void waitForResults() {
+		try {
+			future.get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace(ps);
+		}
 	}
 
 	

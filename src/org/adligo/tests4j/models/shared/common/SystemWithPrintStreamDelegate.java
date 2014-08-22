@@ -48,4 +48,9 @@ public class SystemWithPrintStreamDelegate implements I_System {
 	public String getCurrentThreadName() {
 		return delegate.getCurrentThreadName();
 	}
+
+	@Override
+	public PrintStream getOut() {
+		return out;
+	}
 }

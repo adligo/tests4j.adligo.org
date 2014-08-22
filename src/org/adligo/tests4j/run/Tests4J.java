@@ -142,7 +142,6 @@ public class Tests4J {
 	 * @return
 	 */
 	protected I_Tests4J_Controls instanceRun(I_Tests4J_Params pParams, I_Tests4J_Listener pListener) {
-		Thread.setDefaultUncaughtExceptionHandler(new Tests4J_UncaughtExceptionHandler());
 		
 		if (pParams == null) {
 			I_Tests4J_Constants messages = Tests4J_Constants.CONSTANTS;
@@ -155,15 +154,13 @@ public class Tests4J {
 			FACTORY.set(DEFAULT_FACTORY);
 			factory = DEFAULT_FACTORY;
 		}
-		//@diagram_sync with Overview.seq on 7/21/2014
-		I_Tests4J_Delegate delegate =  factory.create();
+		//@diagram_sync with Overview.seq on 8/22/2014
+		I_Tests4J_Delegate delegate =  factory.create(system);
 
 		//@diagram_sync with Overview.seq on 7/21/2014
-		delegate.setSystem(system);
-		//@diagram_sync with Overview.seq on 7/21/2014
 		if (delegate.setup(pListener,pParams)) {
-			//@diagram_sync with Overview.seq on 7/21/2014
-			delegate.run();
+			//@diagram_sync with Overview.seq on 8/20/2014
+			delegate.runOnAnotherThreadIfAble();
 		}
 		//@diagram_sync with Overview.seq on 7/21/2014
 		return delegate.getControls();

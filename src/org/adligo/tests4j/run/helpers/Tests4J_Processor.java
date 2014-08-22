@@ -4,6 +4,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
@@ -16,10 +17,11 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
+import org.adligo.tests4j.run.Tests4J_UncaughtExceptionHandler;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
+import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.output.ConcurrentOutputDelegateor;
 import org.adligo.tests4j.run.output.JsePrintOutputStream;
-import org.adligo.tests4j.run.output.OutputDelegateor;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.DelegatingLog;
 import org.adligo.tests4j.shared.output.I_OutputBuffer;
@@ -38,22 +40,23 @@ import org.adligo.tests4j.shared.report.summary.SummaryReporter;
  * @author scott
  *
  */
-public class Tests4J_Processor implements I_Tests4J_Delegate {
+public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	public static final String REQUIRES_SETUP_IS_CALLED_BEFORE_RUN = " requires setup is called before run.";
-	private PrintStream out;
-	private Tests4J_Memory memory = new Tests4J_Memory();
+	private Tests4J_Memory memory;
 	private I_Tests4J_Log log;
 	private long logSleepTime = 1000;
 	
+	private I_System system;
 	private Tests4J_ParamsReader reader;
 	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
-	private Tests4J_Controls controls;
-	Tests4J_ProgressMonitor setupProgressMonitor;
-	Tests4J_ProgressMonitor trialsProgressMonitor;
 	
-	public Tests4J_Processor(PrintStream pOut) {
-		out = pOut;
+	private Tests4J_Controls controls;
+	private ConcurrentOutputDelegateor cod;
+	private TrialQueueDecisionTree trialQueueDecisionTree;
+	
+	public Tests4J_Processor(I_System systemIn) {
+		system = systemIn;
 	}
 	/**
 	 * This method sets up everything for the run,
@@ -65,11 +68,22 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 */
 	public boolean setup(I_Tests4J_Listener pListener, I_Tests4J_Params pParams) {
 		
-		I_System system = memory.getSystem();
 
 		
 		reader = new Tests4J_ParamsReader(system,  pParams);
+		/**
+		 * note this code is a bit confusing,
+		 * the log is single threaded for a short time,
+		 * and then is 
+		 */
 		log = reader.getLogger();
+		/**
+		 * now the log is concurrent
+		 */
+		Map<Class<?>, Boolean> logStates = reader.getLogStates();
+		cod = setupLogging(logStates);
+		memory = new Tests4J_Memory(log);
+		memory.setSystem(system);
 		
 		List<OutputStream> outs =  pParams.getAdditionalReportOutputStreams();
 		if (outs.size() >= 1) {
@@ -77,21 +91,21 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 			for (OutputStream ob: outs) {
 				outputBuffers.add(new SafeOutputStremBuffer(log, ob));
 			}
-			outputBuffers.add(new PrintStreamOutputBuffer(out));
-			out = new  JsePrintOutputStream(new ListDelegateOutputBuffer(outputBuffers));
+			outputBuffers.add(new PrintStreamOutputBuffer(system.getOut()));
+			PrintStream out = new  JsePrintOutputStream(new ListDelegateOutputBuffer(outputBuffers));
 			
 			SystemWithPrintStreamDelegate sysPs = new SystemWithPrintStreamDelegate(system, out);
 			log = new DefaultLog(sysPs, pParams.getLogStates());
 		}
 		
-		memory.setLog(log);
 		//use the dynamic log
-		memory.setReporter(new SummaryReporter(memory.getLog()));
+		memory.setReporter(new SummaryReporter(log));
 		
 		memory.setListener(pListener);
 		
 		if (reader.isRunnable()) {
 			memory.initialize(reader);
+			threadManager = memory.getThreadManager();
 		}
 		controls = new Tests4J_Controls(memory);
 		return reader.isRunnable();
@@ -108,41 +122,48 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 * @diagram Overview.seq sync on 7/21/2014
 	 * 
 	 */
+	public void runOnAnotherThreadIfAble() {
+		ExecutorService service = threadManager.getTests4jService();
+		Future<?> future = service.submit(this);
+		controls.setFuture(future);
+	}
+	
 	public void run() {
-		
-		log = memory.getLogger();
-		
-		long time = memory.getTime();
+		Thread.setDefaultUncaughtExceptionHandler(new Tests4J_UncaughtExceptionHandler());
+		memory.setSystem(system);
+		long time = system.getTime();
 		memory.setStartTime(time);
 		
-		threadManager = memory.getThreadManager();
+		
 		notifier = memory.getNotifier();
 		
 		
 		Tests4J_ProcessInfo setupProcessInfo = memory.getSetupProcessInfo();
 		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
 		//Tests4J_ProcessInfo remoteProcessInfo = memory.getTrialProcessInfo();
-		setupProgressMonitor = new Tests4J_ProgressMonitor(
-				memory.getSystem(), notifier, setupProcessInfo);
-		trialsProgressMonitor = new Tests4J_ProgressMonitor(
-				memory.getSystem(), notifier, trialProcessInfo);
-		I_OutputDelegateor od = setupLogging(setupProcessInfo);
 		try {
 			startRecordingAllTrialsRun();
-			submitSetupRunnables(setupProcessInfo);
 			
-			//allow setup on a single thread
-			od = setupLogging(trialProcessInfo);
-			submitTrialsRunnables(trialProcessInfo, od);
+			submitSetupRunnables(setupProcessInfo);
+			notifier.onSetupDone();
+			
+			submitTrialsRunnables(trialProcessInfo);
+			//@diagram_sync with Overview.seq on 8/20/2014
+			if (isTrialsOrRemotesRunning()) {
+				monitorTrials();
+				monitorRemotes();
+			}
+			notifier.onDoneRunningNonMetaTrials();
+			
+			String next = cod.poll();
+			while (next != null) {
+				system.println(next);
+				next = cod.poll();
+			}
 		} catch (Throwable t) {
 			log.onThrowable(t);
 		}
-		if (ConcurrentOutputDelegateor.class.getName().equals(od.getClass().getName())) {
-			monitorThenShutdown((ConcurrentOutputDelegateor) od);
-		} else {
-			threadManager.shutdown();
-		}
-		
+		threadManager.shutdown();
 	}
 
 	/**
@@ -151,25 +172,13 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	 * @param remoteProcessInfo
 	 * @return null if single threaded
 	 */
-	private I_OutputDelegateor setupLogging(Tests4J_ProcessInfo processInfo) {
-		if (processInfo.getThreadCount() <= 1) {
-			
-			//run single threaded on the main thread.
-			I_OutputDelegateor od = new OutputDelegateor(out);
-			
-			JsePrintOutputStream jpos = new JsePrintOutputStream(od);
-			System.setOut(jpos);
-			System.setErr(jpos);
-			return od;
-		} else {
-			ConcurrentOutputDelegateor cod = new ConcurrentOutputDelegateor();
-			JsePrintOutputStream jpos = new JsePrintOutputStream(cod);
-			System.setOut(jpos);
-			System.setErr(jpos);
-			log = new DelegatingLog(memory.getSystem(), reader.getLogStates(), cod);
-			memory.setLog(log);
-			return cod;
-		}
+	private ConcurrentOutputDelegateor setupLogging(Map<Class<?>, Boolean> logStates) {
+		ConcurrentOutputDelegateor cod = new ConcurrentOutputDelegateor();
+		JsePrintOutputStream jpos = new JsePrintOutputStream(cod);
+		System.setOut(jpos);
+		System.setErr(jpos);
+		log = new DelegatingLog(system, logStates, cod);
+		return cod;
 	}
 	
 	/**
@@ -204,97 +213,43 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 	private void submitSetupRunnables(Tests4J_ProcessInfo info) {
 		notifier.onProcessStateChange(info);
 		int setupThreadCount = info.getThreadCount();
+		trialQueueDecisionTree = memory.getTrialQueueDecisionTree();
 		
 		if (log.isLogEnabled(Tests4J_Processor.class)) {
-			log.log("Starting setup with " + setupThreadCount + " setup threads.");
+			log.log(this.toString() + " Starting setup with " + setupThreadCount + " setup threads.");
 		}
+		ExecutorService runService = threadManager.getSetupService();
 		
-		if (setupThreadCount <= 1) {
-			Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier, setupProgressMonitor); 
-			info.addRunnable(sr);
-			
-			sr.run();
-		} else {
-			
-			ExecutorService runService = threadManager.getSetupService();
-			
+		if (setupThreadCount > 1) {
 			for (int i = 0; i < setupThreadCount; i++) {
-				Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier, null); 
-				info.addRunnable(sr);
-				
-				try {
-					Future<?> future = runService.submit(sr);
-					threadManager.addSetupFuture(future);
-				} catch (RejectedExecutionException x) {
-					//do nothing, not sure why this exception is happening for me
-					// it must have to do with shutdown, but it happens intermittently.
-				}
+				runSetupRunnable(info, runService);
 			}
-
+		} else {
+			runSetupRunnable(info, runService);
 		}
+		//@diagram_sync with Overview.seq on 8/20/2014
+		monitorSetup();
+
+	}
+	protected void runSetupRunnable(Tests4J_ProcessInfo info,
+			ExecutorService runService) {
+		Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier); 
+		info.addRunnable(sr);
 		
-		long now = memory.getTime();
-		memory.setSetupEndTime(now);
-		if (log.isLogEnabled(Tests4J_Processor.class)) {
-			double millis = now - memory.getStartTime();
-			double secs = millis/1000.0;
-			log.log("Finised setup after " + secs + " seconds.");
+		try {
+			Future<?> future = runService.submit(sr);
+			threadManager.addSetupFuture(future);
+		} catch (RejectedExecutionException x) {
+			//do nothing, not sure why this exception is happening for me
+			// it must have to do with shutdown, but it happens intermittently.
 		}
 	}
 	
-	private void submitTrialsRunnables(Tests4J_ProcessInfo info, I_OutputDelegateor od) {
-		notifier.onProcessStateChange(info);
-		int trialThreadCount = info.getThreadCount();
-		
-		if (log.isLogEnabled(Tests4J_Processor.class)) {
-			log.log("Starting submitTrialRunnables with " + trialThreadCount + " trial threads.");
-		}
-		if (trialThreadCount <= 1) {
-			Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier, trialsProgressMonitor); 
-			info.addRunnable(tip);
-			tip.setOutputDelegator(od);
-			
-			tip.run();
-			long now = memory.getTime();
-			memory.setSetupEndTime(now);
-			if (log.isLogEnabled(Tests4J_Processor.class)) {
-				double millis = now - memory.getStartTime();
-				double secs = millis/1000.0;
-				log.log("Finised trials after " + secs + " seconds.");
-			}
-		} else {
-			ExecutorService runService = threadManager.getTrialRunService();
-			
-			for (int i = 0; i < trialThreadCount; i++) {
-				Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier, null); 
-				info.addRunnable(tip);
-				tip.setOutputDelegator(od);
-				try {
-					Future<?> future = runService.submit(tip);
-					threadManager.addTrialFuture(future);
-				} catch (RejectedExecutionException x) {
-					//do nothing, not sure why this exception is happening for me
-					// it must have to do with shutdown, but it happens intermittently.
-				}
-			}
-			
-		}
-	}
-
-	private boolean allDone() {
-		if (notifier.isDoneDescribeingTrials()) {
-			if (notifier.isDoneRunningTrials()) {
-				return true;
-			}
-		}
-		return false;
-	}
-	private void monitorThenShutdown(ConcurrentOutputDelegateor cod) {
+	private void monitorSetup() {
 		Tests4J_ProcessInfo setupProcessInfo = memory.getSetupProcessInfo();
-		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
 		
 		boolean sentSetup100 = false;
-		while (!allDone()) {
+		while (!trialQueueDecisionTree.isFull()) {
 			try {
 				Thread.sleep(logSleepTime);
 				if (!sentSetup100) {
@@ -304,11 +259,9 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 					notifier.onProgress(setupProcessInfo);
 					
 				}
-				notifier.onProgress(trialProcessInfo);
-				
 				String next = cod.poll();
 				while (next != null) {
-					out.println(next);
+					system.println(next);
 					next = cod.poll();
 				}
 			} catch (InterruptedException x) {
@@ -317,22 +270,98 @@ public class Tests4J_Processor implements I_Tests4J_Delegate {
 		}
 		String next = cod.poll();
 		while (next != null) {
-			out.println(next);
+			system.println(next);
 			next = cod.poll();
 		}
 
-		threadManager.shutdown();
+		long now = memory.getTime();
+		memory.setSetupEndTime(now);
+		if (log.isLogEnabled(Tests4J_Processor.class)) {
+			double millis = now - memory.getStartTime();
+			double secs = millis/1000.0;
+			log.log(this.toString() + " Competing setup with after " + secs + " seconds.");
+		}
 	}
+	
+	private void submitTrialsRunnables(Tests4J_ProcessInfo info) {
+		
+		
+		notifier.onProcessStateChange(info);
+		int trialThreadCount = info.getThreadCount();
+		
+		if (log.isLogEnabled(Tests4J_Processor.class)) {
+			log.log("Starting submitTrialRunnables with " + trialThreadCount + " trial threads.");
+		}
+		ExecutorService runService = threadManager.getTrialRunService();
+		
+		if (trialThreadCount > 1) {
+			for (int i = 0; i < trialThreadCount; i++) {
+				runTrialRunnable(info, cod, runService);
+			}
+		} else {
+			runTrialRunnable(info, cod, runService);
+		}
+	}
+	protected void runTrialRunnable(Tests4J_ProcessInfo info,
+			I_OutputDelegateor od, ExecutorService runService) {
+		Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
+		info.addRunnable(tip);
+		tip.setOutputDelegator(od);
+		try {
+			Future<?> future = runService.submit(tip);
+			threadManager.addTrialFuture(future);
+		} catch (RejectedExecutionException x) {
+			//do nothing, not sure why this exception is happening for me
+			// it must have to do with shutdown, but it happens intermittently.
+		}
+	}
+	
+	private void monitorTrials() {
+		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
+		
+		while (!trialQueueDecisionTree.areAllTrialsFinished()) {
+			try {
+				Thread.sleep(logSleepTime);
+				notifier.onProgress(trialProcessInfo);
+				
+				String next = cod.poll();
+				while (next != null) {
+					system.println(next);
+					next = cod.poll();
+				}
+			} catch (InterruptedException x) {
+				throw new RuntimeException(x);
+			}
+		}
+		long now = system.getTime();
+		memory.setTrialEndTime(now);
+		if (log.isLogEnabled(Tests4J_Processor.class)) {
+			double millis = now - memory.getSetupEndTime();
+			double secs = millis/1000.0;
+			log.log(this.toString() + " Competing trials with after " + secs + " seconds.");
+		}
+		
+	}
+	
+	private boolean isTrialsOrRemotesRunning() {
+		if (!notifier.isDoneRunningTrials()) {
+			return true;
+		}
+		//todo add remotes
+		return false;
+	}
+	/**
+	 * TODO
+	 * @param cod
+	 */
+	private void monitorRemotes() {
+		
+	}
+	
 
 	@Override
 	public I_Tests4J_Controls getControls() {
 		return controls;
 	}
-
-	@Override
-	public void setSystem(I_System system) {
-		memory.setSystem(system);
-	}
-
 
 }

@@ -18,7 +18,10 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 public abstract class AbstractProcessDisplay {
 	private String pct = "";
 	private int timesAtPct;
+	
 	private boolean loggedThisPercent = false;
+	private List<String> lastTrials;
+	private boolean loggedTheseTrials = false;
 	
 	public void onProccessStateChange(I_Tests4J_Log log, I_Tests4J_ProcessInfo processInfo) {
 		if (log.isLogEnabled(this.getClass())) {
@@ -32,24 +35,27 @@ public abstract class AbstractProcessDisplay {
 			} else {
 				getTimesAtThisPct(processInfo);
 				if (!loggedThisPercent) {
-					String message = messages.getProcessVhasXRunnablesRunningAndYZdone();
-					message = message.replace("<V/>",processInfo.getProcessName());
-					String runnables = "" + (processInfo.getRunnablesStarted() -
-							processInfo.getRunnablesFinished()) + 
-							"/" + processInfo.getRunnablesStarted();
-					message = message.replace("<X/>", runnables);
-					
-					String doneString = "" + processInfo.getDone() + "/" +
-							processInfo.getCount();
-					message = message.replace("<Y/>", doneString);
-					String z = messages.getNonMetaTrials();
-					if (I_Tests4J_ProcessInfo.SETUP.equals(processInfo.getProcessName())) {
-						z = messages.getTrialDescriptionsInStatement();
+					if (!loggedTheseTrials) {
+						String message = messages.getProcessVhasXRunnablesRunningAndYZdone();
+						message = message.replace("<V/>",processInfo.getProcessName());
+						String runnables = "" + (processInfo.getRunnablesStarted() -
+								processInfo.getRunnablesFinished()) + 
+								"/" + processInfo.getRunnablesStarted();
+						message = message.replace("<X/>", runnables);
+						
+						String doneString = "" + processInfo.getDone() + "/" +
+								processInfo.getCount();
+						message = message.replace("<Y/>", doneString);
+						String z = messages.getNonMetaTrials();
+						if (I_Tests4J_ProcessInfo.SETUP.equals(processInfo.getProcessName())) {
+							z = messages.getTrialDescriptionsInStatement();
+						}
+						message = message.replace("<Z/>", z);
+						message = addCurrentRunningInfoToStalledProcess(log,
+								processInfo, message);
+						log.log(I_Tests4J_Constants.PREFIX_HEADER + message);
+						loggedTheseTrials = true;
 					}
-					message = message.replace("<Z/>", z);
-					message = addCurrentRunningInfoToStalledProcess(log,
-							processInfo, message);
-					log.log(I_Tests4J_Constants.PREFIX_HEADER + message);
 				}
 			}
 		}
@@ -66,6 +72,14 @@ public abstract class AbstractProcessDisplay {
 			for (String trial: trials) {
 				sb.append(log.getLineSeperator());
 				sb.append(trial);
+			}
+			if (lastTrials == null) {
+				lastTrials = trials;
+			} else {
+				if (lastTrials.containsAll(trials)) {
+					loggedTheseTrials = true;
+				}
+				lastTrials = trials;
 			}
 			sb.append(log.getLineSeperator());
 			message = sb.toString();

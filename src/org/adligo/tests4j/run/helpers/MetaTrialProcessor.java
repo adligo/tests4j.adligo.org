@@ -42,7 +42,7 @@ public class MetaTrialProcessor implements I_Tests4J_AssertListener {
 	public MetaTrialProcessor(Tests4J_Memory pMemory, I_Tests4J_NotificationManager pNotifier) {
 		memory = pMemory;
 		bindings = new TrialBindings(Platform.JSE, 
-				memory.getEvaluationLookup(), memory.getLogger());
+				memory.getEvaluationLookup(), memory.getLog());
 		bindings.setAssertListener(this);
 		notifier = pNotifier;
 	}

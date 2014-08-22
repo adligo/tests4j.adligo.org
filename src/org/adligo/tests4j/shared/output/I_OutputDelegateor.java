@@ -20,4 +20,5 @@ public interface I_OutputDelegateor extends I_OutputBuffer {
 	 * @param buffer
 	 */
 	public void setDelegate(I_OutputBuffer buffer);
+	
 }

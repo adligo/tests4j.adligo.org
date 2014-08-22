@@ -1,13 +1,20 @@
 package org.adligo.tests4j.models.shared.common;
 
+import java.io.PrintStream;
+
 import org.adligo.tests4j.models.shared.common.I_System;
 
 public class DefaultSystem implements I_System {
 	public static final String DEFAULT_THREAD_NAME = "main";
-
+	/**
+	 * capture the initial System.out PrintStream
+	 * at class load time, so it can never be changed.
+	 */
+	private static final PrintStream OUT = System.out;
+	
 	@Override
 	public void println(String p) {
-		System.out.println(p);
+		OUT.println(p);
 	}
 
 	@Override
@@ -28,6 +35,11 @@ public class DefaultSystem implements I_System {
 	@Override
 	public String getCurrentThreadName() {
 		return DEFAULT_THREAD_NAME;
+	}
+
+	@Override
+	public PrintStream getOut() {
+		return OUT;
 	}
 
 }

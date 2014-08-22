@@ -16,12 +16,15 @@ import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrumentation;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
@@ -29,6 +32,7 @@ import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
 import org.adligo.tests4j.models.shared.trials.TrialTimeout;
 import org.adligo.tests4j.models.shared.trials.UseCaseScope;
+import org.adligo.tests4j.run.helpers.I_Tests4J_Memory;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -64,10 +68,11 @@ public class TrialDescription implements I_TrialDescription {
 	private PackageScope packageScope;
 	private double minCoverage = 100.0;
 	private List<I_TrialFailure> failures = new ArrayList<I_TrialFailure>();
+	private I_ClassDependenciesLocal sourceClassDependencies;
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
-			I_Tests4J_Log pLog) {
-		reporter = pLog;
+			I_Tests4J_Memory pMem) {
+		reporter = pMem.getLog();
 		trialClass = pTrialClass;
 		if (reporter.isLogEnabled(TrialDescription.class)) {
 			reporter.log("Creating TrialDescription for " + trialClass);
@@ -76,6 +81,28 @@ public class TrialDescription implements I_TrialDescription {
 		runnable = checkTestClass();
 	}
 
+	public TrialDescription(I_Tests4J_CoverageTrialInstrumentation instrIn,
+			I_Tests4J_Memory pMem) {
+		reporter = pMem.getLog();
+		trialClass = instrIn.getInstrumentedClass();
+		if (reporter.isLogEnabled(TrialDescription.class)) {
+			reporter.log("Creating TrialDescription for " + trialClass);
+		}
+		
+		runnable = checkTestClass();
+		if (runnable) {
+			if (TrialType.SourceFileTrial.equals(type)) {
+				Class<?> clazz =  sourceFileScope.sourceClass();
+				String className = clazz.getName();
+				sourceClassDependencies = instrIn.getSourceClassDependencies();
+				if (sourceClassDependencies == null) {
+					throw new IllegalStateException("No know class dependencies for " + className +
+							" when creating trial description for " + trialClass.getName());
+				}
+			}
+		}
+	}
+	
 	private boolean checkTestClass() {
 		type = TrialTypeFinder.getTypeInternal(trialClass, failures);
 		if (failures.size() >= 1) {
@@ -453,5 +480,9 @@ public class TrialDescription implements I_TrialDescription {
 
 	public List<I_TrialFailure> getFailures() {
 		return Collections.unmodifiableList(failures);
+	}
+
+	protected synchronized I_ClassDependenciesLocal getSourceClassDependencies() {
+		return sourceClassDependencies;
 	}
 }

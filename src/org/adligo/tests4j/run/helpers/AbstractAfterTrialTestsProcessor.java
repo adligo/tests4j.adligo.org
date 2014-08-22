@@ -43,7 +43,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_Tests4J_Asse
 	private List<Integer> delegatedTestAssertionHashes; 
 	
 	public AbstractAfterTrialTestsProcessor(I_Tests4J_Memory memory) {
-		bindings = new TrialBindings(Platform.JSE, memory.getEvaluationLookup(), memory.getLogger());
+		bindings = new TrialBindings(Platform.JSE, memory.getEvaluationLookup(), memory.getLog());
 		bindings.setAssertListener(this);
 	}
 

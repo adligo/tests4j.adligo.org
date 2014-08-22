@@ -1,22 +1,16 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.I_System;
-import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
@@ -29,6 +23,8 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
+import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.shared.output.CurrentLog;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -57,26 +53,14 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	 * so that it the runs of it do NOT overlap
 	 */
 	private ConcurrentHashMap<String,TrialDescription> trialDescriptions = new ConcurrentHashMap<String,TrialDescription>();
-	/**
-	 * note the trial description may occur twice,
-	 * if the user of the api is running trials more than once
-	 */
-	private CopyOnWriteArrayList<TrialDescription> allTrialDescriptions = new CopyOnWriteArrayList<TrialDescription>();
-	/**
-	 * the queue of trials to run,
-	 * they should be instrumented if there is a coverage plugin
-	 */
-	private ArrayBlockingQueue<Class<? extends I_AbstractTrial>> trialsToRun;
-	
-	private ConcurrentHashMap<String,AtomicInteger> trialRuns = new ConcurrentHashMap<String,AtomicInteger>();
+
 	
 	private I_Tests4J_CoverageRecorder mainRecorder;
 	
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
 	private int allTrialCount;
 	private I_Tests4J_CoveragePlugin coveragePlugin;
-	private final CurrentLog log;
-	private volatile I_Tests4J_Log currentLogDelegate = new DefaultLog();
+	private final I_Tests4J_Log log;
 	private Tests4J_ProcessInfo setupProcessInfo;
 	private Tests4J_ProcessInfo trialProcessInfo;
 	private Tests4J_ProcessInfo remoteProcessInfo;
@@ -94,8 +78,8 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	
 	private Tests4J_ThreadManager threadManager;
 	private ArrayBlockingQueue<I_TrialRunMetadata> metaTrialDataBlock = new ArrayBlockingQueue<I_TrialRunMetadata>(1);
+	private TrialQueueDecisionTree trialQueueDecisionTree;
 	private I_TrialRunMetadata metadata;
-	private TrialDescription metaTrialDescription;
 	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private boolean hasRemoteDelegation = false;
 	private I_EvaluatorLookup evaluationLookup;
@@ -113,14 +97,8 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	 * 
 	 * @diagram sync on 7/21/2014 with Overview.seq 
 	 */
-	public Tests4J_Memory() {
-		log = new CurrentLog(new I_Tests4J_LogObtainer() {
-			
-			@Override
-			public I_Tests4J_Log getLog() {
-				return currentLogDelegate;
-			}
-		});
+	public Tests4J_Memory(I_Tests4J_Log logIn) {
+		log = logIn;
 	}
 	
 	protected synchronized void initialize(Tests4J_ParamsReader p) {
@@ -128,35 +106,31 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		
 		List<Class<? extends I_AbstractTrial>> trials = p.getTrials();
 		
+		allTrialCount = trials.size();
+		trialProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.TRIALS, 
+				p.getTrialThreadCount(), allTrialCount);
+		
 		
 		threadManager = new Tests4J_ThreadManager(system, log);
 		
 		Class<? extends I_MetaTrial> meta = p.getMetaTrialClass();
 		if (meta != null) {
 			TrialDescriptionProcessor trialDescProcessor = new TrialDescriptionProcessor(this);
-			trialDescProcessor.instrumentAndAddTrialDescription(meta);
-			trials.add(meta);
-			metaTrial.set(true);
+			TrialDescription td = trialDescProcessor.createAndRemberNotRunnableTrials(meta);
+			if (td.isRunnable()) {
+				trials.add(meta);
+				metaTrial.set(true);
+				//allTrialCount now includes the meta trial
+				allTrialCount = trials.size();
+			}
 		}
 		coveragePlugin =  p.getCoveragePlugin();
+		boolean hasCoveragePlugin = (coveragePlugin != null);
+		trialQueueDecisionTree = new TrialQueueDecisionTree(allTrialCount, log, hasCoveragePlugin);
 		
-		
-		allTrialCount = trials.size();
-		trialsToRun = 
-				new ArrayBlockingQueue<Class<? extends I_AbstractTrial>>(allTrialCount);
 		setupProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.SETUP, 
 				p.getSetupThreadCount(), allTrialCount);
-		/**
-		 * note this includes the ignored trials,
-		 * so that the trial process can overlap with the setup
-		 * process, which allows for much faster execution of the entire process
-		 */
-		int trialCount = allTrialCount;
-		if (meta != null) {
-			trialCount--;
-		}
-		trialProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.TRIALS, 
-				p.getTrialThreadCount(), trialCount);
+
 		//todo when remote functionality is added
 		remoteProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.REMOTES, 
 				0, 0);
@@ -182,35 +156,10 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	public Class<? extends I_AbstractTrial> pollTrialClasses() {
 		return trialClasses.poll();
 	}
-	/**
-	 * @param name
-	 * @param p
-	 */
-	public void addTrialDescription(String name, TrialDescription p) {
-		allTrialDescriptions.add(p);
-		if (p.isRunnable() && p.getType() == TrialType.MetaTrial) {
-			metaTrialDescription = p;
-		}
-		trialDescriptions.put(name, p);
-		if (!trialRuns.containsKey(name)) {
-			trialRuns.put(name, new AtomicInteger(0));
-		}
-		if (log.isLogEnabled(Tests4J_Memory.class)) {
-			log.log("added trial description for " + name);
-		}
-	}
+
 	public TrialDescription getTrialDescription(String name) {
 		return trialDescriptions.get(name);
 	}
-	
-	public int incrementTrialRun(String trialName) {
-		if (log.isLogEnabled(Tests4J_Memory.class)) {
-			log.log("incrementTrialRun for " + trialName);
-		}
-		AtomicInteger next = trialRuns.get(trialName);
-		return next.getAndAdd(1);
-	}
-
 	
 	public synchronized void addResultBeforeMetadata(I_TrialResult p) {
 		resultsBeforeMetadata.add(p);
@@ -230,10 +179,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 
 	public int getAllTrialCount() {
 		return allTrialCount;
-	}
-
-	public int getDescriptionCount() {
-		return allTrialDescriptions.size();
 	}
 
 	/**
@@ -269,30 +214,11 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	}
 	
 
-	public Iterator<TrialDescription> getAllTrialDescriptions() {
-		return allTrialDescriptions.iterator();
-	}
-	
-	public int getRunnableTrialDescriptions() {
-		int toRet = 0;
-		Iterator<TrialDescription> it = allTrialDescriptions.iterator();
-		while (it.hasNext()) {
-			TrialDescription desc = it.next();
-			if (desc.isRunnable()) {
-				if (!desc.isIgnored()) {
-					toRet++;
-				}
-			}
-		}
-		
-		return toRet;
-	}
-
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_Memory#getLogger()
 	 */
 	@Override
-	public I_Tests4J_Log getLogger() {
+	public I_Tests4J_Log getLog() {
 		return log;
 	}
 
@@ -350,26 +276,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	public boolean hasMetaTrial() {
 		return metaTrial.get();
 	}
-	/**
-	 * @diagram_sync on 5/26/2014 with Overview.seq
-	 * @return
-	 */
-	public TrialDescription getMetaTrialDescription() {
-		return metaTrialDescription;
-	}
-	
-	public int getIgnoredTrialDescriptions() {
-		int toRet = 0;
-		Iterator<TrialDescription> it = allTrialDescriptions.iterator();
-		while (it.hasNext()) {
-			TrialDescription td = it.next();
-			if (td.isIgnored()) {
-				toRet++;
-			}
-		}
-		return toRet;
-	}
-	
+
 	public synchronized  void setRanMetaTrial() {
 		ranMetaTrial.set(true);
 	}
@@ -413,34 +320,12 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return tests;
 	}
 
-	protected synchronized void setLog(I_Tests4J_Log logger) {
-		this.currentLogDelegate = logger;
-	}
-
 	public Tests4J_NotificationManager getNotifier() {
 		return notifier;
 	}
 
 	protected void setSystem(I_System system) {
 		this.system = system;
-	}
-
-	
-	protected void addTrialToRun(Class<? extends I_AbstractTrial> p) {
-		trialsToRun.add(p);
-		hasTrialThatCanRun.set(true);
-	}
-	
-	protected Class<? extends I_AbstractTrial> pollTrialsToRun() {
-		return trialsToRun.poll();
-	}
-	
-	protected Class<? extends I_AbstractTrial> takeTrialsToRun() throws InterruptedException {
-		return trialsToRun.take();
-	}
-	
-	public int getTrialsToRun() {
-		return trialsToRun.size();
 	}
 	
 	protected boolean hasTrialThatCanRun() {
@@ -509,10 +394,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return metadata.getAllTestsCount();
 	}
 
-	protected I_Tests4J_Log getLog() {
-		return log;
-	}
-
 	protected Tests4J_ProcessInfo getSetupProcessInfo() {
 		return setupProcessInfo;
 	}
@@ -524,6 +405,19 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	protected Tests4J_ProcessInfo getRemoteProcessInfo() {
 		return remoteProcessInfo;
 	}
+
+	@Override
+	public boolean hasCoveragePlugin() {
+		if (coveragePlugin != null) {
+			return true;
+		}
+		return false;
+	}
+
+	public TrialQueueDecisionTree getTrialQueueDecisionTree() {
+		return trialQueueDecisionTree;
+	}
+
 
 
 }

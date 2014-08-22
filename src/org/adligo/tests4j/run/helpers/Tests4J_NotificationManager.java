@@ -41,6 +41,8 @@ import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
+import org.adligo.tests4j.run.discovery.TrialState;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -78,12 +80,14 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	private final AtomicBoolean running = new AtomicBoolean(true);
 	private final AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private final AtomicBoolean describeTrialError = new AtomicBoolean(false);
+	private TrialQueueDecisionTree trialQueueDecisionTree;
 	
 	private volatile I_TrialRunMetadata metadata = null;
 	private MetaTrialProcessor metaProcessor;
 	
 	public Tests4J_NotificationManager(Tests4J_Memory pMem) {
 		memory = pMem;
+		trialQueueDecisionTree = pMem.getTrialQueueDecisionTree();
 		log = pMem.getLog();
 		threadManager = pMem.getThreadManager();
 		listener = pMem.getListener();
@@ -94,44 +98,14 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		metaProcessor = new MetaTrialProcessor(memory, this);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#checkDoneDescribingTrials()
-	 */
-	@Override
-	public void checkDoneDescribingTrials() {
-		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-			log.log("checkDoneDescribingTrials()");
-		}
-		if (doneDescribeingTrials.get()) {
-			if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-				log.log("done describing trials.");
-			}
-			return;
-		}
-		I_Tests4J_ProcessInfo processInfo = memory.getSetupProcessInfo();
-		onProcessStateChange(processInfo);
-		if (processInfo.hasStartedAll()) {
-			if (processInfo.hasFinishedAll()) {
-				synchronized (doneDescribeingTrials) {
-					if (!doneDescribeingTrials.get()) {
-						
-						doneDescribeingTrials.set(true);
-						if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-							log.log("DescribingTrials is Done calling onTrialDefinitionsDone.");
-						}
-						onTrialDefinitionsDone();
-						return;
-					}	
-				}
-			}
-		}
-		return;
-	}
+
 
 	/**
-	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 * @diagram_sync on 8/20/2014 with Overview.seq 
 	 */
-	private void onTrialDefinitionsDone() {
+	public void onSetupDone() {
+		doneDescribeingTrials.set(true);
+		
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
 			log.log("onTrialDefinitionsDone()");
 		}
@@ -143,9 +117,12 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		}
 		int defFailures = memory.getFailureResultsSize();
 		trialClassDefFailures.set(defFailures);
-		Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
+		
+		Collection<TrialState> states = trialQueueDecisionTree.getAllStates();
+		Iterator<TrialState> it = states.iterator();
 		while (it.hasNext()) {
-			TrialDescription desc = it.next();
+			TrialState state =  it.next();
+			TrialDescription desc = state.getTrialDescription();
 			
 			String name = desc.getTrialName();
 			int lastDot = name.lastIndexOf(".");
@@ -158,28 +135,26 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				onTrialCompetedInternal(result);
 				result = memory.pollFailureResults();
 			}
-			checkDoneRunningNonMetaTrials();
 		}
 	}
 
 
-	/* (non-Javadoc)
-	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#sendMetadata()
-	 */
-	@Override
-	public void sendMetadata() {
+	private void sendMetadata() {
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-			log.log("sendingMetadata. " + memory.getDescriptionCount()
-					+ " TrialDescription ");
+			log.log("sendingMetadata. " + trialQueueDecisionTree.getTrialCount() + 
+					" TrialDescription ");
 		}
-		Iterator<TrialDescription> it = memory.getAllTrialDescriptions();
+		Collection<TrialState> states = trialQueueDecisionTree.getAllStates();
+		Iterator<TrialState> it = states.iterator();
+		
 		TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
 		
 		Set<String> packages = new HashSet<String>();
 		
 		int totalTests = 0;
 		while (it.hasNext()) {
-			TrialDescription td = it.next();
+			TrialState state =  it.next();
+			TrialDescription td = state.getTrialDescription();
 			String packageName = td.getPackageName();
 			if (!StringMethods.isEmpty(packageName)) {
 				packages.add(packageName);
@@ -299,7 +274,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		
 		metadata = new TrialRunMetadata(trmm);
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-			log.log("sendingMetadata. " + memory.getDescriptionCount()
+			log.log("sendingMetadata. " + trialQueueDecisionTree.getTrialCount() 
 					+ " TrialDescription " + metadata.getAllTestsCount() + " tests."
 					+ "\n total tests " + totalTests);
 		}
@@ -416,33 +391,6 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		trials.getAndIncrement();
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#checkDoneRunningNonMetaTrials()
-	 */
-	@Override
-	public void checkDoneRunningNonMetaTrials() {
-		if (doneDescribeingTrials.get()) {
-			
-			I_Tests4J_ProcessInfo processInfo = memory.getTrialProcessInfo();
-			
-			boolean done = false;
-			onProcessStateChange(processInfo);
-			if (processInfo.hasStartedAll()) {
-				if (processInfo.hasFinishedAll()) {
-					done = true;
-				}
-			}
-			if (done) {
-				synchronized (doneRunningTrials) {
-					if (!doneRunningTrials.get()) {
-						onDoneRunningNonMetaTrials();
-						doneRunningTrials.set(true);
-					}
-				}
-			} 
-		}
-	}
 
 	/**
 	 * All the trials are finished running,
@@ -450,7 +398,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 * 
 	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 */
-	private synchronized void onDoneRunningNonMetaTrials() {
+	public synchronized void onDoneRunningNonMetaTrials() {
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
 			log.log("onDoneRunningNonMetaTrials()");
 		}
@@ -476,7 +424,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					memory.setRanMetaTrial();
 					boolean called = false;
 					
-					TrialDescription desc = memory.getMetaTrialDescription();
+					TrialState ts = trialQueueDecisionTree.getMetaTrialState();
+					TrialDescription desc = ts.getTrialDescription();
 					if (desc != null) {
 						Class<? extends I_AbstractTrial> trialClass = desc.getTrialClass();
 						synchronized (trialClass) {

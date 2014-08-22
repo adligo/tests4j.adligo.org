@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
@@ -41,6 +40,9 @@ import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
+import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
+import org.adligo.tests4j.run.discovery.TrialState;
 import org.adligo.tests4j.run.output.TrialOutput;
 import org.adligo.tests4j.shared.output.I_OutputDelegateor;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -85,10 +87,8 @@ public class Tests4J_TrialsRunable implements Runnable,
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
 	private Tests4J_ProcessInfo processInfo;
-	/**
-	 * only used for single threaded operation may be null
-	 */
-	private Tests4J_ProgressMonitor progressMonitor;
+	private TrialQueueDecisionTree trialQueueDecisionTree;
+	private TrialState trialState;
 	
 	/**
 	 * 
@@ -99,13 +99,13 @@ public class Tests4J_TrialsRunable implements Runnable,
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
 	public Tests4J_TrialsRunable(Tests4J_Memory p, 
-			I_Tests4J_NotificationManager pNotificationManager, Tests4J_ProgressMonitor pProgressMonitor) {
+			I_Tests4J_NotificationManager pNotificationManager) {
 		memory = p;
+		trialQueueDecisionTree = p.getTrialQueueDecisionTree();
 		processInfo = p.getTrialProcessInfo();
 		notifier = pNotificationManager;
-		progressMonitor = pProgressMonitor;
 		
-		logger = p.getLogger();
+		logger = p.getLog();
 		threadManager = p.getThreadManager();
 		
 		testsRunner = new Tests4J_TestRunable(memory);
@@ -132,30 +132,31 @@ public class Tests4J_TrialsRunable implements Runnable,
 			processInfo.addRunnableStarted();
 			outputDelegator.setDelegate(out);
 			
-			Class<? extends I_AbstractTrial> trialClazz = memory.takeTrialsToRun();
-			while (trialClazz != null) {
-				try {
-					if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
-						//start recording the trial coverage,
-						//code cover the creation of the class, in the trialDescrption
-						I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
-						if (plugin != null) {
-							if (plugin.isCanThreadGroupLocalRecord()) {
-								//@diagram sync on 7/5/2014
-								// for Overview.seq 
-								trialThreadLocalCoverageRecorder = plugin.createRecorder();
-								trialThreadLocalCoverageRecorder.startRecording();
+			trialState = trialQueueDecisionTree.poll();
+			while (trialState != null) {
+				trialDescription = trialState.getTrialDescription();
+				if (trialDescription != null) {
+					Class<? extends I_AbstractTrial> trialClazz = trialState.getTrialClass();
+					
+					try {
+						if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
+							//start recording the trial coverage,
+							//code cover the creation of the class, in the trialDescrption
+							I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
+							if (plugin != null) {
+								if (plugin.isCanThreadGroupLocalRecord()) {
+									//@diagram sync on 7/5/2014
+									// for Overview.seq 
+									trialThreadLocalCoverageRecorder = plugin.createRecorder();
+									trialThreadLocalCoverageRecorder.startRecording();
+								}
 							}
 						}
 						
-						trialDescription = trialDescriptionProcessor.newTrailDescriptionToRun(trialClazz, notifier);
-					}
-					
-				} catch (Exception x) {
-					logger.onThrowable(x);
-				} 
+					} catch (Exception x) {
+						logger.onThrowable(x);
+					} 
 				
-				if (trialDescription != null) {
 					if (trialDescription.isRunnable()) {
 						if (trialDescription.getType() != TrialType.MetaTrial) {
 							try {
@@ -175,37 +176,28 @@ public class Tests4J_TrialsRunable implements Runnable,
 						}
 					}
 				}
-				if (progressMonitor != null) {
-					progressMonitor.incrementAndNotify();
-				} else {
-					processInfo.addDone();
+				processInfo.addDone();
+				trialState.setFinishedRun();
+				synchronized (trialState) {
+					trialState.notifyAll();
 				}
-				int total = processInfo.getCount();
-				int done = processInfo.getDone();
-				int threadCount = processInfo.getThreadCount();
-				if (total >= done + threadCount) {
-					trialClazz = memory.takeTrialsToRun();
-				} else {
-					trialClazz = memory.pollTrialsToRun();
-				}
+				trialState = trialQueueDecisionTree.poll();
 			}
 			trialName = null;
 			processInfo.addRunnableFinished();
-			notifier.checkDoneRunningNonMetaTrials();
-			
 			testRunService.shutdownNow();
 			finished = true;
 		} catch (Exception x) {
 			logger.onThrowable(x);
 		}
+		//its not on the main thread so join
+		try {
+			Thread.currentThread().join();
+		} catch (InterruptedException e) {
+			logger.onThrowable(e);
+		}
 	}
 
-
-
-
-
-
-	
 	private void failTrialOnException(String message, Throwable p, TrialType type) {
 		trialResultMutant.setPassed(false);
 		String stack = StackTraceBuilder.toString(p, true);
@@ -226,8 +218,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 		useCaseTrialResultMutant = null;
 		
 		trialName = trialDescription.getTrialName();
-		int id = memory.incrementTrialRun(trialName);
-		trialName = trialName + "[" + id + "]";
+		trialName = trialName + "[" + trialState.getId() + "]";
 		notifier.startingTrial(trialName);
 		
 		

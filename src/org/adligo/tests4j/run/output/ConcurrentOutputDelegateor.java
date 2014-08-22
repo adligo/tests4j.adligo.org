@@ -47,4 +47,5 @@ public class ConcurrentOutputDelegateor implements I_ConcurrentOutputDelegator {
 	public String poll() {
 		return buffer.poll();
 	}
+
 }

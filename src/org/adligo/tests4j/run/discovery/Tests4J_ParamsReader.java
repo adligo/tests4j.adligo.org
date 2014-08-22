@@ -31,6 +31,8 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.report.summary.DefaultReporterStates;
 
 /**
+ * @diagram_sync with Overview.seq on 8/20/2014
+ * 
  * since anyone can re implement 
  * I_Tests4J_Params and pass it in, 
  * exceptions/errors could be caused anywhere
@@ -71,6 +73,8 @@ public class Tests4J_ParamsReader {
 	private Map<Tests4J_RemoteInfo,Tests4J_ParamsReader> remotes = new HashMap<Tests4J_RemoteInfo, Tests4J_ParamsReader>();
 	
 	/**
+	 * @diagram_sync with Overview.seq on 8/20/2014
+	 * 
 	 * assumes non null parameters
 	 * @param pParams
 	 * @param pReporter

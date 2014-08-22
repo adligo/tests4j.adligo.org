@@ -26,10 +26,12 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  *
  */
 public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
+	private Tests4J_ThreadFactory tests4jFactory;
 	private Tests4J_ThreadFactory trialFactory;
 	private Tests4J_ThreadFactory testFactory;
 	private Tests4J_ThreadFactory setupFactory;
 	private Tests4J_ThreadFactory remoteFactory;
+	private ExecutorService tests4jService;
 	private ExecutorService setupService;
 	private ExecutorService trialRunService;
 	private ExecutorService remoteService;
@@ -43,34 +45,42 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 			
 	private Map<ExecutorService, Future<?>> testRuns = new ConcurrentHashMap<ExecutorService, Future<?>>();
 	private I_System system;
-	private I_Tests4J_Log reporter;
+	private I_Tests4J_Log log;
 	
 	
-	public Tests4J_ThreadManager(I_System pSystem, I_Tests4J_Log pReporter) {
-		system = pSystem;
-		reporter = pReporter;
-		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,reporter);
+	public Tests4J_ThreadManager(I_System systemIn, I_Tests4J_Log logIn) {
+		if (systemIn == null) {
+			throw new IllegalArgumentException("" + this.getClass().getSimpleName() + " requires a system.");
+		}
+		system = systemIn;
+		if (logIn == null) {
+			throw new IllegalArgumentException("" + this.getClass().getSimpleName() + " requires a log.");
+		}
+		log = logIn;
+		tests4jFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.THREAD_NAME, log);
+		tests4jService = Executors.newSingleThreadExecutor(tests4jFactory);
+		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,log);
 
 	}
 	
 	public void setupSetupProcess(I_Tests4J_ProcessInfo info) {
-		setupFactory  = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SETUP_THREAD_NAME,reporter);
+		setupFactory  = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SETUP_THREAD_NAME,log);
 		setupService = Executors.newFixedThreadPool(info.getThreadCount(), setupFactory);
 	}
 	
 	public void setupTrialsProcess(I_Tests4J_ProcessInfo info) {
-		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
+		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log);
 		trialRunService = Executors.newFixedThreadPool(info.getThreadCount(), trialFactory);
 	}
 	
 	public void setupRemoteProcess(I_Tests4J_ProcessInfo info) {
-		remoteFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,reporter);
+		remoteFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log);
 		remoteService = Executors.newFixedThreadPool(info.getThreadCount(), remoteFactory);
 	}
 	
 	public void shutdown() {
-		if (reporter.isLogEnabled(Tests4J_ThreadManager.class)) {
-			reporter.log("Tests4J_Manager.shutdown on " + ThreadLogMessageBuilder.getThreadWithGroupNameForLog());
+		if (log.isLogEnabled(Tests4J_ThreadManager.class)) {
+			log.log("Tests4J_Manager.shutdown on " + ThreadLogMessageBuilder.getThreadWithGroupNameForLog());
 		}
 		
 		if (remoteService != null) {
@@ -225,5 +235,10 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 		if (remoteService == null) {
 			system.exitJvm(0);	
 		}
+	}
+
+	@Override
+	public ExecutorService getTests4jService() {
+		return tests4jService;
 	}
 }

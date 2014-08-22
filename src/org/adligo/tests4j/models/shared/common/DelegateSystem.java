@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.common;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,5 +69,10 @@ public class DelegateSystem implements I_System {
 	@Override
 	public String getCurrentThreadName() {
 		return delegate.getCurrentThreadName();
+	}
+
+	@Override
+	public PrintStream getOut() {
+		return delegate.getOut();
 	}
 }

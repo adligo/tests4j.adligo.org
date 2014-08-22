@@ -1,11 +1,20 @@
 package org.adligo.tests4j.run.helpers;
 
+import java.io.PrintStream;
+
 import org.adligo.tests4j.models.shared.common.I_System;
 
 public class JseSystem implements I_System {
+	/**
+	 * capture the initial output stream at
+	 * class loading time, so that it can't be changed
+	 */
+	private static final PrintStream OUT = System.out;
+	
+	
 	@Override
 	public void println(String p) {
-		System.out.println(p);
+		OUT.println(p);
 	}
 
 	@Override
@@ -26,6 +35,11 @@ public class JseSystem implements I_System {
 	@Override
 	public String getCurrentThreadName() {
 		return Thread.currentThread().getName();
+	}
+
+	@Override
+	public PrintStream getOut() {
+		return OUT;
 	}
 
 }

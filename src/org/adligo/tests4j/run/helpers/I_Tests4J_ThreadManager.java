@@ -17,9 +17,11 @@ public interface I_Tests4J_ThreadManager {
 
 	public void addRemoteRunner(Tests4J_RemoteRunner p);
 
-	public ExecutorService getSetupService();
-
+	public ExecutorService getTests4jService();
+	
 	public ExecutorService getRemoteService();
+	
+	public ExecutorService getSetupService();
 
 	public ExecutorService getTrialRunService();
 	

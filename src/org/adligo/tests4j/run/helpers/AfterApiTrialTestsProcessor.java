@@ -64,12 +64,10 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 		
 		boolean passed = false;
 		try {
-			if (trial instanceof I_ApiTrial) {
-				super.startDelegatedTest();
-				trialResultMutant.setRanAfterTrialTests(true);
-				ApiTrialResult result = new ApiTrialResult(trialResultMutant);
-				((I_ApiTrial) trial).afterTrialTests(result);
-			}
+			super.startDelegatedTest();
+			trialResultMutant.setRanAfterTrialTests(true);
+			ApiTrialResult result = new ApiTrialResult(trialResultMutant);
+			((I_ApiTrial) trial).afterTrialTests(result);
 			passed = true;
 		} catch (DelegateTestAssertionFailure x) {
 			//the test failed, in one of it's asserts
