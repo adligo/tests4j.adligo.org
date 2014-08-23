@@ -3,6 +3,8 @@ package org.adligo.tests4j.run.discovery;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
 /**
@@ -20,6 +22,8 @@ public class TrialState implements I_TrialStateNameIdKey {
 	private AtomicBoolean approvedForRun = new AtomicBoolean(false);
 	private AtomicBoolean readyForRun = new AtomicBoolean(false);
 	private AtomicBoolean finishedRun = new AtomicBoolean(false);
+	private AtomicInteger tests = new AtomicInteger(0);
+	private AtomicInteger testCompleted = new AtomicInteger(0);
 	
 	public TrialState(String trialNameIn, Class<? extends I_AbstractTrial> trialClassIn) {
 		trialName = trialNameIn;
@@ -73,6 +77,10 @@ public class TrialState implements I_TrialStateNameIdKey {
 		return finishedRun.get();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.adligo.tests4j.run.discovery.I_TrialState#getTrialName()
+	 */
+	@Override
 	public String getTrialName() {
 		return trialName;
 	}
@@ -110,5 +118,26 @@ public class TrialState implements I_TrialStateNameIdKey {
 			//do nothing
 		}
 		return true;
+	}
+
+	public synchronized int getTests() {
+		return tests.get();
+	}
+
+	public synchronized void setTests(int p) {
+		tests.set(p);
+	}
+	
+	public synchronized void addTestCompleted() {
+		testCompleted.addAndGet(1);
+	}
+	
+	public double getPctDone() {
+		double total = tests.get();
+		double done = testCompleted.get();
+		if (total <= 0.0) {
+			return 0.0;
+		}
+		return done/total * 100.0;
 	}
 }

@@ -13,6 +13,7 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.ClassMethods;
+import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
@@ -36,6 +37,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private Integer recommendedTrialThreadCount;
 	private Integer recommendedRemoteThreadCount;
 	private Integer recommendedSetupThreadCount;
+	private I_Tests4J_ProgressMonitor progressMonitor = new Tests4J_DefaultProgressMonitor(Tests4J_System.SYSTEM);
 	
 	/**
 	 * OutputStreams are not passed between jvms of course.
@@ -346,5 +348,15 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	@Override
 	public void addAdditionalReportOutputStreams(OutputStream out) {
 		additionalReportOutputStreams.add(out);
+	}
+	
+
+	@Override
+	public I_Tests4J_ProgressMonitor getProgressMonitor() {
+		return progressMonitor;
+	}
+
+	public void setProgressMonitor(I_Tests4J_ProgressMonitor progressMonitor) {
+		this.progressMonitor = progressMonitor;
 	}
 }

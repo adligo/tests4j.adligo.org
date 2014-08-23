@@ -53,7 +53,7 @@ public class Tests4J {
 	private static MethodBlocker getSetFactoryMethodBlocker() {
 		List<String> allowedCallers = new ArrayList<String>();
 		allowedCallers.add("org.adligo.tests4j_tests.run.mocks.MockTests4J");
-		
+		allowedCallers.add("org.adligo.tests4j_tests.trials_api.common.Tests4JRunnerMock");
 		return new MethodBlocker(Tests4J.class,"setFactory", allowedCallers);
 	}
 	

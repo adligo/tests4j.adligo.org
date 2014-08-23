@@ -34,7 +34,9 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Runnable;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.system.Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
@@ -55,7 +57,7 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  * @author scott
  *
  */
-public class Tests4J_TrialsRunable implements Runnable,
+public class Tests4J_TrialsRunnable implements Runnable,
 	I_Tests4J_TestFinishedListener, I_Tests4J_Runnable {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
@@ -98,7 +100,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 	 * 
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
-	public Tests4J_TrialsRunable(Tests4J_Memory p, 
+	public Tests4J_TrialsRunnable(Tests4J_Memory p, 
 			I_Tests4J_NotificationManager pNotificationManager) {
 		memory = p;
 		trialQueueDecisionTree = p.getTrialQueueDecisionTree();
@@ -164,7 +166,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 								//once in all of the trial threads, having a trial running
 								//in two threads at the same time would be confusing to the users
 								synchronized (trialClazz) {
-									if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+									if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 										logger.log("Thread " + Thread.currentThread().getName() +
 												" is running trial;\n" +trialDescription.getTrialName());
 									}
@@ -210,7 +212,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 	
 	private void runTrial() throws RejectedExecutionException  {
 		
-		if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 			logger.log("running trial " + trialName);
 		}
 		apiTrialResultMutant = null;
@@ -237,12 +239,12 @@ public class Tests4J_TrialsRunable implements Runnable,
 		if (failures.size() == 0) {
 		
 			testsRunner.setTrial(trial);
-			if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+			if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 				logger.log("running trial tests " + trialName);
 			}
 			runTests();
 			
-			if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+			if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 				logger.log("finished trial tests" + trialName);
 			}
 			if (trialResultMutant.isPassed()) {
@@ -252,7 +254,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 			runAfterTrial();
 		}
 		
-		if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 			logger.log("calculating trial results " + trialName);
 		}
 		
@@ -273,11 +275,10 @@ public class Tests4J_TrialsRunable implements Runnable,
 			default:
 				result = new BaseTrialResult(trialResultMutant);
 		}
-		if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 			logger.log("notifying trial finished " + trialName);
 		}
 		notifier.onTrialCompleted(result);
-		memory.addTrialsDone();
 	}
 
 	private UseCaseTrialResultMutant getUseCaseResult() {
@@ -335,10 +336,11 @@ public class Tests4J_TrialsRunable implements Runnable,
 	 */
 	private void runTests() throws RejectedExecutionException {
 		Iterator<TestDescription> methods = trialDescription.getTestMethods();
+		trialState.setTests(trialDescription.getTestMethodsSize());
 		
 		while (methods.hasNext()) {
 			runTest(methods.next());
-			memory.addTestsDone();
+			trialState.addTestCompleted();
 		}
 	}
 
@@ -361,7 +363,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 		} else {
 			notifier.startingTest(trialName, method.getName());
 			
-			if (logger.isLogEnabled(Tests4J_TrialsRunable.class)) {
+			if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 				logger.log("starting test; " +trialName + "."+  method.getName());
 			}
 			
@@ -406,7 +408,6 @@ public class Tests4J_TrialsRunable implements Runnable,
 		I_TrialType type = trialDescription.getType();
 		
 		TrialType tt = TrialType.get(type);
-		long tests = memory.getTestsDone();
 		switch (tt) {
 			case SourceFileTrial:
 				afterSouceFileTrialTestsProcessor.reset(trialDescription, 
@@ -419,7 +420,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 				if (result.hasRecordedCoverage()) {
 					TestResult minCoverageResult = afterSouceFileTrialTestsProcessor.testMinCoverage(result);
 					result.addResult(minCoverageResult);
-					memory.addTestsDone();
+					trialState.addTestCompleted();
 				}
 				return result;
 			case ApiTrial:
@@ -430,7 +431,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 				if (apiTrm != null) {
 					apiResult.addResult(apiTrm);
 				}
-				memory.addTestsDone();
+				trialState.addTestCompleted();
 				return apiResult;
 			case UseCaseTrial:
 				afterUseCaseTrialTestsProcessor.reset(trialDescription, 
@@ -440,7 +441,7 @@ public class Tests4J_TrialsRunable implements Runnable,
 				if (useCaseTrm != null) {
 					useCaseResult.addResult(useCaseTrm);
 				}
-				memory.addTestsDone();
+				trialState.addTestCompleted();
 				return useCaseResult;
 			default:
 				//do nothing
@@ -502,8 +503,11 @@ public class Tests4J_TrialsRunable implements Runnable,
 	}
 
 	@Override
-	public synchronized String getTrial() {
-		return trialName;
+	public synchronized I_Tests4J_TrialProgress getTrial() {
+		if (trialState == null) {
+			return null; 
+		}
+		return new Tests4J_TrialProgress(trialState.getTrialName(), trialState.getPctDone());
 	}
 
 }

@@ -17,6 +17,8 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_ProgressMonitor;
+import org.adligo.tests4j.models.shared.system.Tests4J_DelegateProgressMonitor;
 import org.adligo.tests4j.run.Tests4J_UncaughtExceptionHandler;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
@@ -44,7 +46,10 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	public static final String REQUIRES_SETUP_IS_CALLED_BEFORE_RUN = " requires setup is called before run.";
 	private Tests4J_Memory memory;
 	private I_Tests4J_Log log;
-	private long logSleepTime = 1000;
+	private Tests4J_DelegateProgressMonitor progressMonitor;
+	private long nextSetupProgresss;
+	private long nextTrialsProgresss;
+	private long nextRemotesProgresss;
 	
 	private I_System system;
 	private Tests4J_ParamsReader reader;
@@ -84,6 +89,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		cod = setupLogging(logStates);
 		memory = new Tests4J_Memory(log);
 		memory.setSystem(system);
+		progressMonitor = new Tests4J_DelegateProgressMonitor(log, pParams.getProgressMonitor());
 		
 		List<OutputStream> outs =  pParams.getAdditionalReportOutputStreams();
 		if (outs.size() >= 1) {
@@ -124,8 +130,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	 */
 	public void runOnAnotherThreadIfAble() {
 		ExecutorService service = threadManager.getTests4jService();
-		Future<?> future = service.submit(this);
-		controls.setFuture(future);
+		service.submit(this);
 	}
 	
 	public void run() {
@@ -163,7 +168,13 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		} catch (Throwable t) {
 			log.onThrowable(t);
 		}
+		controls.notifyFinished();
 		threadManager.shutdown();
+		try {
+			Thread.currentThread().join();
+		} catch (InterruptedException x) {
+			log.onThrowable(x);
+		}
 	}
 
 	/**
@@ -249,15 +260,28 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		Tests4J_ProcessInfo setupProcessInfo = memory.getSetupProcessInfo();
 		
 		boolean sentSetup100 = false;
+		boolean sentSetup0 = false;
+		nextSetupProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.SETUP);
 		while (!trialQueueDecisionTree.isFull()) {
 			try {
-				Thread.sleep(logSleepTime);
+				
+				Thread.sleep(progressMonitor.getSleepTime());
 				if (!sentSetup100) {
-					if (setupProcessInfo.getPercentDone() >= 100.0) {
-						sentSetup100 = true;
-					}
-					notifier.onProgress(setupProcessInfo);
+					if (system.getTime() > nextSetupProgresss) {
 					
+						if (setupProcessInfo.getPercentDone() >= 100.0) {
+							sentSetup100 = true;
+						} else if (setupProcessInfo.getPercentDone() == 0.0) {
+							if (!sentSetup0) {
+								sentSetup0 = true;
+								notifier.onProgress(setupProcessInfo);
+								nextSetupProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.SETUP);
+							}
+						} else {
+							notifier.onProgress(setupProcessInfo);
+							nextSetupProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.SETUP);
+						}
+					}
 				}
 				String next = cod.poll();
 				while (next != null) {
@@ -304,7 +328,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	}
 	protected void runTrialRunnable(Tests4J_ProcessInfo info,
 			I_OutputDelegateor od, ExecutorService runService) {
-		Tests4J_TrialsRunable tip = new Tests4J_TrialsRunable(memory, notifier); 
+		Tests4J_TrialsRunnable tip = new Tests4J_TrialsRunnable(memory, notifier); 
 		info.addRunnable(tip);
 		tip.setOutputDelegator(od);
 		try {
@@ -319,10 +343,14 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	private void monitorTrials() {
 		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
 		
+		nextTrialsProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.TRIALS);
 		while (!trialQueueDecisionTree.areAllTrialsFinished()) {
 			try {
-				Thread.sleep(logSleepTime);
-				notifier.onProgress(trialProcessInfo);
+				Thread.sleep(progressMonitor.getSleepTime());
+				if (system.getTime() > nextTrialsProgresss) {
+					notifier.onProgress(trialProcessInfo);
+					nextTrialsProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.TRIALS);
+				}
 				
 				String next = cod.poll();
 				while (next != null) {

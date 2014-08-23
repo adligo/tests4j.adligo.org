@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Runnable;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
 
 public class Tests4J_ProcessInfo implements I_Tests4J_ProcessInfo {
 	private String processName;
@@ -89,12 +90,12 @@ public class Tests4J_ProcessInfo implements I_Tests4J_ProcessInfo {
 	}
 
 	@Override
-	public synchronized List<String> getTrials() {
-		List<String> toRet = new ArrayList<String>();
+	public synchronized List<I_Tests4J_TrialProgress> getTrials() {
+		List<I_Tests4J_TrialProgress> toRet = new ArrayList<I_Tests4J_TrialProgress>();
 		for (I_Tests4J_Runnable runnable: runnables) {
-			String trial = runnable.getTrial();
-			if ( !StringMethods.isEmpty(trial)) {
-				toRet.add(trial);
+			I_Tests4J_TrialProgress state = runnable.getTrial();
+			if ( state != null) {
+				toRet.add(state);
 			}
 		}
 		

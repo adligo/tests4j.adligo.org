@@ -4,6 +4,8 @@ import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrumentation;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Runnable;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
+import org.adligo.tests4j.models.shared.system.Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -22,7 +24,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 	private TrialQueueDecisionTree trialQueueDecisionTree;
 	private Tests4J_ProcessInfo processInfo;
 	private String trialName;
-	
+	private TrialState state;
 	/**
 	 * 
 	 * @param p
@@ -49,10 +51,10 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 		
 		while (trialClazz != null && !notifier.hasDescribeTrialError()) {
 			trialName = trialClazz.getName();
-			TrialState states = new TrialState(trialName, trialClazz);
-			checkAndApprove(trialClazz, states);
+			state = new TrialState(trialName, trialClazz);
+			checkAndApprove(trialClazz, state);
 			processInfo.addDone();
-			trialQueueDecisionTree.addTrial(states);
+			trialQueueDecisionTree.addTrial(state);
 			trialClazz = memory.pollTrialClasses();
 		}
 		if (logger.isLogEnabled(Tests4J_SetupRunnable.class)) {
@@ -105,8 +107,10 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 	}
 
 	@Override
-	public synchronized String getTrial() {
-		return trialName;
+	public synchronized I_Tests4J_TrialProgress getTrial() {
+		if (state == null) {
+			return null; 
+		}
+		return new Tests4J_TrialProgress(state.getTrialName(), state.getPctDone());
 	}
-
 }

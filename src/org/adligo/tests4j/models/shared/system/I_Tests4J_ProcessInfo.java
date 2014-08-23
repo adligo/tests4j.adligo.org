@@ -66,7 +66,7 @@ public interface I_Tests4J_ProcessInfo {
 	 * mostly for diagnosis/fixing of process hanging issues.
 	 * @return
 	 */
-	public List<String> getTrials();
+	public List<I_Tests4J_TrialProgress> getTrials();
 	
 	/**
 	 * 

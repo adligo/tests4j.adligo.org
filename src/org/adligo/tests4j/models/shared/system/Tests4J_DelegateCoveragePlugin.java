@@ -13,13 +13,13 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  * @author scott
  *
  */
-public class DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin {
+public class Tests4J_DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin {
 	public static final String COVERAGE_PLUGIN_DELEGATE_REQUIRES_A_I_TESTS4J_REPORTER = "CoveragePluginDelegate requires a I_Tests4J_Reporter.";
 	public static final String COVERAGE_PLUGIN_DELEGATE_REQUIRES_A_I_COVERAGE_PLUGIN = "CoveragePluginDelegate requires a I_CoveragePlugin.";
 	private I_Tests4J_CoveragePlugin delegate;
 	private I_Tests4J_Log reporter;
 	
-	public DelegateCoveragePlugin(I_Tests4J_CoveragePlugin p, I_Tests4J_Log pReporter) {
+	public Tests4J_DelegateCoveragePlugin(I_Tests4J_CoveragePlugin p, I_Tests4J_Log pReporter) {
 		if (p == null) {
 			throw new IllegalArgumentException(COVERAGE_PLUGIN_DELEGATE_REQUIRES_A_I_COVERAGE_PLUGIN);
 		}
@@ -38,7 +38,7 @@ public class DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin {
 			return delegate.instrument(trial);
 		} catch (IOException x) {
 			throw x;
-		} catch (Throwable t) {
+		} catch (Exception t) {
 			reporter.onThrowable(t);
 		}
 		return null;
@@ -47,7 +47,7 @@ public class DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin {
 	public boolean isCanThreadGroupLocalRecord() {
 		try {
 			return delegate.isCanThreadGroupLocalRecord();
-		} catch (Throwable t) {
+		} catch (Exception t) {
 			reporter.onThrowable(t);
 		}
 		return false;
@@ -56,7 +56,7 @@ public class DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin {
 	public I_Tests4J_CoverageRecorder createRecorder() {
 		try {
 			return delegate.createRecorder();
-		} catch (Throwable t) {
+		} catch (Exception t) {
 			reporter.onThrowable(t);
 		}
 		return null;
@@ -65,7 +65,7 @@ public class DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin {
 	public void instrumentationComplete() {
 		try {
 			delegate.instrumentationComplete();
-		} catch (Throwable t) {
+		} catch (Exception t) {
 			reporter.onThrowable(t);
 		}
 	}

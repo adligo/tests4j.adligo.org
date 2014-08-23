@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
@@ -25,10 +24,7 @@ import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
-import org.adligo.tests4j.shared.output.CurrentLog;
-import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.shared.output.I_Tests4J_LogObtainer;
 
 /**
  * Instances of this class represent the main
@@ -88,8 +84,6 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private AtomicLong setupEndTime = new AtomicLong();
 	private AtomicLong trialEndTime = new AtomicLong();
 	private AtomicLong remoteEndTime = new AtomicLong();
-	private AtomicInteger trialsDone = new AtomicInteger();
-	private AtomicLong testsDone = new AtomicLong();
 	private Tests4J_NotificationManager notifier;
 	/**
 	 * 
@@ -371,25 +365,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	protected int getTrialsToSetup() {
 		return trialClasses.size();
 	}
-	
-	protected int getTrialsDone() {
-		return trialsDone.get();
-	}
 
-	protected Long getTestsDone() {
-		return testsDone.get();
-	}
-
-	
-
-	protected void addTrialsDone() {
-		this.trialsDone.addAndGet(1);
-	}
-
-	protected void addTestsDone() {
-		this.testsDone.addAndGet(1L);
-	}
-	
 	public int getAllTestsCount() {
 		return metadata.getAllTestsCount();
 	}

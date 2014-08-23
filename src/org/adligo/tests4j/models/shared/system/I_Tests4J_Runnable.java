@@ -12,5 +12,5 @@ public interface I_Tests4J_Runnable {
 	 * return the trial that this runnable is currently working on
 	 * @return the class name of the trial.
 	 */
-	public String getTrial();
+	public I_Tests4J_TrialProgress getTrial();
 }

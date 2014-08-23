@@ -1,8 +1,10 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.io.PrintStream;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 
@@ -17,7 +19,8 @@ public class Tests4J_Controls implements I_Tests4J_Controls {
 	private static final PrintStream ps = System.out;
 	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notificationManager;
-	private Future<?> future;
+	private AtomicBoolean waiting = new AtomicBoolean(false);
+	private AtomicBoolean running = new AtomicBoolean(true);
 	
 	public Tests4J_Controls() {
 	}
@@ -42,22 +45,23 @@ public class Tests4J_Controls implements I_Tests4J_Controls {
 		return notificationManager.isRunning();
 	}
 
-	public synchronized Future<?> getFuture() {
-		return future;
-	}
-
-	public synchronized void setFuture(Future<?> future) {
-		this.future = future;
-	}
-
 	@Override
-	public void waitForResults() {
+	public synchronized void waitForResults() {
 		try {
-			future.get();
-		} catch (InterruptedException | ExecutionException e) {
+			waiting.set(true);
+			while (running.get()) {
+				this.wait();
+			}
+		} catch (InterruptedException e) {
 			e.printStackTrace(ps);
 		}
 	}
 
+	protected synchronized void notifyFinished() {
+		running.set(false);
+		if (waiting.get()) {
+			this.notifyAll();
+		}
+	}
 	
 }
