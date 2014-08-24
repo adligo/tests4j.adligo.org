@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.common.I_TrialType;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.StringRoutines;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
@@ -156,7 +156,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			TrialState state =  it.next();
 			TrialDescription td = state.getTrialDescription();
 			String packageName = td.getPackageName();
-			if (!StringMethods.isEmpty(packageName)) {
+			if (!StringRoutines.isEmpty(packageName)) {
 				packages.add(packageName);
 			}
 			TrialMetadataMutant tmm = new TrialMetadataMutant();

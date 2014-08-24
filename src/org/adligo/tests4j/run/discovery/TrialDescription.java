@@ -12,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.StringRoutines;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -182,7 +182,7 @@ public class TrialDescription implements I_TrialDescription {
 					return false;
 				}
 				String testedPackageName = packageScope.packageName();
-				if (StringMethods.isEmpty(testedPackageName)) {
+				if (StringRoutines.isEmpty(testedPackageName)) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
@@ -205,7 +205,7 @@ public class TrialDescription implements I_TrialDescription {
 					return false;
 				}
 				String system = useCaseScope.system();
-				if (StringMethods.isEmpty(system)) {
+				if (StringRoutines.isEmpty(system)) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
@@ -216,7 +216,7 @@ public class TrialDescription implements I_TrialDescription {
 				} 
 				
 				String nown = useCaseScope.nown();
-				if (StringMethods.isEmpty(nown)) {
+				if (StringRoutines.isEmpty(nown)) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
@@ -228,7 +228,7 @@ public class TrialDescription implements I_TrialDescription {
 				} 
 				
 				String verb = useCaseScope.verb();
-				if (StringMethods.isEmpty(verb)) {
+				if (StringRoutines.isEmpty(verb)) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 					
@@ -420,10 +420,10 @@ public class TrialDescription implements I_TrialDescription {
 		}
 		String nown = useCaseScope.nown();
 		String verb = useCaseScope.verb();
-		if (StringMethods.isEmpty(nown)) {
+		if (StringRoutines.isEmpty(nown)) {
 			return null;
 		}
-		if (StringMethods.isEmpty(verb)) {
+		if (StringRoutines.isEmpty(verb)) {
 			return null;
 		}
 		return new UseCaseMetadata(nown, verb);

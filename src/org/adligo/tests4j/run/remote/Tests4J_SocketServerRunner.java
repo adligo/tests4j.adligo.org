@@ -16,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.common.I_System;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.StringRoutines;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
@@ -92,7 +92,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 			}
 			return;
 		}
-		if (StringMethods.isEmpty(authCode)) {
+		if (StringRoutines.isEmpty(authCode)) {
 			if (logger.isLogEnabled(Tests4J_SocketServerRunner.class)) {
 				logger.log("Tests4J_SocketServerRunner: AuthCode is empty exiting.");
 			}
@@ -183,7 +183,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	
 	void acceptMessage() throws IOException {
 		String content = reader.read();
-		if (!StringMethods.isEmpty(content)) {
+		if (!StringRoutines.isEmpty(content)) {
 			if (logger.isLogEnabled(Tests4J_SocketServerRunner.class)) {
 				logger.log("Tests4J_SocketServerRunner: in acceptMessage read line with message;\n" + content);
 			}

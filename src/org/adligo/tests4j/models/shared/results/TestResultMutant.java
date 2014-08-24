@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.StringRoutines;
 
 public class TestResultMutant implements I_TestResult {
 	public static final String TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_NAME = 
@@ -23,7 +23,7 @@ public class TestResultMutant implements I_TestResult {
 	
 	public TestResultMutant(I_TestResult p) {
 		name = p.getName();
-		StringMethods.isEmpty(name,
+		StringRoutines.isEmpty(name,
 				TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_NAME);
 		assertionCount = p.getAssertionCount();
 		uniqueAsserts.addAll(p.getUniqueAsserts());

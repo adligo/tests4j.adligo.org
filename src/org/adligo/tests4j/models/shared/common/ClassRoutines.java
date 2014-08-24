@@ -12,7 +12,7 @@ import java.util.List;
  * @author scott
  *
  */
-public class ClassMethods {
+public class ClassRoutines {
 
 	/**
 	 * This determines if the classToCheck is a sub type
@@ -87,7 +87,7 @@ public class ClassMethods {
 	 * @return
 	 */
 	public static String fromTypeDescription(String clazzName) {
-		if (StringMethods.isEmpty(clazzName)) {
+		if (StringRoutines.isEmpty(clazzName)) {
 			return "";
 		}
 		if (clazzName.indexOf("[") == 0) {

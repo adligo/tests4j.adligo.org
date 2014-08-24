@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.asserts;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.StringRoutines;
 
 /**
  * a abstract class to represent 
@@ -23,7 +23,7 @@ public abstract class AbstractAssertCommand implements I_AssertCommand {
 					ASSERT_COMMANDS_REQUIRES_A_TYPE);
 		}
 		failureMessage = pFailureMessage;
-		StringMethods.isEmpty(failureMessage, 
+		StringRoutines.isEmpty(failureMessage, 
 				ASSERT_COMMANDS_REQURES_A_NON_EMPTY_FAILUE_MESSAGE);
 	}
 

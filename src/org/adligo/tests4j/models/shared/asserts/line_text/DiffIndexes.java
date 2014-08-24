@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts.line_text;
 
 import org.adligo.tests4j.models.shared.common.I_System;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.StringRoutines;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
 
 /**
@@ -172,7 +172,7 @@ public class DiffIndexes implements I_DiffIndexes {
 	
 	@Override
 	public String[] getDifferences(String line) {
-		if (diffLeftToRight == null || StringMethods.isEmpty(line)) {
+		if (diffLeftToRight == null || StringRoutines.isEmpty(line)) {
 			return EMPTY_STRING_ARRAY;
 		}
 		if (matchLeftToRight == null) {
@@ -190,7 +190,7 @@ public class DiffIndexes implements I_DiffIndexes {
 	
 	@Override
 	public String[] getMatches(String line) {
-		if (matchLeftToRight == null  || StringMethods.isEmpty(line)) {
+		if (matchLeftToRight == null  || StringRoutines.isEmpty(line)) {
 			return EMPTY_STRING_ARRAY;
 		}
 		if (diffLeftToRight == null) {

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.I_TrialType;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.StringRoutines;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.models.shared.xml.XML_Parser;
@@ -57,11 +57,11 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		trialName = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TRIAL_NAME_ATTRIBUTE);
 		String timeoutString;
 		timeoutString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TIMEOUT_ATTRIBUTE);
-		if (!StringMethods.isEmpty(timeoutString)) {
+		if (!StringRoutines.isEmpty(timeoutString)) {
 			timeout = new Long(timeoutString);
 		}
 		String ignoredString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.IGNORED_ATTRIBUTE);
-		if (!StringMethods.isEmpty(ignoredString)) {
+		if (!StringRoutines.isEmpty(ignoredString)) {
 			ignored = Boolean.parseBoolean(ignoredString);
 		}
 		beforeTrialMethodName = XML_Parser.getAttributeValue(xml, 
@@ -69,7 +69,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		afterTrialMethodName = XML_Parser.getAttributeValue(xml, 
 					I_TrialMetadata.AFTER_TRIAL_METHOD_NAME_ATTRIBUTE);
 		String typeString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TYPE_ATTRIBUTE);
-		if (!StringMethods.isEmpty(typeString)) {
+		if (!StringRoutines.isEmpty(typeString)) {
 			type = TrialType.valueOf(typeString);
 		}
 		testedSourceFile = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TESTED_SOURCE_FILE_ATTRIBUTE);

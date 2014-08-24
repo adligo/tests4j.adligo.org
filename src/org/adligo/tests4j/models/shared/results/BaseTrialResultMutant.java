@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.adligo.tests4j.models.shared.common.I_TrialType;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.StringRoutines;
 import org.adligo.tests4j.models.shared.common.TrialType;
 
 public class BaseTrialResultMutant implements I_TrialResult {
@@ -49,7 +49,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		trialName = p.getName();
 		trialClassName = p.getTrialClassName();
 		
-		StringMethods.isEmpty(trialName,
+		StringRoutines.isEmpty(trialName,
 				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME);
 		testType = p.getType();
 		if (testType == null) {

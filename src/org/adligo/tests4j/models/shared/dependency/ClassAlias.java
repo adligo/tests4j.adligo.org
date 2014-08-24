@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.StringRoutines;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 
 /**
@@ -19,7 +19,7 @@ public class ClassAlias implements I_ClassAlias {
 	
 	public ClassAlias(String p) {
 		name = p;
-		if (StringMethods.isEmpty(name)) {
+		if (StringRoutines.isEmpty(name)) {
 			throw new IllegalArgumentException(NO_NAME);
 		}
 	}

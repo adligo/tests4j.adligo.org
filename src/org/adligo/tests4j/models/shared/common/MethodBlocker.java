@@ -45,7 +45,7 @@ public class MethodBlocker {
 		if (pBlockingClass == null) {
 			throw new IllegalArgumentException(MESSAGES.getMethodBlockerRequiresABlockingClass());
 		}
-		if (StringMethods.isEmpty(pMethodName)) {
+		if (StringRoutines.isEmpty(pMethodName)) {
 			throw new IllegalArgumentException(MESSAGES.getMethodBlockerRequiresABlockingMethod());
 		}
 		if (pAllowedCallersClassNames == null) {
