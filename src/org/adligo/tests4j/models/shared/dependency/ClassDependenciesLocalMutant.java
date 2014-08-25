@@ -19,7 +19,7 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 	
 	private Set<I_ClassAliasLocal> circularDependencies;
 	private Set<I_ClassParentsLocal> dependencies;
-	private List<I_ClassAttributes> calls;
+	private List<I_ClassAttributes> references;
 	
 	public ClassDependenciesLocalMutant(Class<?> c) {
 		super(c);
@@ -35,7 +35,7 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 		super(p);
 		setCircularReferences(p.getCircularDependenciesLocal());
 		setDependencies(p.getDependenciesLocal());
-		setCalls(p.getCalls());
+		setReferences(p.getReferences());
 	}
 	
 	/**
@@ -139,8 +139,8 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 			}
 			sb.append("]");
 		}
-		if (p.hasCalls()) {
-			List<I_ClassAttributes> refs =  p.getCalls();
+		if (p.hasReferences()) {
+			List<I_ClassAttributes> refs =  p.getReferences();
 			
 			sb.append(", calls=[");
 			boolean first = true;
@@ -237,14 +237,14 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 		return toRet;
 	}
 
-	public List<I_ClassAttributes> getCalls() {
-		return calls;
+	public List<I_ClassAttributes> getReferences() {
+		return references;
 	}
 
-	public void setCalls(List<I_ClassAttributes> callsIn) {
+	public void setReferences(List<I_ClassAttributes> callsIn) {
 		if (callsIn != null) {
-			if (calls != null) {
-				calls.clear();
+			if (references != null) {
+				references.clear();
 			}
 			for (I_ClassAttributes classCalls: callsIn) {
 				addCall(classCalls);
@@ -254,19 +254,19 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 
 	public void addCall(I_ClassAttributes classCalls) {
 		if (classCalls != null) {
-			if (calls == null) {
-				calls = new ArrayList<I_ClassAttributes>();
+			if (references == null) {
+				references = new ArrayList<I_ClassAttributes>();
 			}
-			calls.add(classCalls);
+			references.add(classCalls);
 		}
 	}
 
 	@Override
-	public boolean hasCalls() {
-		if (calls == null) {
+	public boolean hasReferences() {
+		if (references == null) {
 			return false;
 		}
-		if (calls.size() >= 1) {
+		if (references.size() >= 1) {
 			return true;
 		}
 		return false;

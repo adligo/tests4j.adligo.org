@@ -12,7 +12,7 @@ public class MethodSignature implements I_MethodSignature {
 	
 	private String methodName;
 	private String[] params;
-
+	private String returnClass;
 	
 	public MethodSignature(I_MethodSignature other) {
 		String methodNameIn = other.getMethodName();
@@ -31,10 +31,11 @@ public class MethodSignature implements I_MethodSignature {
 				params[i] = p;
 			}
 		}
+		returnClass = other.getReturnClassName();
 		
 	}
 	
-	public MethodSignature(String methodNameIn, String [] paramsIn) {
+	public MethodSignature(String methodNameIn, String [] paramsIn, String returnClassNameIn) {
 		if (StringMethods.isEmpty(methodNameIn)) {
 			throw new IllegalArgumentException(REQUIRES_A_NON_EMPTY_METHOD_NAME_IN);
 		}
@@ -51,6 +52,7 @@ public class MethodSignature implements I_MethodSignature {
 				}
 			}
 		}
+		returnClass = returnClassNameIn;
 	}
 	
 
@@ -87,6 +89,8 @@ public class MethodSignature implements I_MethodSignature {
 		if (params != null) {
 			result = prime * result + Arrays.hashCode(params);
 		}
+		result = prime * result
+				+ ((returnClass == null) ? 0 : returnClass.hashCode());
 		return result;
 	}
 
@@ -102,6 +106,11 @@ public class MethodSignature implements I_MethodSignature {
 				if (other.getMethodName() != null)
 					return false;
 			} else if (!methodName.equals(other.getMethodName()))
+				return false;
+			if (returnClass == null) {
+				if (other.getReturnClassName() != null)
+					return false;
+			} else if (!returnClass.equals(other.getReturnClassName()))
 				return false;
 			if (params == null) {
 				if (other.getParameters() == 0) {
@@ -125,7 +134,13 @@ public class MethodSignature implements I_MethodSignature {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("" + methodName + "(");
+		StringBuilder sb = new StringBuilder();
+		if (returnClass == null) {
+			sb.append("void");
+		} else {
+			sb.append(returnClass);
+		}
+		sb.append(" " + methodName + "(");
 		if (params != null) {
 			for (int i = 0; i < params.length; i++) {
 				if (i >= 1) {
@@ -136,6 +151,16 @@ public class MethodSignature implements I_MethodSignature {
 		}
 		sb.append(")");
 		return sb.toString();
+	}
+
+	@Override
+	public String getReturnClassName() {
+		return returnClass;
+	}
+
+	@Override
+	public int compareTo(I_MethodSignature o) {
+		return new Integer(hashCode()).compareTo(o.hashCode());
 	}
 
 }

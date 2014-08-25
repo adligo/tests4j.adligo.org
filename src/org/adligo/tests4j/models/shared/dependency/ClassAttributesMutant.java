@@ -1,13 +1,13 @@
 package org.adligo.tests4j.models.shared.dependency;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class ClassAttributesMutant implements I_ClassAttributes {
 	private String className;
-	private Set<I_MethodSignature> methods = new HashSet<I_MethodSignature>();
-	private Set<I_FieldSignature> fields = new HashSet<I_FieldSignature>();
+	private Set<I_MethodSignature> methods = new TreeSet<I_MethodSignature>();
+	private Set<I_FieldSignature> fields = new TreeSet<I_FieldSignature>();
 	
 	public ClassAttributesMutant() {}
 	

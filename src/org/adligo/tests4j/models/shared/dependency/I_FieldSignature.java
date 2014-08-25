@@ -12,7 +12,7 @@ import org.adligo.tests4j.models.shared.common.I_Immutable;
  * @author scott
  *
  */
-public interface I_FieldSignature extends I_Immutable {
+public interface I_FieldSignature extends I_Immutable, Comparable<I_FieldSignature> {
 	/**
 	 * the class name of the field,
 	 * for your purposes (usually a regular class name

@@ -12,7 +12,7 @@ import org.adligo.tests4j.models.shared.common.I_Immutable;
  * @author scott
  *
  */
-public interface I_MethodSignature extends I_Immutable {
+public interface I_MethodSignature extends I_Immutable, Comparable<I_MethodSignature> {
 	/**
 	 * i.e. "getMethodName"
 	 * @return
@@ -35,4 +35,10 @@ public interface I_MethodSignature extends I_Immutable {
 	 * @return may be null, if there were no params.
 	 */
 	public String getParameterClassName(int whichOne);
+	
+	/**
+	 * should return null for void return types
+	 * @return
+	 */
+	public String getReturnClassName();
 }

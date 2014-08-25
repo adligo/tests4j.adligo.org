@@ -59,15 +59,16 @@ public interface I_ClassDependencies extends I_ClassParents {
 	public abstract Set<String> getDependencyNames();
 	
 	/**
-	 * if this class called methods on other classes.
+	 * if this class (not parents)
+	 * called methods or referenced fields on other classes in it's byte code.
 	 * @return
 	 */
-	public boolean hasCalls();
+	public boolean hasReferences();
 	/**
 	 * this list contains all of the
-	 * class/methods called by 
-	 * the class this instance represents
+	 * class/methods classes/fields referenced called by 
+	 * the class (not parents) this instance represents byte code.
 	 * @return
 	 */
-	public List<I_ClassAttributes> getCalls();
+	public List<I_ClassAttributes> getReferences();
 }
