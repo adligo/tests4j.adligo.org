@@ -69,5 +69,5 @@ public interface I_ClassDependencies extends I_ClassParents {
 	 * the class this instance represents
 	 * @return
 	 */
-	public List<I_ClassMethods> getCalls();
+	public List<I_ClassAttributes> getCalls();
 }

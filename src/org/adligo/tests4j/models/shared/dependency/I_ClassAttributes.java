@@ -7,7 +7,7 @@ import java.util.Set;
  * @author scott
  *
  */
-public interface I_ClassMethods {
+public interface I_ClassAttributes {
 	/**
 	 * The class names represented as a string for 
 	 * your purposes (i.e. usually 
@@ -18,8 +18,14 @@ public interface I_ClassMethods {
 	 * @return
 	 */
 	public String getClassName();
+	
 	/**
-	 * 
+	 * the fields associated with this class attributes
+	 * @return
+	 */
+	public Set<I_FieldSignature> getFields();
+	/**
+	 * the methods associated with this class attributes
 	 * @return
 	 */
 	public Set<I_MethodSignature> getMethods();

@@ -3,7 +3,7 @@ package org.adligo.tests4j.shared.report.summary;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.StringRoutines;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
@@ -103,7 +103,7 @@ public abstract class AbstractProcessDisplay {
 				message = PercentFormat.format(processInfo.getPercentDone(), 2) + messages.getPctComplete();
 			}
 			String stalled = addCurrentRunningInfoToStalledProcess(log,processInfo, message);
-			if ( !StringRoutines.isEmpty(stalled)) {
+			if ( !StringMethods.isEmpty(stalled)) {
 				message = I_Tests4J_Constants.PREFIX_HEADER +processInfo.getProcessName() + " " + stalled;
 				log.log( message);
 			}

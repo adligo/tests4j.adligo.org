@@ -12,7 +12,7 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.models.shared.common.ClassRoutines;
+import org.adligo.tests4j.models.shared.common.ClassMethods;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
@@ -241,7 +241,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		
 		builder.append(">");
 		builder.endLine();
-		List<String> trialNames = ClassRoutines.toNames(trials);
+		List<String> trialNames = ClassMethods.toNames(trials);
 		builder.addCollection(trialNames, I_Tests4J_Params.TRIALS_TAG_NAME, I_Tests4J_Params.TRIAL_TAG_NAME);
 		
 		//builder.addCollection(tests, I_Tests4J_Params.TESTS_TAG_NAME, I_Tests4J_Params.TEST_TAG_NAME);

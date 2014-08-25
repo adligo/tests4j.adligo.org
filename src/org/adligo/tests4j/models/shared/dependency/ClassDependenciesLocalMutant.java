@@ -19,7 +19,7 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 	
 	private Set<I_ClassAliasLocal> circularDependencies;
 	private Set<I_ClassParentsLocal> dependencies;
-	private List<I_ClassMethods> calls;
+	private List<I_ClassAttributes> calls;
 	
 	public ClassDependenciesLocalMutant(Class<?> c) {
 		super(c);
@@ -140,12 +140,12 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 			sb.append("]");
 		}
 		if (p.hasCalls()) {
-			List<I_ClassMethods> refs =  p.getCalls();
+			List<I_ClassAttributes> refs =  p.getCalls();
 			
 			sb.append(", calls=[");
 			boolean first = true;
 			
-			for (I_ClassMethods loc: refs) {
+			for (I_ClassAttributes loc: refs) {
 				if (!first) {
 					sb.append(",");
 				}
@@ -237,25 +237,25 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 		return toRet;
 	}
 
-	public List<I_ClassMethods> getCalls() {
+	public List<I_ClassAttributes> getCalls() {
 		return calls;
 	}
 
-	public void setCalls(List<I_ClassMethods> callsIn) {
+	public void setCalls(List<I_ClassAttributes> callsIn) {
 		if (callsIn != null) {
 			if (calls != null) {
 				calls.clear();
 			}
-			for (I_ClassMethods classCalls: callsIn) {
+			for (I_ClassAttributes classCalls: callsIn) {
 				addCall(classCalls);
 			}
 		}
 	}
 
-	public void addCall(I_ClassMethods classCalls) {
+	public void addCall(I_ClassAttributes classCalls) {
 		if (classCalls != null) {
 			if (calls == null) {
-				calls = new ArrayList<I_ClassMethods>();
+				calls = new ArrayList<I_ClassAttributes>();
 			}
 			calls.add(classCalls);
 		}

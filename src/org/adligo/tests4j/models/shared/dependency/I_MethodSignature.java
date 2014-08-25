@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.dependency;
 
+import org.adligo.tests4j.models.shared.common.I_Immutable;
+
 
 /**
  * a method signature that can get passed between jvms,
@@ -10,7 +12,7 @@ package org.adligo.tests4j.models.shared.dependency;
  * @author scott
  *
  */
-public interface I_MethodSignature {
+public interface I_MethodSignature extends I_Immutable {
 	/**
 	 * i.e. "getMethodName"
 	 * @return

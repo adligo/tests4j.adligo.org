@@ -11,7 +11,7 @@ import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
-import org.adligo.tests4j.models.shared.common.StringRoutines;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
@@ -116,7 +116,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_Tests4J_Asse
 		String stack = StackTraceBuilder.toString(x, true);
 		tfm.setFailureDetail(stack);
 		String message = x.getMessage();
-		if (StringRoutines.isEmpty(message)) {
+		if (StringMethods.isEmpty(message)) {
 			I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
 			tfm.setFailureMessage(messages.getAnUnexpectedExceptionWasThrown());
 		} else {

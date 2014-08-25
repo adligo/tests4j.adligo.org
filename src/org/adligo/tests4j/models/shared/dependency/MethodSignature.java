@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.dependency;
 
 import java.util.Arrays;
 
-import org.adligo.tests4j.models.shared.common.StringRoutines;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 
 public class MethodSignature implements I_MethodSignature {
 	public static final String REQUIRES_A_NON_EMPTY_METHOD_NAME_IN = MethodSignature.class.getSimpleName() + 
@@ -16,7 +16,7 @@ public class MethodSignature implements I_MethodSignature {
 	
 	public MethodSignature(I_MethodSignature other) {
 		String methodNameIn = other.getMethodName();
-		if (StringRoutines.isEmpty(methodNameIn)) {
+		if (StringMethods.isEmpty(methodNameIn)) {
 			throw new IllegalArgumentException(REQUIRES_A_NON_EMPTY_METHOD_NAME_IN);
 		}
 		methodName = methodNameIn;
@@ -25,7 +25,7 @@ public class MethodSignature implements I_MethodSignature {
 			params = new String[paramsCount];
 			for (int i = 0; i < paramsCount; i++) {
 				String p = other.getParameterClassName(i);
-				if (StringRoutines.isEmpty(p)) {
+				if (StringMethods.isEmpty(p)) {
 					throw new IllegalArgumentException(PARAMETERS_MAY_NOT_BE_EMPTY_STRINGS);
 				}
 				params[i] = p;
@@ -35,7 +35,7 @@ public class MethodSignature implements I_MethodSignature {
 	}
 	
 	public MethodSignature(String methodNameIn, String [] paramsIn) {
-		if (StringRoutines.isEmpty(methodNameIn)) {
+		if (StringMethods.isEmpty(methodNameIn)) {
 			throw new IllegalArgumentException(REQUIRES_A_NON_EMPTY_METHOD_NAME_IN);
 		}
 		methodName = methodNameIn;
@@ -44,7 +44,7 @@ public class MethodSignature implements I_MethodSignature {
 				params = new String[paramsIn.length];
 				for (int i = 0; i < paramsIn.length; i++) {
 					String p = paramsIn[i];
-					if (StringRoutines.isEmpty(p)) {
+					if (StringMethods.isEmpty(p)) {
 						throw new IllegalArgumentException(PARAMETERS_MAY_NOT_BE_EMPTY_STRINGS);
 					}
 					params[i] = p;

@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.system;
 
-import org.adligo.tests4j.models.shared.common.StringRoutines;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.models.shared.xml.XML_Parser;
@@ -50,14 +50,14 @@ public class Tests4J_RemoteInfo implements I_Tests4J_RemoteInfo {
 		if (authCode == null) {
 			authCode = defaultAuthCode;
 		}
-		if (StringRoutines.isEmpty(authCode)) {
+		if (StringMethods.isEmpty(authCode)) {
 			I_Tests4J_ParamReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			throw new IllegalArgumentException(constants.getAuthCodeOrAuthCodeDefaultRequired());
 		}
 	}
 	
 	public Tests4J_RemoteInfo(String pHost, int pPort, String pAuthCode) {
-		if (StringRoutines.isEmpty(pHost)) {
+		if (StringMethods.isEmpty(pHost)) {
 			I_Tests4J_ParamReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			throw new IllegalArgumentException(constants.getHostRequired());
 		}
@@ -134,7 +134,7 @@ public class Tests4J_RemoteInfo implements I_Tests4J_RemoteInfo {
 		builder.addStartTag(TAG_NAME);
 		builder.addAttribute(HOST_ATTRIBUTE, host);
 		builder.addAttribute(PORT_ATTRIBUTE, "" + port);
-		if ( !StringRoutines.isEmpty(authCode)) {
+		if ( !StringMethods.isEmpty(authCode)) {
 			builder.addAttribute(AUTH_ATTRIBUTE, authCode);
 		}
 		builder.setAttributesPerLine(attribsPerLine);

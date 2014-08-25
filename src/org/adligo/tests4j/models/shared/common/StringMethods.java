@@ -8,7 +8,7 @@ package org.adligo.tests4j.models.shared.common;
  * @author scott
  *
  */
-public class StringRoutines {
+public class StringMethods {
 	public static boolean isEmpty(String p) {
 		if (p == null) {
 			return true;

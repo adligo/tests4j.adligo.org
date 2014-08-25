@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.xml;
 
-import org.adligo.tests4j.models.shared.common.StringRoutines;
+import org.adligo.tests4j.models.shared.common.StringMethods;
 
 public class XML_Parser {
 	
@@ -134,7 +134,7 @@ public class XML_Parser {
 	
 	public static Integer getAttributeIntegerValue(String xml, String attributeName) {
 		String integerString = getAttributeValue(xml, attributeName);
-		if ( !StringRoutines.isEmpty(integerString)) {
+		if ( !StringMethods.isEmpty(integerString)) {
 			return Integer.parseInt(integerString);
 		}
 		return null;
@@ -142,7 +142,7 @@ public class XML_Parser {
  
 	public static Double getAttributeDoubleValue(String xml, String attributeName) {
 		String doubleString = getAttributeValue(xml, attributeName);
-		if ( !StringRoutines.isEmpty(doubleString)) {
+		if ( !StringMethods.isEmpty(doubleString)) {
 			return Double.parseDouble(doubleString);
 		}
 		return null;

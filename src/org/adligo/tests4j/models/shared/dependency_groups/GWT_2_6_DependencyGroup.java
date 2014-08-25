@@ -71,30 +71,17 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 
 
 /**
  * note this is a very special class which only allows
- * classes that are in both GWT and codename support one as follows;
+ * classes that are in both GWT ;
  * GWT 2.6
  *     http://www.gwtproject.org/doc/latest/RefJreEmulation.html
  *     
- *     
- * This should insure that code with only this allowed dependency group,
- * will run anywhere (Server, Desktop, Phone, Tablet, 
- * and even compiled into Java Script with GWT to run in a web browser).
- * http://www.codenameone.com/
- *   
- *    supports iPhone, Android, Window phone and Blackberry.
- *    for games check out the poker demo (Cool).
- *    
- * The developers must still make sure that the methods are supported 
- * by GWT and CLDC, as they are not always identical to JSE.
- * 
- * This also allows you to develop java that is testable anywhere,
- * write once test everywhere.
  * @author scott
  *
  */
@@ -290,9 +277,27 @@ public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
 	}
 
 	@Override
-	public boolean isInGroup(I_MethodSignature method) {
+	public boolean isInGroup(String className, I_MethodSignature method) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public Set<String> getClassNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Set<I_MethodSignature> getMethods(String className) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Collection<I_ClassAttributes> getClassMethods() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

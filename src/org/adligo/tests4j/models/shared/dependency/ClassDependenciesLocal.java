@@ -14,7 +14,7 @@ import java.util.Set;
 public class ClassDependenciesLocal extends ClassParentsLocal implements I_ClassDependenciesLocal {
 	private Set<I_ClassAliasLocal> circularDependencies;
 	private Set<I_ClassParentsLocal> dependencies;
-	private List<I_ClassMethods> calls;
+	private List<I_ClassAttributes> calls;
 	
 	public ClassDependenciesLocal(I_ClassParentsLocal p) {
 		super(p);
@@ -54,11 +54,11 @@ public class ClassDependenciesLocal extends ClassParentsLocal implements I_Class
 		} else {
 			dependencies = Collections.emptySet();
 		}
-		List<I_ClassMethods> cs = p.getCalls();
+		List<I_ClassAttributes> cs = p.getCalls();
 		if (cs != null && cs.size() >= 1) {
-			calls = new ArrayList<I_ClassMethods>();
-			for (I_ClassMethods cm: cs) {
-				calls.add(new ClassMethods(cm));
+			calls = new ArrayList<I_ClassAttributes>();
+			for (I_ClassAttributes cm: cs) {
+				calls.add(new ClassAttributes(cm));
 			}
 			calls = Collections.unmodifiableList(calls);
 		} else {
@@ -146,7 +146,7 @@ public class ClassDependenciesLocal extends ClassParentsLocal implements I_Class
 	}
 
 	@Override
-	public List<I_ClassMethods> getCalls() {
+	public List<I_ClassAttributes> getCalls() {
 		return calls;
 	}
 }
