@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -56,4 +57,17 @@ public interface I_ClassDependencies extends I_ClassParents {
 	 * @return
 	 */
 	public abstract Set<String> getDependencyNames();
+	
+	/**
+	 * if this class called methods on other classes.
+	 * @return
+	 */
+	public boolean hasCalls();
+	/**
+	 * this list contains all of the
+	 * class/methods called by 
+	 * the class this instance represents
+	 * @return
+	 */
+	public List<I_ClassMethods> getCalls();
 }

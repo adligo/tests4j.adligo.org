@@ -1,5 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,6 +19,7 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 	
 	private Set<I_ClassAliasLocal> circularDependencies;
 	private Set<I_ClassParentsLocal> dependencies;
+	private List<I_ClassMethods> calls;
 	
 	public ClassDependenciesLocalMutant(Class<?> c) {
 		super(c);
@@ -26,13 +28,14 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 	public ClassDependenciesLocalMutant(I_ClassParentsLocal p) {
 		super(p);
 		List<I_ClassParentsLocal> cpus = p.getParentsLocal();
-		setReferences(cpus);
+		setDependencies(cpus);
 	}
 	
 	public ClassDependenciesLocalMutant(I_ClassDependenciesLocal p) {
 		super(p);
 		setCircularReferences(p.getCircularDependenciesLocal());
-		setReferences(p.getDependenciesLocal());
+		setDependencies(p.getDependenciesLocal());
+		setCalls(p.getCalls());
 	}
 	
 	/**
@@ -136,15 +139,27 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 			}
 			sb.append("]");
 		}
+		if (p.hasCalls()) {
+			List<I_ClassMethods> refs =  p.getCalls();
+			
+			sb.append(", calls=[");
+			boolean first = true;
+			
+			for (I_ClassMethods loc: refs) {
+				if (!first) {
+					sb.append(",");
+				}
+				if (loc != null) {
+					sb.append(loc.toString());
+				} else {
+					sb.append("null");
+				}
+				first = false;
+			}
+			sb.append("]");
+		}
 		sb.append("]");
 		return sb.toString();
-	}
-
-
-	@Override
-	public void toXml(I_XML_Builder builder) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -160,24 +175,24 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 		return dependencies;
 	}
 	
-	public void setReferences(Collection<I_ClassParentsLocal> p) {
+	public void setDependencies(Collection<I_ClassParentsLocal> p) {
 		if (p != null) {
 			if (dependencies != null) {
 				dependencies.clear();
 			}
-			addReferences(p);
+			addDependencies(p);
 		}
 	}
 	
-	public void addReferences(Collection<I_ClassParentsLocal> p) {
+	public void addDependencies(Collection<I_ClassParentsLocal> p) {
 		if (p != null) {
 			for (I_ClassParentsLocal cpu: p) {
-				addReference(cpu);
+				addDependency(cpu);
 			}
 		}
 	}
 	
-	public void addReference(I_ClassParentsLocal p) {
+	public void addDependency(I_ClassParentsLocal p) {
 		if (p != null) {
 			if (dependencies == null) {
 				dependencies = new HashSet<I_ClassParentsLocal>();
@@ -220,5 +235,40 @@ public class ClassDependenciesLocalMutant extends ClassParentsLocalMutant
 			toRet.add(alias.getName());
 		}
 		return toRet;
+	}
+
+	public List<I_ClassMethods> getCalls() {
+		return calls;
+	}
+
+	public void setCalls(List<I_ClassMethods> callsIn) {
+		if (callsIn != null) {
+			if (calls != null) {
+				calls.clear();
+			}
+			for (I_ClassMethods classCalls: callsIn) {
+				addCall(classCalls);
+			}
+		}
+	}
+
+	public void addCall(I_ClassMethods classCalls) {
+		if (classCalls != null) {
+			if (calls == null) {
+				calls = new ArrayList<I_ClassMethods>();
+			}
+			calls.add(classCalls);
+		}
+	}
+
+	@Override
+	public boolean hasCalls() {
+		if (calls == null) {
+			return false;
+		}
+		if (calls.size() >= 1) {
+			return true;
+		}
+		return false;
 	}
 }

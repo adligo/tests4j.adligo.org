@@ -88,23 +88,75 @@ public class ClassRoutines {
 	 */
 	public static String fromTypeDescription(String clazzName) {
 		if (StringRoutines.isEmpty(clazzName)) {
-			return "";
+			throw new IllegalArgumentException();
 		}
-		if (clazzName.indexOf("[") == 0) {
-			// [Lorg/example;
-			if (clazzName.length() < 3) {
-				return "";
-			} else {
-				clazzName = clazzName.substring(2, clazzName.length() -1);
+		if ( isArray(clazzName.charAt(0))) {
+			while (isArray(clazzName.charAt(0))) {
+				if (clazzName.length() >= 1) {
+					clazzName = clazzName.substring(1, clazzName.length());
+				} else {
+					throw new IllegalArgumentException();
+				}
 			}
+		}
+		if (clazzName.length() <= 1) {
+			return fromSmallType(clazzName);
 		} else if (clazzName.indexOf("L") == 0) {
-			// Lorg/example;
-			if (clazzName.length() < 3) {
-				return "";
-			} else {
-				clazzName = clazzName.substring(1, clazzName.length() -1);
-			}
+			clazzName = clazzName.substring(1, clazzName.length() -1);
 		}
 		return clazzName.replace('/', '.');
+	}
+	
+	public static boolean isPrimitiveClassChar(char c) {
+		switch (c) {
+			case 'B':
+			case 'C':
+			case 'D':
+			case 'I':
+			case 'F':
+			case 'J':
+			case 'S':
+			case 'Z':
+				return true;
+		}
+		return false;
+	}
+	private static String fromSmallType(String p) {
+		switch (p) {
+			case "B":
+				return Byte.class.getName();
+			case "C":
+				return Character.class.getName();
+			case "D":
+				return Double.class.getName();
+			case "I":
+				return Integer.class.getName();
+			case "F":
+				return Float.class.getName();
+			case "J":
+				return Long.class.getName();
+			case "S":
+				return Short.class.getName();
+			case "Z":
+				return Boolean.class.getName();
+			default:
+				throw new IllegalArgumentException("no known type for '" + p +"'");
+		}
+	}
+	
+	public static boolean isClass(char p) {
+		if (p == 'L') {
+			return true;
+		}
+		return false;
+		
+	}
+	
+	public static boolean isArray(char p) {
+		if (p == '[') {
+			return true;
+		}
+		return false;
+		
 	}
 }

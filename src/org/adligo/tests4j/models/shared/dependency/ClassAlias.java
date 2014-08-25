@@ -44,11 +44,6 @@ public class ClassAlias implements I_ClassAlias {
 	}
 
 	@Override
-	public void toXml(I_XML_Builder builder) {
-		builder.append(name);
-	}
-
-	@Override
 	public int hashCode() {
 		return name.hashCode();
 	}

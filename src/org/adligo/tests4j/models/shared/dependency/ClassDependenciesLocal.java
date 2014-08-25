@@ -1,11 +1,10 @@
 package org.adligo.tests4j.models.shared.dependency;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 
 /**
  * a immutable implementation of {@link I_ClassDependencies}
@@ -15,6 +14,7 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 public class ClassDependenciesLocal extends ClassParentsLocal implements I_ClassDependenciesLocal {
 	private Set<I_ClassAliasLocal> circularDependencies;
 	private Set<I_ClassParentsLocal> dependencies;
+	private List<I_ClassMethods> calls;
 	
 	public ClassDependenciesLocal(I_ClassParentsLocal p) {
 		super(p);
@@ -54,6 +54,16 @@ public class ClassDependenciesLocal extends ClassParentsLocal implements I_Class
 		} else {
 			dependencies = Collections.emptySet();
 		}
+		List<I_ClassMethods> cs = p.getCalls();
+		if (cs != null && cs.size() >= 1) {
+			calls = new ArrayList<I_ClassMethods>();
+			for (I_ClassMethods cm: cs) {
+				calls.add(new ClassMethods(cm));
+			}
+			calls = Collections.unmodifiableList(calls);
+		} else {
+			calls = Collections.emptyList();
+		}
 	}
 
 
@@ -77,14 +87,6 @@ public class ClassDependenciesLocal extends ClassParentsLocal implements I_Class
 	public String toString() {
 		return ClassDependenciesLocalMutant.toString(this);
 	}
-
-
-	@Override
-	public void toXml(I_XML_Builder builder) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 	@Override
 	public Set<I_ClassAlias> getDependencies() {
@@ -133,5 +135,18 @@ public class ClassDependenciesLocal extends ClassParentsLocal implements I_Class
 			toRet.add(alias.getName());
 		}
 		return toRet;
+	}
+
+	@Override
+	public boolean hasCalls() {
+		if (calls.size() >= 1) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<I_ClassMethods> getCalls() {
+		return calls;
 	}
 }

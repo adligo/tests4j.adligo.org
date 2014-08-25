@@ -21,9 +21,10 @@ public class ClassMethodsMutant implements I_ClassMethods {
 	public Set<I_MethodSignature> getMethods() {
 		return methods;
 	}
-	public void setClassName(String className) {
-		this.className = className;
+	public void setClassName(String classNameIn) {
+		className = classNameIn;
 	}
+	
 	public void setMethods(Collection<? extends I_MethodSignature> methodsIn) {
 		if (methodsIn != null) {
 			methods.clear();

@@ -1,14 +1,10 @@
 package org.adligo.tests4j.models.shared.dependency;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
-import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
 
 
 /**
  * A wrapper around a class
- * which implements Comparable and to from xml I_XML_Consumer, I_XML_Producer,
- * it would be nice if Class was comparable 
- * on the name.
+ * which implements Comparable .
  * 
  * Note the comparable implementation
  * should handle I_ClassAlias, String (class Name), Class (class Name)
@@ -24,7 +20,7 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_ClassAlias extends Comparable<Object>, I_XML_Consumer, I_XML_Producer {
+public interface I_ClassAlias extends Comparable<Object> {
 
 	/**
 	 * the name of the class this represents

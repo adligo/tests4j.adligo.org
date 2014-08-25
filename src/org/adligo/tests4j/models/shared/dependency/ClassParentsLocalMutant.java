@@ -85,12 +85,7 @@ public class ClassParentsLocalMutant implements I_ClassParentsLocal {
 	public int compareTo(Object o) {
 		return alias.compareTo(o);
 	}
-
-	@Override
-	public void toXml(I_XML_Builder builder) {
-		builder.append(initial.getName());
-	}
-
+	
 	@Override
 	public String toString() {
 		return toString(this) + "]";

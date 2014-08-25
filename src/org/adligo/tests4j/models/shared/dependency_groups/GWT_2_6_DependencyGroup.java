@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.dependency;
+package org.adligo.tests4j.models.shared.dependency_groups;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -70,6 +70,9 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
+import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
+import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 
 
 /**

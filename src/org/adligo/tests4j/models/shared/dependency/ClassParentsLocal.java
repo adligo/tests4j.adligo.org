@@ -75,12 +75,6 @@ public class ClassParentsLocal implements I_ClassParentsLocal {
 	}
 
 	@Override
-	public void toXml(I_XML_Builder builder) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
 	public String toString() {
 		return ClassParentsLocalMutant.toString(this) + "]";
 	}
