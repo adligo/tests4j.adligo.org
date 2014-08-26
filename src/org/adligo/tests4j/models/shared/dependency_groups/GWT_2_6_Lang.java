@@ -35,7 +35,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		ClassAttributesMutant cam = new ClassAttributesMutant();
 		cam.setClassName(JSE_1_7_Lang.ASSERTION_ERROR);
 		
-		cam.addMethod(new MethodSignature("<init>", JSE_1_7_Lang.ASSERTION_ERROR));
+		cam.addMethod(new MethodSignature("<init>"));
 		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.BOOLEAN}));
 		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.CHARACTER}));
 		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.DOUBLE}));
@@ -58,17 +58,17 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	public static ClassAttributesMutant getArrayIndexOutOfBounds() {
 		ClassAttributesMutant cam = new ClassAttributesMutant();
 		cam.setClassName(JSE_1_7_Lang.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
-		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.STRING}, JSE_1_7_Lang.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION));
-		cam.addMethod(new MethodSignature("<init>", null, JSE_1_7_Lang.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION));
-		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.INTEGER}, JSE_1_7_Lang.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION));
+		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.STRING}));
+		cam.addMethod(new MethodSignature("<init>"));
+		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.INTEGER}));
 		return cam;
 	}
 
 	public static ClassAttributesMutant getArithmeticException() {
 		ClassAttributesMutant cam = new ClassAttributesMutant();
 		cam.setClassName(JSE_1_7_Lang.ARITHMETIC_EXCEPTION);
-		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.STRING}, JSE_1_7_Lang.ARITHMETIC_EXCEPTION));
-		cam.addMethod(new MethodSignature("<init>", null, JSE_1_7_Lang.ARITHMETIC_EXCEPTION));
+		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.STRING}));
+		cam.addMethod(new MethodSignature("<init>"));
 		return cam;
 	}
 
