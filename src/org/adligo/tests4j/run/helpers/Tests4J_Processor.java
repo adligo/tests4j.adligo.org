@@ -158,6 +158,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 				monitorTrials();
 				monitorRemotes();
 			}
+			
 			notifier.onDoneRunningNonMetaTrials();
 			
 			String next = cod.poll();
@@ -292,11 +293,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 				throw new RuntimeException(x);
 			}
 		}
-		String next = cod.poll();
-		while (next != null) {
-			system.println(next);
-			next = cod.poll();
-		}
+		notifier.onProgress(setupProcessInfo);
 
 		long now = memory.getTime();
 		memory.setSetupEndTime(now);
@@ -304,6 +301,11 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 			double millis = now - memory.getStartTime();
 			double secs = millis/1000.0;
 			log.log(this.toString() + " Competing setup with after " + secs + " seconds.");
+		}
+		String next = cod.poll();
+		while (next != null) {
+			system.println(next);
+			next = cod.poll();
 		}
 	}
 	
@@ -361,6 +363,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 				throw new RuntimeException(x);
 			}
 		}
+		notifier.onProgress(trialProcessInfo);
 		long now = system.getTime();
 		memory.setTrialEndTime(now);
 		if (log.isLogEnabled(Tests4J_Processor.class)) {
@@ -368,7 +371,11 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 			double secs = millis/1000.0;
 			log.log(this.toString() + " Competing trials with after " + secs + " seconds.");
 		}
-		
+		String next = cod.poll();
+		while (next != null) {
+			system.println(next);
+			next = cod.poll();
+		}
 	}
 	
 	private boolean isTrialsOrRemotesRunning() {

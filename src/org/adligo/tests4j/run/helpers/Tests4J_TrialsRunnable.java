@@ -178,7 +178,9 @@ public class Tests4J_TrialsRunnable implements Runnable,
 						}
 					}
 				}
-				processInfo.addDone();
+				if (trialDescription.getType() != TrialType.MetaTrial) {
+					processInfo.addDone();
+				}
 				trialState.setFinishedRun();
 				synchronized (trialState) {
 					trialState.notifyAll();

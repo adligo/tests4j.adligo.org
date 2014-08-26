@@ -59,7 +59,7 @@ public abstract class AbstractProcessDisplay {
 	protected String addCurrentRunningInfoToStalledProcess(I_Tests4J_Log log,
 			I_Tests4J_ProcessInfo processInfo, String message) {
 		StringBuilder sb = new StringBuilder();
-		if (timesAtPct >= 5) {
+		if (timesAtPct >= 2) {
 			
 			sb.append(message);
 			List<I_Tests4J_TrialProgress> states =  processInfo.getTrials();
