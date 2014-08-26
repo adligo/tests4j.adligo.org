@@ -35,6 +35,18 @@ public class MethodSignature implements I_MethodSignature {
 		
 	}
 	
+	public MethodSignature(String methodNameIn) {
+		this(methodNameIn, null, null);
+	}
+	
+	public MethodSignature(String methodNameIn, String [] paramsIn) {
+		this(methodNameIn, paramsIn, null);
+	}
+	
+	public MethodSignature(String methodNameIn, String returnClassNameIn) {
+		this(methodNameIn, null, returnClassNameIn);
+	}
+	
 	public MethodSignature(String methodNameIn, String [] paramsIn, String returnClassNameIn) {
 		if (StringMethods.isEmpty(methodNameIn)) {
 			throw new IllegalArgumentException(REQUIRES_A_NON_EMPTY_METHOD_NAME_IN);
