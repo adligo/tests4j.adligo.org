@@ -82,9 +82,34 @@ public class DependencyGroupMutant implements I_DependencyGroup {
 			if ( !depsClasses.contains(className)) {
 				it.remove();
 			} else {
-				Set<I_MethodSignature> methSigs =  other.getMethods(className);
-				 
+				Set<I_MethodSignature> otherMethSigs =  other.getMethods(className);
+				ClassAttributesMutant cam = entry.getValue();
+				Set<I_MethodSignature> methSigs = cam.getMethods();
+				methSigs.retainAll(otherMethSigs);
+				
+				Set<I_FieldSignature> otherFieldSigs =  other.getFields(className);
+				Set<I_FieldSignature> fieldSigs = cam.getFields();
+				fieldSigs.retainAll(otherFieldSigs);
 			}
 		}
+	}
+
+	@Override
+	public Set<I_FieldSignature> getFields(String className) {
+		ClassAttributesMutant cmm = deps.get(className);
+		if (cmm == null) {
+			return Collections.emptySet();
+		}
+		return cmm.getFields();
+	}
+
+	@Override
+	public boolean isInGroup(String className, I_FieldSignature field) {
+		ClassAttributesMutant cmm = deps.get(className);
+		if (cmm == null) {
+			return false;
+		}
+		Set<I_FieldSignature> fields = cmm.getFields();
+		return fields.contains(field);
 	}
 }

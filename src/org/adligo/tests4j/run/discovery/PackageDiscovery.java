@@ -105,6 +105,8 @@ public class PackageDiscovery  {
 	    String packageNameAsFile = packageName.replace(".", "/");
 	    URL packageURL = classLoader.getResource(packageNameAsFile);
 	    if (packageURL == null) {
+	    	//could be a jse package?
+	    	//although it has no way to look up the classes either....
 	    	return names;
 	    }
 	    if ("file".equals(packageURL.getProtocol())) {

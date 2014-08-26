@@ -42,10 +42,12 @@ public interface I_DependencyGroup {
 	 * @return
 	 */
 	public Set<I_MethodSignature> getMethods(String className);
+	public Set<I_FieldSignature> getFields(String className);
 	/**
 	 * return true if the class is in this dependency
 	 * @param className
 	 * @return
 	 */
 	public boolean isInGroup(String className, I_MethodSignature method);
+	public boolean isInGroup(String className, I_FieldSignature method);
 }

@@ -73,6 +73,7 @@ import java.util.logging.Logger;
 
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
+import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 
 
@@ -298,6 +299,18 @@ public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
 	public Collection<I_ClassAttributes> getClassMethods() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Set<I_FieldSignature> getFields(String className) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isInGroup(String className, I_FieldSignature method) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

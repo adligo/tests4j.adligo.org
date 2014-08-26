@@ -35,8 +35,10 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 	public BigDecimal getPercentageCovered() {
 		BigDecimal coverageUnitsBD = new BigDecimal(coverageUnits.getBig());
 		BigDecimal coveredCoverageUnitsBD = new BigDecimal(coveredCoverageUnits.getBig());
-		if (coverageUnitsBD.intValue() == 0) {
-			return new BigDecimal("0.00");
+		if (coverageUnitsBD == null || coveredCoverageUnitsBD == null) {
+			return new BigDecimal("100.00");
+		} else if (coverageUnitsBD.intValue() == 0) {
+			return new BigDecimal("100.00");
 		} else {
 			if (coveredCoverageUnitsBD.equals(coverageUnitsBD)) {
 				return new BigDecimal("100.00");
@@ -45,7 +47,7 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 			BigDecimal toRet = pct.multiply(new BigDecimal(100), MathContext.DECIMAL128);
 			MathContext mc = new MathContext(2);
 			return toRet.round(mc);
-		}
+		} 
 	}
 	
 
