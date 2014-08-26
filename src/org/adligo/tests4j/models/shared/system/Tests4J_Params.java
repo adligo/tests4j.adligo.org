@@ -36,7 +36,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	
 	private Integer recommendedTrialThreadCount;
 	private Integer recommendedRemoteThreadCount;
-	private Integer recommendedSetupThreadCount;
+	//there is a deadlock problem in setup, so run it single threaded, unless your improving
+	private Integer recommendedSetupThreadCount = 1;
 	private I_Tests4J_ProgressMonitor progressMonitor = new Tests4J_DefaultProgressMonitor(Tests4J_System.SYSTEM);
 	
 	/**

@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
+import org.adligo.tests4j.models.shared.trials.I_Progress;
+
 /**
  * this class represents progress of a trial,
  * and helped me obvoid deadlock.
@@ -8,20 +10,35 @@ package org.adligo.tests4j.models.shared.system;
  *
  */
 public class Tests4J_TrialProgress implements I_Tests4J_TrialProgress {
-	private String trial;
-	private double pctDone;
+	private String trial_;
+	private double pctDone_;
+	/**
+	 * this could be progress on 
+	 * setting up the trial
+	 * running the trial
+	 * running the trial remotely
+	 * 
+	 */
+	private I_Progress testProgress_;
 	
-	public Tests4J_TrialProgress(String trialNameIn, double pctDoneIn) {
-		trial = trialNameIn;
-		pctDone = pctDoneIn;
+	public Tests4J_TrialProgress(String trialName, double pctDone, I_Progress testProgress) {
+		trial_ = trialName;
+		pctDone_ = pctDone;
+		testProgress_ = testProgress;
 	}
 	
 	
 	public String getTrialName() {
-		return trial;
+		return trial_;
 	}
 
 	public double getPctDone() {
-		return pctDone;
+		return pctDone_;
+	}
+
+
+	@Override
+	public I_Progress getSubProgress() {
+		return testProgress_;
 	}
 }

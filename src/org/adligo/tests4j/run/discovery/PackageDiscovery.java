@@ -263,4 +263,17 @@ public class PackageDiscovery  {
 	public boolean isJar() {
 		return jar;
 	}
+	
+	/**
+	 * recurses into sub packages
+	 * @return
+	 */
+	public int getClassCount() {
+		int toRet = 0;
+		for (PackageDiscovery pd: subpackages) {
+			toRet = toRet + pd.getClassCount();
+		}
+		toRet = toRet + classNames.size();
+		return toRet;
+	}
 }

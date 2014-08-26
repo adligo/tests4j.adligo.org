@@ -39,6 +39,7 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.I_Progress;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -58,7 +59,7 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  *
  */
 public class Tests4J_TrialsRunnable implements Runnable,
-	I_Tests4J_TestFinishedListener, I_Tests4J_Runnable {
+	I_Tests4J_TestFinishedListener, I_Tests4J_Runnable, I_Progress {
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
 	
@@ -83,6 +84,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	private I_OutputDelegateor outputDelegator;
 	
 	private String trialName;
+	private String testName_;
 	private I_Tests4J_CoverageRecorder trialThreadLocalCoverageRecorder;
 	private TrialDescriptionProcessor trialDescriptionProcessor;
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
@@ -363,7 +365,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			trm.setIgnored(true);
 			trialResultMutant.addResult(trm);
 		} else {
-			notifier.startingTest(trialName, method.getName());
+			testName_ = method.getName();
+			notifier.startingTest(trialName, testName_);
 			
 			if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 				logger.log("starting test; " +trialName + "."+  method.getName());
@@ -509,7 +512,19 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		if (trialState == null) {
 			return null; 
 		}
-		return new Tests4J_TrialProgress(trialState.getTrialName(), trialState.getPctDone());
+		
+		return new Tests4J_TrialProgress(trialState.getTrialName(), trialState.getPctDone(), 
+				this);
+	}
+
+	@Override
+	public String getName() {
+		return testName_;
+	}
+
+	@Override
+	public double getPctDone() {
+		return trial.getPctDone(testName_);
 	}
 
 }

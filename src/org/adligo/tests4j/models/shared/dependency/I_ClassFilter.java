@@ -1,5 +1,7 @@
 package org.adligo.tests4j.models.shared.dependency;
 
+import org.adligo.tests4j.models.shared.common.ClassMethods;
+
 
 /**
  * a interface to filter class names,
@@ -9,6 +11,8 @@ package org.adligo.tests4j.models.shared.dependency;
  * shared classes from the reference, dependency
  * discovery code in tests4j_4jacoco.
  * 
+ * A class filter should always filter classes which are primitives
+ * @see ClassMethods#isPrimitive(Class)
  * @author scott
  *
  */

@@ -21,7 +21,7 @@ import org.adligo.tests4j.run.helpers.Tests4J_Memory;
 
 public class TrialDescriptionProcessor {
 	private Tests4J_Memory memory;
-	
+
 	public TrialDescriptionProcessor(Tests4J_Memory pMemory) {
 		memory = pMemory;
 	}
@@ -125,4 +125,5 @@ public class TrialDescriptionProcessor {
 		}
 		return toSend;
 	}
+
 }

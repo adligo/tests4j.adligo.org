@@ -8,6 +8,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.system.Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.SubProgress;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
@@ -24,7 +25,9 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 	private TrialQueueDecisionTree trialQueueDecisionTree;
 	private Tests4J_ProcessInfo processInfo;
 	private String trialName;
+	private Class<? extends I_AbstractTrial> currentTrial;
 	private TrialState state;
+	
 	/**
 	 * 
 	 * @param p
@@ -90,7 +93,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 						if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
 							//instrument the classes first, so that 
 							// they are loaded before the TrialDescrpion processing code
-							
+							currentTrial = trialClazz;
 							instrumention = plugin.instrument(trialClazz);
 							trialDescription = trialDescriptionProcessor.createAndRemberNotRunnableTrials(instrumention);
 							states.setDescApprovedForRun(trialDescription);
@@ -111,6 +114,14 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 		if (state == null) {
 			return null; 
 		}
-		return new Tests4J_TrialProgress(state.getTrialName(), state.getPctDone());
+		if (currentTrial == null) {
+			//no plugin
+			return new Tests4J_TrialProgress(state.getTrialName(), state.getPctDone(), null);
+		} else {
+			I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
+			
+			return new Tests4J_TrialProgress(state.getTrialName(), state.getPctDone(),
+					new SubProgress("setup", plugin.getInstrumentProgress(currentTrial), null));
+		}
 	}
 }

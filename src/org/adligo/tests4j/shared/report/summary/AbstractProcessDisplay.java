@@ -9,6 +9,7 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.trials.I_Progress;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -67,10 +68,25 @@ public abstract class AbstractProcessDisplay {
 			List<String> trials = new ArrayList<String>();
 			for (I_Tests4J_TrialProgress state: states) {
 				sb.append(log.getLineSeperator());
-				String doneLine = state.getTrialName() + " " + 
-						PercentFormat.format(state.getPctDone(), 2) + "%.";
+				String doneLine = state.getTrialName();
 				sb.append(doneLine);
 				trials.add(doneLine);
+				
+				I_Progress sub = state.getSubProgress();
+				String subProgress = null;
+				if (sub != null) {
+					double pct = sub.getPctDone();
+					if (pct > 0.0) {
+						subProgress = "....." + sub.getName() + " " + 
+								PercentFormat.format(sub.getPctDone(), 2) + "%.";
+						sb.append(subProgress);
+					} 
+				} 
+				
+				if (subProgress == null){
+					String line = " " + PercentFormat.format(state.getPctDone(), 2) + "%.";
+					sb.append(line);
+				}
 			}
 			sb.append(log.getLineSeperator());
 			message = sb.toString();

@@ -44,6 +44,8 @@ public interface I_AbstractTrial extends I_Asserts {
 	/**
 	 * This will allow the view of a tests4j gui to view a
 	 * widget during the trial/test run.  
+	 * I think this would be;
+	 * 
 	 * for GWT this should be a com.google.gwt.user.client.ui.Widget
 	 * for Mobile http://www.codenameone.com/ this should be a com.codename1.ui.Component
 	 * for Eclipse org.eclipse.swt.widgets.Widget
@@ -51,4 +53,11 @@ public interface I_AbstractTrial extends I_Asserts {
 	 * @param o
 	 */
 	public void showWidget(Object o);
+	
+	/**
+	 * subclasses can implement this if they want
+	 * 
+	 * @return
+	 */
+	public double getPctDone(String testName);
 }

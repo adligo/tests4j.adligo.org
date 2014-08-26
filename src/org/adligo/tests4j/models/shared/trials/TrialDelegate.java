@@ -211,4 +211,10 @@ public class TrialDelegate implements I_Trial {
 	public void assertUniform(String message, Object p, Object a) {
 		delegate.assertUniform(message, p, a);
 	}
+
+	@Override
+	public double getPctDone(String testName) {
+		return delegate.getPctDone(testName);
+	}
+
 }

@@ -24,6 +24,12 @@ public interface I_Tests4J_CoveragePlugin {
 	public I_Tests4J_CoverageTrialInstrumentation instrument(Class<? extends I_AbstractTrial> trial) throws IOException;
 	
 	/**
+	 * @param trial
+	 * @return percent done 0.0 - 100.0
+	 */
+	public double getInstrumentProgress(Class<? extends I_AbstractTrial> trial);
+	
+	/**
 	 * give the plugin a chance to clean up the instrumentation
 	 * work (caches exc)
 	 */

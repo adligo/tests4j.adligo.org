@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.common.ClassMethods;
+
 public class ClassFilterMutant implements I_ClassFilterModel {
 	private Set<String> ignoredPackageNames = new HashSet<String>(Collections.singleton("java."));
 	private Set<String> ignoredClassNames = new HashSet<String>();
@@ -96,33 +98,17 @@ public class ClassFilterMutant implements I_ClassFilterModel {
 		if (learnedFilteredClasses.contains(className)) {
 			return true;
 		}
-		if (className.length() <= 1) {
-			//ASM has a desc 'D' and 'V', ClassMethods can return ''
-			learnedFilteredClasses.add(className);
-			return true;
-		}
-		if ("null".equals(className)) {
+		
+		
+		if ("null".equals(className) || ClassMethods.isPrimitive(className)) {
 			//visitTryCatchBlock(ReferenceTrackingMethodVisitor.java:114)
 			learnedFilteredClasses.add(className);
 			return true;
 		}
-		if (className.indexOf("(") != -1) {
-			//ASM has desc sometimes like ()
-			// is NOT a letter or digit http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8
-			learnedFilteredClasses.add(className);
-			return true;
-		}
-		if (className.indexOf(")") != -1) {
-			//ASM has desc sometimes like ()
-			// is NOT a letter or digit http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8
-			learnedFilteredClasses.add(className);
-			return true;
-		}
-		if (className.indexOf("[") !=  -1) {
-			//ASM not sure what /[B is, a boolean[]?
-			// is NOT a letter or digit http://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8
-			learnedFilteredClasses.add(className);
-			return true;
+	
+		if (ClassMethods.isArray(className)) {
+			className = ClassMethods.getArrayType(className);
+			return isFiltered(className);
 		}
 		try {
 			Class<?> c = Class.forName(className);

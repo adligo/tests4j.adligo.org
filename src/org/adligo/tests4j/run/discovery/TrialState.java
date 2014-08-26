@@ -2,10 +2,12 @@ package org.adligo.tests4j.run.discovery;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.I_Progress;
 
 /**
  * @diagram_sync with Tests4J_TrialStates.state on 
@@ -24,6 +26,7 @@ public class TrialState implements I_TrialStateNameIdKey {
 	private AtomicBoolean finishedRun = new AtomicBoolean(false);
 	private AtomicInteger tests = new AtomicInteger(0);
 	private AtomicInteger testCompleted = new AtomicInteger(0);
+	private AtomicReference<I_Progress> progress_ = new AtomicReference<I_Progress>();
 	
 	public TrialState(String trialNameIn, Class<? extends I_AbstractTrial> trialClassIn) {
 		trialName = trialNameIn;
@@ -139,5 +142,13 @@ public class TrialState implements I_TrialStateNameIdKey {
 			return 0.0;
 		}
 		return done/total * 100.0;
+	}
+	
+	public void setProgress(I_Progress progress) {
+		progress_.set(progress);
+	}
+	
+	public I_Progress getProgress() {
+		return progress_.get();
 	}
 }

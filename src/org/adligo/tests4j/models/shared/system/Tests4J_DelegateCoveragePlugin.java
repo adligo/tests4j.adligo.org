@@ -70,4 +70,14 @@ public class Tests4J_DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin 
 		}
 	}
 
+	@Override
+	public double getInstrumentProgress(Class<? extends I_AbstractTrial> trial) {
+		try {
+			return delegate.getInstrumentProgress(trial);
+		} catch (Exception t) {
+			reporter.onThrowable(t);
+		}
+		return 0.0;
+	}
+
 }

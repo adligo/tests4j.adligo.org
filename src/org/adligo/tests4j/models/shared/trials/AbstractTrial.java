@@ -183,8 +183,11 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 
 
+	/**
+	 * this should be called by sub classes
+	 * which override this method by super.beforeTests();
+	 */
 	public void beforeTests() {
-		//do nothing, allow overrides
 	}
 
 	public void afterTests() {
@@ -413,5 +416,14 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	public void showWidget(Object o) {
 		throw new IllegalStateException("This feature has not yet been implemented");
+	}
+
+	/**
+	 * you may override this to provide notification for long running tests
+	 * @param testName
+	 * @return
+	 */
+	public synchronized double getPctDone(String testName) {
+		return 0.0;
 	}
 }
