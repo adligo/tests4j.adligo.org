@@ -22,19 +22,19 @@ public class ClassAndAttributes {
 		ClassAttributesMutant cam = new ClassAttributesMutant();
 		cam.setClassName(c.getName());
 		
-		Field [] fields = c.getFields();
+		Field [] fields = c.getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {
 			Field f = fields[i];
 			cam.addField(new FieldSignature(f.getName() , f.getType().getName()));
 		}
 		
-		Constructor<?> [] constructors = c.getConstructors();
+		Constructor<?> [] constructors = c.getDeclaredConstructors();
 		for (int i = 0; i < constructors.length; i++) {
 			Constructor<?> f = constructors[i];
 			cam.addMethod(new MethodSignature("<init>", getClassNames(f.getParameterTypes())));
 		}
 		
-		Method [] methods = c.getMethods();
+		Method [] methods = c.getDeclaredMethods();
 		for (int i = 0; i < methods.length; i++) {
 			Method f = methods[i];
 			cam.addMethod(new MethodSignature(f.getName(), getClassNames(f.getParameterTypes()),

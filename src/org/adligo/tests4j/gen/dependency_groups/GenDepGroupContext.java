@@ -2,10 +2,11 @@ package org.adligo.tests4j.gen.dependency_groups;
 
 
 public class GenDepGroupContext {
-	public String trialPackageName_;
-	public Class<?> groupFactoryClass_;
-	public String apiVersion_ = "";
-	public String factoryMethod = "";
+	private String trialPackageName_;
+	private Class<?> groupFactoryClass_;
+	private String apiVersion_ = "";
+	private String factoryMethod = "";
+	private ConstantLookup constantLookup = new ConstantLookup();
 	
 	public String getTrialPackageName() {
 		return trialPackageName_;
@@ -32,6 +33,12 @@ public class GenDepGroupContext {
 	}
 	public void setFactoryMethod(String factoryMethod) {
 		this.factoryMethod = factoryMethod;
+	}
+	public ConstantLookup getConstantLookup() {
+		return constantLookup;
+	}
+	public void setConstantLookup(ConstantLookup constantLookup) {
+		this.constantLookup = constantLookup;
 	}
 	
 	

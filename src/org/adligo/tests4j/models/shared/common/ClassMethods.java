@@ -26,6 +26,7 @@ public class ClassMethods {
 	public static final String SHORT = "short";
 	public static final String DOUBLE = "double";
 	private static final Map<Character,String> PRIMITIVES = getPrimitives();
+	private static final Map<String,String> PRIMITIVES_CONSTANT_MAP = getPrimitivesConstantMap();
 	
 	private static Map<Character,String> getPrimitives() {
 		Map<Character,String> toRet = new HashMap<Character,String>();
@@ -41,6 +42,19 @@ public class ClassMethods {
 		return Collections.unmodifiableMap(toRet);
 	}
 	
+	private static Map<String,String> getPrimitivesConstantMap() {
+		Map<String,String> toRet = new HashMap<String,String>();
+		toRet.put(BOOLEAN,"BOOLEAN");
+		toRet.put(BYTE,"BYTE");
+		toRet.put(CHAR,"CHAR");
+		toRet.put(FLOAT,"FLOAT");
+		
+		toRet.put(INT,"INT");
+		toRet.put(LONG,"LONG");
+		toRet.put(SHORT,"SHORT");
+		toRet.put(DOUBLE, "DOUBLE");
+		return Collections.unmodifiableMap(toRet);
+	}
 	/**
 	 * This method uses the set of 
 	 * primitives and the class name to discover
@@ -196,6 +210,16 @@ public class ClassMethods {
 	 */
 	public static String getPrimitive(char p) {
 		return PRIMITIVES.get(p);
+	}
+	
+	/**
+	 * return the name of the constant in this 
+	 * class that has the type value
+	 * @param type
+	 * @return
+	 */
+	public static String getPrimitiveConstant(String type) {
+		return PRIMITIVES_CONSTANT_MAP.get(type);
 	}
 	/**
 	 * if it is the start class character
