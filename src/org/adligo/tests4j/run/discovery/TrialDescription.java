@@ -23,10 +23,11 @@ import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrumentation;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.trials.CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.models.shared.trials.I_CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
 import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
@@ -60,6 +61,7 @@ public class TrialDescription implements I_TrialDescription {
 	private final List<TestDescription> testMethods = new CopyOnWriteArrayList<TestDescription>();
 	private I_TrialType type;
 	private boolean runnable = false;
+	private I_CircularDependencies allowedCircularDependencies;
 	private boolean ignored;
 	private long timeout;
 	private I_Tests4J_Log reporter;
@@ -168,6 +170,8 @@ public class TrialDescription implements I_TrialDescription {
 									trialName + annonErrors.getWasAnnotatedIncorrectly()));
 							return false;
 						}
+						allowedCircularDependencies = 
+								CircularDependencies.get(sourceFileScope.allowedCircularDependencies());
 					}
 				break;
 			case ApiTrial:
@@ -485,4 +489,9 @@ public class TrialDescription implements I_TrialDescription {
 	public I_ClassDependenciesLocal getSourceClassDependencies() {
 		return sourceClassDependencies;
 	}
+
+	public I_CircularDependencies getAllowedCircularDependencies() {
+		return allowedCircularDependencies;
+	}
+
 }

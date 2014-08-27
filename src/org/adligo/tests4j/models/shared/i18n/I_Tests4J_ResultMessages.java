@@ -27,4 +27,5 @@ public interface I_Tests4J_ResultMessages {
 	public String getTestTimedOut();
 	public String getTrialTimedOut();
 	public String getCodeCoveragIsOff();
+	public String getSourceClassHasCircularDependency();
 }

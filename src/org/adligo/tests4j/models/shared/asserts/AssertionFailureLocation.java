@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.trials.AbstractTrial;
 
 /**
  * this class represents the location (stack trace/line number) 
@@ -42,8 +41,8 @@ public class AssertionFailureLocation extends Exception {
 		Set<String> toRet = new HashSet<String>();
 		
 		toRet.add(AssertionFailureLocation.class.getName());
-		toRet.add(AbstractTrial.class.getName());
-		toRet.add(AssertionProcessor.class.getName());
+		toRet.add("org.adligo.tests4j.models.shared.trials.AbstractTrial");
+		toRet.add("org.adligo.tests4j.models.shared.asserts.AssertionProcessor");
 		
 		return Collections.unmodifiableSet(toRet);
 	}

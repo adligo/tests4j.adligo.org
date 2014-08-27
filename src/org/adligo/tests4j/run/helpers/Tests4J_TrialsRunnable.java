@@ -427,6 +427,9 @@ public class Tests4J_TrialsRunnable implements Runnable,
 					result.addResult(minCoverageResult);
 					trialState.addTestCompleted();
 				}
+				TestResult dependencyResult = afterSouceFileTrialTestsProcessor.testDependencies(result);
+				result.addResult(dependencyResult);
+				trialState.addTestCompleted();
 				return result;
 			case ApiTrial:
 				afterApiTrialTestsProcessor.reset(trialDescription, 

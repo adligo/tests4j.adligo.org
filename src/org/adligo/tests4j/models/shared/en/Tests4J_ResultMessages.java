@@ -3,6 +3,7 @@ package org.adligo.tests4j.models.shared.en;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 
 public class Tests4J_ResultMessages implements I_Tests4J_ResultMessages {
+	private static final String SOURCE_CLASS_HAS_A_CIRCULAR_DEPENDENCY_DETECTED = "Source class has a circular dependency detected.";
 	private static final String THE_CODE_COVERAGE_SHOULD_BE_ABOVE_THE_EXPECTED_VALUE = "The code coverage should be above the expected value.";
 	private static final String THE_TEST_TIMED_OUT = "The test timed out.";
 	private static final String THE_TRIAL_TIMED_OUT = "The trial timed out.";
@@ -118,5 +119,9 @@ public class Tests4J_ResultMessages implements I_Tests4J_ResultMessages {
 	
 	public String getThrowableMessageNotUniform() {
 		return THE_EXPECTED_THROWABLE_MESSAGE_WAS_NOT_UNIFORM_WITH_THE_ACTUAL;
+	}
+	
+	public String getSourceClassHasCircularDependency() {
+		return SOURCE_CLASS_HAS_A_CIRCULAR_DEPENDENCY_DETECTED;
 	}
 }
