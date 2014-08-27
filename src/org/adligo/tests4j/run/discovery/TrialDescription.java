@@ -482,7 +482,7 @@ public class TrialDescription implements I_TrialDescription {
 		return Collections.unmodifiableList(failures);
 	}
 
-	protected synchronized I_ClassDependenciesLocal getSourceClassDependencies() {
+	public I_ClassDependenciesLocal getSourceClassDependencies() {
 		return sourceClassDependencies;
 	}
 }

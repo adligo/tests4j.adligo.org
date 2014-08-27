@@ -2,10 +2,12 @@ package org.adligo.tests4j.models.shared.results;
 
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageMutant;
+import org.adligo.tests4j.models.shared.dependency.I_ClassDependencies;
 
 public class SourceFileTrialResultMutant extends BaseTrialResultMutant implements I_SourceFileTrialResult {
 	private SourceFileCoverageMutant coverage;
 	private String sourceFileName;
+	private I_ClassDependencies dependencies;
 	
 	public SourceFileTrialResultMutant() {}
 
@@ -19,6 +21,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 			coverage = new SourceFileCoverageMutant(p.getSourceFileCoverage());
 		}
 		sourceFileName = p.getSourceFileName();
+		dependencies = p.getDependencies();
 	}
 
 	public SourceFileTrialResultMutant(I_TrialResult p) {
@@ -64,5 +67,13 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 			return false;
 		}
 		return true;
+	}
+
+	public I_ClassDependencies getDependencies() {
+		return dependencies;
+	}
+
+	public void setDependencies(I_ClassDependencies classDependencies) {
+		this.dependencies = classDependencies;
 	}
 }

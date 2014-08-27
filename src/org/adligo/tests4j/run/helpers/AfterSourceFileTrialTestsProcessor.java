@@ -7,12 +7,14 @@ import org.adligo.tests4j.models.shared.asserts.common.AssertCompareFailureMutan
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -34,7 +36,6 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 			"afterTrialTests(I_SourceFileTrialResult p)";
 	private static final String TEST_MIN_COVERAGE =
 			"testMinCoverage";
-	
 	public AfterSourceFileTrialTestsProcessor(I_Tests4J_Memory memory) {
 		super(memory);
 	}
@@ -72,12 +73,21 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		return result;
 	}
 	
+	/**
+	 * @param trialResultMutant which gets populated
+	 *    with the code coverage and class dependencies here.
+	 *    
+	 * @return
+	 */
 	public TestResultMutant afterSourceFileTrialTests(SourceFileTrialResultMutant trialResultMutant) {
 		Method clazzMethod = null;
 		
 		I_AbstractTrial trial = super.getTrial();
 		Class<? extends I_AbstractTrial> trialClass = trial.getClass();
 		TrialDescription trialDesc = super.getTrialDescription();
+		
+		I_ClassDependenciesLocal deps =  trialDesc.getSourceClassDependencies();
+		trialResultMutant.setDependencies(deps);
 		
 		List<I_PackageCoverage> coverage;
 		I_Tests4J_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();

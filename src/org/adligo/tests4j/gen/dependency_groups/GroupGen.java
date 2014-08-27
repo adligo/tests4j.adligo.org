@@ -16,6 +16,7 @@ import java.util.List;
 public class GroupGen {
 	private GenDepGroupContext ctx;
 	private ClassUseGen classUseGen = new ClassUseGen();
+	private ClassUseTrialGen classUseTrialGen = new ClassUseTrialGen();
 	
 	/**
 	 * note this doesn't take a PackageDiscovery
@@ -25,6 +26,7 @@ public class GroupGen {
 		for (Class<?> c: classes) {
 			ClassAndAttributes caa = new ClassAndAttributes(c);
 			classUseGen.gen(caa, System.out, ctx);
+			classUseTrialGen.gen(caa, System.out, ctx);
 		}
 	}
 

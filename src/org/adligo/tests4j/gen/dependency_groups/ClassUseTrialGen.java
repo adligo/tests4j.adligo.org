@@ -1,10 +1,15 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
+import org.adligo.tests4j.models.shared.dependency.I_ClassDependencies;
+import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
+import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileTrial;
 import org.adligo.tests4j.models.shared.trials.Test;
@@ -14,6 +19,10 @@ public class ClassUseTrialGen {
 
 	public void gen(ClassAndAttributes caa, PrintStream out, GenDepGroupContext ctx) {
 		String packageName = ctx.getTrialPackageName();
+		String api = ctx.getApiVersion();
+		if (!StringMethods.isEmpty(api)) {
+			api = "_" + api;
+		}
 		out.println("package " + packageName + ";");
 		out.println("");
 		
@@ -22,30 +31,36 @@ public class ClassUseTrialGen {
 		if (!packageName.equals(pkgName)) {
 			out.println("import " + clazz.getName() + ";");
 		}
+		Class<?> groupFactoryClass = ctx.getGroupFactoryClass();
+		out.println("import " + groupFactoryClass.getName() + ";");
 		out.println("import " + TrialDelegate.class.getName() + ";");
 		out.println("import " + Test.class.getName() + ";");
 		out.println("import " + SourceFileTrial.class.getName() + ";");
 		out.println("import " + SourceFileScope.class.getName() + ";");
+		out.println("import " + I_SourceFileTrialResult.class.getName() + ";");
+		out.println("import " + I_FieldSignature.class.getName() + ";");
+		out.println("import " + I_MethodSignature.class.getName() + ";");
+		out.println("import " + I_SourceFileTrialResult.class.getName() + ";");
+		out.println("import " + I_ClassDependencies.class.getName() + ";");
+		out.println("import " + I_ClassAttributes.class.getName() + ";");
 		
 		out.println("");
-		out.println("@SourceFileTrial (sourceClass=" + clazz.getSimpleName() + ".class)");
-		out.println("public class " + clazz.getSimpleName() + "_MockUseTrial extends SourceFileTrial ");
+		out.println("@SourceFileTrial (sourceClass=" + clazz.getSimpleName() + api +"_MockUse.class)");
+		out.println("public class " + clazz.getSimpleName() + api +"_MockUseTrial extends SourceFileTrial ");
 		if (clazz.isInterface()) {
-			out.println( System.lineSeparator() + "\timplements " + clazz.getSimpleName() + " {");
-		}
-		out.println("");
-		if (clazz.isInterface()) {
-			out.println("\tpublic " + clazz.getSimpleName() + "_MockUse(" +clazz.getSimpleName() + " p) {");
-			out.println("\t\tprivate int methodsCalled = 0;");
+			out.println("  implements " + clazz.getSimpleName() + " {");
+			out.println("");
+			
+			out.println("\tprivate int methodsCalled = 0;");
 			out.println("");
 			I_ClassAttributes ca = caa.getAttributes();
 			Set<I_MethodSignature> ms = ca.getMethods();
 			for (I_MethodSignature method: ms) {
-				String nextLine = "\t\tp." + method.getMethodName() + "(" +
+				String nextLine = "\tpublic " + method.getReturnClassName() + " " + method.getMethodName() + "(" +
 						getMethodParams(method) + ") {";
+				out.println(nextLine);
 				out.println("\t\tmethodsCalled++;");
 				out.println("\t}");
-				out.println(nextLine);
 				
 			}
 			out.println("");
@@ -56,9 +71,32 @@ public class ClassUseTrialGen {
 			out.println("\t}");
 			
 			out.println("");
-			out.println("\tpublic void testMethods() throws Exception {");
-			out.println("\t\tnew " + clazz.getSimpleName() + "_MockUse(this);");
-			out.println("\t\tassertEquals(" + ms.size() + ", methodsCalled);");
+			out.println("\tpublic void afterTrialTests(I_SourceFileTrialResult p) {");
+			out.println("\t\tI_ClassDependencies cRefs = p.getDependencies();");
+			out.println("\t\tif (cRefs == null) {");
+			out.println("\t\t\treturn;");
+			out.println("\t\t}");
+			out.println("\t\tList<I_ClassAttributes> refs = cRefs.getReferences();");
+			out.println("\t\tI_ClassAttributes example = " +groupFactoryClass.getSimpleName() +
+					"." + ctx.getFactoryMethod() + "();");
+			out.println("\t\tI_ClassAttributes ca = refs.get(0);");
+			out.println("\t\tassertNotNull(ca);");
+			out.println("\t\tassertEquals(example.getClassName(), ca.getClassName());");
+			out.println("\t\tSet<I_FieldSignature> exampleFields = example.getFields();");
+			out.println("\t\tSet<I_FieldSignature> fields = ca.getFields();");
+			out.println("\t\tfor (I_FieldSignature sig: exampleFields) {");
+			out.println("\t\t\tassertContains(fields, sig)");
+			out.println("\t\t}");
+			out.println("\t\tassertEquals(exampleFields.size(), fields.size());");
+			
+			out.println("\t\tSet<I_MethodSignature> exampleMethods = example.getMethods();");
+			out.println("\t\tSet<I_MethodSignature> methods = ca.getMethods();");
+			out.println("\t\tfor (I_MethodSignature method: exampleMethods) {");
+			out.println("\t\t\tassertContains(methods, method)");
+			out.println("\t\t}");
+			out.println("\t\tassertEquals(exampleMethods.size(), methods.size());");
+			
+			
 			out.println("\t}");
 		} else {
 			

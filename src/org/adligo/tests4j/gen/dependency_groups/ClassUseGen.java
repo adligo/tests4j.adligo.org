@@ -3,6 +3,7 @@ package org.adligo.tests4j.gen.dependency_groups;
 import java.io.PrintStream;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 
@@ -20,17 +21,20 @@ public class ClassUseGen {
 		String packageName = ctx.getTrialPackageName();
 		out.println("package " + packageName + ";");
 		out.println("");
-		
+		String api = ctx.getApiVersion();
+		if (!StringMethods.isEmpty(api)) {
+			api = "_" + api;
+		}
 		Class<?> clazz = caa.getClazz();
 		String pkgName = clazz.getPackage().getName();
 		if (!packageName.equals(pkgName)) {
 			out.println("import " + clazz.getName() + ";");
 		}
 		out.println("");
-		out.println("public class " + clazz.getSimpleName() + "_MockUse {");
+		out.println("public class " + clazz.getSimpleName() + api + "_MockUse {");
 		out.println("");
 		if (clazz.isInterface()) {
-			out.println("\tpublic " + clazz.getSimpleName() + "_MockUse(" +clazz.getSimpleName() + " p) {");
+			out.println("\tpublic " + clazz.getSimpleName() + api +"_MockUse(" +clazz.getSimpleName() + " p) {");
 			
 			I_ClassAttributes ca = caa.getAttributes();
 			Set<I_MethodSignature> ms = ca.getMethods();
