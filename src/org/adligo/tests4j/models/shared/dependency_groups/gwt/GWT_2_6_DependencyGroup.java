@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.dependency_groups;
+package org.adligo.tests4j.models.shared.dependency_groups.gwt;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;

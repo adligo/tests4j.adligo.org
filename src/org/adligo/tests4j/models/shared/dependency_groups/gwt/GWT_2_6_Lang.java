@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.dependency_groups;
+package org.adligo.tests4j.models.shared.dependency_groups.gwt;
 
 import org.adligo.tests4j.models.shared.common.ClassMethods;
 import org.adligo.tests4j.models.shared.dependency.ClassAttributesMutant;
@@ -6,6 +6,8 @@ import org.adligo.tests4j.models.shared.dependency.DependencyGroup;
 import org.adligo.tests4j.models.shared.dependency.DependencyGroupMutant;
 import org.adligo.tests4j.models.shared.dependency.FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.MethodSignature;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_1_7_Lang;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Lang;
 
 public class GWT_2_6_Lang extends DependencyGroup {
 	
@@ -93,7 +95,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		cam.addField(new FieldSignature("TYPE", JSE_1_7_Lang.CLASS));
 		
 		cam.addMethod(new MethodSignature("<init>", new String[] {ClassMethods.BOOLEAN}));
-		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_1_7_Lang.STRING}));
+		cam.addMethod(new MethodSignature("<init>", new String[] {JSE_Lang.STRING}));
 		
 		cam.addMethod(new MethodSignature("compare", 
 				new String[] {ClassMethods.BOOLEAN, ClassMethods.BOOLEAN}, 
