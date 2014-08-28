@@ -1,6 +1,7 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class ClassUseTrialGen {
 		out.println("import " + I_ClassAttributes.class.getName() + ";");
 		
 		out.println("");
-		out.println("@SourceFileTrial (sourceClass=" + clazz.getSimpleName() + api +"_MockUse.class)");
+		out.println("@SourceFileScope (sourceClass=" + clazz.getSimpleName() + api +"_MockUse.class)");
 		if (clazz.isInterface()) {
 			out.println("public class " + clazz.getSimpleName() + api +"_UseTrial extends SourceFileTrial ");
 			
@@ -67,7 +68,7 @@ public class ClassUseTrialGen {
 			out.println("");
 			out.println("\t@Test");
 			out.println("\tpublic void testMethods() throws Exception {");
-			out.println("\t\tnew " + clazz.getSimpleName() + "_MockUse(this);");
+			out.println("\t\tnew " + clazz.getSimpleName() + api + "_MockUse(this);");
 			out.println("\t\tassertEquals(" + ms.size() + ", methodsCalled);");
 			out.println("\t}");
 			
@@ -104,7 +105,7 @@ public class ClassUseTrialGen {
 			out.println("");
 			out.println("\t@Test");
 			out.println("\tpublic void testMethods() throws Exception {");
-			out.println("\t\tnew " + clazz.getSimpleName() + "_MockUse(this);");
+			out.println("\t\tnew " + clazz.getSimpleName() + api + "_MockUse(this);");
 			out.println("\t\tassertTrue(\"The trial should be able to create a" + 
 					clazz.getSimpleName() + "_MockUse" + ".\",true);");
 			out.println("\t}");
@@ -117,26 +118,49 @@ public class ClassUseTrialGen {
 			out.println("\t\t\treturn;");
 			out.println("\t\t}");
 			out.println("\t\tassertEquals(" +
-					clazz.getSimpleName() + "_MockUse.getClass().getName(), refs.getName());");
+					clazz.getSimpleName() + api+ "_MockUse.class.getName(), refs.getName());");
 			
 			out.println("\t\tI_ClassAttributes result = p.getAttributes(\"" + clazz.getName() + "\");");
 			out.println("\t\tassertNotNull(result);");
+			out.println("\t\tSet<I_FieldSignature> fields = new TreeSet<I_FieldSignature>();");
+			out.println("\t\tfields.addAll(result.getFields());");
+			out.println("\t\tSet<I_MethodSignature> methods = new TreeSet<I_MethodSignature>();");
+			out.println("\t\tmethods.addAll(result.getMethods());");
+			
+			out.println("");
+			out.println("\t\tList<String> parents = new ArrayList<String>();");
+			List<String> parents = new ArrayList<String>();
+			Class<?> pC = clazz.getSuperclass();
+			while (pC != null) {
+				parents.add(pC.getName());
+				pC = pC.getSuperclass();
+			}
+			for (int i = parents.size() - 1; i >= 0; i--) {
+				out.println("\t\tparents.add(\"" + parents.get(i) + "\");");
+			}
+			if (parents.size() != 0) {
+				out.println("\t\tfor(String parent, parents) {");
+				out.println("\t\t\tI_ClassAttributes ca = p.getAttributes(parent);");
+				out.println("\t\t\tfields.addAll(ca.getFields());");
+				out.println("\t\t\tmethods.addAll(ca.getMethods());");
+				out.println("\t\t}");
+			}
 			out.println("\t\tI_ClassAttributes example = " +groupFactoryClass.getSimpleName() +
 					".get" + clazz.getSimpleName()  + "();");
 			out.println("\t\tassertNotNull(ca);");
-			out.println("\t\tassertEquals(example.getClassName(), result.getClassName());");
+			out.println("\t\tassertEquals(example.getName(), result.getName());");
 			out.println("\t\tSet<I_FieldSignature> exampleFields = example.getFields();");
-			out.println("\t\tSet<I_FieldSignature> fields = result.getFields();");
+			
 			out.println("\t\tfor (I_FieldSignature sig: exampleFields) {");
-			out.println("\t\t\tassertContains(fields, sig)");
+			out.println("\t\t\tassertContains(fields, sig);");
 			out.println("\t\t}");
 			out.println("\t\tassertEquals(exampleFields.size(), fields.size());");
 			out.println("");
 			
 			out.println("\t\tSet<I_MethodSignature> exampleMethods = example.getMethods();");
-			out.println("\t\tSet<I_MethodSignature> methods = result.getMethods();");
+			
 			out.println("\t\tfor (I_MethodSignature method: exampleMethods) {");
-			out.println("\t\t\tassertContains(methods, method)");
+			out.println("\t\t\tassertContains(methods, method);");
 			out.println("\t\t}");
 			out.println("\t\tassertEquals(exampleMethods.size(), methods.size());");
 			

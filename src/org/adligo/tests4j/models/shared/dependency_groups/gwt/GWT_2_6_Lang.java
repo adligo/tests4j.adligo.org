@@ -41,14 +41,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 			JSE_Lang.APPENDABLE));
 		return new ClassAttributes(toRet);
 	}
-	public static ClassAttributes getArithmeticException() {
-		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setName(JSE_Lang.ARITHMETIC_EXCEPTION);
-		toRet.addMethod(new MethodSignature("<init>"));
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {JSE_Lang.STRING}));
-		return new ClassAttributes(toRet);
-	}
+
 	public static ClassAttributes getArrayIndexOutOfBoundsException() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
@@ -630,10 +623,14 @@ public class GWT_2_6_Lang extends DependencyGroup {
 			new String[] {JSE_Lang.THROWABLE}));
 		toRet.addMethod(new MethodSignature("<init>", 
 			new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
-		//
+		toRet.addMethod(new MethodSignature("<init>", 
+				new String[] {JSE_Lang.STRING}));
+		
 		addThrowableMembers(toRet);
 		return new ClassAttributes(toRet);
 	}
+	
+	
 	/**
 	 * everything that isn't a constructor (fields and methods)
 	 * @param toRet
@@ -651,53 +648,79 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		toRet.addMethod(new MethodSignature("getMessage", 
 			JSE_Lang.STRING));
 		toRet.addMethod(new MethodSignature("getStackTrace", 
-			"Ljava.lang.StackTraceElement;"));
+			"[" + JSE_Lang.STACK_TRACE_ELEMENT));
 		toRet.addMethod(new MethodSignature("getSuppressed", 
-			"Ljava.lang.Throwable;"));
+			"[" + JSE_Lang.THROWABLE));
 		toRet.addMethod(new MethodSignature("initCause", 
 			new String[] {JSE_Lang.THROWABLE}, 
 			JSE_Lang.THROWABLE));
 		toRet.addMethod(new MethodSignature("printStackTrace"));
 		toRet.addMethod(new MethodSignature("printStackTrace", 
-			new String[] {"java.io.PrintWriter"}));
+				new String[] {"java.io.PrintStream"}));
 		toRet.addMethod(new MethodSignature("setStackTrace", 
-			new String[] {"Ljava.lang.StackTraceElement;"}));
+			new String[] {"[" + JSE_Lang.STACK_TRACE_ELEMENT}));
 	}
 	
-	public static void addThrowableMethods(ClassAttributesMutant toRet) {
-		toRet.addMethod(new MethodSignature("fillInStackTrace", 
-			JSE_Lang.THROWABLE));
-		
-		toRet.addMethod(new MethodSignature("initCause", 
-			new String[] {JSE_Lang.THROWABLE}, 
-			JSE_Lang.THROWABLE));
-		
-		toRet.addMethod(new MethodSignature("getMessage", 
-			JSE_Lang.STRING));
-		toRet.addMethod(new MethodSignature("getLocalizedMessage", 
-			JSE_Lang.STRING));
-		toRet.addMethod(new MethodSignature("printStackTrace", 
-			new String[] {"java.io.PrintStream"}));
-		
-		
-		toRet.addMethod(new MethodSignature("fillInStackTrace", 
-			new String[] {ClassMethods.INT}, 
-			JSE_Lang.THROWABLE));
 	
-		toRet.addMethod(new MethodSignature("getSuppressed", 
-			"Ljava.lang.Throwable;"));
-		toRet.addMethod(new MethodSignature("printStackTrace"));
-		toRet.addMethod(new MethodSignature("addSuppressed", 
+	public static ClassAttributes getException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
 			new String[] {JSE_Lang.THROWABLE}));
-		
-		toRet.addMethod(new MethodSignature("getCause", 
-			JSE_Lang.THROWABLE));
-		toRet.addMethod(new MethodSignature("getStackTrace", 
-			"Ljava.lang.StackTraceElement;"));
-		toRet.addMethod(new MethodSignature("setStackTrace", 
-			new String[] {"Ljava.lang.StackTraceElement;"}));
+
+		addExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addExceptionMembers(ClassAttributesMutant toRet) {
+		addThrowableMembers(toRet);
 	}
 	
+	public static ClassAttributes getRuntimeException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.RUNTIME_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.THROWABLE}));
+
+		addRuntimeExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addRuntimeExceptionMembers(ClassAttributesMutant toRet) {
+		addExceptionMembers(toRet);
+	}
+	
+	
+	public static ClassAttributes getArithmeticException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.ARITHMETIC_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addArithmeticExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addArithmeticExceptionMembers(ClassAttributesMutant toRet) {
+		addRuntimeExceptionMembers(toRet);
+	}
 	public GWT_2_6_Lang() {
 		super(create());
 	}

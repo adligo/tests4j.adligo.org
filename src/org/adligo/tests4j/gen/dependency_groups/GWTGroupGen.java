@@ -39,7 +39,11 @@ public class GWTGroupGen {
 		toRet.add(Character.class);
 		*/
 		//toRet.add(Object.class);
-		toRet.add(Throwable.class);
+		//toRet.add(Throwable.class);
+		toRet.add(Exception.class);
+		//toRet.add(RuntimeException.class);
+		//toRet.add(ArithmeticException.class);
+		
 		/*
 		toRet.add(Throwable.class);
 		toRet.add(Enum.class);

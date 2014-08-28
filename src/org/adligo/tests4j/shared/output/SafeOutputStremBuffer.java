@@ -28,4 +28,5 @@ public class SafeOutputStremBuffer implements I_OutputBuffer {
 			}
 		}
 	}
+	
 }

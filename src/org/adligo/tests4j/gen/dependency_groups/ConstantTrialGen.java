@@ -1,10 +1,10 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
-import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
@@ -41,7 +41,9 @@ public class ConstantTrialGen {
 		//do constructors
 		I_ClassAttributes ca = caa.getAttributes();
 		Set<I_MethodSignature> ms = ca.getMethods();
+		Set<I_FieldSignature> fs = ca.getFields();
 		
+		out.println("\t\tSet<I_FieldSignature> fs = result.getFields();");
 		out.println("\t\tSet<I_MethodSignature> ms = result.getMethods();");
 		for (I_MethodSignature method: ms) {
 			if ("<init>".equals(method.getMethodName())) {
@@ -59,34 +61,52 @@ public class ConstantTrialGen {
 				out.println(nextLine);
 			}
 		}
-		out.println("\t\tassert" + clazz.getSimpleName() + "Members(this, result);");
+		out.println("\t\tdelegates.delegate" + clazz.getSimpleName() + "MemberAsserts(result);");
+		out.println("\t\tassertEquals(" + fs.size() + ", fs.size());");
+		out.println("\t\tassertEquals(" + ms.size() + ", ms.size());");
 		out.println("\t}");
 		
-		out.println("\tpublic static void assert" + clazz.getSimpleName() + "Members(I_Asserts trials,I_ClassAttributes result) {");
-		Set<I_FieldSignature> fs = ca.getFields();
-		out.println("\t\tSet<I_FieldSignature> fs = result.getFields();");
-		for (I_FieldSignature sig: fs) {
-			String nextLine = "\t\ttrials.assertContains(fs, new FieldSignature(\"" + sig.getName() + "\", " +
-					constantLookup.get(sig.getClassName()) + "));";
-			out.println(nextLine);
+		out.println("\tpublic void delegate" + clazz.getSimpleName() + "MemberAsserts(I_ClassAttributes result) {");
+		Class<?> parent = clazz.getSuperclass();
+		if (parent != null) {
+			out.println("\t\tdelegate" + parent.getSimpleName() + "MemberAsserts(result);");
 		}
 		
-		
-		out.println("\t\tSet<I_MethodSignature> ms = result.getMethods();");
-		for (I_MethodSignature method: ms) {
-			String nextLine = "\t\ttrials.assertContains(ms, new MethodSignature(\"" + method.getMethodName() + "\"";
-			if (method.getParameters() >= 1) {
-				nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
-			}
-			if (method.getReturnClassName() != null) {
-				String type = constantLookup.get(method.getReturnClassName());
-				if (type != null) {
-					nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + type + "";
-				}
-			}
-			nextLine = nextLine + "));";
-			out.println(nextLine);
+		List<String> lines = new ArrayList<String>();
+		lines.add("\t\tSet<I_FieldSignature> fs = result.getFields();");
+		for (I_FieldSignature sig: fs) {
+			lines.add("\t\tassertContains(fs, new FieldSignature(\"" + sig.getName() + "\", " +
+					constantLookup.get(sig.getClassName()) + "));");
 			
+		}
+		if (lines.size() >= 2) {
+			for (String line: lines) {
+				out.println(line);
+			}
+		}
+		
+		lines.clear();
+		lines.add("\t\tSet<I_MethodSignature> ms = result.getMethods();");
+		for (I_MethodSignature method: ms) {
+			if ( !"<init>".equals(method.getMethodName())) {
+				String nextLine = "\t\tassertContains(ms, new MethodSignature(\"" + method.getMethodName() + "\"";
+				if (method.getParameters() >= 1) {
+					nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
+				}
+				if (method.getReturnClassName() != null) {
+					String type = constantLookup.get(method.getReturnClassName());
+					if (type != null) {
+						nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + type + "";
+					}
+				}
+				nextLine = nextLine + "));";
+				lines.add(nextLine);
+			}
+		}
+		if (lines.size() >= 2) {
+			for (String line: lines) {
+				out.println(line);
+			}
 		}
 		out.println("\t}");
 		

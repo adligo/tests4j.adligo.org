@@ -42,4 +42,5 @@ public class OutputDelegateor implements I_OutputDelegateor {
 		}
 	}
 
+	
 }

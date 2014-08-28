@@ -1,6 +1,8 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.common.StringMethods;
@@ -66,7 +68,7 @@ public class ClassUseGen {
 				if ("<init>".equals(method.getMethodName())) {
 					String nextLine = "\t\tobj = new " + clazz.getSimpleName() + "(";
 					if (method.getParameters() >= 1) {
-						nextLine = nextLine + System.lineSeparator() +
+						nextLine = nextLine + System.lineSeparator() + "\t\t\t" +
 								getMethodParamsDefaults(method);
 					}
 					nextLine = nextLine + ");";
@@ -75,14 +77,44 @@ public class ClassUseGen {
 				
 			}
 			
-			for (I_MethodSignature method: ms) {
-				if ( !"<init>".equals(method.getMethodName())) {
-					String nextLine = "\t\tobj." + method.getMethodName() + "(" +
-							getMethodParamsDefaults(method) + ");";
-					out.println(nextLine);
+			ClassAndAttributes parent = caa.getParent();
+			List<ClassAndAttributes> parents = new ArrayList<ClassAndAttributes>();
+			while (parent != null) {
+				parents.add(parent);
+				parent = parent.getParent();
+			}
+			parents.add(caa);
+			
+			for (int i = parents.size() - 1; i >= 0; i--) {
+				ClassAndAttributes one = parents.get(i);
+				I_ClassAttributes cAttribs = one.getAttributes();
+				Class<?> tC = one.getClazz();
+				if (hasNonConstructorMethod(cAttribs)) {
+					out.println("\t\tcall" + tC.getSimpleName() +"Methods();");
 				}
 			}
+			
 			out.println("\t}");
+			out.println("");
+			
+			
+			for (int i = parents.size() - 1; i >= 0; i--) {
+				ClassAndAttributes one = parents.get(i);
+				Class<?> tc = one.getClazz();
+				I_ClassAttributes cAttribs = one.getAttributes();
+				if (hasNonConstructorMethod(cAttribs)) {
+					out.println("\tpublic void call" + tc.getSimpleName() + "Methods() {");
+					Set<I_MethodSignature> methods = cAttribs.getMethods();
+					for (I_MethodSignature method: methods) {
+						if ( !"<init>".equals(method.getMethodName())) {
+							String nextLine = "\t\tobj." + method.getMethodName() + "(" +
+									getMethodParamsDefaults(method) + ");";
+							out.println(nextLine);
+						}
+					}
+					out.println("\t}");
+				}
+			}
 		}
 		out.println("}");
 	}
@@ -98,5 +130,15 @@ public class ClassUseGen {
 			sb.append(DefaultUseGenTypes.TYPES.get(param));
 		}
 		return sb.toString();
+	}
+	
+	private boolean hasNonConstructorMethod(I_ClassAttributes ca) {
+		Set<I_MethodSignature> methods = ca.getMethods();
+		for (I_MethodSignature method: methods) {
+			if ( !"<init>".equals(method.getMethodName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

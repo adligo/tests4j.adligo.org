@@ -5,6 +5,15 @@ package org.adligo.tests4j.shared.output;
  * @author scott
  *
  */
-public interface I_ConcurrentOutputDelegator extends I_OutputBuffer, I_OutputDelegateor {
+public interface I_ConcurrentOutputDelegator extends I_OutputBuffer {
+	/**
+	 * poll the main output
+	 * @return
+	 */
 	public abstract String poll();
+	/**
+	 * a thread local delegate
+	 * @param buffer
+	 */
+	public void setDelegate(I_ToggleOutputBuffer buffer);
 }

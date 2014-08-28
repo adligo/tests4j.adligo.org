@@ -20,6 +20,7 @@ import org.adligo.tests4j.models.shared.dependency.MethodSignature;
  *
  */
 public class ClassAndAttributes {
+	private ClassAndAttributes parent_;
 	private I_ClassAttributes parentAttribs_;
 	private Class<?> parentClass_;
 	private Set<I_FieldSignature> parentFieldSigs_ = null;
@@ -32,7 +33,8 @@ public class ClassAndAttributes {
 		clazz = c;
 		parentClass_ =  clazz.getSuperclass();
 		if (parentClass_ != null) {
-			parentAttribs_ = new ClassAndAttributes(parentClass_).getAttributes();
+			parent_ = new ClassAndAttributes(parentClass_);
+			parentAttribs_ = parent_.getAttributes();
 			if (parentAttribs_ != null) {
 				parentFieldSigs_ = parentAttribs_.getFields();
 				parentMethodSigs_ = parentAttribs_.getMethods();
@@ -113,5 +115,11 @@ public class ClassAndAttributes {
 	}
 	public void setClazz(Class<?> clazz) {
 		this.clazz = clazz;
+	}
+	public I_ClassAttributes getParentAttribs() {
+		return parentAttribs_;
+	}
+	public ClassAndAttributes getParent() {
+		return parent_;
 	}
 }

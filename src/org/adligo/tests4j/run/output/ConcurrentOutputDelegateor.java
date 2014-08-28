@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_OutputBuffer;
 import org.adligo.tests4j.shared.output.I_OutputDelegateor;
+import org.adligo.tests4j.shared.output.I_ToggleOutputBuffer;
 
 /**
  * All messages are put here before getting,
@@ -22,9 +23,9 @@ public class ConcurrentOutputDelegateor implements I_ConcurrentOutputDelegator {
 	 * if you get a out of memory error, try to do less logging, printing.
 	 */
 	private ConcurrentLinkedQueue<String> buffer = new ConcurrentLinkedQueue<String>();
-	private InheritableThreadLocal<I_OutputBuffer> delegates = new InheritableThreadLocal<I_OutputBuffer>();
+	private InheritableThreadLocal<I_ToggleOutputBuffer> delegates = new InheritableThreadLocal<I_ToggleOutputBuffer>();
 	
-	public void setDelegate(I_OutputBuffer buffer) {
+	public void setDelegate(I_ToggleOutputBuffer buffer) {
 		delegates.set(buffer);
 	}
 	
@@ -33,10 +34,14 @@ public class ConcurrentOutputDelegateor implements I_ConcurrentOutputDelegator {
 	 */
 	@Override
 	public void add(String p) {
-		buffer.add(p);
-		I_OutputBuffer delegate = delegates.get();
+		I_ToggleOutputBuffer delegate = delegates.get();
 		if (delegate != null) {
+			if (delegate.isPrinting()) {
+				buffer.add(p);
+			}
 			delegate.add(p);
+		} else {
+			buffer.add(p);
 		}
 	}
 	

@@ -28,7 +28,7 @@ public class GroupGen {
 		for (Class<?> c: classes) {
 			ClassAndAttributes caa = new ClassAndAttributes(c);
 			//constantGen.gen(caa, System.out, ctx);
-			constantTrialGen.gen(caa, System.out, ctx);
+			//constantTrialGen.gen(caa, System.out, ctx);
 			classUseGen.gen(caa, System.out, ctx);
 			classUseTrialGen.gen(caa, System.out, ctx);
 		}

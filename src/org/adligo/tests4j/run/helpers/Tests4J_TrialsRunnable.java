@@ -47,7 +47,7 @@ import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.discovery.TrialState;
 import org.adligo.tests4j.run.output.TrialOutput;
-import org.adligo.tests4j.shared.output.I_OutputDelegateor;
+import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -81,12 +81,11 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	private UseCaseTrialResultMutant useCaseTrialResultMutant;
 	private TrialBindings bindings;
 	private TrialOutput out = new TrialOutput();
-	private I_OutputDelegateor outputDelegator;
+	private I_ConcurrentOutputDelegator outputDelegator;
 	
 	private String trialName;
 	private String testName_;
 	private I_Tests4J_CoverageRecorder trialThreadLocalCoverageRecorder;
-	private TrialDescriptionProcessor trialDescriptionProcessor;
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
@@ -119,7 +118,6 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), logger);
 		bindings.setAssertListener(testsRunner);
 		
-		trialDescriptionProcessor = new TrialDescriptionProcessor(memory);
 		afterSouceFileTrialTestsProcessor = new AfterSourceFileTrialTestsProcessor(memory);
 		afterApiTrialTestsProcessor = new AfterApiTrialTestsProcessor(memory);
 		afterUseCaseTrialTestsProcessor = new AfterUseCaseTrialTestsProcessor(memory);
@@ -161,8 +159,12 @@ public class Tests4J_TrialsRunnable implements Runnable,
 						logger.onThrowable(x);
 					} 
 				
+					
 					if (trialDescription.isRunnable()) {
 						if (trialDescription.getType() != TrialType.MetaTrial) {
+							boolean printing = trialDescription.isPrintToStdOut(); 
+							out.setPrinting(printing);
+							
 							try {
 								//synchronized here so that each trial can only be running
 								//once in all of the trial threads, having a trial running
@@ -243,6 +245,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		if (failures.size() == 0) {
 		
 			testsRunner.setTrial(trial);
+			testsRunner.setCod(outputDelegator);
+			testsRunner.setOut(out);
 			if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 				logger.log("running trial tests " + trialName);
 			}
@@ -502,11 +506,11 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		return trialDescription;
 	}
 
-	public I_OutputDelegateor getOutputDelegator() {
+	public I_ConcurrentOutputDelegator getOutputDelegator() {
 		return outputDelegator;
 	}
 
-	public void setOutputDelegator(I_OutputDelegateor outputDelegator) {
+	public void setOutputDelegator(I_ConcurrentOutputDelegator outputDelegator) {
 		this.outputDelegator = outputDelegator;
 	}
 

@@ -1,9 +1,10 @@
 package org.adligo.tests4j.run.output;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
-import org.adligo.tests4j.shared.output.I_OutputBuffer;
+import org.adligo.tests4j.shared.output.I_ToggleOutputBuffer;
 
 /**
  * Output for a trial (ie System.out, System.err, log.log),
@@ -12,9 +13,10 @@ import org.adligo.tests4j.shared.output.I_OutputBuffer;
  * @author scott
  *
  */
-public class TrialOutput implements I_OutputBuffer {
+public class TrialOutput implements I_ToggleOutputBuffer {
 	private ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<String>();
-
+	private AtomicBoolean printing_ = new AtomicBoolean(true);
+	
 	@Override
 	public void add(String p) {
 		output.add(p);
@@ -30,4 +32,14 @@ public class TrialOutput implements I_OutputBuffer {
 		}
 		return sb.toString();
 	}
+
+	public boolean isPrinting() {
+		return printing_.get();
+	}
+
+	public void setPrinting(boolean printing) {
+		printing_.set(printing);
+	}
+	
+
 }

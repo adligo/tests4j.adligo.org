@@ -18,6 +18,8 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.run.output.TrialOutput;
+import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -36,6 +38,8 @@ public class Tests4J_TestRunable implements Runnable, I_Tests4J_AssertListener {
 	private I_Tests4J_Log reporter;
 	private TestResultMutant testResultMutant;
 	private boolean assertFailed = false;
+	private I_ConcurrentOutputDelegator cod;
+	private TrialOutput out;
 	
 	public Tests4J_TestRunable(I_Tests4J_Memory pMemory) {
 		reporter = pMemory.getLog();
@@ -45,6 +49,8 @@ public class Tests4J_TestRunable implements Runnable, I_Tests4J_AssertListener {
 	public void run() {
 		testResultMutant = new TestResultMutant();
 		assertionHashes.clear();
+		//capture stuff on this thread as well, as the trial thread
+		cod.setDelegate(out);
 		
 		if (reporter.isLogEnabled(Tests4J_TestRunable.class)) {
 			reporter.log("running test " + trial.getClass().getName() + "." + testMethod.getName());
@@ -142,6 +148,22 @@ public class Tests4J_TestRunable implements Runnable, I_Tests4J_AssertListener {
 
 	public TestResult getTestResult() {
 		return new TestResult(testResultMutant);
+	}
+
+	protected I_ConcurrentOutputDelegator getCod() {
+		return cod;
+	}
+
+	protected TrialOutput getOut() {
+		return out;
+	}
+
+	protected void setCod(I_ConcurrentOutputDelegator cod) {
+		this.cod = cod;
+	}
+
+	protected void setOut(TrialOutput out) {
+		this.out = out;
 	}
 
 }

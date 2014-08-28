@@ -29,4 +29,5 @@ public interface I_ClassAttributes {
 	 * @return
 	 */
 	public Set<I_MethodSignature> getMethods();
+	
 }

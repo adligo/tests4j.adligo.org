@@ -56,7 +56,7 @@ public class ConstantGen {
 				}
 			}
 			out.println("");
-			out.println("\t\tadd" + clazz.getSimpleName() + "(ClassAttributesMutant toRet);");
+			out.println("\t\tadd" + clazz.getSimpleName() + "Members(toRet);");
 			out.println("\t\treturn new ClassAttributes(toRet);");
 			out.println("\t}");
 			out.println("");
@@ -74,19 +74,20 @@ public class ConstantGen {
 			}
 			
 			for (I_MethodSignature method: ms) {
-				String nextLine = "\t\ttoRet.addMethod(new MethodSignature(\"" + method.getMethodName() + "\"";
-				if (method.getParameters() >= 1) {
-					nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
-				}
-				if (method.getReturnClassName() != null) {
-					String type = constantLookup.get(method.getReturnClassName());
-					if (type != null) {
-						nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + type + "";
+				if ( !"<init>".equals(method.getMethodName())) {
+					String nextLine = "\t\ttoRet.addMethod(new MethodSignature(\"" + method.getMethodName() + "\"";
+					if (method.getParameters() >= 1) {
+						nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
 					}
-				}
-				nextLine = nextLine + "));";
-				out.println(nextLine);
-				
+					if (method.getReturnClassName() != null) {
+						String type = constantLookup.get(method.getReturnClassName());
+						if (type != null) {
+							nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + type + "";
+						}
+					}
+					nextLine = nextLine + "));";
+					out.println(nextLine);
+				}	
 			}
 			out.println("\t}");
 		

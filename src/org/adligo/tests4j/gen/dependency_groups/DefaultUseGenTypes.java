@@ -1,5 +1,6 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,11 @@ public class DefaultUseGenTypes {
 		
 		toRet.put(String.class.getName(), "\"string\"");
 		toRet.put(CharSequence.class.getName(), "\"charSequence\"");
-		
+		toRet.put(Object.class.getName(), "new Object()");
+		toRet.put(Throwable.class.getName(), "new Throwable()");
+		toRet.put("[" + Throwable.class.getName(), "new Throwable[] {}");
+		toRet.put("[L" + StackTraceElement.class.getName() + ";", "new StackTraceElement[] {}");
+		toRet.put(PrintStream.class.getName(), "System.out");
 		return Collections.unmodifiableMap(toRet);
 	}
 }

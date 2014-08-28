@@ -31,6 +31,7 @@ import org.adligo.tests4j.models.shared.trials.I_CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
 import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
+import org.adligo.tests4j.models.shared.trials.SuppressOutput;
 import org.adligo.tests4j.models.shared.trials.TrialTimeout;
 import org.adligo.tests4j.models.shared.trials.UseCaseScope;
 import org.adligo.tests4j.run.helpers.I_Tests4J_Memory;
@@ -71,6 +72,7 @@ public class TrialDescription implements I_TrialDescription {
 	private double minCoverage = 100.0;
 	private List<I_TrialFailure> failures = new ArrayList<I_TrialFailure>();
 	private I_ClassDependenciesLocal sourceClassDependencies;
+	boolean printToStdOut_ = true;
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
 			I_Tests4J_Memory pMem) {
@@ -124,6 +126,11 @@ public class TrialDescription implements I_TrialDescription {
 		} else {
 			timeout = 0;
 		}
+		SuppressOutput suppressOut = trialClass.getAnnotation(SuppressOutput.class);
+		if (suppressOut != null) {
+			printToStdOut_ = false;
+		}
+		
 		findTestMethods();
 		if (failures.size() >= 1) {
 			return false;
@@ -492,6 +499,10 @@ public class TrialDescription implements I_TrialDescription {
 
 	public I_CircularDependencies getAllowedCircularDependencies() {
 		return allowedCircularDependencies;
+	}
+
+	public boolean isPrintToStdOut() {
+		return printToStdOut_;
 	}
 
 }

@@ -26,8 +26,8 @@ import org.adligo.tests4j.run.output.ConcurrentOutputDelegateor;
 import org.adligo.tests4j.run.output.JsePrintOutputStream;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.DelegatingLog;
+import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_OutputBuffer;
-import org.adligo.tests4j.shared.output.I_OutputDelegateor;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.output.ListDelegateOutputBuffer;
 import org.adligo.tests4j.shared.output.PrintStreamOutputBuffer;
@@ -329,7 +329,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		}
 	}
 	protected void runTrialRunnable(Tests4J_ProcessInfo info,
-			I_OutputDelegateor od, ExecutorService runService) {
+			I_ConcurrentOutputDelegator od, ExecutorService runService) {
 		Tests4J_TrialsRunnable tip = new Tests4J_TrialsRunnable(memory, notifier); 
 		info.addRunnable(tip);
 		tip.setOutputDelegator(od);
