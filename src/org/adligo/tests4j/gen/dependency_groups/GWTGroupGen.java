@@ -12,10 +12,9 @@ public class GWTGroupGen {
 	public static void main(String[] args) {
 		GroupGen gg = new GroupGen();
 		GenDepGroupContext ctx = new GenDepGroupContext();
-		ctx.setTrialPackageName("org.adligo.tests4J_tests.models.shared.dependency_group.gwt");
+		ctx.setTrialPackageName("org.adligo.tests4j_tests.models.shared.dependency_groups.gwt.v2_6.lang");
 		ctx.setApiVersion("2_6");
 		ctx.setGroupFactoryClass(GWT_2_6_Lang.class);
-		ctx.setFactoryMethod("getAppendable");
 		ConstantLookup cl = ctx.getConstantLookup();
 		cl.addLookups(JSE_Lang.INSTANCE);
 		
@@ -25,6 +24,7 @@ public class GWTGroupGen {
 	
 	public static List<Class<?>> getLang() {
 		List<Class<?>> toRet = new ArrayList<Class<?>>();
+		/*
 		toRet.add(Appendable.class);
 		toRet.add(ArithmeticException.class);
 		toRet.add(ArrayIndexOutOfBoundsException.class);
@@ -37,10 +37,12 @@ public class GWTGroupGen {
 		
 		toRet.add(CharSequence.class);
 		toRet.add(Character.class);
-		
+		*/
 		toRet.add(Object.class);
+		/*
 		toRet.add(Throwable.class);
 		toRet.add(Enum.class);
+		*/
 		return toRet;
 	}
 }

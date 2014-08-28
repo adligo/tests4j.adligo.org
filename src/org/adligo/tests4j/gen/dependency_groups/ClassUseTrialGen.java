@@ -46,8 +46,9 @@ public class ClassUseTrialGen {
 		
 		out.println("");
 		out.println("@SourceFileTrial (sourceClass=" + clazz.getSimpleName() + api +"_MockUse.class)");
-		out.println("public class " + clazz.getSimpleName() + api +"_MockUseTrial extends SourceFileTrial ");
 		if (clazz.isInterface()) {
+			out.println("public class " + clazz.getSimpleName() + api +"_UseTrial extends SourceFileTrial ");
+			
 			out.println("  implements " + clazz.getSimpleName() + " {");
 			out.println("");
 			
@@ -78,7 +79,7 @@ public class ClassUseTrialGen {
 			out.println("\t\t}");
 			out.println("\t\tList<I_ClassAttributes> refs = cRefs.getReferences();");
 			out.println("\t\tI_ClassAttributes example = " +groupFactoryClass.getSimpleName() +
-					"." + ctx.getFactoryMethod() + "();");
+					".get" + clazz.getSimpleName() + "();");
 			out.println("\t\tI_ClassAttributes ca = refs.get(0);");
 			out.println("\t\tassertNotNull(ca);");
 			out.println("\t\tassertEquals(example.getClassName(), ca.getClassName());");
@@ -99,7 +100,48 @@ public class ClassUseTrialGen {
 			
 			out.println("\t}");
 		} else {
+			out.println("public class " + clazz.getSimpleName() + api +"_UseTrial extends SourceFileTrial {");
+			out.println("");
+			out.println("\t@Test");
+			out.println("\tpublic void testMethods() throws Exception {");
+			out.println("\t\tnew " + clazz.getSimpleName() + "_MockUse(this);");
+			out.println("\t\tassertTrue(\"The trial should be able to create a" + 
+					clazz.getSimpleName() + "_MockUse" + ".\",true);");
+			out.println("\t}");
 			
+			
+			out.println("");
+			out.println("\tpublic void afterTrialTests(I_SourceFileTrialResult p) {");
+			out.println("\t\tI_ClassAttributes refs = p.getSourceClassAttributes();");
+			out.println("\t\tif (refs == null) {");
+			out.println("\t\t\treturn;");
+			out.println("\t\t}");
+			out.println("\t\tassertEquals(" +
+					clazz.getSimpleName() + "_MockUse.getClass().getName(), refs.getName());");
+			
+			out.println("\t\tI_ClassAttributes result = p.getAttributes(\"" + clazz.getName() + "\");");
+			out.println("\t\tassertNotNull(result);");
+			out.println("\t\tI_ClassAttributes example = " +groupFactoryClass.getSimpleName() +
+					".get" + clazz.getSimpleName()  + "();");
+			out.println("\t\tassertNotNull(ca);");
+			out.println("\t\tassertEquals(example.getClassName(), result.getClassName());");
+			out.println("\t\tSet<I_FieldSignature> exampleFields = example.getFields();");
+			out.println("\t\tSet<I_FieldSignature> fields = result.getFields();");
+			out.println("\t\tfor (I_FieldSignature sig: exampleFields) {");
+			out.println("\t\t\tassertContains(fields, sig)");
+			out.println("\t\t}");
+			out.println("\t\tassertEquals(exampleFields.size(), fields.size());");
+			out.println("");
+			
+			out.println("\t\tSet<I_MethodSignature> exampleMethods = example.getMethods();");
+			out.println("\t\tSet<I_MethodSignature> methods = result.getMethods();");
+			out.println("\t\tfor (I_MethodSignature method: exampleMethods) {");
+			out.println("\t\t\tassertContains(methods, method)");
+			out.println("\t\t}");
+			out.println("\t\tassertEquals(exampleMethods.size(), methods.size());");
+			
+			
+			out.println("\t}");
 		}
 		out.println("}");
 		

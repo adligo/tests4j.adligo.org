@@ -104,7 +104,7 @@ public interface JSE_1_6_Lang {
 		public static final String VERIFY_ERROR = "java.lang.VerifyError";
 		public static final String VIRTUAL_MACHINE_ERROR = "java.lang.VirtualMachineError";
 		
-		public static final String DEPRICATED = "java.lang.Deprecated";
+		public static final String DEPRECATED = "java.lang.Deprecated";
 		public static final String OVERRIDE = "java.lang.Override";
-		public static final String SUPRESS_WARNINGS = "java.lang.SuppressWarnings";
+		public static final String SUPPRESS_WARNINGS = "java.lang.SuppressWarnings";
 }

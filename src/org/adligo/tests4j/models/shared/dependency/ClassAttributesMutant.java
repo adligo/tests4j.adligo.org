@@ -5,23 +5,23 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public class ClassAttributesMutant implements I_ClassAttributes {
-	private String className;
+	private String name;
 	private Set<I_MethodSignature> methods = new TreeSet<I_MethodSignature>();
 	private Set<I_FieldSignature> fields = new TreeSet<I_FieldSignature>();
 	
 	public ClassAttributesMutant() {}
 	
 	public ClassAttributesMutant(I_ClassAttributes cmm) {
-		className = cmm.getClassName();
+		name = cmm.getName();
 		setMethods(cmm.getMethods());
 		setFields(cmm.getFields());
 	}
 	
-	public String getClassName() {
-		return className;
+	public String getName() {
+		return name;
 	}
-	public void setClassName(String classNameIn) {
-		className = classNameIn;
+	public void setName(String classNameIn) {
+		name = classNameIn;
 	}
 	public Set<I_MethodSignature> getMethods() {
 		return methods;
@@ -50,8 +50,8 @@ public class ClassAttributesMutant implements I_ClassAttributes {
 	public static String toString(I_ClassAttributes cm) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(cm.getClass().getSimpleName());
-		builder.append(" [className=");
-		builder.append(cm.getClassName());
+		builder.append(" [name=");
+		builder.append(cm.getName());
 		Set<I_FieldSignature> fields = cm.getFields();
 		if (fields.size() >= 1) {
 			builder.append(", fields=");

@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.results;
 
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependencies;
 
 public interface I_SourceFileTrialResult extends I_TrialResult {
@@ -13,10 +14,24 @@ public interface I_SourceFileTrialResult extends I_TrialResult {
 	public abstract String getSourceFileName();
 
 	/**
-	 * the classes depended on by 
+	 * all of the classes depended on by 
 	 * the sourceClass.
 	 * @return
 	 */
 	public I_ClassDependencies getDependencies();
 
+	/**
+	 * The relations/attributes from the dependency,
+	 * mapped.
+	 * @param className
+	 * @return
+	 */
+	public I_ClassAttributes getAttributes(String className);
+	/**
+	 * The relations/attributes for the sourceClass from the dependencies.
+	 * mapped.
+	 * @param className
+	 * @return
+	 */
+	public I_ClassAttributes getSourceClassAttributes();
 }

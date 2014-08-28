@@ -1,13 +1,19 @@
 package org.adligo.tests4j.models.shared.results;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageMutant;
+import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependencies;
 
 public class SourceFileTrialResultMutant extends BaseTrialResultMutant implements I_SourceFileTrialResult {
 	private SourceFileCoverageMutant coverage;
 	private String sourceFileName;
 	private I_ClassDependencies dependencies;
+	private Map<String, I_ClassAttributes> attributeRefs_;
 	
 	public SourceFileTrialResultMutant() {}
 
@@ -21,7 +27,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 			coverage = new SourceFileCoverageMutant(p.getSourceFileCoverage());
 		}
 		sourceFileName = p.getSourceFileName();
-		dependencies = p.getDependencies();
+		setDependencies(p.getDependencies());
 	}
 
 	public SourceFileTrialResultMutant(I_TrialResult p) {
@@ -74,6 +80,27 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	}
 
 	public void setDependencies(I_ClassDependencies classDependencies) {
-		this.dependencies = classDependencies;
+		if (attributeRefs_ != null) {
+			attributeRefs_.clear();
+		} else {
+			attributeRefs_ = new HashMap<>();
+		}
+		dependencies = classDependencies;
+		if (dependencies != null) {
+			List<I_ClassAttributes> ars = dependencies.getReferences();
+			for (I_ClassAttributes ar: ars) {
+				attributeRefs_.put(ar.getName(), ar);
+			}
+		}
+	}
+
+	@Override
+	public I_ClassAttributes getAttributes(String className) {
+		return attributeRefs_.get(className);
+	}
+
+	@Override
+	public I_ClassAttributes getSourceClassAttributes() {
+		return attributeRefs_.get(sourceFileName);
 	}
 }

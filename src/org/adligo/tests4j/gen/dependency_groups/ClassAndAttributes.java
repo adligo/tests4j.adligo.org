@@ -20,7 +20,7 @@ public class ClassAndAttributes {
 	}
 	private I_ClassAttributes toAttributes(Class<?> c) {
 		ClassAttributesMutant cam = new ClassAttributesMutant();
-		cam.setClassName(c.getName());
+		cam.setName(c.getName());
 		
 		Field [] fields = c.getDeclaredFields();
 		for (int i = 0; i < fields.length; i++) {

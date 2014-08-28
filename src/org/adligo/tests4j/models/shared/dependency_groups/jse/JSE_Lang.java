@@ -21,7 +21,7 @@ import java.util.Map;
  * @author scott
  *
  */
-public class JSE_Lang implements JSE_1_6_Lang, I_PackageConstantLookup {
+public class JSE_Lang implements JSE_1_8_Lang, I_PackageConstantLookup {
 	public static final JSE_Lang INSTANCE = new JSE_Lang();
 	private static final Map<String,String> CONSTANT_LOOKUP = getConstantLookup();
 	
@@ -128,6 +128,11 @@ public class JSE_Lang implements JSE_1_6_Lang, I_PackageConstantLookup {
 		toRet.put("java.lang.VerifyError","VERIFY_ERROR");
 		toRet.put("java.lang.VirtualMachineError","VIRTUAL_MACHINE_ERROR");
 		
+		toRet.put("java.lang.Deprecated","DEPRECATED");
+		toRet.put("java.lang.FunctionalInterface","FUNCTIONAL_INTERFACE");
+		toRet.put("java.lang.Override","OVERRIDE");
+		toRet.put("java.lang.SafeVarargs","SAFE_VARARGS");
+		toRet.put("java.lang.SuppressWarnings","SUPPRESS_WARNINGS");
 		return Collections.unmodifiableMap(toRet);
 	}
 	private JSE_Lang() {}

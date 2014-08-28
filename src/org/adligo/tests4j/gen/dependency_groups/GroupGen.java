@@ -16,7 +16,7 @@ import java.util.List;
 public class GroupGen {
 	private GenDepGroupContext ctx;
 	private ConstantGen constantGen = new ConstantGen();
-	
+	private ConstantTrialGen constantTrialGen = new ConstantTrialGen();
 	private ClassUseGen classUseGen = new ClassUseGen();
 	private ClassUseTrialGen classUseTrialGen = new ClassUseTrialGen();
 	
@@ -28,8 +28,9 @@ public class GroupGen {
 		for (Class<?> c: classes) {
 			ClassAndAttributes caa = new ClassAndAttributes(c);
 			constantGen.gen(caa, System.out, ctx);
-			//classUseGen.gen(caa, System.out, ctx);
-			//classUseTrialGen.gen(caa, System.out, ctx);
+			constantTrialGen.gen(caa, System.out, ctx);
+			classUseGen.gen(caa, System.out, ctx);
+			classUseTrialGen.gen(caa, System.out, ctx);
 		}
 	}
 

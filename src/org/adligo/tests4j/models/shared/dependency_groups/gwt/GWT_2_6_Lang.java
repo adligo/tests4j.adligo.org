@@ -29,7 +29,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	}
 	public static ClassAttributes getAppendable() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setClassName(JSE_Lang.APPENDABLE);
+		toRet.setName(JSE_Lang.APPENDABLE);
 		toRet.addMethod(new MethodSignature("append", 
 			new String[] {ClassMethods.CHAR}, 
 			JSE_Lang.APPENDABLE));
@@ -43,7 +43,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	}
 	public static ClassAttributes getArithmeticException() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setClassName(JSE_Lang.ARITHMETIC_EXCEPTION);
+		toRet.setName(JSE_Lang.ARITHMETIC_EXCEPTION);
 		toRet.addMethod(new MethodSignature("<init>"));
 		toRet.addMethod(new MethodSignature("<init>", 
 			new String[] {JSE_Lang.STRING}));
@@ -51,7 +51,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	}
 	public static ClassAttributes getArrayIndexOutOfBoundsException() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setClassName(JSE_Lang.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
+		toRet.setName(JSE_Lang.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
 		toRet.addMethod(new MethodSignature("<init>", 
 			new String[] {ClassMethods.INT}));
 		toRet.addMethod(new MethodSignature("<init>"));
@@ -61,7 +61,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	}
 	public static ClassAttributes getArrayStoreException() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setClassName(JSE_Lang.ARRAY_STORE_EXCEPTION);
+		toRet.setName(JSE_Lang.ARRAY_STORE_EXCEPTION);
 		
 		toRet.addMethod(new MethodSignature("<init>"));
 		toRet.addMethod(new MethodSignature("<init>", 
@@ -72,7 +72,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	
 	public static ClassAttributes getAssertionError() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setClassName(JSE_Lang.ASSERTION_ERROR);
+		toRet.setName(JSE_Lang.ASSERTION_ERROR);
 		
 		toRet.addMethod(new MethodSignature("<init>", 
 			new String[] {ClassMethods.FLOAT}));
@@ -93,13 +93,13 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	}
 	public static ClassAttributes getAutoCloseable() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setClassName(JSE_1_7_Lang.AUTO_CLOSEABLE);
+		toRet.setName(JSE_Lang.AUTO_CLOSEABLE);
 		toRet.addMethod(new MethodSignature("close"));
 		return new ClassAttributes(toRet);
 	}
 	public static ClassAttributes getBoolean() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setClassName(JSE_Lang.BOOLEAN);
+		toRet.setName(JSE_Lang.BOOLEAN);
 		addObjectMethods(toRet);
 		
 		toRet.addField(new FieldSignature("FALSE", JSE_Lang.BOOLEAN));
@@ -564,7 +564,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	
 	public static ClassAttributes getEnum() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setClassName(JSE_Lang.ENUM);
+		toRet.setName(JSE_Lang.ENUM);
 		toRet.addMethod(new MethodSignature("<init>", 
 				new String[] {JSE_Lang.STRING, ClassMethods.INT}));
 		
@@ -597,7 +597,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	
 	public static ClassAttributes getObject() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setClassName(JSE_Lang.OBJECT);
+		toRet.setName(JSE_Lang.OBJECT);
 		toRet.addMethod(new MethodSignature("<init>"));
 		addObjectMethods(toRet);
 		return new ClassAttributes(toRet);
@@ -619,7 +619,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	public static ClassAttributes getThrowable() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		
-		toRet.setClassName(JSE_Lang.THROWABLE);
+		toRet.setName(JSE_Lang.THROWABLE);
 		addObjectMethods(toRet);
 
 		toRet.addMethod(new MethodSignature("<init>"));

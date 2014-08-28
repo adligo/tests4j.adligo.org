@@ -65,7 +65,7 @@ public class DependencyGroupMutant implements I_DependencyGroup {
 	
 	public void addClassMethods(I_ClassAttributes cm) {
 		if (cm != null) {
-			deps.put(cm.getClassName(), new ClassAttributesMutant(cm));
+			deps.put(cm.getName(), new ClassAttributesMutant(cm));
 		}
 	}
 	

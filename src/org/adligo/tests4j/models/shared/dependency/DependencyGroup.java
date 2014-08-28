@@ -19,7 +19,7 @@ public class DependencyGroup implements I_DependencyGroup {
 		Map<String, I_ClassAttributes> mClassMap = new TreeMap<String,I_ClassAttributes>();
 		for (I_ClassAttributes cm: cms) {
 			if (cm != null) {
-				mClassMap.put(cm.getClassName(), new ClassAttributes(cm));
+				mClassMap.put(cm.getName(), new ClassAttributes(cm));
 			}
 		}
 		classMap = Collections.unmodifiableMap(mClassMap);

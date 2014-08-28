@@ -17,7 +17,7 @@ public interface I_ClassAttributes {
 	 * )
 	 * @return
 	 */
-	public String getClassName();
+	public String getName();
 	
 	/**
 	 * the fields associated with this class attributes

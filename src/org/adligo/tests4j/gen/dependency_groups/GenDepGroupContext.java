@@ -5,7 +5,6 @@ public class GenDepGroupContext {
 	private String trialPackageName_;
 	private Class<?> groupFactoryClass_;
 	private String apiVersion_ = "";
-	private String factoryMethod = "";
 	private ConstantLookup constantLookup = new ConstantLookup();
 	
 	public String getTrialPackageName() {
@@ -27,12 +26,6 @@ public class GenDepGroupContext {
 		if (apiVersion != null) {
 			apiVersion_ = apiVersion;
 		}
-	}
-	public String getFactoryMethod() {
-		return factoryMethod;
-	}
-	public void setFactoryMethod(String factoryMethod) {
-		this.factoryMethod = factoryMethod;
 	}
 	public ConstantLookup getConstantLookup() {
 		return constantLookup;
