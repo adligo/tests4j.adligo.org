@@ -100,7 +100,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	public static ClassAttributes getBoolean() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.BOOLEAN);
-		addObjectMethods(toRet);
+		addObjectMembers(toRet);
 		
 		toRet.addField(new FieldSignature("FALSE", JSE_Lang.BOOLEAN));
 		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
@@ -568,7 +568,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		toRet.addMethod(new MethodSignature("<init>", 
 				new String[] {JSE_Lang.STRING, ClassMethods.INT}));
 		
-		addObjectMethods(toRet);
+		addObjectMembers(toRet);
 		
 		
 		addEnumMethods(toRet);
@@ -599,11 +599,15 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.OBJECT);
 		toRet.addMethod(new MethodSignature("<init>"));
-		addObjectMethods(toRet);
+		addObjectMembers(toRet);
 		return new ClassAttributes(toRet);
 	}
 	
-	public static void addObjectMethods(ClassAttributesMutant toRet) {
+	/**
+	 * everything that isn't a constructor (fields and methods)
+	 * @param toRet
+	 */
+	public static void addObjectMembers(ClassAttributesMutant toRet) {
 		toRet.addMethod(new MethodSignature("equals", 
 			new String[] {JSE_Lang.OBJECT}, 
 			ClassMethods.BOOLEAN));
@@ -618,20 +622,46 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	
 	public static ClassAttributes getThrowable() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		
 		toRet.setName(JSE_Lang.THROWABLE);
-		addObjectMethods(toRet);
-
+		
+		//constructors
 		toRet.addMethod(new MethodSignature("<init>"));
 		toRet.addMethod(new MethodSignature("<init>", 
-				new String[] {JSE_Lang.STRING}));
+			new String[] {JSE_Lang.THROWABLE}));
 		toRet.addMethod(new MethodSignature("<init>", 
-				new String[] {JSE_Lang.THROWABLE}));
-		toRet.addMethod(new MethodSignature("<init>", 
-				new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
-		
-		addThrowableMethods(toRet);
+			new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
+		//
+		addThrowableMembers(toRet);
 		return new ClassAttributes(toRet);
+	}
+	/**
+	 * everything that isn't a constructor (fields and methods)
+	 * @param toRet
+	 */
+	public static void addThrowableMembers(ClassAttributesMutant toRet) {
+		addObjectMembers(toRet);
+		toRet.addMethod(new MethodSignature("addSuppressed", 
+			new String[] {JSE_Lang.THROWABLE}));
+		toRet.addMethod(new MethodSignature("fillInStackTrace", 
+			JSE_Lang.THROWABLE));
+		toRet.addMethod(new MethodSignature("getCause", 
+			JSE_Lang.THROWABLE));
+		toRet.addMethod(new MethodSignature("getLocalizedMessage", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("getMessage", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("getStackTrace", 
+			"Ljava.lang.StackTraceElement;"));
+		toRet.addMethod(new MethodSignature("getSuppressed", 
+			"Ljava.lang.Throwable;"));
+		toRet.addMethod(new MethodSignature("initCause", 
+			new String[] {JSE_Lang.THROWABLE}, 
+			JSE_Lang.THROWABLE));
+		toRet.addMethod(new MethodSignature("printStackTrace"));
+		toRet.addMethod(new MethodSignature("printStackTrace", 
+			new String[] {"java.io.PrintWriter"}));
+		toRet.addMethod(new MethodSignature("setStackTrace", 
+			new String[] {"Ljava.lang.StackTraceElement;"}));
 	}
 	
 	public static void addThrowableMethods(ClassAttributesMutant toRet) {

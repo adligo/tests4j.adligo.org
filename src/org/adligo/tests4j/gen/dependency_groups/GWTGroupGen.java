@@ -38,7 +38,8 @@ public class GWTGroupGen {
 		toRet.add(CharSequence.class);
 		toRet.add(Character.class);
 		*/
-		toRet.add(Object.class);
+		//toRet.add(Object.class);
+		toRet.add(Throwable.class);
 		/*
 		toRet.add(Throwable.class);
 		toRet.add(Enum.class);

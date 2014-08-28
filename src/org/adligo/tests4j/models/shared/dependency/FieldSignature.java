@@ -81,7 +81,7 @@ public class FieldSignature implements I_FieldSignature {
 
 	@Override
 	public int compareTo(I_FieldSignature o) {
-		return new Integer(hashCode()).compareTo(o.hashCode());
+		return name.compareTo(o.getName());
 	}
 
 }

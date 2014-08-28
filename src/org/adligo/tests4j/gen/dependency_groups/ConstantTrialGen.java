@@ -38,19 +38,43 @@ public class ConstantTrialGen {
 		out.println("\t\tI_ClassAttributes result = " + groupFactoryClass.getSimpleName() +
 				".get" + clazz.getSimpleName() + "();");
 		out.println("\t\tassertEquals(\"" + clazz.getName() + "\", result.getName());");
+		//do constructors
 		I_ClassAttributes ca = caa.getAttributes();
+		Set<I_MethodSignature> ms = ca.getMethods();
+		
+		out.println("\t\tSet<I_MethodSignature> ms = result.getMethods();");
+		for (I_MethodSignature method: ms) {
+			if ("<init>".equals(method.getMethodName())) {
+				String nextLine = "\t\tassertContains(ms, new MethodSignature(\"" + method.getMethodName() + "\"";
+				if (method.getParameters() >= 1) {
+					nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
+				}
+				if (method.getReturnClassName() != null) {
+					String type = constantLookup.get(method.getReturnClassName());
+					if (type != null) {
+						nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + type + "";
+					}
+				}
+				nextLine = nextLine + "));";
+				out.println(nextLine);
+			}
+		}
+		out.println("\t\tassert" + clazz.getSimpleName() + "Members(this, result);");
+		out.println("\t}");
+		
+		out.println("\tpublic static void assert" + clazz.getSimpleName() + "Members(I_Asserts trials,I_ClassAttributes result) {");
 		Set<I_FieldSignature> fs = ca.getFields();
 		out.println("\t\tSet<I_FieldSignature> fs = result.getFields();");
 		for (I_FieldSignature sig: fs) {
-			String nextLine = "\t\tassertContains(fs, new FieldSignature(\"" + sig.getName() + "\", " +
+			String nextLine = "\t\ttrials.assertContains(fs, new FieldSignature(\"" + sig.getName() + "\", " +
 					constantLookup.get(sig.getClassName()) + "));";
 			out.println(nextLine);
 		}
 		
-		Set<I_MethodSignature> ms = ca.getMethods();
+		
 		out.println("\t\tSet<I_MethodSignature> ms = result.getMethods();");
 		for (I_MethodSignature method: ms) {
-			String nextLine = "\t\tassertContains(ms, new MethodSignature(\"" + method.getMethodName() + "\"";
+			String nextLine = "\t\ttrials.assertContains(ms, new MethodSignature(\"" + method.getMethodName() + "\"";
 			if (method.getParameters() >= 1) {
 				nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
 			}

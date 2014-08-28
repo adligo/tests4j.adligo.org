@@ -131,6 +131,10 @@ public class MethodSignature implements I_MethodSignature {
 					return false;
 				}
 			}
+			if (params.length != other.getParameters()) {
+				//diff parameter number
+				return false;
+			} 
 			for (int i = 0; i < params.length; i++) {
 				String otherClassName = other.getParameterClassName(i);
 				String thisPName = params[i];
@@ -172,7 +176,12 @@ public class MethodSignature implements I_MethodSignature {
 
 	@Override
 	public int compareTo(I_MethodSignature o) {
-		return new Integer(hashCode()).compareTo(o.hashCode());
+		int toRet = toString().compareTo(o.toString());
+		if (toRet != 0) {
+			return toRet;
+		}
+		
+		return toRet;
 	}
 
 }
