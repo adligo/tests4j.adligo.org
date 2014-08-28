@@ -6,6 +6,10 @@ public class GenDepGroupContext {
 	private Class<?> groupFactoryClass_;
 	private String apiVersion_ = "";
 	private ConstantLookup constantLookup = new ConstantLookup();
+	private String trialClass_ = "org.adligo.tests4j.models.shared.trials.SourceFileTrial";
+	private String trialClassSimple_ = "SourceFileTrial";
+	private String extraTrialContent_ = "";
+	private String extraTrialAnnotations_ = "";
 	
 	public String getTrialPackageName() {
 		return trialPackageName_;
@@ -32,6 +36,30 @@ public class GenDepGroupContext {
 	}
 	public void setConstantLookup(ConstantLookup constantLookup) {
 		this.constantLookup = constantLookup;
+	}
+	public String getTrialClass() {
+		return trialClass_;
+	}
+	public String getTrialClassSimpleName() {
+		return trialClassSimple_;
+	}
+	public void setTrialClass(String trialClass) {
+		trialClass_ = trialClass;
+	}
+	public void setTrialClassSimpleName(String trialClassSimple) {
+		trialClassSimple_ = trialClassSimple;
+	}
+	public String getExtraTrialContent() {
+		return extraTrialContent_;
+	}
+	public void setExtraTrialContent(String extraTrialContent) {
+		extraTrialContent_ = extraTrialContent;
+	}
+	public String getExtraTrialAnnotations() {
+		return extraTrialAnnotations_;
+	}
+	public void setExtraTrialAnnotations(String extraTrialAnnotations) {
+		extraTrialAnnotations_ = extraTrialAnnotations;
 	}
 	
 	

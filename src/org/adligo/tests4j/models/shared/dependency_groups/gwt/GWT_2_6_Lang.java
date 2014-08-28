@@ -41,49 +41,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 			JSE_Lang.APPENDABLE));
 		return new ClassAttributes(toRet);
 	}
-
-	public static ClassAttributes getArrayIndexOutOfBoundsException() {
-		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setName(JSE_Lang.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {ClassMethods.INT}));
-		toRet.addMethod(new MethodSignature("<init>"));
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {JSE_Lang.STRING}));
-		return new ClassAttributes(toRet);
-	}
-	public static ClassAttributes getArrayStoreException() {
-		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setName(JSE_Lang.ARRAY_STORE_EXCEPTION);
-		
-		toRet.addMethod(new MethodSignature("<init>"));
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {JSE_Lang.STRING}));
-		
-		return new ClassAttributes(toRet);
-	}
 	
-	public static ClassAttributes getAssertionError() {
-		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.setName(JSE_Lang.ASSERTION_ERROR);
-		
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {ClassMethods.FLOAT}));
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {ClassMethods.INT}));
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {ClassMethods.CHAR}));
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {ClassMethods.LONG}));
-		toRet.addMethod(new MethodSignature("<init>"));
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {ClassMethods.DOUBLE}));
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {ClassMethods.BOOLEAN}));
-		toRet.addMethod(new MethodSignature("<init>", 
-				new String[] {JSE_Lang.OBJECT}));
-		return new ClassAttributes(toRet);
-	}
 	public static ClassAttributes getAutoCloseable() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.AUTO_CLOSEABLE);
@@ -643,22 +601,26 @@ public class GWT_2_6_Lang extends DependencyGroup {
 			JSE_Lang.THROWABLE));
 		toRet.addMethod(new MethodSignature("getCause", 
 			JSE_Lang.THROWABLE));
+		
 		toRet.addMethod(new MethodSignature("getLocalizedMessage", 
 			JSE_Lang.STRING));
 		toRet.addMethod(new MethodSignature("getMessage", 
 			JSE_Lang.STRING));
 		toRet.addMethod(new MethodSignature("getStackTrace", 
 			"[" + JSE_Lang.STACK_TRACE_ELEMENT));
+		
 		toRet.addMethod(new MethodSignature("getSuppressed", 
 			"[" + JSE_Lang.THROWABLE));
 		toRet.addMethod(new MethodSignature("initCause", 
 			new String[] {JSE_Lang.THROWABLE}, 
 			JSE_Lang.THROWABLE));
 		toRet.addMethod(new MethodSignature("printStackTrace"));
+		
 		toRet.addMethod(new MethodSignature("printStackTrace", 
 				new String[] {"java.io.PrintStream"}));
 		toRet.addMethod(new MethodSignature("setStackTrace", 
 			new String[] {"[" + JSE_Lang.STACK_TRACE_ELEMENT}));
+		//11
 	}
 	
 	
@@ -704,6 +666,41 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		addExceptionMembers(toRet);
 	}
 	
+	public static ClassAttributes getIndexOutOfBoundsException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.INDEX_OUT_OF_BOUNDS_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addIndexOutOfBoundsExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addIndexOutOfBoundsExceptionMembers(ClassAttributesMutant toRet) {
+		addRuntimeExceptionMembers(toRet);
+	}
+	
+	public static ClassAttributes getArrayIndexOutOfBoundsException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addArrayIndexOutOfBoundsExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addArrayIndexOutOfBoundsExceptionMembers(ClassAttributesMutant toRet) {
+		addIndexOutOfBoundsExceptionMembers(toRet);
+	}
 	
 	public static ClassAttributes getArithmeticException() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
@@ -721,6 +718,74 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	public static void addArithmeticExceptionMembers(ClassAttributesMutant toRet) {
 		addRuntimeExceptionMembers(toRet);
 	}
+	
+	public static ClassAttributes getArrayStoreException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.ARRAY_STORE_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addArrayStoreExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addArrayStoreExceptionMembers(ClassAttributesMutant toRet) {
+		addRuntimeExceptionMembers(toRet);
+	}
+	
+	public static ClassAttributes getError() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.ERROR);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.THROWABLE}));
+
+		addErrorMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addErrorMembers(ClassAttributesMutant toRet) {
+		addThrowableMembers(toRet);
+	}
+	
+	public static ClassAttributes getAssertionError() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.ASSERTION_ERROR);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.BOOLEAN}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.CHAR}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.DOUBLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.FLOAT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.OBJECT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.LONG}));
+
+		addAssertionErrorMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addAssertionErrorMembers(ClassAttributesMutant toRet) {
+		addErrorMembers(toRet);
+	}
+	
 	public GWT_2_6_Lang() {
 		super(create());
 	}

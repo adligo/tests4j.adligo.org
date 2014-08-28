@@ -63,7 +63,7 @@ public class ConstantTrialGen {
 		}
 		out.println("\t\tdelegates.delegate" + clazz.getSimpleName() + "MemberAsserts(result);");
 		out.println("\t\tassertEquals(" + fs.size() + ", fs.size());");
-		out.println("\t\tassertEquals(" + ms.size() + ", ms.size());");
+		out.println("\t\tassertEquals(" + caa.getMethodsCount() + ", ms.size());");
 		out.println("\t}");
 		
 		out.println("\tpublic void delegate" + clazz.getSimpleName() + "MemberAsserts(I_ClassAttributes result) {");

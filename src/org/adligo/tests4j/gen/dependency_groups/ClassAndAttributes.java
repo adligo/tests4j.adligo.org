@@ -27,6 +27,8 @@ public class ClassAndAttributes {
 	private Set<I_MethodSignature> parentMethodSigs_ = null;
 	private I_ClassAttributes attributes;
 	private Class<?> clazz;
+	private int methodCount_ = 0;
+	private int methodAndConstructorCount_ = 0;
 	
 	public ClassAndAttributes(Class<?> c) {
 		attributes = toAttributes(c);
@@ -66,6 +68,7 @@ public class ClassAndAttributes {
 		for (int i = 0; i < constructors.length; i++) {
 			Constructor<?> f = constructors[i];
 			if (Modifier.isPublic(f.getModifiers()) ) {
+				methodAndConstructorCount_++;
 				MethodSignature ms = new MethodSignature("<init>", getClassNames(f.getParameterTypes()));
 				if (parentMethodSigs_ != null) {
 					if (!parentMethodSigs_.contains(ms)) {
@@ -81,6 +84,8 @@ public class ClassAndAttributes {
 		for (int i = 0; i < methods.length; i++) {
 			Method f = methods[i];
 			if (Modifier.isPublic(f.getModifiers()) ) {
+				methodAndConstructorCount_++;
+				methodCount_++;
 				MethodSignature ms =  new MethodSignature(f.getName(), 
 						getClassNames(f.getParameterTypes()),
 						f.getReturnType().getName());
@@ -121,5 +126,15 @@ public class ClassAndAttributes {
 	}
 	public ClassAndAttributes getParent() {
 		return parent_;
+	}
+	
+	public int getMethodsCount() {
+		int toRet = methodAndConstructorCount_;
+		ClassAndAttributes upP = parent_;
+		while (upP != null) {
+			toRet += upP.methodCount_;
+			upP = upP.parent_;
+		}
+		return toRet;
 	}
 }

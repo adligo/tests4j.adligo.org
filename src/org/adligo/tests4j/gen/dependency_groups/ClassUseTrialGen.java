@@ -32,6 +32,8 @@ public class ClassUseTrialGen {
 		if (!packageName.equals(pkgName)) {
 			out.println("import " + clazz.getName() + ";");
 		}
+		out.println("import " + ctx.getTrialClass() + ";");
+		
 		Class<?> groupFactoryClass = ctx.getGroupFactoryClass();
 		out.println("import " + groupFactoryClass.getName() + ";");
 		out.println("import " + TrialDelegate.class.getName() + ";");
@@ -47,8 +49,12 @@ public class ClassUseTrialGen {
 		
 		out.println("");
 		out.println("@SourceFileScope (sourceClass=" + clazz.getSimpleName() + api +"_MockUse.class)");
+		if (!StringMethods.isEmpty(ctx.getExtraTrialAnnotations())) {
+			out.println(ctx.getExtraTrialAnnotations());	
+		}
 		if (clazz.isInterface()) {
-			out.println("public class " + clazz.getSimpleName() + api +"_UseTrial extends SourceFileTrial ");
+			out.println("public class " + clazz.getSimpleName() + api +"_UseTrial extends " +
+					ctx.getTrialClassSimpleName() + " ");
 			
 			out.println("  implements " + clazz.getSimpleName() + " {");
 			out.println("");
@@ -98,14 +104,17 @@ public class ClassUseTrialGen {
 			out.println("\t\t}");
 			out.println("\t\tassertEquals(exampleMethods.size(), methods.size());");
 			
-			
+			if (!StringMethods.isEmpty(ctx.getExtraTrialContent())) {
+				out.println(ctx.getExtraTrialContent());	
+			}
 			out.println("\t}");
 		} else {
-			out.println("public class " + clazz.getSimpleName() + api +"_UseTrial extends SourceFileTrial {");
+			out.println("public class " + clazz.getSimpleName() + api +"_UseTrial extends " +
+					ctx.getTrialClassSimpleName() + " {");
 			out.println("");
 			out.println("\t@Test");
 			out.println("\tpublic void testMethods() throws Exception {");
-			out.println("\t\tnew " + clazz.getSimpleName() + api + "_MockUse(this);");
+			out.println("\t\tnew " + clazz.getSimpleName() + api + "_MockUse();");
 			out.println("\t\tassertTrue(\"The trial should be able to create a" + 
 					clazz.getSimpleName() + "_MockUse" + ".\",true);");
 			out.println("\t}");
@@ -139,15 +148,16 @@ public class ClassUseTrialGen {
 				out.println("\t\tparents.add(\"" + parents.get(i) + "\");");
 			}
 			if (parents.size() != 0) {
-				out.println("\t\tfor(String parent, parents) {");
+				out.println("\t\tfor(String parent: parents) {");
 				out.println("\t\t\tI_ClassAttributes ca = p.getAttributes(parent);");
-				out.println("\t\t\tfields.addAll(ca.getFields());");
-				out.println("\t\t\tmethods.addAll(ca.getMethods());");
+				out.println("\t\t\tif (ca != null) {");
+				out.println("\t\t\t\tfields.addAll(ca.getFields());");
+				out.println("\t\t\t\tmethods.addAll(ca.getMethods());");
+				out.println("\t\t\t}");
 				out.println("\t\t}");
 			}
 			out.println("\t\tI_ClassAttributes example = " +groupFactoryClass.getSimpleName() +
 					".get" + clazz.getSimpleName()  + "();");
-			out.println("\t\tassertNotNull(ca);");
 			out.println("\t\tassertEquals(example.getName(), result.getName());");
 			out.println("\t\tSet<I_FieldSignature> exampleFields = example.getFields();");
 			
@@ -163,9 +173,13 @@ public class ClassUseTrialGen {
 			out.println("\t\t\tassertContains(methods, method);");
 			out.println("\t\t}");
 			out.println("\t\tassertEquals(exampleMethods.size(), methods.size());");
-			
-			
 			out.println("\t}");
+			
+			if (!StringMethods.isEmpty(ctx.getExtraTrialContent())) {
+				out.println(ctx.getExtraTrialContent());	
+			}
+			
+			
 		}
 		out.println("}");
 		

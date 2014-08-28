@@ -25,9 +25,9 @@ public class DefaultUseGenTypes {
 		toRet.put(ClassMethods.CHAR, "'c'");
 		toRet.put(ClassMethods.DOUBLE, "0.1");
 		
-		toRet.put(ClassMethods.FLOAT, "0.2");
-		toRet.put(ClassMethods.LONG, "3");
-		toRet.put(ClassMethods.SHORT, "1");
+		toRet.put(ClassMethods.FLOAT, "(float) 0.2");
+		toRet.put(ClassMethods.LONG, "3L");
+		toRet.put(ClassMethods.SHORT, "(short) 1");
 		toRet.put(ClassMethods.INT, "2");
 		
 		toRet.put(String.class.getName(), "\"string\"");
