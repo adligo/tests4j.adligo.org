@@ -1,5 +1,6 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,11 +26,20 @@ public class GroupGen {
 	 * @param classes
 	 */
 	public void gen(List<Class<?>> classes) {
+		List<ClassAndAttributes> caAttribs = new ArrayList<ClassAndAttributes>();
 		for (Class<?> c: classes) {
 			ClassAndAttributes caa = new ClassAndAttributes(c);
-			constantGen.gen(caa, System.out, ctx);
-			constantTrialGen.gen(caa, System.out, ctx);
+			caAttribs.add(caa);
+			//constantGen.gen(caa, System.out, ctx);
+			
+		}
+		for (ClassAndAttributes caa: caAttribs) {
+			//constantTrialGen.gen(caa, System.out, ctx);
+		}
+		for (ClassAndAttributes caa: caAttribs) {
 			classUseGen.gen(caa, System.out, ctx);
+		}
+		for (ClassAndAttributes caa: caAttribs) {
 			classUseTrialGen.gen(caa, System.out, ctx);
 		}
 	}

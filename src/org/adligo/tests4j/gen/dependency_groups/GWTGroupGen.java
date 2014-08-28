@@ -48,6 +48,7 @@ public class GWTGroupGen {
 		/*
 		toRet.add(Appendable.class);
 		toRet.add(Object.class);
+		toRet.add(StackTraceElement.class);
 		toRet.add(Throwable.class);
 		toRet.add(Exception.class);
 		toRet.add(RuntimeException.class);
@@ -56,9 +57,25 @@ public class GWTGroupGen {
 		toRet.add(ArrayIndexOutOfBoundsException.class);
 		toRet.add(ArrayStoreException.class);
 		toRet.add(Error.class);
-		*/
 		toRet.add(AssertionError.class);
+		toRet.add(ClassCastException.class);
+		toRet.add(IllegalArgumentException.class);
+		toRet.add(IllegalStateException.class);
+		toRet.add(NegativeArraySizeException.class);
+		//hmm gwt is still on 1.6?
+		toRet.add(ReflectiveOperationException.class);
+		*/
 		
+		toRet.add(NoSuchMethodException.class);
+		toRet.add(NullPointerException.class);
+		toRet.add(NumberFormatException.class);
+		toRet.add(StringIndexOutOfBoundsException.class);
+		toRet.add(UnsupportedOperationException.class);
+		
+		/*
+		
+		
+		*/
 		return toRet;
 	}
 }

@@ -571,6 +571,36 @@ public class GWT_2_6_Lang extends DependencyGroup {
 			JSE_Lang.STRING));
 	}
 	
+	public static ClassAttributes getStackTraceElement() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.STACK_TRACE_ELEMENT);
+
+		//constructors
+		//weird the GWT Jre emulation doc has a additional no arg constructor
+		//http://www.gwtproject.org/doc/latest/RefJreEmulation.html which isn't in
+		//http://docs.oracle.com/javase/8/docs/api/java/lang/StackTraceElement.html
+		//also this hidden init with no args, shows up when getting the 
+		//called methods from ASM, so...
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.STRING, JSE_Lang.STRING, ClassMethods.INT}));
+
+		addStackTraceElementMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addStackTraceElementMembers(ClassAttributesMutant toRet) {
+		addObjectMembers(toRet);
+		toRet.addMethod(new MethodSignature("getLineNumber", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("getClassName", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("getFileName", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("getMethodName", 
+			JSE_Lang.STRING));
+	}
+	
 	public static ClassAttributes getThrowable() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.THROWABLE);
@@ -786,6 +816,198 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		addErrorMembers(toRet);
 	}
 	
+	public static ClassAttributes getClassCastException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.CLASS_CAST_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addClassCastExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addClassCastExceptionMembers(ClassAttributesMutant toRet) {
+		addRuntimeExceptionMembers(toRet);
+	}
+	
+	public static ClassAttributes getIllegalArgumentException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.ILLEGAL_ARGUMENT_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.THROWABLE}));
+
+		addIllegalArgumentExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addIllegalArgumentExceptionMembers(ClassAttributesMutant toRet) {
+		addRuntimeExceptionMembers(toRet);
+	}
+	
+	public static ClassAttributes getIllegalStateException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.ILLEGAL_STATE_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.THROWABLE}));
+
+		addIllegalStateExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addIllegalStateExceptionMembers(ClassAttributesMutant toRet) {
+		addRuntimeExceptionMembers(toRet);
+	}
+	public static ClassAttributes getNegativeArraySizeException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.NEGATIVE_ARRAY_SIZE_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addNegativeArraySizeExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addNegativeArraySizeExceptionMembers(ClassAttributesMutant toRet) {
+		addRuntimeExceptionMembers(toRet);
+	}
+	/*
+	public static ClassAttributes getReflectiveOperationException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.REFLECTIVE_OPERATION_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.THROWABLE}));
+
+		addReflectiveOperationExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+	 */
+	
+	/**
+	 * note this class isn't in GWT yet, which seems
+	 * like it is still on 1.6 on 8/28/2014
+	 * although it is linking to the 1.7 javadoc not the 1.6
+	 * http://www.gwtproject.org/doc/latest/RefJreEmulation.html
+	 * this seems like the violation of some sort of
+	 * a rule, and should probably be added to GWT.
+	 * @param toRet
+	 */
+	public static void addReflectiveOperationExceptionMembers(ClassAttributesMutant toRet) {
+		addExceptionMembers(toRet);
+	}
+	
+	public static ClassAttributes getNoSuchMethodException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.NO_SUCH_METHOD_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addNoSuchMethodExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addNoSuchMethodExceptionMembers(ClassAttributesMutant toRet) {
+		addReflectiveOperationExceptionMembers(toRet);
+	}
+	public static ClassAttributes getNullPointerException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.NULL_POINTER_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addNullPointerExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addNullPointerExceptionMembers(ClassAttributesMutant toRet) {
+		addRuntimeExceptionMembers(toRet);
+	}
+	public static ClassAttributes getNumberFormatException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.NUMBER_FORMAT_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addNumberFormatExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addNumberFormatExceptionMembers(ClassAttributesMutant toRet) {
+		addIllegalArgumentExceptionMembers(toRet);
+	}
+	public static ClassAttributes getStringIndexOutOfBoundsException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.STRING_INDEX_OUT_OF_BOUNDS_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addStringIndexOutOfBoundsExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addStringIndexOutOfBoundsExceptionMembers(ClassAttributesMutant toRet) {
+		addIndexOutOfBoundsExceptionMembers(toRet);
+	}
+	public static ClassAttributes getUnsupportedOperationException() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.UNSUPPORTED_OPERATION_EXCEPTION);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.THROWABLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.THROWABLE}));
+
+		addUnsupportedOperationExceptionMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addUnsupportedOperationExceptionMembers(ClassAttributesMutant toRet) {
+		addRuntimeExceptionMembers(toRet);
+	}
 	public GWT_2_6_Lang() {
 		super(create());
 	}
