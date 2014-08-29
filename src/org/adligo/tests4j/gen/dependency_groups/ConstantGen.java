@@ -8,6 +8,7 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
+import org.adligo.tests4j.models.shared.dependency.MethodSignature;
 
 /**
  * this class generates a sibling
@@ -39,6 +40,12 @@ public class ConstantGen {
 			I_ClassAttributes ca = caa.getAttributes();
 			
 			Set<I_MethodSignature> ms = ca.getMethods();
+			if (!ms.contains(new MethodSignature("<init>"))) {
+				//everything has a hidden constructor with no arguments
+				//which shows up in ASM but not reflection, 
+				//even if there isn't a public one
+				out.println("\t\ttoRet.addMethod(new MethodSignature(\"<init>\");");
+			}
 			for (I_MethodSignature method: ms) {
 				if ("<init>".equals(method.getMethodName())) {
 					String nextLine = "\t\ttoRet.addMethod(new MethodSignature(\"" + method.getMethodName() + "\"";

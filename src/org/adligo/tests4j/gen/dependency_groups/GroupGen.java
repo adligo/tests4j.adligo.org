@@ -30,17 +30,25 @@ public class GroupGen {
 		for (Class<?> c: classes) {
 			ClassAndAttributes caa = new ClassAndAttributes(c);
 			caAttribs.add(caa);
-			//constantGen.gen(caa, System.out, ctx);
+			if (ctx.isRunConstantGen()) {
+				constantGen.gen(caa, System.out, ctx);
+			}
 			
 		}
-		for (ClassAndAttributes caa: caAttribs) {
-			//constantTrialGen.gen(caa, System.out, ctx);
+		if (ctx.isRunConstantTrialGen()) {
+			for (ClassAndAttributes caa: caAttribs) {
+				constantTrialGen.gen(caa, System.out, ctx);
+			}
 		}
-		for (ClassAndAttributes caa: caAttribs) {
-			classUseGen.gen(caa, System.out, ctx);
+		if (ctx.isRunUseMockGen()) {
+			for (ClassAndAttributes caa: caAttribs) {
+				classUseGen.gen(caa, System.out, ctx);
+			}
 		}
-		for (ClassAndAttributes caa: caAttribs) {
-			classUseTrialGen.gen(caa, System.out, ctx);
+		if (ctx.isRunUseTrialGen()) {
+			for (ClassAndAttributes caa: caAttribs) {
+				classUseTrialGen.gen(caa, System.out, ctx);
+			}
 		}
 	}
 

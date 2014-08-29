@@ -10,6 +10,11 @@ public class GenDepGroupContext {
 	private String trialClassSimple_ = "SourceFileTrial";
 	private String extraTrialContent_ = "";
 	private String extraTrialAnnotations_ = "";
+
+	private boolean runConstantGen_ = true;
+	private boolean runConstantTrialGen_ = true;
+	private boolean runUseMockGen_ = true;
+	private boolean runUseTrialGen_ = true;
 	
 	public String getTrialPackageName() {
 		return trialPackageName_;
@@ -62,5 +67,28 @@ public class GenDepGroupContext {
 		extraTrialAnnotations_ = extraTrialAnnotations;
 	}
 	
-	
+	public boolean isRunConstantGen() {
+		return runConstantGen_;
+	}
+	public void setRunConstantGen(boolean runConstantGen) {
+		runConstantGen_ = runConstantGen;
+	}
+	public boolean isRunConstantTrialGen() {
+		return runConstantTrialGen_;
+	}
+	public void setRunConstantTrialGen(boolean runConstantTrialGen) {
+		runConstantTrialGen_ = runConstantTrialGen;
+	}
+	public boolean isRunUseMockGen() {
+		return runUseMockGen_;
+	}
+	public void setRunUseMockGen(boolean runUseMockGen) {
+		runUseMockGen_ = runUseMockGen;
+	}
+	public boolean isRunUseTrialGen() {
+		return runUseTrialGen_;
+	}
+	public void setRunUseTrialGen(boolean runUseTrialGen) {
+		runUseTrialGen_ = runUseTrialGen;
+	}
 }	
