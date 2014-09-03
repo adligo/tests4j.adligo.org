@@ -102,7 +102,7 @@ public class TrialDescriptionProcessor {
 			} else {
 				trm.setPassed(false);
 			}
-		}
+		} 
 		trm.setType(type);
 		
 		TrialType tt = TrialType.get(type);

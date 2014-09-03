@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.dependency_groups.jse;
+package org.adligo.tests4j.models.dependency_groups.jse;
 
 
 /**
@@ -11,8 +11,8 @@ package org.adligo.tests4j.models.shared.dependency_groups.jse;
  * @author scott
  *
  */
-public class JSE_LangAnnot implements JSE_1_7_LangAnnot {
-	public static final JSE_LangAnnot INSTANCE = new JSE_LangAnnot();
+public class JSE_Math implements JSE_1_7_Math {
+	public static final JSE_Math INSTANCE = new JSE_Math();
 	
-	private JSE_LangAnnot() {};
+	private JSE_Math() {};
 }

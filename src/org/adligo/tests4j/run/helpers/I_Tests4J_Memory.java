@@ -17,4 +17,7 @@ public interface I_Tests4J_Memory {
 
 	public void addResultBeforeMetadata(I_TrialResult p);
 	
+	public I_TrialResult pollFailureResults();
+	
+	public int getFailureResultsSize();
 }

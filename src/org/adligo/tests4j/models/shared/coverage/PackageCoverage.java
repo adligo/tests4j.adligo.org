@@ -31,10 +31,13 @@ public class PackageCoverage implements I_PackageCoverage {
 		Set<String> sourceFileNames = p.getSourceFileNames();
 		if (sourceFileNames.size() >= 1) {
 			coverage = new HashMap<String, I_SourceFileCoverage>();
+			for (String name: sourceFileNames) {
+				coverage.put(name, new SourceFileCoverage(p.getCoverage(name)));
+			}
+		} else {
+			coverage = Collections.emptyMap();
 		}
-		for (String name: sourceFileNames) {
-			coverage.put(name, new SourceFileCoverage(p.getCoverage(name)));
-		}
+		
 		mutant = new PackageCoverageMutant(p, false);
 		
 		

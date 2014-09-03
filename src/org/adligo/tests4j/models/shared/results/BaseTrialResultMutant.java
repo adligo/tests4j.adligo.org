@@ -202,6 +202,9 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		if (Boolean.FALSE.equals(passed)) {
 			return false;
 		}
+		if (failures.size() != 0) {
+			return false;
+		}
 		/**
 		 * trials with no results actually pass,
 		 * so that interface trials can run successfully

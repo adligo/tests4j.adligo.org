@@ -1,5 +1,7 @@
-package org.adligo.tests4j.models.shared.dependency_groups.gwt;
+package org.adligo.tests4j.models.dependency_groups.gwt;
 
+import org.adligo.tests4j.models.dependency_groups.jse.JSE_1_7_Lang;
+import org.adligo.tests4j.models.dependency_groups.jse.JSE_Lang;
 import org.adligo.tests4j.models.shared.common.ClassMethods;
 import org.adligo.tests4j.models.shared.dependency.ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.ClassAttributesMutant;
@@ -7,8 +9,6 @@ import org.adligo.tests4j.models.shared.dependency.DependencyGroup;
 import org.adligo.tests4j.models.shared.dependency.DependencyGroupMutant;
 import org.adligo.tests4j.models.shared.dependency.FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.MethodSignature;
-import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_1_7_Lang;
-import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Lang;
 
 public class GWT_2_6_Lang extends DependencyGroup {
 	

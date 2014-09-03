@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.adligo.tests4j.models.shared.common.I_TrialType;
@@ -17,6 +18,8 @@ import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.coverage.PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.PackageCoverageMutant;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
@@ -481,6 +484,19 @@ public class TrialDescription implements I_TrialDescription {
 		return null;
 	}
 	
+	/**
+	 * this majic method will
+	 * find the package of the source class
+	 * or package scope setting of the trial.
+	 * If there is a exact match from the coverages
+	 * or a sub package of one of the coverages
+	 * return it.
+	 * If there is are child packages under the source class package
+	 * or package scope package then add them to a aggregate result.
+	 * 
+	 * @param coverages
+	 * @return
+	 */
 	public I_PackageCoverage findPackageCoverage(List<I_PackageCoverage> coverages) {
 		String packageName = getPackageName();
 		if (packageName == null) {
@@ -492,17 +508,63 @@ public class TrialDescription implements I_TrialDescription {
 		if (packageName == null) {
 			throw new IllegalArgumentException("no package coverage for trial " + trialClass_.getName());
 		}
-		StringBuilder pkgs = new StringBuilder();
+		
 		for (I_PackageCoverage cover: coverages) {
 			String coverName = cover.getPackageName();
 			if (coverName.equals(packageName)) {
 				return cover;
 			} else if (packageName.indexOf(coverName) == 0) {
+				// ie "org.adligo.tests4j.foo".indexOf("org.adligo.tests4j") == 0
 				return findPackageCoverage(cover.getChildPackageCoverage());
-			}
+			} 
+		}
+		
+		PackageCoverageMutant pcm = new PackageCoverageMutant();
+		pcm.setPackageName(packageName);
+		
+		StringBuilder pkgs = new StringBuilder();
+		for (I_PackageCoverage cover: coverages) {
+			String coverName = cover.getPackageName();
+			if (coverName.indexOf(packageName) == 0) {
+				pcm.addCoverageUnits(cover.getCoverageUnits());
+				pcm.addCoveredCoverageUnits(cover.getCoveredCoverageUnits());
+				//ie org.adligo.tests4j packageName in cover name "org.adligo.tests4j.foo.bar"
+				String tokenSpace = coverName.substring(packageName.length() + 1, coverName.length());
+				StringTokenizer st = new StringTokenizer(tokenSpace, ".");
+				String pkgName = packageName;
+				PackageCoverageMutant child = null;
+				while (st.hasMoreElements()) {
+					
+					String next = st.nextToken();
+					pkgName = pkgName + "." + next;
+					if (pkgName.equals(coverName)) {
+						if (child == null) {
+							pcm.addChild(cover);
+						} else {
+							child.addChild(cover);
+							
+						}
+					} else {
+						if (child == null)  {
+							child = new PackageCoverageMutant();
+							pcm.addChild(child);
+							
+						} else {
+							child = new PackageCoverageMutant();
+							child.addChild(child);
+						}
+						child.setPackageName(pkgName);
+					}
+				}
+				
+			} 
 			pkgs.append(coverName);
 			pkgs.append(Tests4J_System.lineSeperator());
 		}
+		if (pcm.getChildren().size() >= 1) {
+			return new PackageCoverage(pcm);
+		}
+		
 		throw new IllegalArgumentException("no package coverage for trial " + trialClass_.getName() +
 				" with package " + packageName + Tests4J_System.lineSeperator() + 
 				" on thread "+ Thread.currentThread().getName() + " " +

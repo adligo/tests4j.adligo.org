@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.dependency_groups.jse;
+package org.adligo.tests4j.models.dependency_groups.jse;
 
 import java.util.Collections;
 import java.util.HashMap;

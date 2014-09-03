@@ -1,4 +1,5 @@
-package org.adligo.tests4j.models.shared.dependency_groups.jse;
+package org.adligo.tests4j.models.dependency_groups.jse;
+
 
 /**
  * these are constants for the versions
@@ -10,8 +11,8 @@ package org.adligo.tests4j.models.shared.dependency_groups.jse;
  * @author scott
  *
  */
-public class JSE_IO implements JSE_1_7_IO {
-	public static final JSE_IO INSTANCE = new JSE_IO();
+public class JSE_Util implements JSE_1_7_Util {
+	public static final JSE_Util INSTANCE = new JSE_Util();
 	
-	private JSE_IO() {};
+	private JSE_Util() {};
 }

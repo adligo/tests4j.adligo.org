@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.dependency_groups.gwt;
+package org.adligo.tests4j.models.dependency_groups.gwt;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -70,13 +70,13 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.adligo.tests4j.models.dependency_groups.jse.JSE_Lang;
 import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
 import org.adligo.tests4j.models.shared.common.LegacyApiIssues;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
-import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Lang;
 
 
 /**

@@ -10,31 +10,31 @@ import java.math.MathContext;
  *
  */
 public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
-	private I_CoverageUnits coverageUnits;
-	private I_CoverageUnits coveredCoverageUnits;
+	private I_CoverageUnits coverageUnits_;
+	private I_CoverageUnits coveredCoverageUnits_;
 	
 	public CoverageUnitContinerMutant() {}
 	
 	public CoverageUnitContinerMutant(I_CoverageUnitsContainer p) {
-		coverageUnits = p.getCoverageUnits();
-		coveredCoverageUnits = p.getCoveredCoverageUnits();
+		coverageUnits_ = p.getCoverageUnits();
+		coveredCoverageUnits_ = p.getCoveredCoverageUnits();
 	}
 	
 
 	@Override
 	public I_CoverageUnits getCoverageUnits() {
-		return coverageUnits;
+		return coverageUnits_;
 	}
 	
 	@Override
 	public I_CoverageUnits getCoveredCoverageUnits() {
-		return coveredCoverageUnits;
+		return coveredCoverageUnits_;
 	}
 	
 	@Override
 	public BigDecimal getPercentageCovered() {
-		BigDecimal coverageUnitsBD = new BigDecimal(coverageUnits.getBig());
-		BigDecimal coveredCoverageUnitsBD = new BigDecimal(coveredCoverageUnits.getBig());
+		BigDecimal coverageUnitsBD = new BigDecimal(coverageUnits_.getBig());
+		BigDecimal coveredCoverageUnitsBD = new BigDecimal(coveredCoverageUnits_.getBig());
 		if (coverageUnitsBD == null || coveredCoverageUnitsBD == null) {
 			return new BigDecimal("100.00");
 		} else if (coverageUnitsBD.intValue() == 0) {
@@ -52,18 +52,33 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 	
 
 	public void setCoverageUnits(I_CoverageUnits coverageUnits) {
-		this.coverageUnits = coverageUnits;
+		this.coverageUnits_ = coverageUnits;
 	}
 
 	public void setCoveredCoverageUnits(I_CoverageUnits coveredCoverageUnits) {
-		this.coveredCoverageUnits = coveredCoverageUnits;
+		this.coveredCoverageUnits_ = coveredCoverageUnits;
 	}
 
+	public void addCoverageUnits(I_CoverageUnits coverageUnits) {
+		if (coverageUnits_ == null) {
+			coverageUnits_ = new CoverageUnits(coverageUnits.getBig());
+		}
+		coverageUnits_ = new CoverageUnits(coverageUnits_.getBig().add(coverageUnits.getBig()));
+	}
+
+	public void addCoveredCoverageUnits(I_CoverageUnits coveredCoverageUnits) {
+		if (coveredCoverageUnits_ == null) {
+			coveredCoverageUnits_ = new CoverageUnits(coveredCoverageUnits.getBig());
+		}
+		coveredCoverageUnits_ = new CoverageUnits(
+				coveredCoverageUnits_.getBig().add(coveredCoverageUnits.getBig()));
+	}
+	
 	public void toString(StringBuilder sb) {
 		sb.append("coverageUnits=");
-		sb.append(coverageUnits);
+		sb.append(coverageUnits_);
 		sb.append(", coveredCoverageUnits=");
-		sb.append(coveredCoverageUnits);
+		sb.append(coveredCoverageUnits_);
 	}
 
 	@Override

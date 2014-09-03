@@ -158,7 +158,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 					} catch (Exception x) {
 						logger.onThrowable(x);
 					} 
-				
+					
 					
 					if (trialDescription.isRunnable()) {
 						if (trialDescription.getType() != TrialType.MetaTrial) {
@@ -180,7 +180,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 								logger.onThrowable(x);
 							} 
 						}
-					}
+					} 
 				}
 				if (trialDescription.getType() != TrialType.MetaTrial) {
 					processInfo.addDone();
@@ -239,33 +239,34 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		trialResultMutant.setType(type);
 		trialResultMutant.setTrialName(trialName);
 		runBeforeTrial();
-		I_TrialResult result;
-		List<I_TrialFailure> failures =  trialResultMutant.getFailures();
 		
-		if (failures.size() == 0) {
-		
-			testsRunner.setTrial(trial);
-			testsRunner.setCod(outputDelegator);
-			testsRunner.setOut(out);
-			if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
-				logger.log("running trial tests " + trialName);
-			}
-			runTests();
-			
-			if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
-				logger.log("finished trial tests" + trialName);
-			}
-			if (trialResultMutant.isPassed()) {
-				//skip this method unless everything passed in the trial
-				trialResultMutant = runAfterTrialTests();
-			}
-			runAfterTrial();
+		testsRunner.setTrial(trial);
+		testsRunner.setCod(outputDelegator);
+		testsRunner.setOut(out);
+		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
+			logger.log("running trial tests " + trialName);
 		}
+		runTests();
+		
+		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
+			logger.log("finished trial tests" + trialName);
+		}
+		if (trialResultMutant.isPassed()) {
+			//skip this method unless everything passed in the trial
+			trialResultMutant = runAfterTrialTests();
+		}
+		runAfterTrial();
 		
 		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 			logger.log("calculating trial results " + trialName);
 		}
 		
+		onTrialCompleted();
+	}
+
+	public void onTrialCompleted() {
+		I_TrialType type = trialDescription.getType();
+		I_TrialResult result;
 		TrialType tt = TrialType.get(type);
 		switch (tt) {
 			case UseCaseTrial:

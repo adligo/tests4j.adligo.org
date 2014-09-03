@@ -1,6 +1,6 @@
-package org.adligo.tests4j.models.shared.dependency_groups.gwt;
+package org.adligo.tests4j.models.dependency_groups.gwt;
 
-import static  org.adligo.tests4j.models.shared.dependency_groups.gwt.GWT_2_6_Lang.*;
+import static org.adligo.tests4j.models.dependency_groups.gwt.GWT_2_6_Lang.*;
 
 
 /**

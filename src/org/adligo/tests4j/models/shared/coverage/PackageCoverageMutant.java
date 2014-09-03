@@ -44,8 +44,10 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 				}
 			}
 			List<I_PackageCoverage> otherChildren =  p.getChildPackageCoverage();
-			for (I_PackageCoverage coverage: otherChildren) {
-				children_.add(new PackageCoverageMutant(coverage));
+			if (otherChildren != null) {
+				for (I_PackageCoverage coverage: otherChildren) {
+					children_.add(new PackageCoverageMutant(coverage));
+				}
 			}
 		}
 	}
@@ -116,6 +118,9 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 		}
 	}
 
+	public void addChild(I_PackageCoverage child) {
+		children_.add(new PackageCoverageMutant(child));
+	}
 	
 	public void addChild(PackageCoverageMutant child) {
 		children_.add(child);

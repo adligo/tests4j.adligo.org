@@ -12,9 +12,9 @@ import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
 import java.util.TooManyListenersException;
 
+import org.adligo.tests4j.models.dependency_groups.gwt.GWT_2_6_Lang;
+import org.adligo.tests4j.models.dependency_groups.jse.JSE_Lang;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
-import org.adligo.tests4j.models.shared.dependency_groups.gwt.GWT_2_6_Lang;
-import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Lang;
 
 
 public class GWTGroupGen {

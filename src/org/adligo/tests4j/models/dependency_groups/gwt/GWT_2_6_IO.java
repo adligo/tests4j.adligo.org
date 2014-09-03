@@ -1,9 +1,9 @@
-package org.adligo.tests4j.models.shared.dependency_groups.gwt;
+package org.adligo.tests4j.models.dependency_groups.gwt;
 
+import org.adligo.tests4j.models.dependency_groups.jse.JSE_Lang;
 import org.adligo.tests4j.models.shared.dependency.ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.ClassAttributesMutant;
 import org.adligo.tests4j.models.shared.dependency.MethodSignature;
-import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Lang;
 
 public class GWT_2_6_IO {
 	public static ClassAttributes getIOException() {
