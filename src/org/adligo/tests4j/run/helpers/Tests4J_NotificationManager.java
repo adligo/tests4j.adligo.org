@@ -18,15 +18,12 @@ import org.adligo.tests4j.models.shared.common.StringMethods;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
-import org.adligo.tests4j.models.shared.metadata.I_TestMetadata;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.SourceInfoMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadataMutant;
-import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
-import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
@@ -36,8 +33,11 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
+import org.adligo.tests4j.models.shared.trials.ApiTrial;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.MetaTrial;
+import org.adligo.tests4j.models.shared.trials.SourceFileTrial;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -175,14 +175,42 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 
 			TrialType tt = TrialType.get(type);
 			switch (tt) {
+				case MetaTrial:
+					TestMetadataMutant metaCalc = new TestMetadataMutant();
+					metaCalc.setTestName(MetaTrial.AFTER_META_CALC);
+					tmm.addTest(metaCalc);
+					
+					TestMetadataMutant metaResults = new TestMetadataMutant();
+					metaResults.setTestName(MetaTrial.AFTER_NON_META_RESULTS);
+					tmm.addTest(metaResults);
+					break;
 				case SourceFileTrial:
 					Class<?> clazz = td.getSourceFileClass();
 					if (clazz != null) {
 						tmm.setTestedSourceFile(clazz.getName());
 					}
+					if (td.getAfterTrialTestsMethod() != null) {
+						TestMetadataMutant attm = new TestMetadataMutant();
+						attm.setTestName(SourceFileTrial.AFTER_TRIAL_TESTS);
+						tmm.addTest(attm);
+					}
+					if (memory.hasCoveragePlugin()) {
+						TestMetadataMutant tscMin = new TestMetadataMutant();
+						tscMin.setTestName(SourceFileTrial.TEST_SOURCE_CLASS_MIN_COVERAGE);
+						tmm.addTest(tscMin);
+						
+						TestMetadataMutant tscDep = new TestMetadataMutant();
+						tscDep.setTestName(SourceFileTrial.TEST_SOURCE_CLASS_DEPENDENCIES);
+						tmm.addTest(tscDep);
+					}
 					break;
 				case ApiTrial:
 						tmm.setTestedPackage(td.getPackageName());
+						if (td.getAfterTrialTestsMethod() != null) {
+							TestMetadataMutant attm = new TestMetadataMutant();
+							attm.setTestName(ApiTrial.AFTER_TRIAL_TESTS);
+							tmm.addTest(attm);
+						}
 					break;
 				case UseCaseTrial:
 						tmm.setSystem(td.getSystemName());
@@ -191,71 +219,20 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				default:
 					break;
 			}
-			
-			if (td.getTestMethodsSize() >= 1) {
-				Iterator<TestDescription> iit = td.getTestMethods();
+			Iterator<TestDescription> atTests =  td.getTestMethods();
+			while (atTests.hasNext()) {
+				TestMetadataMutant tscDep = new TestMetadataMutant();
+				TestDescription testDesc = atTests.next();
 				
-				if (iit != null) {
-					List<I_TestMetadata> testMetas = new ArrayList<I_TestMetadata>();
-					while (iit.hasNext()) {
-						TestDescription tm = iit.next();
-						TestMetadataMutant testMeta = new TestMetadataMutant();
-						Method method = tm.getMethod();
-						testMeta.setTestName(method.getName());
-						long testTimeout = tm.getTimeoutMillis();
-						testMeta.setTimeout(testTimeout);
-						testMetas.add(testMeta);
-					}
-					
-					Class<? extends I_AbstractTrial> trialClass = td.getTrialClass();
-					
-					
-					switch (tt) {
-						case SourceFileTrial:
-							try {
-								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_SourceFileTrialResult.class);
-								TestMetadataMutant testMeta = new TestMetadataMutant();
-								testMeta.setTestName(m.getName());
-								testMetas.add(testMeta);
-							} catch (NoSuchMethodException e) {
-								//do noting
-							}
-								
-							break;
-						case ApiTrial:
-							try {
-								
-								Method m = trialClass.getDeclaredMethod("afterTrialTests", I_ApiTrialResult.class);
-								TestMetadataMutant testMeta = new TestMetadataMutant();
-								testMeta.setTestName(m.getName());
-								testMetas.add(testMeta);
-								
-							} catch (NoSuchMethodException e) {
-								//do noting
-							}
-							break;
-						
-						case MetaTrial:
-							TestMetadataMutant testMeta = new TestMetadataMutant();
-							testMeta.setTestName("afterMetadataCalculated(I_TrialRunMetadata metadata)");
-							testMetas.add(testMeta);
-							
-							testMeta = new TestMetadataMutant();
-							testMeta.setTestName("afterNonMetaTrialsRun(I_TrialRunResult results)");
-							testMetas.add(testMeta);
-							
-							break;
-						default:
-							break;
-					}
-					tmm.setTests(testMetas);
-					if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-						log.log("sendingMetadata. " + trialClass.getName()
-								+ "  has " + testMetas.size() + " tests.");
-						totalTests = totalTests + testMetas.size();
-					}
-				}
+				Method tm = testDesc.getMethod();
+				tscDep.setTestName(tm.getName());
+				
+				tscDep.setIgnored(testDesc.isIgnore());
+				tscDep.setTimeout(testDesc.getTimeoutMillis());
+				
+				tmm.addTest(tscDep);
 			}
+			
 			Method after = td.getAfterTrialMethod();
 			if (after != null) {
 				tmm.setBeforeTrialMethodName(after.getName());
@@ -374,9 +351,19 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	}
 
 	private synchronized void incrementTrialResultCounts(I_TrialResult result) {
-		assertionCount.addAndGet(result.getAssertionCount());
-		uniqueAssertionCount.addAndGet(result.getUniqueAssertionCount());
-		testCount.addAndGet(result.getTestCount());
+		int asserts = result.getAssertionCount();
+		int uAsserts = result.getUniqueAssertionCount();
+		int tests = result.getTestCount();
+		
+		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
+			log.log(this.toString() + " increment counts for;" +
+					log.getLineSeperator() + "" + result.getName() +
+					log.getLineSeperator() + "tests=" + tests + ", asserts=" + asserts +
+					", uniqueAsserts=" + uAsserts);
+		}
+		assertionCount.addAndGet(asserts);
+		uniqueAssertionCount.addAndGet(uAsserts);
+		testCount.addAndGet(tests);
 		testFailureCount.addAndGet(result.getTestFailureCount());
 		if (!result.isPassed()) {
 			trialFailures.getAndIncrement();
@@ -414,9 +401,6 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		
 		stopRecordingTrialsRun(runResult);
 		
-		
-
-	
 		//@diagram_sync TODO
 		if (memory.hasMetaTrial()) {
 			synchronized (metaProcessor) {
@@ -445,16 +429,16 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 										}
 										called = true;
 										
-										runResult.setTrials(trials.get() + 1);
+										runResult.setTrials(trials.get());
 										if (result.isPassed()) {
 											passingTrialNames.add(trial.getClass().getName());
 										} else {
-											runResult.setTrialFailures(trialFailures.get() + 1);
+											runResult.setTrialFailures(trialFailures.get());
 										}
-										runResult.setAsserts(assertionCount.get() + result.getAssertionCount());
-										runResult.setUniqueAsserts(uniqueAssertionCount.get() + result.getUniqueAssertionCount());
-										runResult.setTestFailures(testFailureCount.get() + result.getTestFailureCount());
-										runResult.setTests(testCount.get() + result.getTestCount());
+										runResult.setAsserts(assertionCount.get());
+										runResult.setUniqueAsserts(uniqueAssertionCount.get());
+										runResult.setTestFailures(testFailureCount.get());
+										runResult.setTests(testCount.get());
 									}
 								}
 							}

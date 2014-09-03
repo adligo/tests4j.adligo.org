@@ -296,6 +296,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		useCaseTrialResultMutant = new UseCaseTrialResultMutant(trialResultMutant);
 		useCaseTrialResultMutant.setSystem(trialDescription.getSystemName());
 		useCaseTrialResultMutant.setUseCase(trialDescription.getUseCase());
+		useCaseTrialResultMutant.setTrialName(trialDescription.getTrialName());
 		return useCaseTrialResultMutant;
 	}
 
@@ -305,6 +306,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		}
 		ApiTrialResultMutant apiTrialTestResultMutant = new ApiTrialResultMutant(trialResultMutant);
 		apiTrialTestResultMutant.setPackageName(trialDescription.getPackageName());
+		apiTrialTestResultMutant.setTrialName(trialDescription.getTrialName());
 		return apiTrialTestResultMutant;
 	}
 
@@ -321,6 +323,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		SourceFileTrialResultMutant sourceFileTrialResultMutant = new SourceFileTrialResultMutant(trialResultMutant);
 		Class<?> clazz = trialDescription.getSourceFileClass();
 		sourceFileTrialResultMutant.setSourceFileName(clazz.getName());
+		sourceFileTrialResultMutant.setTrialName(trialDescription.getTrialName());
 		return sourceFileTrialResultMutant;
 	}
 	
@@ -422,17 +425,24 @@ public class Tests4J_TrialsRunnable implements Runnable,
 				afterSouceFileTrialTestsProcessor.reset(trialDescription, 
 						trialThreadLocalCoverageRecorder, trial);
 				SourceFileTrialResultMutant result = getSourceFileTrialResult();
+				
+				//this must be run, in order to calculate code coverage, when there is a 
+				//code coverage plugin
 				TestResultMutant trm = afterSouceFileTrialTestsProcessor.afterSourceFileTrialTests(result);
+				//add the default afterSourceFileTrialTests result
 				if (trm != null) {
+					//otherwise skip adding this test, and 1 assert.
 					result.addResult(trm);
 				}
-				if (result.hasRecordedCoverage()) {
+				
+				if (memory.hasCoveragePlugin()) {
 					TestResult minCoverageResult = afterSouceFileTrialTestsProcessor.testMinCoverage(result);
 					result.addResult(minCoverageResult);
 					trialState.addTestCompleted();
+				
+					TestResult dependencyResult = afterSouceFileTrialTestsProcessor.testDependencies(result);
+					result.addResult(dependencyResult);
 				}
-				TestResult dependencyResult = afterSouceFileTrialTestsProcessor.testDependencies(result);
-				result.addResult(dependencyResult);
 				trialState.addTestCompleted();
 				return result;
 			case ApiTrial:

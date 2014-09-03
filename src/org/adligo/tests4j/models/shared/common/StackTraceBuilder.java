@@ -30,12 +30,12 @@ public class StackTraceBuilder {
 	
 	private static void toString(Throwable t, StringBuilder sb, String currentIndent) {
 		
-		sb.append(currentIndent + t.toString()  + Tests4J_System.SYSTEM.getLineSeperator());
+		sb.append(currentIndent + t.toString()  + Tests4J_System.SYSTEM.lineSeperator());
 		StackTraceElement [] stack = t.getStackTrace();
 		if (stack != null) {
 			//stack trace will, be null in GWT client
 			for (int i = 0; i < stack.length; i++) {
-				sb.append(currentIndent +"at " + stack[i] + Tests4J_System.SYSTEM.getLineSeperator());
+				sb.append(currentIndent +"at " + stack[i] + Tests4J_System.SYSTEM.lineSeperator());
 			}
 		}
 	}

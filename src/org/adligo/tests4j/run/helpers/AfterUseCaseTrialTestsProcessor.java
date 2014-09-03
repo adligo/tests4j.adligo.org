@@ -64,9 +64,9 @@ public class AfterUseCaseTrialTestsProcessor extends AbstractAfterTrialTestsProc
 			super.onDelegatedTestMethodException(x, AFTER_USE_CASE_TRIAL_TESTS_METHOD);
 		}
 		TestResultMutant afterTrialTestsResultMutant = super.getAfterTrialTestsResultMutant();
-		if (passed) {
-			flushAssertionHashes(afterTrialTestsResultMutant);
-		}
+		
+		flushAssertionHashes(afterTrialTestsResultMutant);
+		afterTrialTestsResultMutant.setAssertionCount(getAssertions());
 		afterTrialTestsResultMutant.setPassed(passed);
 		afterTrialTestsResultMutant.setName(AFTER_USE_CASE_TRIAL_TESTS_METHOD);
 		return afterTrialTestsResultMutant;

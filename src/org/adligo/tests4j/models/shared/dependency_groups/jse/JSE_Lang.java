@@ -55,6 +55,7 @@ public class JSE_Lang implements JSE_1_8_Lang, I_PackageConstantLookup {
 		toRet.put("java.lang.Math","MATH");
 		toRet.put("java.lang.Number","NUMBER");
 		toRet.put("java.lang.Object","OBJECT");
+		toRet.put("java.lang.Objects","OBJECTS");
 		toRet.put("java.lang.Package","PACKAGE");
 		toRet.put("java.lang.Process","PROCESS");
 		toRet.put("java.lang.ProcessBuilder","PROCESS_BUILDER");

@@ -62,8 +62,8 @@ public class DelegateSystem implements I_System {
 		return delegate.getTime();
 	}
 
-	public String getLineSeperator() {
-		return delegate.getLineSeperator();
+	public String lineSeperator() {
+		return delegate.lineSeperator();
 	}
 
 	@Override
@@ -74,5 +74,10 @@ public class DelegateSystem implements I_System {
 	@Override
 	public PrintStream getOut() {
 		return delegate.getOut();
+	}
+
+	@Override
+	public String getJseVersion() {
+		return delegate.getJseVersion();
 	}
 }

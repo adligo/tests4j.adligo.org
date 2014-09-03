@@ -75,9 +75,9 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 			super.onDelegatedTestMethodException(x, AFTER_API_TRIAL_TESTS_METHOD);
 		}
 		TestResultMutant afterTrialTestsResultMutant = super.getAfterTrialTestsResultMutant();
-		if (passed) {
-			flushAssertionHashes(afterTrialTestsResultMutant);
-		}
+
+		flushAssertionHashes(afterTrialTestsResultMutant);
+		afterTrialTestsResultMutant.setAssertionCount(getAssertions());
 		afterTrialTestsResultMutant.setPassed(passed);
 		afterTrialTestsResultMutant.setName(AFTER_API_TRIAL_TESTS_METHOD);
 		return afterTrialTestsResultMutant;

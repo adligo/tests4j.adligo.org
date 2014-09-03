@@ -16,8 +16,8 @@ public class Tests4J_System {
 		return SYSTEM.getTime();
 	}
 
-	public static String getLineSeperator() {
-		return SYSTEM.getLineSeperator();
+	public static String lineSeperator() {
+		return SYSTEM.lineSeperator();
 	}
 
 	public static String getCurrentThreadName() {

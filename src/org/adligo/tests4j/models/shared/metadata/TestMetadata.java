@@ -41,4 +41,8 @@ public class TestMetadata implements I_TestMetadata {
 	public void toXml(I_XML_Builder builder) {
 		mutant.toXml(builder);
 	}
+
+	public String toString() {
+		return mutant.toString();
+	}
 }

@@ -10,7 +10,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.adligo.tests4j.models.shared.common.I_System;
+import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
+import org.adligo.tests4j.models.shared.common.LegacyApiIssues;
 import org.adligo.tests4j.models.shared.common.SystemWithPrintStreamDelegate;
+import org.adligo.tests4j.models.shared.dependency_groups.gwt.GWT_2_6_DependencyGroup;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
@@ -51,7 +54,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	private long nextTrialsProgresss;
 	private long nextRemotesProgresss;
 	
-	private I_System system;
+	private final I_System system;
 	private Tests4J_ParamsReader reader;
 	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
@@ -82,6 +85,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		 * and then is 
 		 */
 		log = reader.getLogger();
+		displayJavaVerionErrors();
 		/**
 		 * now the log is concurrent
 		 */
@@ -117,6 +121,21 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		return reader.isRunnable();
 	}	
 	
+
+	private void displayJavaVerionErrors() {
+		LegacyApiIssues issues = new LegacyApiIssues();
+		issues.addIssues(CachedClassBytesClassLoader.ISSUES);
+		issues.addIssues(GWT_2_6_DependencyGroup.ISSUES);
+		String version = system.getJseVersion();
+		JavaAPIVersion v = new JavaAPIVersion(version);
+		if (issues.hasIssues()) {
+			List<Throwable> thrown = issues.getIssues(v);
+			if (thrown != null) {
+				log.onThrowable(new IllegalStateException("tests4j detects java " + version +
+						" which has " + thrown.size() + " potential issues."));
+			}
+		}
+	}
 	/**
 	 * This method kicks off the TheadPool (ExecutorService)
 	 * creating as many TrialInstancesProcessors
@@ -168,8 +187,16 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 			}
 		} catch (Throwable t) {
 			log.onThrowable(t);
+			//print the throwable
+			String next = cod.poll();
+			while (next != null) {
+				system.println(next);
+				next = cod.poll();
+			}
 		}
+		
 		controls.notifyFinished();
+		//should call system.exit in main runs
 		threadManager.shutdown();
 		try {
 			Thread.currentThread().join();

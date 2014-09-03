@@ -112,7 +112,7 @@ public class DefaultLog implements I_Tests4J_Log {
 
 	@Override
 	public String getLineSeperator() {
-		return system.getLineSeperator();
+		return system.lineSeperator();
 	}
 
 

@@ -16,6 +16,8 @@ import org.adligo.tests4j.models.shared.common.ClassMethods;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.models.shared.trials.I_TrialParams;
+import org.adligo.tests4j.models.shared.trials.I_TrialParamsQueue;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 
 
@@ -31,6 +33,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * @see I_Tests4J_Params#getMetaTrialClass()
 	 */
 	private Class<? extends I_MetaTrial>  metaTrialClass;
+	private I_TrialParams<?> metaTrialParams_;
+	private I_TrialParamsQueue trialParamsQueue_;
 	
 	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
 	
@@ -359,5 +363,37 @@ public class Tests4J_Params implements I_Tests4J_Params {
 
 	public void setProgressMonitor(I_Tests4J_ProgressMonitor progressMonitor) {
 		this.progressMonitor = progressMonitor;
+	}
+
+	@Override
+	public I_TrialParams<?> getMetaTrialParams() {
+		return metaTrialParams_;
+	}
+
+	public void setMetaTrialParams(I_TrialParams<?> p) {
+		metaTrialParams_ = p;
+	}
+	
+	@Override
+	public I_TrialParamsQueue getTrialParamsQueue() {
+		return trialParamsQueue_;
+	}
+	
+	public void getTrialParamsQueue(I_TrialParamsQueue p) {
+		trialParamsQueue_ = p;
+	}
+	
+	public boolean hasCodeCoverageFactory() {
+		if (coveragePluginFactoryClass != null) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean hasMetaTrial() {
+		if (metaTrialClass != null) {
+			return true;
+		}
+		return false;
 	}
 }

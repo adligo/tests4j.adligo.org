@@ -40,8 +40,8 @@ public class SystemWithPrintStreamDelegate implements I_System {
 		return delegate.getTime();
 	}
 
-	public String getLineSeperator() {
-		return delegate.getLineSeperator();
+	public String lineSeperator() {
+		return delegate.lineSeperator();
 	}
 
 	@Override
@@ -52,5 +52,10 @@ public class SystemWithPrintStreamDelegate implements I_System {
 	@Override
 	public PrintStream getOut() {
 		return out;
+	}
+
+	@Override
+	public String getJseVersion() {
+		return delegate.getJseVersion();
 	}
 }

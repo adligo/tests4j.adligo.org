@@ -23,6 +23,7 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.I_TrialParamsAware;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 
 public class MetaTrialProcessor implements I_Tests4J_AssertListener {
@@ -55,6 +56,12 @@ public class MetaTrialProcessor implements I_Tests4J_AssertListener {
 	 */
 	public I_TrialResult runMetaTrialMethods(I_MetaTrial trial, I_TrialRunResult runResultMutant) {
 		trial.setBindings(bindings);
+		try {
+			I_TrialParamsAware<?> tpa = (I_TrialParamsAware<?>) trial;
+			tpa.setTrialParams(memory.getMetaTrialParams());
+		} catch (ClassCastException x) {
+			//no params for u
+		}
 		String trialName = trial.getClass().getName();
 		notifier.startingTrial(trialName);
 		

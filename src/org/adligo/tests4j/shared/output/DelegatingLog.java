@@ -40,7 +40,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 		if (pSystem == null) {
 			throw new IllegalArgumentException(DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM);
 		}
-		lineSeperator = pSystem.getLineSeperator();
+		lineSeperator = pSystem.lineSeperator();
 		String systemClassName = pSystem.getClass().getName();
 		if (DefaultSystem.class.getName().equals(systemClassName)) {
 			mainLog = true;

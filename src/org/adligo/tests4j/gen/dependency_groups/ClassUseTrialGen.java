@@ -80,34 +80,36 @@ public class ClassUseTrialGen {
 			
 			out.println("");
 			out.println("\tpublic void afterTrialTests(I_SourceFileTrialResult p) {");
-			out.println("\t\tI_ClassDependencies cRefs = p.getDependencies();");
-			out.println("\t\tif (cRefs == null) {");
+			out.println("\t\tI_ClassAttributes refs = p.getSourceClassAttributes();");
+			out.println("\t\tif (refs == null) {");
 			out.println("\t\t\treturn;");
 			out.println("\t\t}");
-			out.println("\t\tList<I_ClassAttributes> refs = cRefs.getReferences();");
 			out.println("\t\tI_ClassAttributes example = " +groupFactoryClass.getSimpleName() +
 					".get" + clazz.getSimpleName() + "();");
-			out.println("\t\tI_ClassAttributes ca = refs.get(0);");
-			out.println("\t\tassertNotNull(ca);");
-			out.println("\t\tassertEquals(example.getClassName(), ca.getClassName());");
+			out.println("\t\tassertNotNull(refs);");
+			out.println("\t\tassertEquals(" +
+					clazz.getSimpleName() + api+ "_MockUse.class.getName(), refs.getName());");
+			
+			out.println("\t\tassertEquals(example.getName(), refs.getName());");
 			out.println("\t\tSet<I_FieldSignature> exampleFields = example.getFields();");
-			out.println("\t\tSet<I_FieldSignature> fields = ca.getFields();");
+			out.println("\t\tSet<I_FieldSignature> fields = refs.getFields();");
 			out.println("\t\tfor (I_FieldSignature sig: exampleFields) {");
-			out.println("\t\t\tassertContains(fields, sig)");
+			out.println("\t\t\tassertContains(fields, sig);");
 			out.println("\t\t}");
 			out.println("\t\tassertEquals(exampleFields.size(), fields.size());");
 			
 			out.println("\t\tSet<I_MethodSignature> exampleMethods = example.getMethods();");
-			out.println("\t\tSet<I_MethodSignature> methods = ca.getMethods();");
+			out.println("\t\tSet<I_MethodSignature> methods = refs.getMethods();");
 			out.println("\t\tfor (I_MethodSignature method: exampleMethods) {");
-			out.println("\t\t\tassertContains(methods, method)");
+			out.println("\t\t\tassertContains(methods, method);");
 			out.println("\t\t}");
 			out.println("\t\tassertEquals(exampleMethods.size(), methods.size());");
+			out.println("\t}");
 			
 			if (!StringMethods.isEmpty(ctx.getExtraTrialContent())) {
 				out.println(ctx.getExtraTrialContent());	
 			}
-			out.println("\t}");
+			
 		} else {
 			out.println("public class " + clazz.getSimpleName() + api +"_UseTrial extends " +
 					ctx.getTrialClassSimpleName() + " {");

@@ -27,7 +27,7 @@ public class TrialOutput implements I_ToggleOutputBuffer {
 		String s = output.poll();
 		while (s != null) {
 			sb.append(s);
-			sb.append(Tests4J_System.getLineSeperator());
+			sb.append(Tests4J_System.lineSeperator());
 			s = output.poll();
 		}
 		return sb.toString();

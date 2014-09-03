@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.trials;
 
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 
 /**
@@ -16,7 +17,8 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
  *
  */
 public interface I_MetaTrial extends I_AbstractTrial {
-	
+	public static final String AFTER_META_CALC = "afterMetadataCalculated(I_TrialRunMetadata metadata)";
+	public static final String AFTER_NON_META_RESULTS = "afterNonMetaTrialsRun(I_TrialRunResult results)";
 	
 	/**
 	 * this method can assert thing about the metadata ie

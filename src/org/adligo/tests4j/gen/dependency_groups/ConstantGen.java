@@ -1,10 +1,9 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
@@ -36,26 +35,29 @@ public class ConstantGen {
 			out.println("\t\tClassAttributesMutant toRet = new ClassAttributesMutant();");
 			out.println("\t\ttoRet.setName(" + constantLookup.get(clazz.getName()) + ");");
 			out.println("");
-			out.println("\t\t//constructors");
+			
 			I_ClassAttributes ca = caa.getAttributes();
 			
 			Set<I_MethodSignature> ms = ca.getMethods();
-			if (!ms.contains(new MethodSignature("<init>"))) {
-				//everything has a hidden constructor with no arguments
-				//which shows up in ASM but not reflection, 
-				//even if there isn't a public one
-				out.println("\t\ttoRet.addMethod(new MethodSignature(\"<init>\");");
+			if (!clazz.isInterface()) {
+				out.println("\t\t//constructors");
+				if (!ms.contains(new MethodSignature("<init>"))) {
+					//everything has a hidden constructor with no arguments
+					//which shows up in ASM but not reflection, 
+					//even if there isn't a public one
+					out.println("\t\ttoRet.addMethod(new MethodSignature(\"<init>\");");
+				}
 			}
 			for (I_MethodSignature method: ms) {
 				if ("<init>".equals(method.getMethodName())) {
 					String nextLine = "\t\ttoRet.addMethod(new MethodSignature(\"" + method.getMethodName() + "\"";
 					if (method.getParameters() >= 1) {
-						nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
+						nextLine = nextLine + ", "  + Tests4J_System.lineSeperator() + "\t\t\t" + getMethodParamsDefaults(method);
 					}
 					if (method.getReturnClassName() != null) {
 						String type = constantLookup.get(method.getReturnClassName());
 						if (type != null) {
-							nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + type + "";
+							nextLine = nextLine + ", "  + Tests4J_System.lineSeperator() + "\t\t\t" + type + "";
 						}
 					}
 					nextLine = nextLine + "));";
@@ -84,12 +86,12 @@ public class ConstantGen {
 				if ( !"<init>".equals(method.getMethodName())) {
 					String nextLine = "\t\ttoRet.addMethod(new MethodSignature(\"" + method.getMethodName() + "\"";
 					if (method.getParameters() >= 1) {
-						nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
+						nextLine = nextLine + ", "  + Tests4J_System.lineSeperator() + "\t\t\t" + getMethodParamsDefaults(method);
 					}
 					if (method.getReturnClassName() != null) {
 						String type = constantLookup.get(method.getReturnClassName());
 						if (type != null) {
-							nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + type + "";
+							nextLine = nextLine + ", "  + Tests4J_System.lineSeperator() + "\t\t\t" + type + "";
 						}
 					}
 					nextLine = nextLine + "));";

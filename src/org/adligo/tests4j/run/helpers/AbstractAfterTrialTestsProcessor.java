@@ -41,6 +41,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_Tests4J_Asse
 	private I_AbstractTrial trial;
 	private TestResultMutant delegatedTestResultMutant;
 	private List<Integer> delegatedTestAssertionHashes; 
+	private int assertions = 0;
 	
 	public AbstractAfterTrialTestsProcessor(I_Tests4J_Memory memory) {
 		bindings = new TrialBindings(Platform.JSE, memory.getEvaluationLookup(), memory.getLog());
@@ -50,6 +51,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_Tests4J_Asse
 	public void reset(TrialDescription pDesc, I_Tests4J_CoverageRecorder pRec, I_AbstractTrial pTrial) {
 		delegatedTestResultMutant = null;
 		delegatedTestAssertionHashes = new ArrayList<Integer>();
+		assertions = 0;
 		
 		trialDescription = pDesc;
 		trialThreadLocalCoverageRecorder = pRec;
@@ -64,6 +66,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_Tests4J_Asse
 	@Override
 	public void assertCompleted(I_AssertCommand cmd) {
 		delegatedTestAssertionHashes.add(cmd.hashCode());
+		assertions++;
 	}
 
 	@Override
@@ -125,6 +128,10 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_Tests4J_Asse
 		
 		TestFailure tf = new TestFailure(tfm);
 		delegatedTestResultMutant.setFailure(tf);
+	}
+
+	public int getAssertions() {
+		return assertions;
 	}
 	
 }

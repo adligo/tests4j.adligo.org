@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -12,6 +14,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.adligo.tests4j.models.shared.common.I_CacheControl;
+import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
+import org.adligo.tests4j.models.shared.common.LegacyApiIssues;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 
@@ -22,11 +26,20 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  *
  */
 public class CachedClassBytesClassLoader extends ClassLoader implements I_CachedClassBytesClassLoader {
-
+	public static final LegacyApiIssues ISSUES = new LegacyApiIssues();
+	
 	//ok i must make sure
 	// http://docs.oracle.com/javase/7/docs/technotes/guides/lang/cl-mt.html
 	static {
-		registerAsParallelCapable();
+		try {
+			//keep reflective until jdk 1.7 is the last minor verion
+			//to version forward api call the method from jdk 1.6 apis
+			Method rapc = ClassLoader.class.getMethod("registerAsParallelCapable", new Class[] {});
+			rapc.invoke(ClassLoader.class, "registerAsParallelCapable");
+		} catch (NoSuchMethodException | IllegalArgumentException | IllegalAccessException | InvocationTargetException x) {
+			ISSUES.addIssues(new JavaAPIVersion("1.6.0"),new IllegalStateException("Note the jdk 1.6 "
+					+ "parallel class loader may not work properly.", x));
+		}
 	}
 	private final ConcurrentHashMap<String, byte[]> bytesCache = new ConcurrentHashMap<String, byte[]>();
 	private final ConcurrentHashMap<String, Class<?>> classes = new ConcurrentHashMap<String, Class<?>>();

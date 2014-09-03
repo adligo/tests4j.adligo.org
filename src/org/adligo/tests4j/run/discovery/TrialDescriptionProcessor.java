@@ -95,7 +95,14 @@ public class TrialDescriptionProcessor {
 		}
 		I_TrialType type = desc.getType();
 		
-		trm.setPassed(false);
+		if (failures.size() == 0) {
+			if (desc.getTestMethodsSize() == 0) {
+				//pas empty tests for interface tests when there is no coverage
+				trm.setPassed(true);
+			} else {
+				trm.setPassed(false);
+			}
+		}
 		trm.setType(type);
 		
 		TrialType tt = TrialType.get(type);

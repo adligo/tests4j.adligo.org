@@ -103,7 +103,7 @@ public class DiffIndexes implements I_DiffIndexes {
 							}
 						} else if (matchRightToLeft < diffRightToLeft){
 							throw new IllegalArgumentException(MATCH_ERROR_PART_ONE + 
-									Tests4J_System.SYSTEM.getLineSeperator() +
+									Tests4J_System.SYSTEM.lineSeperator() +
 									MATCH_L2R_DIFF_L2R_MATCH_R2L_DIFF_R2L);
 						}
 					}
@@ -116,7 +116,7 @@ public class DiffIndexes implements I_DiffIndexes {
 							}
 						} else if (diffRightToLeft < matchRightToLeft) {
 							throw new IllegalArgumentException(MATCH_ERROR_PART_ONE +
-									Tests4J_System.SYSTEM.getLineSeperator() +
+									Tests4J_System.SYSTEM.lineSeperator() +
 									DIFF_L2R_MATCH_L2R_DIFF_R2L_MATCH_R2L);
 						}
 					} else {

@@ -105,5 +105,10 @@ public class TestMetadataMutant implements I_TestMetadata {
 		builder.endLine();
 		builder.setAttributesPerLine(origAttrsPerLine);
 	}
+
+	@Override
+	public String toString() {
+		return testName;
+	}
 	
 }

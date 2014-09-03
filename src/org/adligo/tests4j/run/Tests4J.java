@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.common.DelegateSystem;
 import org.adligo.tests4j.models.shared.common.I_System;
+import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
+import org.adligo.tests4j.models.shared.common.LegacyApiIssues;
 import org.adligo.tests4j.models.shared.common.MethodBlocker;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
+import org.adligo.tests4j.models.shared.dependency_groups.gwt.GWT_2_6_DependencyGroup;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
@@ -14,6 +17,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_DelegateFactory;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.run.helpers.CachedClassBytesClassLoader;
 import org.adligo.tests4j.run.helpers.DefaultDelegateFactory;
 import org.adligo.tests4j.run.helpers.JseSystem;
 
@@ -129,7 +133,7 @@ public class Tests4J {
 	 * methods so that tests4j can make sure
 	 * it makes some System calls.
 	 */
-	private I_System system;
+	private I_System system = Tests4J_System.SYSTEM;
 	/**
 	 * not part of the public api,
 	 * but used when test4j tests itself.
@@ -147,6 +151,7 @@ public class Tests4J {
 			I_Tests4J_Constants messages = Tests4J_Constants.CONSTANTS;
 			throw new IllegalArgumentException(messages.getNullParamsExceptionMessage());
 		}
+		
 		I_Tests4J_DelegateFactory factory = FACTORY.get();
 		//I am not sure how this null is happening, 
 		//I do change the FACTORY, but I never set it to null?
@@ -165,7 +170,6 @@ public class Tests4J {
 		//@diagram_sync with Overview.seq on 7/21/2014
 		return delegate.getControls();
 	}
-
 
 	protected I_System getSystem() {
 		return system;

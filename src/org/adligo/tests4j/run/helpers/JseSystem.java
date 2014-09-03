@@ -2,6 +2,7 @@ package org.adligo.tests4j.run.helpers;
 
 import java.io.PrintStream;
 
+import org.adligo.tests4j.models.shared.common.DefaultSystem;
 import org.adligo.tests4j.models.shared.common.I_System;
 
 public class JseSystem implements I_System {
@@ -10,7 +11,13 @@ public class JseSystem implements I_System {
 	 * class loading time, so that it can't be changed
 	 */
 	private static final PrintStream OUT = System.out;
+	/**
+	 * when jdk 1.7 is last minor version change to 
+	 * System.lineSeperator();
+	 */
+	private static final String LineSeperator = System.getProperty("line.seperator","\n");
 	
+	public JseSystem() {}
 	
 	@Override
 	public void println(String p) {
@@ -28,8 +35,8 @@ public class JseSystem implements I_System {
 	}
 
 	@Override
-	public String getLineSeperator() {
-		return System.lineSeparator();
+	public String lineSeperator() {
+		return LineSeperator;
 	}
 
 	@Override
@@ -40,6 +47,11 @@ public class JseSystem implements I_System {
 	@Override
 	public PrintStream getOut() {
 		return OUT;
+	}
+
+	@Override
+	public String getJseVersion() {
+		return System.getProperty("java.version", "");
 	}
 
 }

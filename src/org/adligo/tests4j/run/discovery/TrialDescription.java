@@ -13,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -21,10 +22,13 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
+import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
+import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrumentation;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.trials.AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_CircularDependencies;
@@ -54,10 +58,10 @@ public class TrialDescription implements I_TrialDescription {
 	 * when there is a CodeCoveragePlugin
 	 */
 	private I_AbstractTrial trial;
-	private Class<? extends I_AbstractTrial> trialClass;
+	private Class<? extends I_AbstractTrial> trialClass_;
 	
 	private Method beforeTrialMethod;
-	private Method afterTrialTestsMethod;
+	private Method afterTrialTestsMethod_;
 	private Method afterTrialMethod;
 	private final List<TestDescription> testMethods = new CopyOnWriteArrayList<TestDescription>();
 	private I_TrialType type;
@@ -77,9 +81,9 @@ public class TrialDescription implements I_TrialDescription {
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
 			I_Tests4J_Memory pMem) {
 		reporter = pMem.getLog();
-		trialClass = pTrialClass;
+		trialClass_ = pTrialClass;
 		if (reporter.isLogEnabled(TrialDescription.class)) {
-			reporter.log("Creating TrialDescription for " + trialClass);
+			reporter.log("Creating TrialDescription for " + trialClass_);
 		}
 		
 		runnable = checkTestClass();
@@ -88,9 +92,9 @@ public class TrialDescription implements I_TrialDescription {
 	public TrialDescription(I_Tests4J_CoverageTrialInstrumentation instrIn,
 			I_Tests4J_Memory pMem) {
 		reporter = pMem.getLog();
-		trialClass = instrIn.getInstrumentedClass();
+		trialClass_ = instrIn.getInstrumentedClass();
 		if (reporter.isLogEnabled(TrialDescription.class)) {
-			reporter.log("Creating TrialDescription for " + trialClass);
+			reporter.log("Creating TrialDescription for " + trialClass_);
 		}
 		
 		runnable = checkTestClass();
@@ -101,37 +105,38 @@ public class TrialDescription implements I_TrialDescription {
 				sourceClassDependencies = instrIn.getSourceClassDependencies();
 				if (sourceClassDependencies == null) {
 					throw new IllegalStateException("No know class dependencies for " + className +
-							" when creating trial description for " + trialClass.getName());
+							" when creating trial description for " + trialClass_.getName());
 				}
 			}
 		}
 	}
 	
 	private boolean checkTestClass() {
-		type = TrialTypeFinder.getTypeInternal(trialClass, failures);
+		type = TrialTypeFinder.getTypeInternal(trialClass_, failures);
 		if (failures.size() >= 1) {
 			return false;
 		}
 		if (!checkTypeAnnotations()) {
 			return false;
 		}
-		IgnoreTrial ignoredTrial = trialClass.getAnnotation(IgnoreTrial.class);
+		IgnoreTrial ignoredTrial = trialClass_.getAnnotation(IgnoreTrial.class);
 		if (ignoredTrial != null) {
 			ignored = true;
 			return false;
 		}
-		TrialTimeout trialTimeout = trialClass.getAnnotation(TrialTimeout.class);
+		TrialTimeout trialTimeout = trialClass_.getAnnotation(TrialTimeout.class);
 		if (trialTimeout != null) {
 			timeout = trialTimeout.timeout();
 		} else {
 			timeout = 0;
 		}
-		SuppressOutput suppressOut = trialClass.getAnnotation(SuppressOutput.class);
+		SuppressOutput suppressOut = trialClass_.getAnnotation(SuppressOutput.class);
 		if (suppressOut != null) {
 			printToStdOut_ = false;
 		}
 		
 		findTestMethods();
+		findBeforeAfterTrials(trialClass_);
 		if (failures.size() >= 1) {
 			return false;
 		}
@@ -143,11 +148,14 @@ public class TrialDescription implements I_TrialDescription {
 
 	private boolean checkTypeAnnotations() {
 		
-		String trialName = trialClass.getName();
+		String trialName = trialClass_.getName();
 		TrialType tt = TrialType.get(type);
 		switch(tt) {
 			case SourceFileTrial:
-					sourceFileScope = trialClass.getAnnotation(SourceFileScope.class);
+					sourceFileScope = trialClass_.getAnnotation(SourceFileScope.class);
+					afterTrialTestsMethod_ =
+							NonTests4jMethodDiscovery.findNonTests4jMethod(trialClass_, 
+									"afterTrialTests", new Class[] {I_SourceFileTrialResult.class});
 					if (sourceFileScope == null) {
 						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 						I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
@@ -182,7 +190,10 @@ public class TrialDescription implements I_TrialDescription {
 					}
 				break;
 			case ApiTrial:
-				packageScope = trialClass.getAnnotation(PackageScope.class);
+				packageScope = trialClass_.getAnnotation(PackageScope.class);
+				afterTrialTestsMethod_ =
+						NonTests4jMethodDiscovery.findNonTests4jMethod(trialClass_, 
+								"afterTrialTests", new Class[] {I_ApiTrialResult.class});
 				if (packageScope == null) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
@@ -205,7 +216,7 @@ public class TrialDescription implements I_TrialDescription {
 				
 				break;
 			case UseCaseTrial:
-				useCaseScope = trialClass.getAnnotation(UseCaseScope.class);
+				useCaseScope = trialClass_.getAnnotation(UseCaseScope.class);
 				if (useCaseScope == null) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
@@ -260,11 +271,11 @@ public class TrialDescription implements I_TrialDescription {
 		 * no params, we can rely on it's hashCode
 		 */
 		Set<Method> methods = new HashSet<Method>();
-		Method [] dm = trialClass.getDeclaredMethods();
+		Method [] dm = trialClass_.getDeclaredMethods();
 		for (int i = 0; i < dm.length; i++) {
 			methods.add(dm[i]);
 		}
-		Method [] ms = trialClass.getMethods();
+		Method [] ms = trialClass_.getMethods();
 		for (int i = 0; i < ms.length; i++) {
 			methods.add(ms[i]);
 		}
@@ -272,39 +283,58 @@ public class TrialDescription implements I_TrialDescription {
 		
 		
 		for (Method method: methods) {
-			if (BeforeTrialAuditor.audit(this, failures, method)) {
-				if (beforeTrialMethod == null) {
-					beforeTrialMethod = method;
-				} else {
-					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
-					
-					failures.add(new TrialFailure(
-							annonErrors.getMultipleBeforeTrial(),
-							trialClass.getName() + annonErrors.getWasAnnotatedIncorrectly()));
-				}
-			}
+			
 			TestDescription testDesc = TestAuditor.audit(this, failures, method);
 			if (testDesc != null) {
 				testMethods.add(testDesc);
-			}
-			if (AfterTrialAuditor.audit(this, failures, method)) {
-				if (afterTrialMethod == null) {
-					afterTrialMethod = method;
-				} else {
-					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
-					
-					failures.add(new TrialFailure(
-							annonErrors.getMultipleAfterTrial(),
-							trialClass.getName() + annonErrors.getWasAnnotatedIncorrectly()));
-				}
 			}
 			
 		}
 
 	}
 
+	
+	public void findBeforeAfterTrials(Class<?> p) {
+		
+		
+		while ( !AbstractTrial.TESTS4J_TRIAL_CLASSES.contains(p.getName())) {
+			Method []  methods = p.getDeclaredMethods();
+	
+			for (Method method: methods) {
+				if (BeforeTrialAuditor.audit(this, failures, method)) {
+					if (beforeTrialMethod == null) {
+						beforeTrialMethod = method;
+					} else {
+						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+						I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+						
+						failures.add(new TrialFailure(
+								annonErrors.getMultipleBeforeTrial(),
+								trialClass_.getName() + annonErrors.getWasAnnotatedIncorrectly()));
+					}
+				}
+				
+				if (AfterTrialAuditor.audit(this, failures, method)) {
+					if (afterTrialMethod == null) {
+						afterTrialMethod = method;
+					} else {
+						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+						I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+						
+						failures.add(new TrialFailure(
+								annonErrors.getMultipleAfterTrial(),
+								trialClass_.getName() + annonErrors.getWasAnnotatedIncorrectly()));
+					}
+				}
+				
+			}
+			if (beforeTrialMethod != null && afterTrialMethod != null) {
+				break;
+			} else {
+				p = p.getSuperclass();
+			}
+		}
+	}
 
 
 	/**
@@ -316,7 +346,7 @@ public class TrialDescription implements I_TrialDescription {
 	private boolean createInstance() {
 		try {
 			Constructor<? extends I_AbstractTrial> constructor =
-					trialClass.getConstructor(new Class[] {});
+					trialClass_.getConstructor(new Class[] {});
 			constructor.setAccessible(true);
 			Object o = constructor.newInstance(new Object[] {});
 			trial =  (I_AbstractTrial) o;
@@ -358,7 +388,7 @@ public class TrialDescription implements I_TrialDescription {
 	 *    full name of the trial class with dots.
 	 */
 	public String getTrialName() {
-		return trialClass.getName();
+		return trialClass_.getName();
 	}
 	
 	public Method getBeforeTrialMethod() {
@@ -378,7 +408,7 @@ public class TrialDescription implements I_TrialDescription {
 	}
 
 	public Class<? extends I_AbstractTrial> getTrialClass() {
-		return trialClass;
+		return trialClass_;
 	}
 
 	public long getTimeout() {
@@ -386,7 +416,7 @@ public class TrialDescription implements I_TrialDescription {
 	}
 
 	public Method getAfterTrialTestsMethod() {
-		return afterTrialTestsMethod;
+		return afterTrialTestsMethod_;
 	}
 	
 	public Class<?> getSourceFileClass() {
@@ -460,17 +490,23 @@ public class TrialDescription implements I_TrialDescription {
 			}
 		}
 		if (packageName == null) {
-			return null;
+			throw new IllegalArgumentException("no package coverage for trial " + trialClass_.getName());
 		}
+		StringBuilder pkgs = new StringBuilder();
 		for (I_PackageCoverage cover: coverages) {
 			String coverName = cover.getPackageName();
 			if (coverName.equals(packageName)) {
 				return cover;
-			} else if (packageName.contains(coverName)) {
+			} else if (packageName.indexOf(coverName) == 0) {
 				return findPackageCoverage(cover.getChildPackageCoverage());
 			}
+			pkgs.append(coverName);
+			pkgs.append(Tests4J_System.lineSeperator());
 		}
-		return null;
+		throw new IllegalArgumentException("no package coverage for trial " + trialClass_.getName() +
+				" with package " + packageName + Tests4J_System.lineSeperator() + 
+				" on thread "+ Thread.currentThread().getName() + " " +
+				pkgs.toString());
 	}
 
 
@@ -478,7 +514,7 @@ public class TrialDescription implements I_TrialDescription {
 
 	@Override
 	public String toString() {
-		return "TrialDescription [trialClass=" + trialClass + "]";
+		return "TrialDescription [trialClass=" + trialClass_ + "]";
 	}
 
 	public double getMinCoverage() {

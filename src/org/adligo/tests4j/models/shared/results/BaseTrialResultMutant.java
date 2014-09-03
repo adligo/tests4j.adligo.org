@@ -202,6 +202,11 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		if (Boolean.FALSE.equals(passed)) {
 			return false;
 		}
+		/**
+		 * trials with no results actually pass,
+		 * so that interface trials can run successfully
+		 * during a run with out the code coverage plug-in.
+		 */
 		for (I_TestResult result: results.values()) {
 			if (!result.isIgnored()) {
 				if (!result.isPassed()) {

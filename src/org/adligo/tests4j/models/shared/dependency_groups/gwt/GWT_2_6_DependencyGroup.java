@@ -52,7 +52,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Random;
@@ -71,10 +70,13 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
+import org.adligo.tests4j.models.shared.common.LegacyApiIssues;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Lang;
 
 
 /**
@@ -97,6 +99,7 @@ public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
 	public static final Set<Class<?>> JAVA_LOGGING = getJavaLogging();
 	
 	private Map<String,Set<String>> packagesToClasses = getPackagesToClasses();
+	public static final LegacyApiIssues ISSUES = new LegacyApiIssues();
 	
 	private static Set<Class<?>> getJavaLang() {
 		Set<Class<?>> javaLang = new HashSet<Class<?>>();
@@ -106,7 +109,7 @@ public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
 		javaLang.add(ArrayIndexOutOfBoundsException.class);
 		javaLang.add(ArrayStoreException.class);
 		javaLang.add(AssertionError.class);
-		javaLang.add(AutoCloseable.class);
+		addNewClass(javaLang, JSE_Lang.AUTO_CLOSEABLE, new JavaAPIVersion("1.7.0"));
 		javaLang.add(Boolean.class);
 		javaLang.add(Byte.class);
 		javaLang.add(CharSequence.class);
@@ -156,6 +159,19 @@ public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
 		javaLang.add(Void.class);
 		
 		return Collections.unmodifiableSet(javaLang);
+	}
+
+	public static void addNewClass(Set<Class<?>> javaLang, String className, JavaAPIVersion d) {
+		try {
+			Class<?> c = Class.forName(className);
+			javaLang.add(c);
+		} catch (ClassNotFoundException x) {
+			String version = System.getProperty("java.version");
+			JavaAPIVersion jv = new JavaAPIVersion(version);
+			if (jv.isAbove(d)) {
+				ISSUES.addIssues(jv, x);
+			}
+		}
 	}
 	
 	private static Set<Class<?>> getJavaAnnotation() {
@@ -239,7 +255,7 @@ public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
 		classes.add(Map.Entry.class);
 		classes.add(MissingResourceException.class);
 		classes.add(NoSuchElementException.class);
-		classes.add(Objects.class);
+		addNewClass(classes, JSE_Lang.OBJECTS, new JavaAPIVersion("1.7.0"));
 		
 		classes.add(PriorityQueue.class);
 		classes.add(Queue.class);

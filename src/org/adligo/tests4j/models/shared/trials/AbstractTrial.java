@@ -13,6 +13,9 @@ import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertT
 import static org.adligo.tests4j.models.shared.asserts.common.AssertType.AssertUniform;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.AssertionProcessor;
 import org.adligo.tests4j.models.shared.asserts.BooleanAssertCommand;
@@ -49,7 +52,17 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	private static final I_Tests4J_ResultMessages MESSAGES = 
 			Tests4J_Constants.CONSTANTS.getResultMessages();
+	public static final Set<String> TESTS4J_TRIAL_CLASSES = getTests4J_TrialClasses();
 	
+	private static Set<String> getTests4J_TrialClasses() {
+		Set<String> toRet = new HashSet<String>();
+		toRet.add(ApiTrial.class.getName());
+		toRet.add(MetaTrial.class.getName());
+		toRet.add(SourceFileTrial.class.getName());
+		toRet.add(UseCaseTrial.class.getName());
+		return Collections.unmodifiableSet(toRet);
+		
+	}
 
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";

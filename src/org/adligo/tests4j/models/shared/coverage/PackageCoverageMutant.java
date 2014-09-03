@@ -14,16 +14,16 @@ import java.util.Set;
  *
  */
 public class PackageCoverageMutant extends CoverageUnitContinerMutant implements I_PackageCoverage {
-	private Map<String, SourceFileCoverageMutant> sourceFiles =
+	private Map<String, SourceFileCoverageMutant> sourceFiles_ =
 			new HashMap<String, SourceFileCoverageMutant>();
-	private String packageName;
+	private String packageName_;
 	/**
 	 * return the child packages if any
 	 * or a empty list 
 	 * regardless of if they were covered at all.
 	 * @return
 	 */
-	private List<PackageCoverageMutant> children = new ArrayList<PackageCoverageMutant>();
+	private List<PackageCoverageMutant> children_ = new ArrayList<PackageCoverageMutant>();
 
 	
 	public PackageCoverageMutant() {}
@@ -34,47 +34,47 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 	
 	public PackageCoverageMutant(I_PackageCoverage p, boolean cloneRelations) {
 		super(p);
-		packageName = p.getPackageName();
+		packageName_ = p.getPackageName();
 		if (cloneRelations) {
 			Set<String> sfNames = p.getSourceFileNames();
 			for (String name: sfNames) {
 				I_SourceFileCoverage sfc = p.getCoverage(name);
 				if (sfc != null) {
-					sourceFiles.put(name, new SourceFileCoverageMutant(sfc));
+					sourceFiles_.put(name, new SourceFileCoverageMutant(sfc));
 				}
 			}
 			List<I_PackageCoverage> otherChildren =  p.getChildPackageCoverage();
 			for (I_PackageCoverage coverage: otherChildren) {
-				children.add(new PackageCoverageMutant(coverage));
+				children_.add(new PackageCoverageMutant(coverage));
 			}
 		}
 	}
 	
 	@Override
 	public String getPackageName() {
-		return packageName;
+		return packageName_;
 	}
 
 	@Override
 	public I_SourceFileCoverage getCoverage(String sourceFileName) {
-		return sourceFiles.get(sourceFileName);
+		return sourceFiles_.get(sourceFileName);
 	}
 
 	@Override
 	public Set<String> getSourceFileNames() {
-		return sourceFiles.keySet();
+		return sourceFiles_.keySet();
 	}
 
 	@Override
 	public List<I_PackageCoverage> getChildPackageCoverage() {
 		List<I_PackageCoverage> toRet = new ArrayList<I_PackageCoverage>();
-		toRet.addAll(children);
+		toRet.addAll(children_);
 		return toRet;
 	}
 
 	@Override
 	public boolean hasChildPackageCoverage() {
-		if (children.size() >= 1) {
+		if (children_.size() >= 1) {
 			return true;
 		}
 		return false;
@@ -90,4 +90,34 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 				",child_packages=" + p.getChildPackageCoverage().size() + "]";
 	}
 
+	public void setPackageName(String packageName) {
+		this.packageName_ = packageName;
+	}
+
+	public Map<String, SourceFileCoverageMutant> getSourceFiles() {
+		return sourceFiles_;
+	}
+
+	public void setSourceFiles(Map<String, SourceFileCoverageMutant> sourceFiles) {
+		if (sourceFiles != null) {
+			sourceFiles_.clear();
+			sourceFiles_.putAll(sourceFiles);
+		}
+	}
+
+	public List<PackageCoverageMutant> getChildren() {
+		return children_;
+	}
+
+	public void setChildren(List<PackageCoverageMutant> children) {
+		if (children != null) {
+			children_.clear();
+			children_.addAll(children);
+		}
+	}
+
+	
+	public void addChild(PackageCoverageMutant child) {
+		children_.add(child);
+	}
 }

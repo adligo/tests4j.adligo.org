@@ -30,24 +30,37 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	public static ClassAttributes getAppendable() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.APPENDABLE);
+
+		//constructors
+
+		addAppendableMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addAppendableMembers(ClassAttributesMutant toRet) {
 		toRet.addMethod(new MethodSignature("append", 
 			new String[] {ClassMethods.CHAR}, 
 			JSE_Lang.APPENDABLE));
 		toRet.addMethod(new MethodSignature("append", 
-			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
-			JSE_Lang.APPENDABLE));
-		toRet.addMethod(new MethodSignature("append", 
 			new String[] {JSE_Lang.CHAR_SEQUENCE}, 
 			JSE_Lang.APPENDABLE));
-		return new ClassAttributes(toRet);
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.APPENDABLE));
 	}
 	
 	public static ClassAttributes getAutoCloseable() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.AUTO_CLOSEABLE);
-		toRet.addMethod(new MethodSignature("close"));
+
+		addAutoCloseableMembers(toRet);
 		return new ClassAttributes(toRet);
 	}
+
+	public static void addAutoCloseableMembers(ClassAttributesMutant toRet) {
+		toRet.addMethod(new MethodSignature("close"));
+	}
+	
 	public static ClassAttributes getBoolean() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.BOOLEAN);
@@ -161,22 +174,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		toRet.addMethod(new MethodSignature("notify"));
 		return new ClassAttributes(toRet);
 	}
-	public static ClassAttributes getCharSequence() {
-		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.addMethod(new MethodSignature("subSequence", 
-			new String[] {ClassMethods.INT, ClassMethods.INT}, 
-			JSE_Lang.CHAR_SEQUENCE));
-		toRet.addMethod(new MethodSignature("length", 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("charAt", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.CHAR));
-		toRet.addMethod(new MethodSignature("toString", 
-			JSE_Lang.STRING));
-		return new ClassAttributes(toRet);
-	}
-	
-	
+
 	public static ClassAttributes getCharacter() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.addField(new FieldSignature("FORMAT", ClassMethods.BYTE));
@@ -1007,6 +1005,28 @@ public class GWT_2_6_Lang extends DependencyGroup {
 
 	public static void addUnsupportedOperationExceptionMembers(ClassAttributesMutant toRet) {
 		addRuntimeExceptionMembers(toRet);
+	}
+	
+	public static ClassAttributes getCharSequence() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.CHAR_SEQUENCE);
+
+
+		addCharSequenceMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addCharSequenceMembers(ClassAttributesMutant toRet) {
+		toRet.addMethod(new MethodSignature("charAt", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.CHAR));
+		toRet.addMethod(new MethodSignature("length", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("subSequence", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.CHAR_SEQUENCE));
+		toRet.addMethod(new MethodSignature("toString", 
+			JSE_Lang.STRING));
 	}
 	public GWT_2_6_Lang() {
 		super(create());

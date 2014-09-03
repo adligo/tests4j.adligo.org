@@ -129,7 +129,7 @@ public class JsePrintOutputStream extends PrintStream {
 
 	@Override
 	public void println() {
-		print(Tests4J_System.getLineSeperator());
+		print(Tests4J_System.lineSeperator());
 		flush();
 	}
 

@@ -11,6 +11,8 @@ public class DefaultSystem implements I_System {
 	 * at class load time, so it can never be changed.
 	 */
 	private static final PrintStream OUT = System.out;
+	private static final String LINE_SEPERATOR = System.getProperty("line.seperator", "\n");
+	private static final String VERSION = System.getProperty("java.version","");
 	
 	@Override
 	public void println(String p) {
@@ -28,8 +30,8 @@ public class DefaultSystem implements I_System {
 	}
 
 	@Override
-	public String getLineSeperator() {
-		return System.getProperty("line.separator", "\n");
+	public String lineSeperator() {
+		return LINE_SEPERATOR;
 	}
 
 	@Override
@@ -40,6 +42,12 @@ public class DefaultSystem implements I_System {
 	@Override
 	public PrintStream getOut() {
 		return OUT;
+	}
+
+	@Override
+	public String getJseVersion() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

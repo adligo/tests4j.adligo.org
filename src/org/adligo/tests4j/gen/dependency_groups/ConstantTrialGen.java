@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
@@ -49,12 +50,12 @@ public class ConstantTrialGen {
 			if ("<init>".equals(method.getMethodName())) {
 				String nextLine = "\t\tassertContains(ms, new MethodSignature(\"" + method.getMethodName() + "\"";
 				if (method.getParameters() >= 1) {
-					nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
+					nextLine = nextLine + ", "  + Tests4J_System.lineSeperator() + "\t\t\t" + getMethodParamsDefaults(method);
 				}
 				if (method.getReturnClassName() != null) {
 					String type = constantLookup.get(method.getReturnClassName());
 					if (type != null) {
-						nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + type + "";
+						nextLine = nextLine + ", "  + Tests4J_System.lineSeperator() + "\t\t\t" + type + "";
 					}
 				}
 				nextLine = nextLine + "));";
@@ -91,12 +92,12 @@ public class ConstantTrialGen {
 			if ( !"<init>".equals(method.getMethodName())) {
 				String nextLine = "\t\tassertContains(ms, new MethodSignature(\"" + method.getMethodName() + "\"";
 				if (method.getParameters() >= 1) {
-					nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + getMethodParamsDefaults(method);
+					nextLine = nextLine + ", "  + Tests4J_System.lineSeperator() + "\t\t\t" + getMethodParamsDefaults(method);
 				}
 				if (method.getReturnClassName() != null) {
 					String type = constantLookup.get(method.getReturnClassName());
 					if (type != null) {
-						nextLine = nextLine + ", "  + System.lineSeparator() + "\t\t\t" + type + "";
+						nextLine = nextLine + ", "  + Tests4J_System.lineSeperator() + "\t\t\t" + type + "";
 					}
 				}
 				nextLine = nextLine + "));";

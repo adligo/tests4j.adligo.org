@@ -8,7 +8,6 @@ import org.adligo.tests4j.models.shared.asserts.common.AssertCompareFailureMutan
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.dependency.I_ClassAlias;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
@@ -18,11 +17,13 @@ import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.trials.AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * TODO extract the method 
@@ -36,12 +37,13 @@ import org.adligo.tests4j.run.discovery.TrialDescription;
  */
 public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsProcessor {
 	public static final String TEST_DEPENDENCIES = "testDependencies(SourceFileTrialResultMutant trialResultMutant)";
-	private static final String AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD =
-			"afterTrialTests(I_SourceFileTrialResult p)";
 	private static final String TEST_MIN_COVERAGE =
 			"testMinCoverage";
+	private I_Tests4J_Log log;
+	
 	public AfterSourceFileTrialTestsProcessor(I_Tests4J_Memory memory) {
 		super(memory);
+		log = memory.getLog();
 	}
 
 	
@@ -64,20 +66,47 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		List<I_PackageCoverage> coverage;
 		I_Tests4J_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
 		if (rec != null) {
+			if (log.isLogEnabled(AfterSourceFileTrialTestsProcessor.class)) {
+				log.log("calling rec.endRecording() " + rec + log.getLineSeperator() + 
+						Thread.currentThread().getName() + 
+						log.getLineSeperator() +
+						" for " + trialResultMutant.getSourceFileName());
+			}
 			coverage = rec.endRecording();
 			I_SourceFileCoverage cover = trialDesc.findSourceFileCoverage(coverage);
 			if (cover != null) {
 				trialResultMutant.setSourceFileCoverage(cover);
+			} else {
+				log.onThrowable(new IllegalStateException("A internal error"
+						+ " has occured in tests4j, no coverage for class " + 
+						Thread.currentThread().getName() + 
+						log.getLineSeperator() +
+						" for recorder " + rec + " " +
+						log.getLineSeperator() +
+						trialResultMutant.getSourceFileName()));
 			}
 		}
 		
-		try {
-			clazzMethod = trialClass.getMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
-			//clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
-		} catch (NoSuchMethodException e) {
-			//do nothing
-		} catch (SecurityException e) {
-			//do nothing
+		boolean working = true;
+		Class<?> parentClass = trialClass;
+		while (working) {
+			try {
+				clazzMethod = parentClass.getMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
+				//clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
+			} catch (NoSuchMethodException e) {
+				//do nothing
+			} catch (SecurityException e) {
+				//do nothing
+			}
+			if (clazzMethod != null) {
+				working = false;
+			} else {
+				parentClass = parentClass.getSuperclass();
+				if (AbstractTrial.TESTS4J_TRIAL_CLASSES.contains(parentClass.getName())) {
+					//no method here
+					break;
+				}
+			} 
 		}
 		trialResultMutant.setRanAfterTrialTests(false);
 		if (clazzMethod != null) {
@@ -101,14 +130,13 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		} catch (DelegateTestAssertionFailure x) {
 			//the test failed, in one of it's asserts
 		} catch (Throwable x) {
-			super.onDelegatedTestMethodException(x, AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD);
+			super.onDelegatedTestMethodException(x, I_SourceFileTrial.AFTER_TRIAL_TESTS);
 		}
 		TestResultMutant afterTrialTestsResultMutant = super.getAfterTrialTestsResultMutant();
-		if (passed) {
-			flushAssertionHashes(afterTrialTestsResultMutant);
-		}
+		flushAssertionHashes(afterTrialTestsResultMutant);
+		afterTrialTestsResultMutant.setAssertionCount(getAssertions());
 		afterTrialTestsResultMutant.setPassed(passed);
-		afterTrialTestsResultMutant.setName(AFTER_SOURCE_FILE_TRIAL_TESTS_METHOD);
+		afterTrialTestsResultMutant.setName(I_SourceFileTrial.AFTER_TRIAL_TESTS);
 		return afterTrialTestsResultMutant;
 	}
 	
@@ -122,24 +150,28 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		
 		
 		I_SourceFileCoverage sourceCoverage =  trialResultMutant.getSourceFileCoverage();
-		double pct = sourceCoverage.getPercentageCoveredDouble();
-		if (minCoverage > pct) {
-			I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
-			
-			AssertCompareFailureMutant tfm = new AssertCompareFailureMutant();
-			tfm.setFailureMessage(messages.getCodeCoveragIsOff());
-			tfm.setActualClass(Double.class.getName());
-			tfm.setExpectedClass(Double.class.getName());
-			
-			tfm.setExpectedValue("" + minCoverage);
-			tfm.setActualValue("" + pct);
-			tfm.setAssertType(AssertType.AssertGreaterThanOrEquals);
-			testResultMutant.setFailure(tfm);
+		if (sourceCoverage == null) {
 			testResultMutant.setPassed(false);
 		} else {
-			testResultMutant.setPassed(true);
+			double pct = sourceCoverage.getPercentageCoveredDouble();
+			if (minCoverage > pct) {
+				I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
+				
+				AssertCompareFailureMutant tfm = new AssertCompareFailureMutant();
+				tfm.setFailureMessage(messages.getCodeCoveragIsOff());
+				tfm.setActualClass(Double.class.getName());
+				tfm.setExpectedClass(Double.class.getName());
+				
+				tfm.setExpectedValue("" + minCoverage);
+				tfm.setActualValue("" + pct);
+				tfm.setAssertType(AssertType.AssertGreaterThanOrEquals);
+				testResultMutant.setFailure(tfm);
+				testResultMutant.setPassed(false);
+			} else {
+				testResultMutant.setPassed(true);
+			}
+			testResultMutant.incrementAssertionCount(1);
 		}
-		testResultMutant.incrementAssertionCount(1);
 		testResultMutant.setName(TEST_MIN_COVERAGE);
 		
 		TestResult result = new TestResult(testResultMutant);

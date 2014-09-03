@@ -35,7 +35,7 @@ public interface I_System {
 	 * so it can be fixed to unix for the trials/tests.
 	 * @return
 	 */
-	public String getLineSeperator();
+	public String lineSeperator();
 	
 	/**
 	 * this should default to 'main'
@@ -45,6 +45,11 @@ public interface I_System {
 	 */
 	public String getCurrentThreadName();
 	
+	/**
+	 * the result of System.getProperty("java.version", "");
+	 * @return
+	 */
+	public String getJseVersion();
 	/**
 	 * the print stream for this system,
 	 * ie System.out

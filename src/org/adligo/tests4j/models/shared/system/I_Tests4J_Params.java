@@ -9,6 +9,8 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.models.shared.trials.I_TrialParams;
+import org.adligo.tests4j.models.shared.trials.I_TrialParamsQueue;
 import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
 import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
 
@@ -56,6 +58,26 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 */
 	public Class<? extends I_MetaTrial> getMetaTrialClass();
 	
+	/**
+	 * the params for the meta trial, if it
+	 * implements I_TrialParamsAware, which 
+	 * is not necessary.
+	 * @return
+	 */
+	public I_TrialParams<?> getMetaTrialParams();
+	
+	/**
+	 * The actual instance of your trial params queue
+	 * so your trials have parameters, which could be
+	 * shared between trials.
+	 * I.E. you are running use case trials and have set up,
+	 * a local cluster of jetties, openDSs, oracles
+	 * vms exc, and sharing seems like a good idea 
+	 * give this api a shot.
+	 * 
+	 * @return
+	 */
+	public I_TrialParamsQueue getTrialParamsQueue();
 	/**
 	 * The specific tests to run, if this set is empty
 	 * Tests4J will run all of the tests in all of the trials.
