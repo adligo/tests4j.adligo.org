@@ -2,8 +2,15 @@ package org.adligo.tests4j.gen.dependency_groups;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.AnnotationFormatError;
 import java.lang.annotation.AnnotationTypeMismatchException;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.EmptyStackException;
@@ -22,26 +29,44 @@ public class GWTGroupGen {
 	public static void main(String[] args) {
 		GroupGen gg = new GroupGen();
 		GenDepGroupContext ctx = new GenDepGroupContext();
-		ctx.setTrialPackageName("org.adligo.tests4j_tests.models.shared.dependency_groups.gwt.v2_6.lang");
+		ctx.setTrialPackageName("org.adligo.tests4j_v1_tests.models.dependency_groups.gwt.v2_6.lang");
 		ctx.setApiVersion("2_6");
 		ctx.setGroupFactoryClass(GWT_2_6_Lang.class);
-		ctx.setExtraTrialAnnotations("@SuppressOutput");
+		//ctx.setExtraTrialAnnotations("@SuppressOutput");
 		ctx.setTrialClass("org.adligo.tests4j_tests.base_trials.SourceFileCountingTrial");
 		ctx.setTrialClassSimpleName("SourceFileCountingTrial");
 		ctx.setExtraTrialContent("" + Tests4J_System.lineSeperator() +
 			"\t@Override" + Tests4J_System.lineSeperator() +
-			"\tpublic int getTests() {"+ Tests4J_System.lineSeperator() +
-			"\t\treturn 1;"+ Tests4J_System.lineSeperator() +
+			"\tpublic int getTests(I_CountType type) {"+ Tests4J_System.lineSeperator() +
+			"\t\treturn super.getTests(type, 1);"+ Tests4J_System.lineSeperator() +
 			"\t}"+ Tests4J_System.lineSeperator() +
 			"" + Tests4J_System.lineSeperator() +
 			"\t@Override "+ Tests4J_System.lineSeperator() +
-			"\tpublic int getAsserts() { "+ Tests4J_System.lineSeperator() +
-			"\t\treturn 1; "+ Tests4J_System.lineSeperator() +
+			"\tpublic int getAsserts(I_CountType type) { "+ Tests4J_System.lineSeperator() +
+			"\t\tint thisAsserts = 1;"+ Tests4J_System.lineSeperator() +
+			"\t\t//code coverage and circular dependencies +"+ Tests4J_System.lineSeperator() +
+			"\t\t//custom afterTrialTests"+ Tests4J_System.lineSeperator() +
+			"\t\t//+ see above"+ Tests4J_System.lineSeperator() +
+			"\t\tint thisAfterAsserts = 24;"+ Tests4J_System.lineSeperator() +
+			"\t\tif (type.isFromMetaWithCoverage()) {"+ Tests4J_System.lineSeperator() +
+			"\t\t\treturn super.getAsserts(type, thisAsserts + thisAfterAsserts);"+ Tests4J_System.lineSeperator() +
+			"\t\t} else {"+ Tests4J_System.lineSeperator() +
+			"\t\t\treturn super.getAsserts(type, thisAsserts);"+ Tests4J_System.lineSeperator() +
+			"\t\t}"+ Tests4J_System.lineSeperator() +
 			"\t}"+ Tests4J_System.lineSeperator() +
 			"" + Tests4J_System.lineSeperator() +
 			"\t@Override"+ Tests4J_System.lineSeperator() +
-			"\tpublic int getUniqueAsserts() {"+ Tests4J_System.lineSeperator() +
-			"\t\treturn 1;"+ Tests4J_System.lineSeperator() +
+			"\tpublic int getUniqueAsserts(I_CountType type) {"+ Tests4J_System.lineSeperator() +
+			"\t\tint uAsserts = 1;"+ Tests4J_System.lineSeperator() +
+			"\t\t//code coverage and circular dependencies +"+ Tests4J_System.lineSeperator() +
+			"\t\t//custom afterTrialTests"+ Tests4J_System.lineSeperator() +
+			"\t\t//+ see above"+ Tests4J_System.lineSeperator() +
+			"\t\tint uAfterAsserts = 24;"+ Tests4J_System.lineSeperator() +
+			"\t\tif (type.isFromMetaWithCoverage()) {"+ Tests4J_System.lineSeperator() +
+			"\t\t\treturn super.getAsserts(type, uAsserts + uAfterAsserts);"+ Tests4J_System.lineSeperator() +
+			"\t\t} else {"+ Tests4J_System.lineSeperator() +
+			"\t\t\treturn super.getAsserts(type, uAsserts);"+ Tests4J_System.lineSeperator() +
+			"\t\t}"+ Tests4J_System.lineSeperator() +
 			"\t}"); 
 		
 		ConstantLookup cl = ctx.getConstantLookup();
@@ -86,19 +111,49 @@ public class GWTGroupGen {
 		//all exceptions done
 		toRet.add(Appendable.class);
 		toRet.add(AutoCloseable.class);
-		*/
+		
 		toRet.add(CharSequence.class);
 		
+		toRet.add(Cloneable.class);
+		toRet.add(Comparable.class);
+		toRet.add(Deprecated.class);
+		toRet.add(Override.class);
+		toRet.add(SuppressWarnings.class);
+		
+		toRet.add(Boolean.class);
+		toRet.add(Enum.class);
+		toRet.add(Number.class);
+		toRet.add(Byte.class);
+		toRet.add(Character.class);
+		toRet.add(Character.class);
+		toRet.add(Class.class);
+		toRet.add(Double.class);
+		toRet.add(Float.class);
+		toRet.add(Integer.class);
+		toRet.add(Iterable.class);
+		toRet.add(Long.class);
+		toRet.add(Math.class);
+		toRet.add(Short.class);
+		*/
+		toRet.add(String.class);
+		
+		
+		//toRet.add(Double.class);
 		return toRet;
 	}
 	
 	public static List<Class<?>> getAnnot() {
 		List<Class<?>> toRet = new ArrayList<Class<?>>();
-		
+		toRet.add(Annotation.class);
+		toRet.add(Documented.class); 
 		toRet.add(AnnotationFormatError.class);
 		toRet.add(AnnotationTypeMismatchException.class);
-		//toRet.add(IncompleteAnnotationException.class);
+		toRet.add(ElementType.class); 
 		
+		toRet.add(Inherited.class); 
+		toRet.add(Retention.class); 
+		toRet.add(RetentionPolicy.class); 
+		toRet.add(Target.class); 
 		return toRet;
 	}
 	

@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.dependency_groups.gwt;
 
 import org.adligo.tests4j.models.dependency_groups.jse.JSE_1_7_Lang;
 import org.adligo.tests4j.models.dependency_groups.jse.JSE_Lang;
+import org.adligo.tests4j.models.dependency_groups.jse.JSE_Util;
 import org.adligo.tests4j.models.shared.common.ClassMethods;
 import org.adligo.tests4j.models.shared.dependency.ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.ClassAttributesMutant;
@@ -82,17 +83,6 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		toRet.addMethod(new MethodSignature("compare", 
 			new String[] {ClassMethods.BOOLEAN, ClassMethods.BOOLEAN}, 
 			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("notifyAll"));
-		toRet.addMethod(new MethodSignature("equals", 
-			new String[] {JSE_Lang.OBJECT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("hashCode", 
-			ClassMethods.INT));
-
-		toRet.addMethod(new MethodSignature("toString", 
-			new String[] {ClassMethods.BOOLEAN}, 
-			JSE_Lang.STRING));
-		
 		toRet.addMethod(new MethodSignature("valueOf", 
 			new String[] {ClassMethods.BOOLEAN}, 
 			JSE_Lang.BOOLEAN));
@@ -100,8 +90,6 @@ public class GWT_2_6_Lang extends DependencyGroup {
 			new String[] {JSE_Lang.BOOLEAN}, 
 			ClassMethods.INT));
 		
-		toRet.addMethod(new MethodSignature("toString", 
-			JSE_Lang.STRING));
 		toRet.addMethod(new MethodSignature("booleanValue", 
 			ClassMethods.BOOLEAN));
 		toRet.addMethod(new MethodSignature("parseBoolean", 
@@ -111,421 +99,192 @@ public class GWT_2_6_Lang extends DependencyGroup {
 	}
 	public static ClassAttributes getByte() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.addField(new FieldSignature("MAX_VALUE", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("SIZE", ClassMethods.INT));
-		toRet.addField(new FieldSignature("MIN_VALUE", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
-		toRet.addMethod(new MethodSignature("valueOf", 
-			new String[] {JSE_Lang.STRING}, 
-			JSE_Lang.BYTE));
-		
-		toRet.addMethod(new MethodSignature("floatValue", 
-			ClassMethods.FLOAT));
-		toRet.addMethod(new MethodSignature("toString", 
-			new String[] {ClassMethods.BYTE}, 
-			JSE_Lang.STRING));
-		toRet.addMethod(new MethodSignature("compareTo", 
-			new String[] {JSE_Lang.BYTE}, 
-			ClassMethods.INT));
+		toRet.setName(JSE_Lang.BYTE);
+
+		//constructors
 		toRet.addMethod(new MethodSignature("<init>", 
 			new String[] {ClassMethods.BYTE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addByteMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addByteMembers(ClassAttributesMutant toRet) {
+		addNumberMembers(toRet);
+		/**
+		 * note MIN_VALUE, MAX_VALUE, SIZE 
+		 * will get compiled out of the .class file
+		 * and replaced with the primitive
+		 */
+		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
 		toRet.addMethod(new MethodSignature("equals", 
 			new String[] {JSE_Lang.OBJECT}, 
 			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("wait", 
-			new String[] {ClassMethods.LONG}));
-		toRet.addMethod(new MethodSignature("decode", 
-			new String[] {JSE_Lang.STRING}, 
-			JSE_Lang.BYTE));
-		toRet.addMethod(new MethodSignature("longValue", 
-			ClassMethods.LONG));
-		toRet.addMethod(new MethodSignature("valueOf", 
-			new String[] {ClassMethods.BYTE}, 
-			JSE_Lang.BYTE));
-		toRet.addMethod(new MethodSignature("doubleValue", 
-			ClassMethods.DOUBLE));
-		toRet.addMethod(new MethodSignature("getClass", 
-			JSE_Lang.CLASS));
-		toRet.addMethod(new MethodSignature("intValue", 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("wait"));
-		toRet.addMethod(new MethodSignature("hashCode", 
-			ClassMethods.INT));
 		toRet.addMethod(new MethodSignature("byteValue", 
 			ClassMethods.BYTE));
 		toRet.addMethod(new MethodSignature("parseByte", 
-			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
-			ClassMethods.BYTE));
-		toRet.addMethod(new MethodSignature("shortValue", 
-			ClassMethods.SHORT));
-		toRet.addMethod(new MethodSignature("valueOf", 
-			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
-			JSE_Lang.BYTE));
-		toRet.addMethod(new MethodSignature("parseByte", 
 			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.BYTE));
+		toRet.addMethod(new MethodSignature("parseByte", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
 			ClassMethods.BYTE));
 		toRet.addMethod(new MethodSignature("compare", 
 			new String[] {ClassMethods.BYTE, ClassMethods.BYTE}, 
 			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compareTo", 
+			new String[] {JSE_Lang.BYTE}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("decode", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.BYTE));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.BYTE}, 
+			JSE_Lang.BYTE));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.BYTE));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			JSE_Lang.BYTE));
+	}
+	
+	public static ClassAttributes getCharacter() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.CHARACTER);
+
+		//constructors
 		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {JSE_Lang.STRING}));
-		toRet.addMethod(new MethodSignature("toString", 
-			JSE_Lang.STRING));
-		toRet.addMethod(new MethodSignature("notify"));
+			new String[] {ClassMethods.CHAR}));
+
+		addCharacterMembers(toRet);
 		return new ClassAttributes(toRet);
 	}
 
-	public static ClassAttributes getCharacter() {
-		ClassAttributesMutant toRet = new ClassAttributesMutant();
-		toRet.addField(new FieldSignature("FORMAT", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("CONNECTOR_PUNCTUATION", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_RIGHT_TO_LEFT_EMBEDDING", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("INITIAL_QUOTE_PUNCTUATION", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("UPPERCASE_LETTER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_EUROPEAN_NUMBER_TERMINATOR", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MAX_CODE_POINT", ClassMethods.INT));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_UNDEFINED", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MAX_SURROGATE", ClassMethods.CHAR));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_BOUNDARY_NEUTRAL", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("FINAL_QUOTE_PUNCTUATION", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MIN_CODE_POINT", ClassMethods.INT));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_COMMON_NUMBER_SEPARATOR", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MAX_LOW_SURROGATE", ClassMethods.CHAR));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_LEFT_TO_RIGHT_OVERRIDE", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_ARABIC_NUMBER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MAX_HIGH_SURROGATE", ClassMethods.CHAR));
-		toRet.addField(new FieldSignature("MAX_RADIX", ClassMethods.INT));
-		toRet.addField(new FieldSignature("MAX_VALUE", ClassMethods.CHAR));
-		toRet.addField(new FieldSignature("MIN_SUPPLEMENTARY_CODE_POINT", ClassMethods.INT));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_EUROPEAN_NUMBER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DASH_PUNCTUATION", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_NONSPACING_MARK", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("TITLECASE_LETTER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("NON_SPACING_MARK", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MATH_SYMBOL", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_WHITESPACE", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("PRIVATE_USE", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MIN_RADIX", ClassMethods.INT));
-		toRet.addField(new FieldSignature("SIZE", ClassMethods.INT));
-		toRet.addField(new FieldSignature("MIN_VALUE", ClassMethods.CHAR));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_RIGHT_TO_LEFT", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MIN_SURROGATE", ClassMethods.CHAR));
-		toRet.addField(new FieldSignature("MODIFIER_LETTER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("CURRENCY_SYMBOL", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("SURROGATE", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_LEFT_TO_RIGHT_EMBEDDING", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MODIFIER_SYMBOL", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("PARAGRAPH_SEPARATOR", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("SPACE_SEPARATOR", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_LEFT_TO_RIGHT", ClassMethods.BYTE));
+	public static void addCharacterMembers(ClassAttributesMutant toRet) {
+		addObjectMembers(toRet);
+		
+
 		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_PARAGRAPH_SEPARATOR", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("END_PUNCTUATION", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_RIGHT_TO_LEFT_OVERRIDE", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_EUROPEAN_NUMBER_SEPARATOR", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_POP_DIRECTIONAL_FORMAT", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_SEGMENT_SEPARATOR", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("LINE_SEPARATOR", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("OTHER_PUNCTUATION", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MIN_LOW_SURROGATE", ClassMethods.CHAR));
-		toRet.addField(new FieldSignature("LETTER_NUMBER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("OTHER_LETTER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("OTHER_NUMBER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("COMBINING_SPACING_MARK", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("OTHER_SYMBOL", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("UNASSIGNED", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("CONTROL", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("START_PUNCTUATION", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("LOWERCASE_LETTER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("DECIMAL_DIGIT_NUMBER", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("ENCLOSING_MARK", ClassMethods.BYTE));
-		toRet.addField(new FieldSignature("MIN_HIGH_SURROGATE", ClassMethods.CHAR));
-		toRet.addField(new FieldSignature("DIRECTIONALITY_OTHER_NEUTRALS", ClassMethods.BYTE));
-		toRet.addMethod(new MethodSignature("isJavaLetterOrDigit", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isUpperCase", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("toChars", 
-			new String[] {ClassMethods.INT, "C", ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("wait", 
-			new String[] {ClassMethods.LONG, ClassMethods.INT}));
-		toRet.addMethod(new MethodSignature("compareTo", 
-			new String[] {JSE_Lang.OBJECT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("toUpperCase", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("toUpperCase", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.CHAR));
-		toRet.addMethod(new MethodSignature("isJavaIdentifierStart", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isSurrogatePair", 
-			new String[] {ClassMethods.CHAR, ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("getDirectionality", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BYTE));
-		toRet.addMethod(new MethodSignature("isJavaIdentifierStart", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("codePointBefore", 
-			new String[] {"C", ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("isSupplementaryCodePoint", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("getDirectionality", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BYTE));
-		toRet.addMethod(new MethodSignature("forDigit", 
-			new String[] {ClassMethods.INT, ClassMethods.INT}, 
-			ClassMethods.CHAR));
-		toRet.addMethod(new MethodSignature("isTitleCase", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("codePointBefore", 
-			new String[] {"C", ClassMethods.INT, ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("toString", 
-			new String[] {ClassMethods.CHAR}, 
-			JSE_Lang.STRING));
-		toRet.addMethod(new MethodSignature("isTitleCase", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isJavaIdentifierPart", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("notifyAll"));
-		toRet.addMethod(new MethodSignature("isJavaIdentifierPart", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isIdeographic", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isJavaLetter", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
+		/**
+		 * other fields are compile to primitives
+		 */
 		toRet.addMethod(new MethodSignature("toChars", 
 			new String[] {ClassMethods.INT}, 
-			"C"));
-		toRet.addMethod(new MethodSignature("isWhitespace", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("toTitleCase", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("isWhitespace", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isLowSurrogate", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("<init>", 
-			new String[] {ClassMethods.CHAR}));
-		toRet.addMethod(new MethodSignature("equals", 
-			new String[] {JSE_Lang.OBJECT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("toTitleCase", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.CHAR));
-		toRet.addMethod(new MethodSignature("reverseBytes", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.CHAR));
-		toRet.addMethod(new MethodSignature("wait", 
-			new String[] {ClassMethods.LONG}));
-		toRet.addMethod(new MethodSignature("charCount", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("valueOf", 
-			new String[] {ClassMethods.CHAR}, 
-			JSE_Lang.CHARACTER));
-		toRet.addMethod(new MethodSignature("offsetByCodePoints", 
-			new String[] {"C", ClassMethods.INT, ClassMethods.INT, ClassMethods.INT, ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("isValidCodePoint", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isMirrored", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("codePointAt", 
-			new String[] {"C", ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("isMirrored", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("getClass", 
-			JSE_Lang.CLASS));
-		toRet.addMethod(new MethodSignature("codePointBefore", 
-			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("isAlphabetic", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("codePointAt", 
-			new String[] {"C", ClassMethods.INT, ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("isDefined", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isDefined", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("compareTo", 
-			new String[] {JSE_Lang.CHARACTER}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("wait"));
-		toRet.addMethod(new MethodSignature("isISOControl", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isISOControl", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("hashCode", 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("digit", 
-			new String[] {ClassMethods.CHAR, ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("highSurrogate", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.CHAR));
-		toRet.addMethod(new MethodSignature("isLetterOrDigit", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isLetterOrDigit", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("codePointCount", 
-			new String[] {"C", ClassMethods.INT, ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("codePointCount", 
-			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("lowSurrogate", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.CHAR));
-		toRet.addMethod(new MethodSignature("isBmpCodePoint", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isSpaceChar", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isUnicodeIdentifierStart", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isSpaceChar", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isSurrogate", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isUnicodeIdentifierStart", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("getType", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("toCodePoint", 
-			new String[] {ClassMethods.CHAR, ClassMethods.CHAR}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("charValue", 
-			ClassMethods.CHAR));
-		toRet.addMethod(new MethodSignature("getType", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("getNumericValue", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("isUnicodeIdentifierPart", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("getNumericValue", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("isUnicodeIdentifierPart", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isDigit", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("codePointAt", 
-			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("offsetByCodePoints", 
-			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
-			ClassMethods.INT));
+			"[" +ClassMethods.CHAR));
 		toRet.addMethod(new MethodSignature("isDigit", 
 			new String[] {ClassMethods.CHAR}, 
 			ClassMethods.BOOLEAN));
 		toRet.addMethod(new MethodSignature("isHighSurrogate", 
 			new String[] {ClassMethods.CHAR}, 
 			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isIdentifierIgnorable", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isLetter", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isIdentifierIgnorable", 
-			new String[] {ClassMethods.CHAR}, 
-			ClassMethods.BOOLEAN));
 		toRet.addMethod(new MethodSignature("isLetter", 
 			new String[] {ClassMethods.CHAR}, 
 			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("isLowerCase", 
-			new String[] {ClassMethods.INT}, 
+		toRet.addMethod(new MethodSignature("isLetterOrDigit", 
+			new String[] {ClassMethods.CHAR}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isLowSurrogate", 
+			new String[] {ClassMethods.CHAR}, 
 			ClassMethods.BOOLEAN));
 		toRet.addMethod(new MethodSignature("isLowerCase", 
 			new String[] {ClassMethods.CHAR}, 
 			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("compare", 
-			new String[] {ClassMethods.CHAR, ClassMethods.CHAR}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("digit", 
-			new String[] {ClassMethods.INT, ClassMethods.INT}, 
-			ClassMethods.INT));
-		toRet.addMethod(new MethodSignature("getName", 
-			new String[] {ClassMethods.INT}, 
-			JSE_Lang.STRING));
 		toRet.addMethod(new MethodSignature("isSpace", 
+				new String[] {ClassMethods.CHAR}, 
+				ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isSupplementaryCodePoint", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isSurrogate", 
 			new String[] {ClassMethods.CHAR}, 
 			ClassMethods.BOOLEAN));
-		toRet.addMethod(new MethodSignature("toString", 
-			JSE_Lang.STRING));
-		toRet.addMethod(new MethodSignature("toLowerCase", 
-			new String[] {ClassMethods.INT}, 
-			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("isSurrogatePair", 
+				new String[] {ClassMethods.CHAR, ClassMethods.CHAR}, 
+				ClassMethods.BOOLEAN));
 		toRet.addMethod(new MethodSignature("isUpperCase", 
+			new String[] {ClassMethods.CHAR}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isValidCodePoint", 
 			new String[] {ClassMethods.INT}, 
 			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("charValue", 
+			ClassMethods.CHAR));
+		toRet.addMethod(new MethodSignature("forDigit", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.CHAR));
+		
 		toRet.addMethod(new MethodSignature("toLowerCase", 
 			new String[] {ClassMethods.CHAR}, 
 			ClassMethods.CHAR));
-		toRet.addMethod(new MethodSignature("notify"));
-		return new ClassAttributes(toRet);
+		toRet.addMethod(new MethodSignature("toUpperCase", 
+			new String[] {ClassMethods.CHAR}, 
+			ClassMethods.CHAR));
+		toRet.addMethod(new MethodSignature("charCount", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointAt", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointAt", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointAt", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointBefore", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointBefore", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointBefore", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointCount", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointCount", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compare", 
+			new String[] {ClassMethods.CHAR, ClassMethods.CHAR}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compareTo", 
+			new String[] {JSE_Lang.CHARACTER}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("digit", 
+			new String[] {ClassMethods.CHAR, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("offsetByCodePoints", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT, 
+				ClassMethods.INT, ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("offsetByCodePoints", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("toChars", 
+			new String[] {ClassMethods.INT, "[" + ClassMethods.CHAR, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("toCodePoint", 
+			new String[] {ClassMethods.CHAR, ClassMethods.CHAR}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.CHAR}, 
+			JSE_Lang.CHARACTER));
 	}
 	
 	public static ClassAttributes getEnum() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.ENUM);
-		toRet.addMethod(new MethodSignature("<init>", 
-				new String[] {JSE_Lang.STRING, ClassMethods.INT}));
 		
-		addObjectMembers(toRet);
+		addEnumMembers(toRet);
 		
-		
-		addEnumMethods(toRet);
 		return new ClassAttributes(toRet);
 	}
-	public static void addEnumMethods(ClassAttributesMutant toRet) {
-		toRet.addField(new FieldSignature("name", JSE_Lang.STRING));
-		toRet.addField(new FieldSignature("ordinal", ClassMethods.INT));
+	public static void addEnumMembers(ClassAttributesMutant toRet) {
+		addObjectMembers(toRet);
 		
 		toRet.addMethod(new MethodSignature("compareTo", 
 			new String[] {JSE_Lang.ENUM}, 
@@ -539,8 +298,6 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		toRet.addMethod(new MethodSignature("ordinal", 
 			ClassMethods.INT));
 		toRet.addMethod(new MethodSignature("name", 
-			JSE_Lang.STRING));
-		toRet.addMethod(new MethodSignature("toString", 
 			JSE_Lang.STRING));
 	}
 	
@@ -707,6 +464,69 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		return new ClassAttributes(toRet);
 	}
 
+	public static ClassAttributes getFloat() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.FLOAT);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.DOUBLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.FLOAT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addFloatMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addFloatMembers(ClassAttributesMutant toRet) {
+		addNumberMembers(toRet);
+		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
+
+		toRet.addMethod(new MethodSignature("isNaN", 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isNaN", 
+			new String[] {ClassMethods.FLOAT}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("byteValue", 
+			ClassMethods.BYTE));
+		toRet.addMethod(new MethodSignature("doubleValue", 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("floatValue", 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("intBitsToFloat", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("parseFloat", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("compare", 
+			new String[] {ClassMethods.FLOAT, ClassMethods.FLOAT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compareTo", 
+			new String[] {JSE_Lang.FLOAT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("floatToIntBits", 
+			new String[] {ClassMethods.FLOAT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("intValue", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.FLOAT}, 
+			JSE_Lang.FLOAT));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.FLOAT));
+		toRet.addMethod(new MethodSignature("toString", 
+			new String[] {ClassMethods.FLOAT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("longValue", 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("shortValue", 
+			ClassMethods.SHORT));
+	}
+	
 	public static void addIndexOutOfBoundsExceptionMembers(ClassAttributesMutant toRet) {
 		addRuntimeExceptionMembers(toRet);
 	}
@@ -965,6 +785,30 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		return new ClassAttributes(toRet);
 	}
 
+	public static ClassAttributes getNumber() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.NUMBER);
+
+		addNumberMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addNumberMembers(ClassAttributesMutant toRet) {
+		addObjectMembers(toRet);
+		toRet.addMethod(new MethodSignature("byteValue", 
+			ClassMethods.BYTE));
+		toRet.addMethod(new MethodSignature("doubleValue", 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("floatValue", 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("intValue", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("longValue", 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("shortValue", 
+			ClassMethods.SHORT));
+	}
+	
 	public static void addNumberFormatExceptionMembers(ClassAttributesMutant toRet) {
 		addIllegalArgumentExceptionMembers(toRet);
 	}
@@ -1027,6 +871,778 @@ public class GWT_2_6_Lang extends DependencyGroup {
 			JSE_Lang.CHAR_SEQUENCE));
 		toRet.addMethod(new MethodSignature("toString", 
 			JSE_Lang.STRING));
+	}
+	
+	public static ClassAttributes getCloneable() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.CLONEABLE);
+
+
+		return new ClassAttributes(toRet);
+	}
+
+	public static ClassAttributes getComparable() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.COMPARABLE);
+
+
+		addComparableMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addComparableMembers(ClassAttributesMutant toRet) {
+		toRet.addMethod(new MethodSignature("compareTo", 
+			new String[] {JSE_Lang.OBJECT}, 
+			ClassMethods.INT));
+	}
+	public static ClassAttributes getDeprecated() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.DEPRECATED);
+
+		return new ClassAttributes(toRet);
+	}
+
+	public static ClassAttributes getDouble() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.DOUBLE);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.DOUBLE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addDoubleMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addDoubleMembers(ClassAttributesMutant toRet) {
+		addNumberMembers(toRet);
+		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
+
+		toRet.addMethod(new MethodSignature("isNaN", 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isNaN", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("byteValue", 
+			ClassMethods.BYTE));
+		toRet.addMethod(new MethodSignature("doubleValue", 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("parseDouble", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("floatValue", 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("compare", 
+			new String[] {ClassMethods.DOUBLE, ClassMethods.DOUBLE}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compareTo", 
+			new String[] {JSE_Lang.DOUBLE}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("intValue", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.DOUBLE}, 
+			JSE_Lang.DOUBLE));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.DOUBLE));
+		toRet.addMethod(new MethodSignature("toString", 
+			new String[] {ClassMethods.DOUBLE}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("longValue", 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("shortValue", 
+			ClassMethods.SHORT));
+	}
+	public static ClassAttributes getOverride() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.OVERRIDE);
+
+		return new ClassAttributes(toRet);
+	}
+
+	public static ClassAttributes getSuppressWarnings() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.SUPPRESS_WARNINGS);
+
+
+		addSuppressWarningsMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addSuppressWarningsMembers(ClassAttributesMutant toRet) {
+		toRet.addMethod(new MethodSignature("value", 
+			"[" + JSE_Lang.STRING));
+	}
+	public static ClassAttributes getClassAttributes() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.CLASS);
+
+
+		addClassMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addClassMembers(ClassAttributesMutant toRet) {
+		addObjectMembers(toRet);
+		
+		toRet.addMethod(new MethodSignature("desiredAssertionStatus", 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isArray", 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isEnum", 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isInterface", 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isPrimitive", 
+			ClassMethods.BOOLEAN));
+		
+		toRet.addMethod(new MethodSignature("getComponentType", 
+			JSE_Lang.CLASS));
+		toRet.addMethod(new MethodSignature("getEnumConstants", 
+				"[" + JSE_Lang.OBJECT));
+		toRet.addMethod(new MethodSignature("getName", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("getSimpleName", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("getSuperclass", 
+				JSE_Lang.CLASS));
+	}
+	
+	public static ClassAttributes getInteger() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.INTEGER);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addIntegerMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addIntegerMembers(ClassAttributesMutant toRet) {
+		addNumberMembers(toRet);
+		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
+		
+		toRet.addMethod(new MethodSignature("byteValue", 
+			ClassMethods.BYTE));
+		toRet.addMethod(new MethodSignature("doubleValue", 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("floatValue", 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("bitCount", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compare", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compareTo", 
+			new String[] {JSE_Lang.INTEGER}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("highestOneBit", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("intValue", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("lowestOneBit", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("numberOfLeadingZeros", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("numberOfTrailingZeros", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("parseInt", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("parseInt", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("reverse", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("reverseBytes", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("rotateLeft", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("rotateRight", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("signum", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("decode", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.INTEGER));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.INTEGER));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.INTEGER));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			JSE_Lang.INTEGER));
+		toRet.addMethod(new MethodSignature("toBinaryString", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toHexString", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toOctalString", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toString", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toString", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toString", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("longValue", 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("shortValue", 
+			ClassMethods.SHORT));
+	}
+	
+	
+	public static ClassAttributes getIterable() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.ITERABLE);
+
+
+		addIterableMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addIterableMembers(ClassAttributesMutant toRet) {
+		toRet.addMethod(new MethodSignature("iterator", 
+			JSE_Util.ITERATOR));
+	}
+	
+	public static ClassAttributes getLong() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.LONG);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.LONG}));
+
+		addLongMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addLongMembers(ClassAttributesMutant toRet) {
+		addNumberMembers(toRet);
+		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
+
+		toRet.addMethod(new MethodSignature("byteValue", 
+			ClassMethods.BYTE));
+		toRet.addMethod(new MethodSignature("doubleValue", 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("floatValue", 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("bitCount", 
+			new String[] {ClassMethods.LONG}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compare", 
+			new String[] {ClassMethods.LONG, ClassMethods.LONG}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compareTo", 
+			new String[] {JSE_Lang.LONG}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("hashCode", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("intValue", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("numberOfLeadingZeros", 
+			new String[] {ClassMethods.LONG}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("numberOfTrailingZeros", 
+			new String[] {ClassMethods.LONG}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("signum", 
+			new String[] {ClassMethods.LONG}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("decode", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.LONG));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.LONG));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			JSE_Lang.LONG));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.LONG}, 
+			JSE_Lang.LONG));
+		toRet.addMethod(new MethodSignature("toBinaryString", 
+			new String[] {ClassMethods.LONG}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toHexString", 
+			new String[] {ClassMethods.LONG}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toOctalString", 
+			new String[] {ClassMethods.LONG}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toString", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toString", 
+			new String[] {ClassMethods.LONG}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toString", 
+			new String[] {ClassMethods.LONG, ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("highestOneBit", 
+			new String[] {ClassMethods.LONG}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("longValue", 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("lowestOneBit", 
+			new String[] {ClassMethods.LONG}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("parseLong", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("parseLong", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("reverse", 
+			new String[] {ClassMethods.LONG}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("reverseBytes", 
+			new String[] {ClassMethods.LONG}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("rotateLeft", 
+			new String[] {ClassMethods.LONG, ClassMethods.INT}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("rotateRight", 
+			new String[] {ClassMethods.LONG, ClassMethods.INT}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("shortValue", 
+			ClassMethods.SHORT));
+	}
+	
+	public static ClassAttributes getMath() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.MATH);
+
+
+		addMathMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addMathMembers(ClassAttributesMutant toRet) {
+		
+		toRet.addMethod(new MethodSignature("abs", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("acos", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("asin", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("atan", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("atan2", 
+			new String[] {ClassMethods.DOUBLE, ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("cbrt", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("ceil", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("copySign", 
+			new String[] {ClassMethods.DOUBLE, ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("cos", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("cosh", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("exp", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("expm1", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("floor", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("hypot", 
+			new String[] {ClassMethods.DOUBLE, ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("log", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("log10", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("log1p", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("max", 
+			new String[] {ClassMethods.DOUBLE, ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("min", 
+			new String[] {ClassMethods.DOUBLE, ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("pow", 
+			new String[] {ClassMethods.DOUBLE, ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("random", 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("rint", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("scalb", 
+			new String[] {ClassMethods.DOUBLE, ClassMethods.INT}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("signum", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("sin", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("sinh", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("sqrt", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("tan", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("tanh", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("toDegrees", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("toRadians", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("abs", 
+			new String[] {ClassMethods.FLOAT}, 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("copySign", 
+			new String[] {ClassMethods.FLOAT, ClassMethods.FLOAT}, 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("max", 
+			new String[] {ClassMethods.FLOAT, ClassMethods.FLOAT}, 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("min", 
+			new String[] {ClassMethods.FLOAT, ClassMethods.FLOAT}, 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("scalb", 
+			new String[] {ClassMethods.FLOAT, ClassMethods.INT}, 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("signum", 
+			new String[] {ClassMethods.FLOAT}, 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("abs", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("max", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("min", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("round", 
+			new String[] {ClassMethods.FLOAT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("abs", 
+			new String[] {ClassMethods.LONG}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("max", 
+			new String[] {ClassMethods.LONG, ClassMethods.LONG}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("min", 
+			new String[] {ClassMethods.LONG, ClassMethods.LONG}, 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("round", 
+			new String[] {ClassMethods.DOUBLE}, 
+			ClassMethods.LONG));
+	}
+	
+	public static ClassAttributes getShort() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.SHORT);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.SHORT}));
+
+		addShortMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addShortMembers(ClassAttributesMutant toRet) {
+		addNumberMembers(toRet);
+		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
+		toRet.addMethod(new MethodSignature("byteValue", 
+			ClassMethods.BYTE));
+		toRet.addMethod(new MethodSignature("doubleValue", 
+			ClassMethods.DOUBLE));
+		toRet.addMethod(new MethodSignature("floatValue", 
+			ClassMethods.FLOAT));
+		toRet.addMethod(new MethodSignature("compare", 
+			new String[] {ClassMethods.SHORT, ClassMethods.SHORT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compareTo", 
+			new String[] {JSE_Lang.SHORT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("intValue", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("decode", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.SHORT));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.SHORT));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			JSE_Lang.SHORT));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.SHORT}, 
+			JSE_Lang.SHORT));
+		toRet.addMethod(new MethodSignature("toString", 
+			new String[] {ClassMethods.SHORT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("longValue", 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("parseShort", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.SHORT));
+		toRet.addMethod(new MethodSignature("parseShort", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.SHORT));
+		toRet.addMethod(new MethodSignature("reverseBytes", 
+			new String[] {ClassMethods.SHORT}, 
+			ClassMethods.SHORT));
+		toRet.addMethod(new MethodSignature("shortValue", 
+			ClassMethods.SHORT));
+	}
+	
+	public static ClassAttributes getString() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.STRING);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {"[" + ClassMethods.BYTE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {"[" + ClassMethods.BYTE, ClassMethods.INT, 
+				ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {"[" + ClassMethods.BYTE, ClassMethods.INT, 
+				ClassMethods.INT, JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {"[" + ClassMethods.BYTE, JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {"[" + ClassMethods.CHAR}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT, ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {"[" + ClassMethods.INT, 
+				ClassMethods.INT, ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING_BUFFER}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING_BUILDER}));
+
+		addStringMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addStringMembers(ClassAttributesMutant toRet) {
+		addObjectMembers(toRet);
+		toRet.addField(new FieldSignature("CASE_INSENSITIVE_ORDER", 
+				JSE_Util.COMPARATOR));
+		toRet.addMethod(new MethodSignature("getBytes", 
+			"[" + ClassMethods.BYTE));
+		toRet.addMethod(new MethodSignature("getBytes", 
+			new String[] {JSE_Lang.STRING}, 
+			"[" + ClassMethods.BYTE));
+		toRet.addMethod(new MethodSignature("toCharArray", 
+			"[" + ClassMethods.CHAR));
+		toRet.addMethod(new MethodSignature("split", 
+			new String[] {JSE_Lang.STRING}, 
+			"[" + JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("split", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			"[" + JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("contains", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("contentEquals", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("contentEquals", 
+			new String[] {JSE_Lang.STRING_BUFFER}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("endsWith", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("equals", 
+			new String[] {JSE_Lang.OBJECT}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("equalsIgnoreCase", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("isEmpty", 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("matches", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("regionMatches", 
+			new String[] {ClassMethods.BOOLEAN, ClassMethods.INT, JSE_Lang.STRING, ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("regionMatches", 
+			new String[] {ClassMethods.INT, JSE_Lang.STRING, ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("startsWith", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("startsWith", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.BOOLEAN));
+		toRet.addMethod(new MethodSignature("charAt", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.CHAR));
+		toRet.addMethod(new MethodSignature("codePointAt", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointBefore", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("codePointCount", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compareTo", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("compareToIgnoreCase", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("indexOf", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("indexOf", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("indexOf", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("indexOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("lastIndexOf", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("lastIndexOf", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("lastIndexOf", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("lastIndexOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("length", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("offsetByCodePoints", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("subSequence", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.CHAR_SEQUENCE));
+		toRet.addMethod(new MethodSignature("concat", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("copyValueOf", 
+			new String[] {"[" + ClassMethods.CHAR}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("copyValueOf", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("intern", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("replace", 
+			new String[] {ClassMethods.CHAR, ClassMethods.CHAR}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("replace", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, JSE_Lang.CHAR_SEQUENCE}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("replaceAll", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.STRING}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("replaceFirst", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.STRING}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("substring", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("substring", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toLowerCase", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toUpperCase", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("trim", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {"[" + ClassMethods.CHAR}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.BOOLEAN}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.CHAR}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.DOUBLE}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.FLOAT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {JSE_Lang.OBJECT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("valueOf", 
+			new String[] {ClassMethods.LONG}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("getChars", 
+			new String[] {ClassMethods.INT, ClassMethods.INT, 
+				"[" + ClassMethods.CHAR, ClassMethods.INT}));
 	}
 	public GWT_2_6_Lang() {
 		super(create());

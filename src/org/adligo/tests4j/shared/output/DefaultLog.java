@@ -9,6 +9,8 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.common.DefaultSystem;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
  * This is the main logging class for Tests4J,
@@ -25,7 +27,7 @@ import org.adligo.tests4j.models.shared.common.Tests4J_System;
 public class DefaultLog implements I_Tests4J_Log {
 	public static final String DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM = "DefaultReporter requires a non null I_System.";
 	private Map<String, Boolean>  logs = new HashMap<String,Boolean>();
-	private I_System system;
+	protected I_System system;
 	
 	public DefaultLog() {
 		this(Tests4J_System.SYSTEM, null);
@@ -113,6 +115,15 @@ public class DefaultLog implements I_Tests4J_Log {
 	@Override
 	public String getLineSeperator() {
 		return system.lineSeperator();
+	}
+
+	@Override
+	public String getCurrentThreadName() {
+		I_Tests4J_ReportMessages reportMessages = 
+				Tests4J_Constants.CONSTANTS.getReportMessages();
+		
+		return reportMessages.getOnThreadZ().replaceAll("<Z/>", 
+				system.getCurrentThreadName());
 	}
 
 

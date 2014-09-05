@@ -98,9 +98,12 @@ public class Tests4J_ParamsReader {
 			throw new RuntimeException(t);
 		}
 		logger = new DefaultLog(pSystem, logStates);
-		
+	}
+	
+	public void read(I_Tests4J_Log loggerIn) {
+		logger = loggerIn;
 		try {
-			getTrialsFromParams(pParams);
+			getTrialsFromParams(params);
 		} catch (Throwable t) {
 			//some error/exception with the trials, do NOT try to recover
 			logger.onThrowable(t);
@@ -144,7 +147,7 @@ public class Tests4J_ParamsReader {
 		}
 		
 		try {
-			Set<I_Tests4J_Selection> paramTests = pParams.getTests();
+			Set<I_Tests4J_Selection> paramTests = params.getTests();
 			
 			//remove the at most 1 element from Set
 			paramTests.remove(null);

@@ -9,6 +9,8 @@ import java.util.Set;
 import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.common.DefaultSystem;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
  * This is the main logging class for Tests4J,
@@ -111,6 +113,15 @@ public class DelegatingLog implements I_Tests4J_Log {
 	@Override
 	public String getLineSeperator() {
 		return lineSeperator;
+	}
+
+	@Override
+	public String getCurrentThreadName() {
+		I_Tests4J_ReportMessages reportMessages = 
+				Tests4J_Constants.CONSTANTS.getReportMessages();
+		
+		return reportMessages.getOnThreadZ().replaceAll("<Z/>", 
+				Tests4J_System.getCurrentThreadName());
 	}
 
 

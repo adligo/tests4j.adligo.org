@@ -298,9 +298,7 @@ public class TrialDescription implements I_TrialDescription {
 
 	
 	public void findBeforeAfterTrials(Class<?> p) {
-		
-		
-		while ( !AbstractTrial.TESTS4J_TRIAL_CLASSES.contains(p.getName())) {
+		while (p != null && !AbstractTrial.TESTS4J_TRIAL_CLASSES.contains(p.getName())) {
 			Method []  methods = p.getDeclaredMethods();
 	
 			for (Method method: methods) {

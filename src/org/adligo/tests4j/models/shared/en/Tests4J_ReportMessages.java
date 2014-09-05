@@ -9,6 +9,8 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
  *
  */
 public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
+	private static final String ON_THREAD_Z = " on thread <Z/> ";
+
 	private static final String TRIAL_DESCRIPTIONS_IN_STMT = "trial descriptions";
 
 	private static final String NON_META_TRIALS = "non-meta trials";
@@ -190,4 +192,9 @@ public class Tests4J_ReportMessages implements I_Tests4J_ReportMessages {
 	public String getTrialDescriptionsInStatement() {
 		return TRIAL_DESCRIPTIONS_IN_STMT;
 	}
+	
+	public String getOnThreadZ() {
+		return ON_THREAD_Z;
+	}
+	
 }

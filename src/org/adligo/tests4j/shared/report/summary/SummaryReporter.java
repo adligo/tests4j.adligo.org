@@ -183,7 +183,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 			Set<String> sourceFileNames = cover.getSourceFileNames();
 			//todo bridge formatting with GWT
 			logger.log("\t\t\t+" + cover.getPackageName() + " was covered " + 
-						cover.getPercentageCovered() + "% with " +
+						PercentFormat.format(cover.getPercentageCovered().doubleValue(), 2) + "% with " +
 						sourceFileNames.size() + " source files, " +
 						cover.getChildPackageCoverage().size() + " child packages and " +
 						cover.getCoveredCoverageUnits().get() + "/" +

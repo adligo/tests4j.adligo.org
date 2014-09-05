@@ -1,13 +1,19 @@
 package org.adligo.tests4j.models.shared.dependency;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.common.ClassMethods;
 
+/**
+ * add ignroed packages like "java."
+ * the trailing dot indicates .*!
+ * 
+ * @author scott
+ *
+ */
 public class ClassFilterMutant implements I_ClassFilterModel {
-	private Set<String> ignoredPackageNames = new HashSet<String>(Collections.singleton("java."));
+	private Set<String> ignoredPackageNames = new HashSet<String>();
 	private Set<String> ignoredClassNames = new HashSet<String>();
 	private Set<String> learnedFilteredClasses = new HashSet<String>();
 	

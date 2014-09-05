@@ -79,27 +79,35 @@ public class ClassUseTrialGen {
 			out.println("\t}");
 			
 			out.println("");
+			out.println("@Override");
 			out.println("\tpublic void afterTrialTests(I_SourceFileTrialResult p) {");
+			out.println("\t\tsuper.afterTrialTests(p);");
 			out.println("\t\tI_ClassAttributes refs = p.getSourceClassAttributes();");
 			out.println("\t\tif (refs == null) {");
 			out.println("\t\t\treturn;");
 			out.println("\t\t}");
-			out.println("\t\tI_ClassAttributes example = " +groupFactoryClass.getSimpleName() +
-					".get" + clazz.getSimpleName() + "();");
-			out.println("\t\tassertNotNull(refs);");
 			out.println("\t\tassertEquals(" +
 					clazz.getSimpleName() + api+ "_MockUse.class.getName(), refs.getName());");
+			out.println("\t\tI_ClassAttributes result = p.getAttributes(\"" + clazz.getName() + "\");");
+			out.println("\t\tassertNotNull(result);");
+			out.println("\t\tSet<I_FieldSignature> fields = new TreeSet<I_FieldSignature>();");
+			out.println("\t\tfields.addAll(result.getFields());");
+			out.println("\t\tSet<I_MethodSignature> methods = new TreeSet<I_MethodSignature>();");
+			out.println("\t\tmethods.addAll(result.getMethods());");
+			out.println("");
 			
-			out.println("\t\tassertEquals(example.getName(), refs.getName());");
+			
+			out.println("\t\tI_ClassAttributes example = " +groupFactoryClass.getSimpleName() +
+					".get" + clazz.getSimpleName() + "();");
+			
+			out.println("\t\tassertEquals(example.getName(), result.getName());");
 			out.println("\t\tSet<I_FieldSignature> exampleFields = example.getFields();");
-			out.println("\t\tSet<I_FieldSignature> fields = refs.getFields();");
 			out.println("\t\tfor (I_FieldSignature sig: exampleFields) {");
 			out.println("\t\t\tassertContains(fields, sig);");
 			out.println("\t\t}");
 			out.println("\t\tassertEquals(exampleFields.size(), fields.size());");
 			
 			out.println("\t\tSet<I_MethodSignature> exampleMethods = example.getMethods();");
-			out.println("\t\tSet<I_MethodSignature> methods = refs.getMethods();");
 			out.println("\t\tfor (I_MethodSignature method: exampleMethods) {");
 			out.println("\t\t\tassertContains(methods, method);");
 			out.println("\t\t}");
@@ -123,41 +131,42 @@ public class ClassUseTrialGen {
 			
 			
 			out.println("");
+			out.println("");
+			out.println("@Override");
 			out.println("\tpublic void afterTrialTests(I_SourceFileTrialResult p) {");
+			out.println("\t\tsuper.afterTrialTests(p);");
 			out.println("\t\tI_ClassAttributes refs = p.getSourceClassAttributes();");
 			out.println("\t\tif (refs == null) {");
 			out.println("\t\t\treturn;");
 			out.println("\t\t}");
 			out.println("\t\tassertEquals(" +
 					clazz.getSimpleName() + api+ "_MockUse.class.getName(), refs.getName());");
-			
 			out.println("\t\tI_ClassAttributes result = p.getAttributes(\"" + clazz.getName() + "\");");
 			out.println("\t\tassertNotNull(result);");
 			out.println("\t\tSet<I_FieldSignature> fields = new TreeSet<I_FieldSignature>();");
 			out.println("\t\tfields.addAll(result.getFields());");
 			out.println("\t\tSet<I_MethodSignature> methods = new TreeSet<I_MethodSignature>();");
 			out.println("\t\tmethods.addAll(result.getMethods());");
-			
 			out.println("");
 			out.println("\t\tList<String> parents = new ArrayList<String>();");
-			List<String> parents = new ArrayList<String>();
-			Class<?> pC = clazz.getSuperclass();
-			while (pC != null) {
-				parents.add(pC.getName());
-				pC = pC.getSuperclass();
+			Class<?> superClass = clazz.getSuperclass();
+			while (superClass != null) {
+				out.println("\t\tparents.add(\"" + superClass.getName() + "\");");
+				superClass = superClass.getSuperclass();
 			}
-			for (int i = parents.size() - 1; i >= 0; i--) {
-				out.println("\t\tparents.add(\"" + parents.get(i) + "\");");
-			}
-			if (parents.size() != 0) {
-				out.println("\t\tfor(String parent: parents) {");
-				out.println("\t\t\tI_ClassAttributes ca = p.getAttributes(parent);");
-				out.println("\t\t\tif (ca != null) {");
-				out.println("\t\t\t\tfields.addAll(ca.getFields());");
-				out.println("\t\t\t\tmethods.addAll(ca.getMethods());");
-				out.println("\t\t\t}");
-				out.println("\t\t}");
-			}
+			out.println("\t\tfor (String pt: parents) {");
+			out.println("\t\t\tI_ClassAttributes parentResult = p.getAttributes(pt);");
+			out.println("\t\t\tif (parentResult != null) {");
+			out.println("\t\t\t\tfields.addAll(parentResult.getFields());");
+			out.println("\t\t\t\t//keep parent initilization out");
+			out.println("\t\t\t\tfor (I_MethodSignature ms: parentResult.getMethods()) {");
+			out.println("\t\t\t\t\tif ( !\"<init>\".equals(ms.getMethodName())) {");
+			out.println("\t\t\t\t\t\tmethods.add(ms);");
+			out.println("\t\t\t\t\t}");
+			out.println("\t\t\t\t}");
+			out.println("\t\t\t}");
+			out.println("\t\t}");
+			
 			out.println("\t\tI_ClassAttributes example = " +groupFactoryClass.getSimpleName() +
 					".get" + clazz.getSimpleName()  + "();");
 			out.println("\t\tassertEquals(example.getName(), result.getName());");

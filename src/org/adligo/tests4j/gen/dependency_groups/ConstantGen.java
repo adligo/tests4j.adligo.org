@@ -45,7 +45,7 @@ public class ConstantGen {
 					//everything has a hidden constructor with no arguments
 					//which shows up in ASM but not reflection, 
 					//even if there isn't a public one
-					out.println("\t\ttoRet.addMethod(new MethodSignature(\"<init>\");");
+					out.println("\t\ttoRet.addMethod(new MethodSignature(\"<init>\"));");
 				}
 			}
 			for (I_MethodSignature method: ms) {

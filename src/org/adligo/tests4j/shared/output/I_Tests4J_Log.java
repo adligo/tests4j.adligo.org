@@ -48,6 +48,12 @@ public interface I_Tests4J_Log {
 	public boolean isMainLog();
 	
 	/**
+	 * return a string with the following content;
+	 * " on thread threadName1 "
+	 * @return
+	 */
+	public String getCurrentThreadName();
+	/**
 	 * return the underlying line separator
 	 * (usually comes from I_Tests4J_System)
 	 * so it can be fixed for testing.

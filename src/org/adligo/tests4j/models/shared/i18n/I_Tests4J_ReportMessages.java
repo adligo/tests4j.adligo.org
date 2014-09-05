@@ -49,4 +49,6 @@ public interface I_Tests4J_ReportMessages {
 	public String getNonMetaTrials();
 	
 	public String getTrialDescriptionsInStatement();
+	
+	public String getOnThreadZ();
 }

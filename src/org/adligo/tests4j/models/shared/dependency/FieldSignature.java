@@ -46,24 +46,8 @@ public class FieldSignature implements I_FieldSignature {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (toString().equals(obj.toString())) {
 			return true;
-		if (obj == null)
-			return false;
-		try {
-			I_FieldSignature other = (I_FieldSignature) obj;
-			if (className == null) {
-				if (other.getClassName() != null)
-					return false;
-			} else if (!className.equals(other.getClassName()))
-				return false;
-			if (name == null) {
-				if (other.getName() != null)
-					return false;
-			} else if (!name.equals(other.getName()))
-				return false;
-		} catch (ClassCastException x) {
-			return false;
 		}
 		return true;
 	}

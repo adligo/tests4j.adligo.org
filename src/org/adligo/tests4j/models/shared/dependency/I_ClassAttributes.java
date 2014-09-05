@@ -3,7 +3,9 @@ package org.adligo.tests4j.models.shared.dependency;
 import java.util.Set;
 
 /**
- * A interface for representing 
+ * A interface for representing, just the basic
+ * fields and methods of a class (things that are reference-able
+ * through other .java files directly without reflection.. 
  * @author scott
  *
  */

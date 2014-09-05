@@ -91,6 +91,10 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		 */
 		Map<Class<?>, Boolean> logStates = reader.getLogStates();
 		cod = setupLogging(logStates);
+		//pass the concurrent log back to the reader
+		//to set up the CoveragePluginFactory
+		reader.read(log);
+		
 		memory = new Tests4J_Memory(log);
 		memory.setSystem(system);
 		progressMonitor = new Tests4J_DelegateProgressMonitor(log, pParams.getProgressMonitor());
