@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.dependency_groups.gwt;
 
-import org.adligo.tests4j.models.dependency_groups.jse.JSE_1_7_Lang;
+import org.adligo.tests4j.models.dependency_groups.jse.JSE_IO;
 import org.adligo.tests4j.models.dependency_groups.jse.JSE_Lang;
 import org.adligo.tests4j.models.dependency_groups.jse.JSE_Util;
 import org.adligo.tests4j.models.shared.common.ClassMethods;
@@ -402,7 +402,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		toRet.addMethod(new MethodSignature("printStackTrace"));
 		
 		toRet.addMethod(new MethodSignature("printStackTrace", 
-				new String[] {"java.io.PrintStream"}));
+				new String[] {JSE_IO.PRINT_STREAM}));
 		toRet.addMethod(new MethodSignature("setStackTrace", 
 			new String[] {"[" + JSE_Lang.STACK_TRACE_ELEMENT}));
 		//11
@@ -1960,6 +1960,48 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		toRet.addMethod(new MethodSignature("setLength", 
 			new String[] {ClassMethods.INT}));
 		toRet.addMethod(new MethodSignature("trimToSize"));
+	}
+	
+	public static ClassAttributes getSystem() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.SYSTEM);
+		
+		//constructor not visible
+
+		addSystemMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addSystemMembers(ClassAttributesMutant toRet) {
+		toRet.addField(new FieldSignature("err", JSE_IO.PRINT_STREAM));
+		toRet.addField(new FieldSignature("out", JSE_IO.PRINT_STREAM));
+		toRet.addMethod(new MethodSignature("identityHashCode", 
+			new String[] {JSE_Lang.OBJECT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("getProperty", 
+			new String[] {JSE_Lang.STRING, JSE_Lang.STRING}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("currentTimeMillis", 
+			ClassMethods.LONG));
+		toRet.addMethod(new MethodSignature("arraycopy", 
+			new String[] {JSE_Lang.OBJECT, ClassMethods.INT, 
+				JSE_Lang.OBJECT, ClassMethods.INT, ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("gc"));
+		toRet.addMethod(new MethodSignature("setErr", 
+			new String[] {JSE_IO.PRINT_STREAM}));
+		toRet.addMethod(new MethodSignature("setOut", 
+			new String[] {JSE_IO.PRINT_STREAM}));
+	}
+	public static ClassAttributes getVoid() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.VOID);
+
+		addVoidMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addVoidMembers(ClassAttributesMutant toRet) {
+		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
 	}
 	public GWT_2_6_Lang() {
 		super(create());

@@ -136,9 +136,10 @@ public class GWTGroupGen {
 		toRet.add(Short.class);
 		toRet.add(String.class);
 		toRet.add(StringBuffer.class);
-		*/
-		
 		toRet.add(StringBuilder.class);
+		*/
+		toRet.add(System.class);
+		toRet.add(Void.class);
 		
 		//toRet.add(Double.class);
 		return toRet;
