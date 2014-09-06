@@ -1644,6 +1644,323 @@ public class GWT_2_6_Lang extends DependencyGroup {
 			new String[] {ClassMethods.INT, ClassMethods.INT, 
 				"[" + ClassMethods.CHAR, ClassMethods.INT}));
 	}
+	
+	public static ClassAttributes getStringBuffer() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.STRING_BUFFER);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addStringBufferMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addStringBufferMembers(ClassAttributesMutant toRet) {
+		addObjectMembers(toRet);
+		toRet.addMethod(new MethodSignature("charAt", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.CHAR));
+		toRet.addMethod(new MethodSignature("capacity", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("indexOf", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("indexOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("lastIndexOf", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("lastIndexOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("length", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("subSequence", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.CHAR_SEQUENCE));
+		toRet.addMethod(new MethodSignature("substring", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("substring", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {"[" + ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.BOOLEAN}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.DOUBLE}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.FLOAT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.OBJECT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.STRING_BUFFER}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.LONG}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("delete", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("deleteCharAt", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, "[" + ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, "[" + ClassMethods.CHAR, 
+				ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.BOOLEAN}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.DOUBLE}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.FLOAT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, JSE_Lang.CHAR_SEQUENCE}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, JSE_Lang.CHAR_SEQUENCE, 
+				ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, JSE_Lang.OBJECT}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, JSE_Lang.STRING}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.LONG}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("replace", 
+			new String[] {ClassMethods.INT, ClassMethods.INT, JSE_Lang.STRING}, 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("reverse", 
+			JSE_Lang.STRING_BUFFER));
+		toRet.addMethod(new MethodSignature("ensureCapacity", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("getChars", 
+			new String[] {ClassMethods.INT, ClassMethods.INT, 
+				"[" + ClassMethods.CHAR, ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("setCharAt", 
+			new String[] {ClassMethods.INT, ClassMethods.CHAR}));
+		toRet.addMethod(new MethodSignature("setLength", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("trimToSize"));
+	}
+	
+	public static ClassAttributes getStringBuilder() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.STRING_BUILDER);
+
+		//constructors
+		toRet.addMethod(new MethodSignature("<init>"));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE}));
+		toRet.addMethod(new MethodSignature("<init>", 
+			new String[] {JSE_Lang.STRING}));
+
+		addStringBuilderMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addStringBuilderMembers(ClassAttributesMutant toRet) {
+		addObjectMembers(toRet);
+		toRet.addMethod(new MethodSignature("charAt", 
+			new String[] {ClassMethods.INT}, 
+			ClassMethods.CHAR));
+		toRet.addMethod(new MethodSignature("capacity", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("indexOf", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("indexOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("lastIndexOf", 
+			new String[] {JSE_Lang.STRING}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("lastIndexOf", 
+			new String[] {JSE_Lang.STRING, ClassMethods.INT}, 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("length", 
+			ClassMethods.INT));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("subSequence", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.CHAR_SEQUENCE));
+		toRet.addMethod(new MethodSignature("substring", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("substring", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("toString", 
+			JSE_Lang.STRING));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {"[" + ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {"[" + ClassMethods.CHAR, ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.BOOLEAN}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.DOUBLE}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.FLOAT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.CHAR_SEQUENCE, ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.OBJECT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.STRING}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {JSE_Lang.STRING_BUFFER}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("append", 
+			new String[] {ClassMethods.LONG}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("appendCodePoint", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("delete", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("deleteCharAt", 
+			new String[] {ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, "[" + ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, "[" + ClassMethods.CHAR, 
+				ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.BOOLEAN}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.CHAR}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.DOUBLE}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.FLOAT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, JSE_Lang.CHAR_SEQUENCE}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, JSE_Lang.CHAR_SEQUENCE,
+				ClassMethods.INT, ClassMethods.INT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, JSE_Lang.OBJECT}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, JSE_Lang.STRING}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("insert", 
+			new String[] {ClassMethods.INT, ClassMethods.LONG}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("replace", 
+			new String[] {ClassMethods.INT, ClassMethods.INT, JSE_Lang.STRING}, 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("reverse", 
+			JSE_Lang.STRING_BUILDER));
+		toRet.addMethod(new MethodSignature("ensureCapacity", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("getChars", 
+			new String[] {ClassMethods.INT, ClassMethods.INT, "[" + 
+					ClassMethods.CHAR, ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("setCharAt", 
+			new String[] {ClassMethods.INT, ClassMethods.CHAR}));
+		toRet.addMethod(new MethodSignature("setLength", 
+			new String[] {ClassMethods.INT}));
+		toRet.addMethod(new MethodSignature("trimToSize"));
+	}
 	public GWT_2_6_Lang() {
 		super(create());
 	}
