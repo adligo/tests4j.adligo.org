@@ -1,26 +1,14 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.AnnotationFormatError;
-import java.lang.annotation.AnnotationTypeMismatchException;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.EmptyStackException;
 import java.util.List;
-import java.util.MissingResourceException;
-import java.util.NoSuchElementException;
-import java.util.TooManyListenersException;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
-import org.adligo.tests4j.models.dependency_groups.gwt.GWT_2_6_Lang;
+import org.adligo.tests4j.models.dependency_groups.gwt.GWT_2_6_Log;
 import org.adligo.tests4j.models.dependency_groups.jse.JSE_Lang;
+import org.adligo.tests4j.models.dependency_groups.jse.JSE_Util;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
 
 
@@ -29,9 +17,9 @@ public class GWTGroupGen {
 	public static void main(String[] args) {
 		GroupGen gg = new GroupGen();
 		GenDepGroupContext ctx = new GenDepGroupContext();
-		ctx.setTrialPackageName("org.adligo.tests4j_v1_tests.models.dependency_groups.gwt.v2_6.lang");
+		ctx.setTrialPackageName("org.adligo.tests4j_v1_tests.models.dependency_groups.gwt.v2_6.logging");
 		ctx.setApiVersion("2_6");
-		ctx.setGroupFactoryClass(GWT_2_6_Lang.class);
+		ctx.setGroupFactoryClass(GWT_2_6_Log.class);
 		//ctx.setExtraTrialAnnotations("@SuppressOutput");
 		ctx.setTrialClass("org.adligo.tests4j_tests.base_trials.SourceFileCountingTrial");
 		ctx.setTrialClassSimpleName("SourceFileCountingTrial");
@@ -71,11 +59,17 @@ public class GWTGroupGen {
 		
 		ConstantLookup cl = ctx.getConstantLookup();
 		cl.addLookups(JSE_Lang.INSTANCE);
-		
+		cl.addLookups(JSE_Util.INSTANCE);
 		gg.setCtx(ctx);
 		//ctx.setRunConstantGen(false);
 		//ctx.setRunConstantTrialGen(false);
-		gg.gen(getLang());
+		//gg.gen(getLang());
+		//gg.gen(getAnnot());
+		//gg.gen(getMath());
+		//gg.gen(getSQL());
+		//gg.gen(getUtil());
+		
+		gg.gen(getLog());
 	}
 	
 	public static List<Class<?>> getLang() {
@@ -137,16 +131,15 @@ public class GWTGroupGen {
 		toRet.add(String.class);
 		toRet.add(StringBuffer.class);
 		toRet.add(StringBuilder.class);
-		*/
 		toRet.add(System.class);
 		toRet.add(Void.class);
-		
-		//toRet.add(Double.class);
+		*/
 		return toRet;
 	}
 	
 	public static List<Class<?>> getAnnot() {
 		List<Class<?>> toRet = new ArrayList<Class<?>>();
+		/*
 		toRet.add(Annotation.class);
 		toRet.add(Documented.class); 
 		toRet.add(AnnotationFormatError.class);
@@ -157,25 +150,122 @@ public class GWTGroupGen {
 		toRet.add(Retention.class); 
 		toRet.add(RetentionPolicy.class); 
 		toRet.add(Target.class); 
+		*/
+		return toRet;
+	}
+	
+	public static List<Class<?>> getMath() {
+		List<Class<?>> toRet = new ArrayList<Class<?>>();
+		/*
+		toRet.add(BigDecimal.class);
+		toRet.add(BigInteger.class);
+		toRet.add(MathContext.class);
+		toRet.add(RoundingMode.class);
+		*/
 		return toRet;
 	}
 	
 	public static List<Class<?>> getIO() {
 		List<Class<?>> toRet = new ArrayList<Class<?>>();
-		
+		/*
 		toRet.add(IOException.class);
 		toRet.add(UnsupportedEncodingException.class);
+		toRet.add(FilterOutputStream.class);
+		toRet.add(OutputStream.class);
+		toRet.add(PrintStream.class);
+		toRet.add(Serializable.class);
+		*/
+		return toRet;
+	}
+	
+	public static List<Class<?>> getSQL() {
+		List<Class<?>> toRet = new ArrayList<Class<?>>();
+		
+		/*
+		toRet.add(Date.class);
+		toRet.add(Time.class);
+		toRet.add(Timestamp.class);
+		*/
 		return toRet;
 	}
 	
 	public static List<Class<?>> getUtil() {
 		List<Class<?>> toRet = new ArrayList<Class<?>>();
 		
+		/*
 		toRet.add(ConcurrentModificationException.class);
 		toRet.add(EmptyStackException.class);
 		toRet.add(MissingResourceException.class);
 		toRet.add(NoSuchElementException.class);
 		toRet.add(TooManyListenersException.class);
+		toRet.add(java.util.Date.class);
+		
+		toRet.add(AbstractCollection.class);
+		toRet.add(AbstractList.class);
+		toRet.add(AbstractMap.class);
+		toRet.add(AbstractQueue.class);
+		
+		toRet.add(AbstractSequentialList.class);
+		toRet.add(AbstractSet.class);
+		toRet.add(ArrayList.class);
+		
+		toRet.add(Arrays.class);
+		toRet.add(Collections.class);
+		toRet.add(Collection.class);
+		toRet.add(Comparator.class);
+		toRet.add(EnumMap.class);
+		toRet.add(EnumSet.class);
+		
+		toRet.add(Enumeration.class);
+		toRet.add(EventListener.class);
+		toRet.add(EventObject.class);
+		toRet.add(HashMap.class);
+		
+		toRet.add(HashSet.class);
+		toRet.add(IdentityHashMap.class);
+		toRet.add(Iterator.class);
+		toRet.add(LinkedHashMap.class);
+
+		toRet.add(LinkedHashSet.class);
+		toRet.add(LinkedList.class);
+		toRet.add(List.class);
+		toRet.add(ListIterator.class);
+		
+		toRet.add(Map.class);
+		toRet.add(Map.Entry.class);
+		toRet.add(Objects.class);
+		
+		toRet.add(PriorityQueue.class);
+		toRet.add(Queue.class);
+		toRet.add(Random.class);
+		
+		toRet.add(RandomAccess.class);
+		toRet.add(Set.class);
+		toRet.add(SortedMap.class);
+		*/
+
+		/*
+		toRet.add(SortedSet.class);
+		toRet.add(Stack.class);
+		toRet.add(TreeMap.class);
+		toRet.add(TreeSet.class);
+		
+		toRet.add(Vector.class);
+		 */
+		return toRet;
+	}
+	
+	public static List<Class<?>> getLog() {
+		List<Class<?>> toRet = new ArrayList<Class<?>>();
+		
+		/*
+		toRet.add(Formatter.class);
+		toRet.add(Handler.class);
+		toRet.add(Level.class);
+		*/
+		toRet.add(LogManager.class);
+		toRet.add(LogRecord.class);
+		toRet.add(Logger.class);
 		
 		return toRet;
 	}

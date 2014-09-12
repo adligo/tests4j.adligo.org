@@ -16,7 +16,7 @@ import java.util.Map;
  * 
  * Note this doesn't implements JSE_1_7_Lang or JSE_1_8_Lang
  * since I am trying to support all the way back to 1_6
- * (although running 1.7 now, and will probably move to 1.8 soon).
+ * (although running 1.8 now).
  * 
  * @author scott
  *

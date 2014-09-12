@@ -6,7 +6,7 @@ public interface JSE_1_7_Log {
 		public static final String CONSOLE_HANDLER = "java.util.logging.ConsoleHandler";
 		public static final String ERROR_MANAGER = "java.util.logging.ErrorManager";
 		public static final String FILE_HANDLER = "java.util.logging.FileHandler";
-		public static final String FORMATTER = "java.util.Formatter";
+		public static final String FORMATTER = "java.util.logging.Formatter";
 		public static final String HANDLER = "java.util.logging.Handler";
 		public static final String LEVEL = "java.util.logging.Level";
 		public static final String LOGGER = "java.util.logging.Logger";

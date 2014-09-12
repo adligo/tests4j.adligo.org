@@ -1,9 +1,17 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
 import java.io.PrintStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.common.ClassMethods;
 
@@ -37,6 +45,20 @@ public class DefaultUseGenTypes {
 		toRet.put("[" + Throwable.class.getName(), "new Throwable[] {}");
 		toRet.put("[L" + StackTraceElement.class.getName() + ";", "new StackTraceElement[] {}");
 		toRet.put(PrintStream.class.getName(), "System.out");
+		
+		
+		toRet.put(BigDecimal.class.getName(), "new BigDecimal(\"1.1\")");
+		toRet.put(BigInteger.class.getName(), "new BigInteger(\"1\")");
+		toRet.put(MathContext.class.getName(), "new MathContext(2)");
+		toRet.put(RoundingMode.class.getName(), "RoundingMode.HALF_UP");
+		
+		toRet.put(Timestamp.class.getName(), "new Timestamp(1L)");
+		
+		toRet.put(List.class.getName(), "new ArrayList()");
+		toRet.put(Set.class.getName(), "new HashSet()");
+		toRet.put(Map.class.getName(), "new HashMap()");
+		toRet.put(Queue.class.getName(), "new PriorityQueue()");
+		
 		return Collections.unmodifiableMap(toRet);
 	}
 }
