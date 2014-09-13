@@ -16,7 +16,7 @@ import java.util.Set;
  * @author scott
  *
  */
-public class LegacyApiIssues {
+public class LegacyAPI_Issues {
 	private volatile Map<JavaAPIVersion, List<Throwable>> issues = new HashMap<JavaAPIVersion,List<Throwable>>();
 	
 	public synchronized boolean hasIssues() {
@@ -38,7 +38,7 @@ public class LegacyApiIssues {
 		thrown.add(t);
 	}
 	
-	public synchronized void addIssues(LegacyApiIssues others) {
+	public synchronized void addIssues(LegacyAPI_Issues others) {
 		//no need to optimize this, it probably only happens 2 or less times
 		Set<JavaAPIVersion> versions = others.issues.keySet();
 		for (JavaAPIVersion ver: versions) {

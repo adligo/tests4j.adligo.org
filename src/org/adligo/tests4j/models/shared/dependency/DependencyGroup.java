@@ -1,7 +1,9 @@
 package org.adligo.tests4j.models.shared.dependency;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -14,7 +16,7 @@ public class DependencyGroup implements I_DependencyGroup {
 	}
 	
 	public DependencyGroup(I_DependencyGroup other) {
-		Collection<I_ClassAttributes> cms =  other.getClassMethods();
+		Collection<I_ClassAttributes> cms =  other.getClassAttributes();
 		
 		Map<String, I_ClassAttributes> mClassMap = new TreeMap<String,I_ClassAttributes>();
 		for (I_ClassAttributes cm: cms) {
@@ -31,8 +33,8 @@ public class DependencyGroup implements I_DependencyGroup {
 	}
 
 	@Override
-	public Collection<I_ClassAttributes> getClassMethods() {
-		return classMap.values();
+	public List<I_ClassAttributes> getClassAttributes() {
+		return new ArrayList<I_ClassAttributes>(classMap.values());
 	}
 
 	@Override
@@ -76,6 +78,11 @@ public class DependencyGroup implements I_DependencyGroup {
 		if (fields.contains(method)) {
 			return true;
 		}
+		return false;
+	}
+
+	@Override
+	public boolean isInGroup(String className) {
 		return false;
 	}
 

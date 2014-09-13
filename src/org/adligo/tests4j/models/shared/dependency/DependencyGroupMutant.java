@@ -19,7 +19,7 @@ public class DependencyGroupMutant implements I_DependencyGroup {
 	}
 	
 	public DependencyGroupMutant(I_DependencyGroup other) {
-		setClassMethods(other.getClassMethods());
+		setClassMethods(other.getClassAttributes());
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class DependencyGroupMutant implements I_DependencyGroup {
 	}
 	
 	@Override
-	public Collection<I_ClassAttributes> getClassMethods() {
+	public List<I_ClassAttributes> getClassAttributes() {
 		List<I_ClassAttributes> toRet = new ArrayList<I_ClassAttributes>();
 		toRet.addAll(deps.values());
 		return toRet;
@@ -72,25 +72,28 @@ public class DependencyGroupMutant implements I_DependencyGroup {
 	public void intersect(I_DependencyGroup other) {
 		Set<String> classes =  other.getClassNames();
 		Set<String> depsClasses = new HashSet<String>(deps.keySet());
-		depsClasses.retainAll(classes);
+		depsClasses.removeAll(classes);
+		//remove classes on in the other
+		for (String clazz: depsClasses) {
+			deps.remove(clazz);
+		}
 		
 		Set<Entry<String, ClassAttributesMutant>> entires = deps.entrySet();
 		Iterator<Entry<String,ClassAttributesMutant>> it = entires.iterator();
 		while (it.hasNext()) {
 			Entry<String,ClassAttributesMutant> entry = it.next();
 			String className = entry.getKey();
-			if ( !depsClasses.contains(className)) {
-				it.remove();
-			} else {
-				Set<I_MethodSignature> otherMethSigs =  other.getMethods(className);
-				ClassAttributesMutant cam = entry.getValue();
-				Set<I_MethodSignature> methSigs = cam.getMethods();
-				methSigs.retainAll(otherMethSigs);
-				
-				Set<I_FieldSignature> otherFieldSigs =  other.getFields(className);
-				Set<I_FieldSignature> fieldSigs = cam.getFields();
-				fieldSigs.retainAll(otherFieldSigs);
-			}
+			
+			Set<I_MethodSignature> otherMethSigs =  other.getMethods(className);
+			ClassAttributesMutant cam = entry.getValue();
+			Set<I_MethodSignature> methSigs = new HashSet<I_MethodSignature>(cam.getMethods());
+			methSigs.retainAll(otherMethSigs);
+			cam.setMethods(methSigs);
+			
+			Set<I_FieldSignature> otherFieldSigs =  other.getFields(className);
+			Set<I_FieldSignature> fieldSigs = new HashSet<I_FieldSignature>(cam.getFields());
+			fieldSigs.retainAll(otherFieldSigs);
+			cam.setFields(fieldSigs);
 		}
 	}
 
@@ -111,5 +114,12 @@ public class DependencyGroupMutant implements I_DependencyGroup {
 		}
 		Set<I_FieldSignature> fields = cmm.getFields();
 		return fields.contains(field);
+	}
+
+	@Override
+	public boolean isInGroup(String className) {
+		//since this class check the field and method calls,
+		// it doesn't allow the whole class
+		return false;
 	}
 }

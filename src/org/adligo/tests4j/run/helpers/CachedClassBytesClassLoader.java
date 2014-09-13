@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.adligo.tests4j.models.shared.common.I_CacheControl;
 import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
-import org.adligo.tests4j.models.shared.common.LegacyApiIssues;
+import org.adligo.tests4j.models.shared.common.LegacyAPI_Issues;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 
@@ -26,7 +26,7 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  *
  */
 public class CachedClassBytesClassLoader extends ClassLoader implements I_CachedClassBytesClassLoader {
-	public static final LegacyApiIssues ISSUES = new LegacyApiIssues();
+	public static final LegacyAPI_Issues ISSUES = new LegacyAPI_Issues();
 	
 	//ok i must make sure
 	// http://docs.oracle.com/javase/7/docs/technotes/guides/lang/cl-mt.html

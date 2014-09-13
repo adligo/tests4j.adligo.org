@@ -1,6 +1,7 @@
 package org.adligo.tests4j.gen.dependency_groups;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class GroupGen {
 	 * note this doesn't take a PackageDiscovery
 	 * @param classes
 	 */
-	public void gen(List<Class<?>> classes) {
+	public void gen(Collection<Class<?>> classes) {
 		List<ClassAndAttributes> caAttribs = new ArrayList<ClassAndAttributes>();
 		for (Class<?> c: classes) {
 			ClassAndAttributes caa = new ClassAndAttributes(c);

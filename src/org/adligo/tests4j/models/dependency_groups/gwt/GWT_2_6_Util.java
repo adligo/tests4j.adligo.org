@@ -1179,16 +1179,16 @@ public class GWT_2_6_Util {
 		toRet.addMethod(new MethodSignature("putAll", 
 			new String[] {JSE_Util.MAP}));
 	}
-	public static ClassAttributes getEntry() {
+	public static ClassAttributes getMapEntry() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Util.MAP_ENTRY);
 
 
-		addEntryMembers(toRet);
+		addMapEntryMembers(toRet);
 		return new ClassAttributes(toRet);
 	}
 
-	public static void addEntryMembers(ClassAttributesMutant toRet) {
+	public static void addMapEntryMembers(ClassAttributesMutant toRet) {
 		toRet.addMethod(new MethodSignature("equals", 
 			new String[] {JSE_Lang.OBJECT}, 
 			ClassMethods.BOOLEAN));

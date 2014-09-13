@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -31,7 +31,7 @@ public interface I_DependencyGroup {
 	 * in this dependency group
 	 * @return
 	 */
-	public Collection<I_ClassAttributes> getClassMethods();
+	public List<I_ClassAttributes> getClassAttributes();
 	
 	/**
 	 * returns the methods for a particular class,
@@ -45,9 +45,25 @@ public interface I_DependencyGroup {
 	public Set<I_FieldSignature> getFields(String className);
 	/**
 	 * return true if the class is in this dependency
+	 * with this method
 	 * @param className
+	 * @param method
 	 * @return
 	 */
 	public boolean isInGroup(String className, I_MethodSignature method);
+	/**
+	 * return true if the class is in this dependency
+	 * with this field
+	 * @param className
+	 * @param field
+	 * @return
+	 */
 	public boolean isInGroup(String className, I_FieldSignature method);
+	/**
+	 * if this returns true then any field, method
+	 * or other interaction with the class is allowed
+	 * @param className
+	 * @return
+	 */
+	public boolean isInGroup(String className);
 }

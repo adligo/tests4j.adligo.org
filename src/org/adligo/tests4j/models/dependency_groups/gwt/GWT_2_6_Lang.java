@@ -451,6 +451,21 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		addExceptionMembers(toRet);
 	}
 	
+	
+	public static ClassAttributes getRunnable() {
+		ClassAttributesMutant toRet = new ClassAttributesMutant();
+		toRet.setName(JSE_Lang.RUNNABLE);
+
+		//constructors
+
+		addRunnableMembers(toRet);
+		return new ClassAttributes(toRet);
+	}
+
+	public static void addRunnableMembers(ClassAttributesMutant toRet) {
+		toRet.addMethod(new MethodSignature("run"));
+
+	}
 	public static ClassAttributes getIndexOutOfBoundsException() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.INDEX_OUT_OF_BOUNDS_EXCEPTION);
@@ -976,7 +991,7 @@ public class GWT_2_6_Lang extends DependencyGroup {
 		toRet.addMethod(new MethodSignature("value", 
 			"[" + JSE_Lang.STRING));
 	}
-	public static ClassAttributes getClassAttributes() {
+	public static ClassAttributes getClassAttributeMembers() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.CLASS);
 

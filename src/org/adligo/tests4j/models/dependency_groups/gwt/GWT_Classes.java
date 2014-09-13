@@ -72,7 +72,7 @@ import java.util.logging.Logger;
 
 import org.adligo.tests4j.models.dependency_groups.jse.JSE_Lang;
 import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
-import org.adligo.tests4j.models.shared.common.LegacyApiIssues;
+import org.adligo.tests4j.models.shared.common.LegacyAPI_Issues;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
@@ -88,7 +88,7 @@ import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
  * @author scott
  *
  */
-public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
+public class GWT_Classes {
 	public static final Set<Class<?>> JAVA_LANG = getJavaLang();
 	public static final Set<Class<?>> JAVA_ANNOTATION = getJavaAnnotation();
 	public static final Set<Class<?>> JAVA_MATH = getJavaMath();
@@ -98,8 +98,7 @@ public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
 	public static final Set<Class<?>> JAVA_UTIL = getJavaUtil();
 	public static final Set<Class<?>> JAVA_LOGGING = getJavaLogging();
 	
-	private Map<String,Set<String>> packagesToClasses = getPackagesToClasses();
-	public static final LegacyApiIssues ISSUES = new LegacyApiIssues();
+	public static final LegacyAPI_Issues ISSUES = new LegacyAPI_Issues();
 	
 	private static Set<Class<?>> getJavaLang() {
 		Set<Class<?>> javaLang = new HashSet<Class<?>>();
@@ -293,40 +292,5 @@ public class GWT_2_6_DependencyGroup implements I_DependencyGroup {
 		return Collections.unmodifiableMap(toRet);
 	}
 
-	@Override
-	public boolean isInGroup(String className, I_MethodSignature method) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public Set<String> getClassNames() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<I_MethodSignature> getMethods(String className) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Collection<I_ClassAttributes> getClassMethods() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Set<I_FieldSignature> getFields(String className) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isInGroup(String className, I_FieldSignature method) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }

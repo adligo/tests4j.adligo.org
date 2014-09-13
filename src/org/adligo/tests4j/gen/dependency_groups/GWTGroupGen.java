@@ -2,9 +2,6 @@ package org.adligo.tests4j.gen.dependency_groups;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import org.adligo.tests4j.models.dependency_groups.gwt.GWT_2_6_Log;
 import org.adligo.tests4j.models.dependency_groups.jse.JSE_Lang;
@@ -262,11 +259,11 @@ public class GWTGroupGen {
 		toRet.add(Formatter.class);
 		toRet.add(Handler.class);
 		toRet.add(Level.class);
-		*/
+		
 		toRet.add(LogManager.class);
 		toRet.add(LogRecord.class);
 		toRet.add(Logger.class);
-		
+		*/
 		return toRet;
 	}
 }
