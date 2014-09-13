@@ -15,9 +15,10 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.ClassMethods;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.models.shared.trials.I_TrialParams;
-import org.adligo.tests4j.models.shared.trials.I_TrialParamsQueue;
+import org.adligo.tests4j.models.shared.trials.I_TrialParamsFactory;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 
 
@@ -33,8 +34,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * @see I_Tests4J_Params#getMetaTrialClass()
 	 */
 	private Class<? extends I_MetaTrial>  metaTrialClass;
-	private I_TrialParams<?> metaTrialParams_;
-	private I_TrialParamsQueue trialParamsQueue_;
+	private I_MetaTrialParams<?> metaTrialParams_;
+	private I_TrialParamsFactory trialParamsQueue_;
 	
 	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
 	
@@ -366,20 +367,20 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 
 	@Override
-	public I_TrialParams<?> getMetaTrialParams() {
+	public I_MetaTrialParams<?> getMetaTrialParams() {
 		return metaTrialParams_;
 	}
 
-	public void setMetaTrialParams(I_TrialParams<?> p) {
+	public void setMetaTrialParams(I_MetaTrialParams<?> p) {
 		metaTrialParams_ = p;
 	}
 	
 	@Override
-	public I_TrialParamsQueue getTrialParamsQueue() {
+	public I_TrialParamsFactory getTrialParamsQueue() {
 		return trialParamsQueue_;
 	}
 	
-	public void getTrialParamsQueue(I_TrialParamsQueue p) {
+	public void getTrialParamsQueue(I_TrialParamsFactory p) {
 		trialParamsQueue_ = p;
 	}
 	

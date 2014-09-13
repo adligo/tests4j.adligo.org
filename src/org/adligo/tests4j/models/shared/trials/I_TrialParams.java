@@ -1,10 +1,11 @@
 package org.adligo.tests4j.models.shared.trials;
 
+import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
+import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
+
 /**
- * Implement this interface to 
+ * Implement this map like interface to 
  * pass parameters to your trial instance.
- * MetaTrial parameters are passed by the 
- * metaTrialParams methods in I_Tests4J_Params.
  * For other trial types, the I_TrialParamsQueue next method is used
  * each instance using a trailing id. I.E.
  * create("org.adligo.tests4j.models.shared.trials.SourceFileTrial[0]");
@@ -14,7 +15,7 @@ package org.adligo.tests4j.models.shared.trials;
  * @author scott
  *
  */
-public interface I_TrialParams<T extends I_TrialInputData> {
+public interface I_TrialParams extends I_XML_Producer, I_XML_Consumer {
 
-	public T getTrialParams();
+	public Object get(String key);
 }

@@ -20,6 +20,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.models.shared.trials.I_TrialParams;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -51,7 +52,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	 */
 	private ConcurrentHashMap<String,TrialDescription> trialDescriptions = new ConcurrentHashMap<String,TrialDescription>();
 
-	private I_TrialParams<?> metaTrialParams_;
+	private I_MetaTrialParams metaTrialParams_;
 	private I_Tests4J_CoverageRecorder mainRecorder;
 	
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
@@ -395,7 +396,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return trialQueueDecisionTree;
 	}
 
-	public I_TrialParams<?> getMetaTrialParams() {
+	public I_MetaTrialParams getMetaTrialParams() {
 		return metaTrialParams_;
 	}
 

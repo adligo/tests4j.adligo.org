@@ -25,9 +25,10 @@ import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.Tests4J_Selection;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrialInputData;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
-import org.adligo.tests4j.models.shared.trials.I_TrialParams;
-import org.adligo.tests4j.models.shared.trials.I_TrialParamsQueue;
+import org.adligo.tests4j.models.shared.trials.I_TrialParamsFactory;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.report.summary.DefaultReporterStates;
@@ -67,8 +68,8 @@ public class Tests4J_ParamsReader {
 	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
 	private Throwable runFalseReason;
 	private List<OutputStream> additionalReportOutputStreams = new ArrayList<OutputStream>();
-	private I_TrialParams<?> metaTrialParams_;
-	private I_TrialParamsQueue trialParamsQueue_;
+	private I_MetaTrialParams<? extends I_MetaTrialInputData> metaTrialParams_;
+	private I_TrialParamsFactory trialParamsQueue_;
 
 	/**
 	 * turn into local instances to block further propagation of issues
@@ -343,11 +344,11 @@ public class Tests4J_ParamsReader {
 		return additionalReportOutputStreams;
 	}
 
-	public I_TrialParams<?> getMetaTrialParams() {
+	public I_MetaTrialParams<? extends I_MetaTrialInputData> getMetaTrialParams() {
 		return metaTrialParams_;
 	}
 	
-	public I_TrialParamsQueue getTrialParamsQueue() {
+	public I_TrialParamsFactory getTrialParamsQueue() {
 		return trialParamsQueue_;
 	}
 }

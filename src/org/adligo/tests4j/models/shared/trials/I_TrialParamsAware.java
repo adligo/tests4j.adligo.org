@@ -12,11 +12,11 @@ package org.adligo.tests4j.models.shared.trials;
  *
  * @param <T>
  */
-public interface I_TrialParamsAware<T> {
+public interface I_TrialParamsAware {
 
 	/**
 	 * 
 	 * @param p
 	 */
-	public void setTrialParams(I_TrialParams<? extends I_TrialInputData> p);
+	public void setTrialParams(I_TrialParams p);
 }

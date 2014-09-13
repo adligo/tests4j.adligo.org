@@ -8,9 +8,9 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
-import org.adligo.tests4j.models.shared.trials.I_TrialParams;
-import org.adligo.tests4j.models.shared.trials.I_TrialParamsQueue;
+import org.adligo.tests4j.models.shared.trials.I_TrialParamsFactory;
 import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
 import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
 
@@ -64,7 +64,7 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 * is not necessary.
 	 * @return
 	 */
-	public I_TrialParams<?> getMetaTrialParams();
+	public I_MetaTrialParams<?> getMetaTrialParams();
 	
 	/**
 	 * The actual instance of your trial params queue
@@ -77,7 +77,7 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 * 
 	 * @return
 	 */
-	public I_TrialParamsQueue getTrialParamsQueue();
+	public I_TrialParamsFactory getTrialParamsQueue();
 	/**
 	 * The specific tests to run, if this set is empty
 	 * Tests4J will run all of the tests in all of the trials.
