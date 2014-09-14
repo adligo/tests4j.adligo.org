@@ -18,11 +18,13 @@ import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
 import org.adligo.tests4j.models.shared.asserts.line_text.TextLinesCompare;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.models.shared.results.I_DependencyTestFailure;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class TrialFailedDetailDisplay {
@@ -77,6 +79,10 @@ public class TrialFailedDetailDisplay {
 								I_AssertCompareFailure ac = (I_AssertCompareFailure) tf;
 								addExpected(ac.getExpectedValue(), ac.getExpectedClass(), sb);
 								break;
+							case AssertDependency:
+								 addDependencyFailure(
+										 trial, (I_DependencyTestFailure) tf);
+								break;
 							case AssertNull:
 							case AssertNotNull:
 								break;
@@ -119,6 +125,46 @@ public class TrialFailedDetailDisplay {
 					+ log.getLineSeperator());
 		sb.append(messages.getIndent() + messages.getIndent() + "'" + acf.getActualValue() + "'"
 				+ log.getLineSeperator());
+	}
+	
+	private void addDependencyFailure(I_TrialResult trial, I_DependencyTestFailure tf) {
+		IllegalStateException x = new IllegalStateException();
+		x.fillInStackTrace();
+		StackTraceElement[] stack = x.getStackTrace();
+		StackTraceElement top = new StackTraceElement(
+				trial.getTrialClassName(), "<init>", 
+				tf.getSourceClass().getSimpleName() + ".java",
+				1);
+		if (stack.length == 0) {
+			stack = new StackTraceElement[1];
+		}
+		stack[0] = top;
+		
+		String message = null;
+		
+		List<String> groupNames = tf.getGroupNames();
+		message =  messages.getIndent() +  messages.getIndent() +
+				"@AllowedDependencies: " + groupNames.toString() + log.getLineSeperator();
+		I_FieldSignature field = tf.getField();
+		if (field != null) {
+			message = message + messages.getIndent() + messages.getIndent()+
+					"SourceClass: " + tf.getSourceClass().getName() + 
+					".java" + log.getLineSeperator() +
+					messages.getIndent() + messages.getIndent()+
+					" called field " + tf.getCalledClass() + ". " + field;
+		} else {
+			message = message + messages.getIndent() + messages.getIndent()+
+					"SourceClass: " + tf.getSourceClass().getName() + ".java" + 
+					log.getLineSeperator() +
+					messages.getIndent() + messages.getIndent()+
+					" called method " + tf.getCalledClass() + ". " + tf.getMethod();
+		}
+		
+		DependencyFailureException dfe = 
+				new DependencyFailureException(tf.getFailureMessage() + log.getLineSeperator() +
+						message,
+						stack);
+		log.onThrowable(dfe);
 	}
 	
 	private void addStringCompare(String expectedValue, String actualValue, StringBuilder sb) {

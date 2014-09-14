@@ -3,8 +3,8 @@ package org.adligo.tests4j.gen.dependency_groups;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.tests4j.models.dependency_groups.jse.I_PackageConstantLookup;
 import org.adligo.tests4j.models.shared.common.ClassMethods;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.I_PackageConstantLookup;
 
 public class ConstantLookup {
 	private List<I_PackageConstantLookup> lookups_ = new ArrayList<I_PackageConstantLookup>();

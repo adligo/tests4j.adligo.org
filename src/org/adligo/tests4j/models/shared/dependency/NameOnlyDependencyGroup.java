@@ -26,12 +26,18 @@ public class NameOnlyDependencyGroup implements I_DependencyGroup {
 
 	@Override
 	public Set<I_MethodSignature> getMethods(String className) {
-		return Collections.emptySet();
+		if (names_.contains(className)) {
+			return Collections.emptySet();
+		}
+		return null;
 	}
 
 	@Override
 	public Set<I_FieldSignature> getFields(String className) {
-		return Collections.emptySet();
+		if (names_.contains(className)) {
+			return Collections.emptySet();
+		}
+		return null;
 	}
 
 	@Override
@@ -47,6 +53,11 @@ public class NameOnlyDependencyGroup implements I_DependencyGroup {
 	@Override
 	public boolean isInGroup(String className) {
 		return names_.contains(className);
+	}
+
+	@Override
+	public Set<String> getSubGroupNames() {
+		return Collections.emptySet();
 	}
 	
 	

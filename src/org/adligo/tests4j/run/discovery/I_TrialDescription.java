@@ -1,6 +1,7 @@
 package org.adligo.tests4j.run.discovery;
 
 import org.adligo.tests4j.models.shared.common.I_TrialType;
+import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 
 /**
  * this interface was added to provide easy mocking
@@ -14,4 +15,5 @@ import org.adligo.tests4j.models.shared.common.I_TrialType;
 public interface I_TrialDescription {
 	public String getTrialName();
 	public I_TrialType getType();
+	public Class<? extends I_AbstractTrial> getTrialClass();
 }

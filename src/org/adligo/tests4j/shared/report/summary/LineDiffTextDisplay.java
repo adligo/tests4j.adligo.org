@@ -9,8 +9,8 @@ import org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiffType;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 /**
  * is NOT thread safe

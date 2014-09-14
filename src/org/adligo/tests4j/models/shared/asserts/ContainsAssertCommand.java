@@ -7,8 +7,8 @@ import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_CollectionContainsAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
  * a class 

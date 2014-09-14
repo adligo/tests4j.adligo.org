@@ -13,13 +13,13 @@ import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.models.shared.common.I_System;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginParams;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.Tests4J_CoveragePluginParams;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.Tests4J_Selection;
@@ -124,7 +124,7 @@ public class Tests4J_ParamsReader {
 		}
 		
 		if (trials.size() == 0 ) {
-			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
+			I_Tests4J_ParamsReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			logger.log(constants.getNoTrialsOrRemotesToRun());
 			runnable = false;
 			runFalseReason = new IllegalArgumentException(constants.getNoTrialsOrRemotesToRun());
@@ -157,7 +157,7 @@ public class Tests4J_ParamsReader {
 				if (trials.contains(trial)) {
 					tests.add(new Tests4J_Selection(sel));
 				} else {
-					I_Tests4J_ParamReaderMessages messages =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
+					I_Tests4J_ParamsReaderMessages messages =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 					throw new IllegalArgumentException(
 							messages.getTestSelectionsMustHaveACorrespondingTrial() +
 							logger.getLineSeperator() + 
@@ -197,7 +197,7 @@ public class Tests4J_ParamsReader {
 		metaTrialParams_ =  params.getMetaTrialParams();
 		trialParamsQueue_ = params.getTrialParamsQueue();
 		if (!actualKeys.containsAll(defaultKeys)) {
-			I_Tests4J_ParamReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
+			I_Tests4J_ParamsReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			logger.log(constants.getTheEvaluatorsAreExpectedToContainTheDefaultKeys());
 			runnable = false;
 			return;

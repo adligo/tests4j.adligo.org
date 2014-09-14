@@ -12,9 +12,9 @@ import org.adligo.tests4j.models.shared.asserts.common.ThrowableInfo;
 import org.adligo.tests4j.models.shared.asserts.common.ThrownAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.ThrownAssertionDataMutant;
 import org.adligo.tests4j.models.shared.common.I_Immutable;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
  * a class to to help

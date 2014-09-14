@@ -14,6 +14,7 @@ import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.Platform;
 import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
@@ -35,7 +36,6 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Runnable;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.system.Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
@@ -325,6 +325,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		Class<?> clazz = trialDescription.getSourceFileClass();
 		sourceFileTrialResultMutant.setSourceFileName(clazz.getName());
 		sourceFileTrialResultMutant.setTrialName(trialDescription.getTrialName());
+		sourceFileTrialResultMutant.setTrialClassName(
+				trialDescription.getTrialClass().getName());
 		return sourceFileTrialResultMutant;
 	}
 	

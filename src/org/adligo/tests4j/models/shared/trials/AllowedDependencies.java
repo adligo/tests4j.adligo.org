@@ -1,5 +1,8 @@
 package org.adligo.tests4j.models.shared.trials;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 
 /**
@@ -11,6 +14,13 @@ import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
  * @author scott
  *
  */
+@Retention(RetentionPolicy.RUNTIME)
 public @interface AllowedDependencies {
+	/**
+	 * please order the dependencies
+	 * from most depended on to least
+	 * depended on.
+	 * @return
+	 */
 	Class<? extends I_DependencyGroup>[] groups();
 }

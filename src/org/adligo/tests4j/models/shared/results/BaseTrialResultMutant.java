@@ -25,7 +25,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	public static final String TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME = 
 			"TrialResultMutant requires a non empty trialName.";
 	private String trialName;
-	private String trialClassName;
+	private String trialClassName_;
 	private I_TrialType testType;
 	private Map<String, TestResultMutant> results = 
 			new HashMap<String,TestResultMutant> ();
@@ -47,7 +47,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	
 	public BaseTrialResultMutant(I_TrialResult p, boolean cloneRelations) {
 		trialName = p.getName();
-		trialClassName = p.getTrialClassName();
+		trialClassName_ = p.getTrialClassName();
 		
 		StringMethods.isEmpty(trialName,
 				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME);
@@ -298,10 +298,10 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	}
 
 	public String getTrialClassName() {
-		return trialClassName;
+		return trialClassName_;
 	}
 
 	public void setTrialClassName(String trialClassName) {
-		this.trialClassName = trialClassName;
+		this.trialClassName_ = trialClassName;
 	}
 }

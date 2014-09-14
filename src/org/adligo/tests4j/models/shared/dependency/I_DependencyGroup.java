@@ -19,7 +19,7 @@ import java.util.Set;
  *
  */
 public interface I_DependencyGroup {
-
+	public Set<String> getSubGroupNames();
 	/**
 	 * the class names in this dependency group
 	 * @return
@@ -58,7 +58,7 @@ public interface I_DependencyGroup {
 	 * @param field
 	 * @return
 	 */
-	public boolean isInGroup(String className, I_FieldSignature method);
+	public boolean isInGroup(String className, I_FieldSignature field);
 	/**
 	 * if this returns true then any field, method
 	 * or other interaction with the class is allowed

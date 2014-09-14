@@ -1,7 +1,8 @@
 package org.adligo.tests4j.models.shared.system;
 
 import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.models.shared.xml.XML_Parser;
 
@@ -51,14 +52,14 @@ public class Tests4J_RemoteInfo implements I_Tests4J_RemoteInfo {
 			authCode = defaultAuthCode;
 		}
 		if (StringMethods.isEmpty(authCode)) {
-			I_Tests4J_ParamReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
+			I_Tests4J_ParamsReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			throw new IllegalArgumentException(constants.getAuthCodeOrAuthCodeDefaultRequired());
 		}
 	}
 	
 	public Tests4J_RemoteInfo(String pHost, int pPort, String pAuthCode) {
 		if (StringMethods.isEmpty(pHost)) {
-			I_Tests4J_ParamReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
+			I_Tests4J_ParamsReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			throw new IllegalArgumentException(constants.getHostRequired());
 		}
 		host = pHost;

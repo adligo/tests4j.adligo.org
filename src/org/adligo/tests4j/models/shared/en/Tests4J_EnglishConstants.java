@@ -6,7 +6,7 @@ import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
 
 /**
@@ -46,7 +46,7 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 
 	private I_Tests4J_LineDiffTextDisplayMessages lineDiffTextMessages = 
 			new Tests4J_LineDiffTextDisplayMessages();
-	private I_Tests4J_ParamReaderMessages paramReaderConstants = 
+	private I_Tests4J_ParamsReaderMessages paramReaderConstants = 
 			new Tests4J_ParamsReaderMessages();
 	private Tests4J_ReportMessages reportMessages = new Tests4J_ReportMessages();
 	
@@ -123,7 +123,7 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	}
 
 	@Override
-	public I_Tests4J_ParamReaderMessages getParamReaderMessages() {
+	public I_Tests4J_ParamsReaderMessages getParamReaderMessages() {
 		return paramReaderConstants;
 	}
 

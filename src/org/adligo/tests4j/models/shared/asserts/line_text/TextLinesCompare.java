@@ -6,8 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
  * A NON Threadsafe model class to compare large multi line strings

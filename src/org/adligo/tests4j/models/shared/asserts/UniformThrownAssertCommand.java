@@ -8,8 +8,8 @@ import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertionData;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_Evaluation;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionCommand;
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionEvaluator;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
  * A class to represent a assertThrownUniform 

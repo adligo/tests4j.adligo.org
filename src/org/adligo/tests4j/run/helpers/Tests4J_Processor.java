@@ -9,11 +9,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
-import org.adligo.tests4j.models.dependency_groups.gwt.GWT_Classes;
 import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
 import org.adligo.tests4j.models.shared.common.LegacyAPI_Issues;
 import org.adligo.tests4j.models.shared.common.SystemWithPrintStreamDelegate;
+import org.adligo.tests4j.models.shared.dependency_groups.gwt.GWT_Classes;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;

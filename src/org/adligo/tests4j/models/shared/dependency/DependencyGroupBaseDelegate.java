@@ -50,5 +50,10 @@ public class DependencyGroupBaseDelegate implements I_DependencyGroup {
 	public boolean isInGroup(String className) {
 		return delegate.isInGroup(className);
 	}
+
+	@Override
+	public Set<String> getSubGroupNames() {
+		return delegate.getSubGroupNames();
+	}
 	
 }

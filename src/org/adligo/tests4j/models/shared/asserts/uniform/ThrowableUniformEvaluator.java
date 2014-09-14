@@ -3,9 +3,9 @@ package org.adligo.tests4j.models.shared.asserts.uniform;
 import org.adligo.tests4j.models.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.models.shared.asserts.line_text.TextLinesCompare;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Throwable, I_TextLinesCompareResult> {
 	@Override

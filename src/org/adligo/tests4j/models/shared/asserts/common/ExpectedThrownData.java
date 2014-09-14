@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.asserts.common;
 
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 /**
  * a immutable class to represent

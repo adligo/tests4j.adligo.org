@@ -86,4 +86,9 @@ public class DependencyGroup implements I_DependencyGroup {
 		return false;
 	}
 
+	@Override
+	public Set<String> getSubGroupNames() {
+		return Collections.emptySet();
+	}
+
 }

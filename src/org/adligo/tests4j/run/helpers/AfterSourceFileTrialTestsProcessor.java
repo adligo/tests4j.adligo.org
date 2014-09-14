@@ -6,17 +6,24 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.common.AssertCompareFailureMutant;
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
+import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
+import org.adligo.tests4j.models.shared.dependency.I_ClassParentsLocal;
+import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
+import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
+import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
+import org.adligo.tests4j.models.shared.results.DependencyTestFailureMutant;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -212,7 +219,69 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 					testResultMutant.incrementAssertionCount(1);
 			}
 		}
-		testResultMutant.setPassed(true);
+		I_DependencyGroup dg =  trialDesc.getDependencyGroup();
+		Set<I_ClassParentsLocal> depsLocal = deps.getDependenciesLocal();
+		List<I_ClassAttributes> refs =  deps.getReferences();
+		
+		String sourceClassName = trialDesc.getSourceFileClass().getName();
+		DependencyTestFailureMutant depNotAllowed = null;
+		//set above for error as in 
+		// org.adligo.something.ClassA void foo(int, byte) 
+		if (dg != null) {
+			final int prime = 31;
+			int hashCounter = 0;
+			for (I_ClassAttributes ref: refs) {
+				String className = ref.getName();
+				if ( !sourceClassName.equals(className)) {
+					if (dg.isInGroup(className)) {
+						//this ref is expceted
+						hashCounter = hashCounter * prime + className.hashCode();
+					} else {
+						Set<I_FieldSignature> flds = ref.getFields();
+						for (I_FieldSignature fld: flds) {
+							if ( !dg.isInGroup(className, fld)) {
+								depNotAllowed = new DependencyTestFailureMutant();
+								depNotAllowed.setSourceClass(trialDesc.getSourceFileClass());
+								depNotAllowed.setField(fld);
+								depNotAllowed.setCalledClass(ref.getName());
+								depNotAllowed.setGroupNames(dg.getSubGroupNames());
+								break;
+							} else {
+								hashCounter = hashCounter * prime + fld.hashCode();
+							}
+						}
+						
+						if (depNotAllowed == null) {
+							Set<I_MethodSignature> mtds = ref.getMethods();
+							for (I_MethodSignature mtd: mtds) {
+								if ( !dg.isInGroup(className, mtd)) {
+									depNotAllowed = new DependencyTestFailureMutant();
+									depNotAllowed.setSourceClass(trialDesc.getSourceFileClass());
+									depNotAllowed.setMethod(mtd);
+									depNotAllowed.setCalledClass(className);
+									depNotAllowed.setGroupNames(dg.getSubGroupNames());
+									break;
+								} else {
+									hashCounter = hashCounter * prime + mtd.hashCode();
+								}
+							} 
+						}
+					}
+					
+				}
+				
+			}
+			if (depNotAllowed == null) {	
+				testResultMutant.incrementAssertionCount(
+						hashCounter);
+				testResultMutant.setPassed(true); 
+			} else {
+				testResultMutant.setFailure(depNotAllowed);
+				testResultMutant.setPassed(false); 
+			}
+		} else {
+			testResultMutant.setPassed(true); 
+		}
 		TestResult result = new TestResult(testResultMutant);
 		return result;
 	}

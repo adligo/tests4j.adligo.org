@@ -5,9 +5,9 @@ import org.adligo.tests4j.models.shared.asserts.common.CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleCompareAssertCommand;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 
 
 /**

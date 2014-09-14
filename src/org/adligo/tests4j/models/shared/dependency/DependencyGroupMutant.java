@@ -122,4 +122,9 @@ public class DependencyGroupMutant implements I_DependencyGroup {
 		// it doesn't allow the whole class
 		return false;
 	}
+
+	@Override
+	public Set<String> getSubGroupNames() {
+		return Collections.emptySet();
+	}
 }

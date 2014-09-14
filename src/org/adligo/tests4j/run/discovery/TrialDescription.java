@@ -14,13 +14,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageMutant;
+import org.adligo.tests4j.models.shared.dependency.DependencyGroupAggregate;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
+import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
@@ -30,7 +33,6 @@ import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrumentation;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.trials.AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -76,10 +78,11 @@ public class TrialDescription implements I_TrialDescription {
 	private SourceFileScope sourceFileScope;
 	private UseCaseScope useCaseScope;
 	private PackageScope packageScope;
-	private double minCoverage = 100.0;
+	private double minCoverage_ = 100.0;
 	private List<I_TrialFailure> failures = new ArrayList<I_TrialFailure>();
 	private I_ClassDependenciesLocal sourceClassDependencies;
 	boolean printToStdOut_ = true;
+	private I_DependencyGroup deps_;
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
 			I_Tests4J_Memory pMem) {
@@ -153,8 +156,10 @@ public class TrialDescription implements I_TrialDescription {
 		
 		String trialName = trialClass_.getName();
 		TrialType tt = TrialType.get(type);
+		
 		switch(tt) {
 			case SourceFileTrial:
+					deps_ = AllowedDependenciesAuditor.audit(this, failures);
 					sourceFileScope = trialClass_.getAnnotation(SourceFileScope.class);
 					afterTrialTestsMethod_ =
 							NonTests4jMethodDiscovery.findNonTests4jMethod(trialClass_, 
@@ -178,8 +183,8 @@ public class TrialDescription implements I_TrialDescription {
 									trialName + annonErrors.getWasAnnotatedIncorrectly()));
 							return false;
 						}
-						minCoverage = sourceFileScope.minCoverage();
-						if (minCoverage > 100.0 || minCoverage < 0.0) {
+						minCoverage_ = sourceFileScope.minCoverage();
+						if (minCoverage_ > 100.0 || minCoverage_ < 0.0) {
 							I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
 							I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
 							
@@ -578,7 +583,7 @@ public class TrialDescription implements I_TrialDescription {
 	}
 
 	public double getMinCoverage() {
-		return minCoverage;
+		return minCoverage_;
 	}
 
 	public I_AbstractTrial getTrial() {
@@ -599,6 +604,10 @@ public class TrialDescription implements I_TrialDescription {
 
 	public boolean isPrintToStdOut() {
 		return printToStdOut_;
+	}
+
+	public I_DependencyGroup getDependencyGroup() {
+		return deps_;
 	}
 
 }

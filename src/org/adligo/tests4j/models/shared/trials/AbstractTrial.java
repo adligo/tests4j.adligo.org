@@ -38,10 +38,10 @@ import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvalua
 import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionEvaluator;
 import org.adligo.tests4j.models.shared.common.I_Platform;
 import org.adligo.tests4j.models.shared.common.I_PlatformContainer;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
-import org.adligo.tests4j.models.shared.system.Tests4J_Constants;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**

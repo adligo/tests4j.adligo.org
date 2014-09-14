@@ -1,8 +1,8 @@
 package org.adligo.tests4j.models.shared.en;
 
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamReaderMessages;
+import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamsReaderMessages;
 
-public class Tests4J_ParamsReaderMessages implements I_Tests4J_ParamReaderMessages {
+public class Tests4J_ParamsReaderMessages implements I_Tests4J_ParamsReaderMessages {
 
 
 	private static final String TEST_SELETIONS_PASSED_TO_TESTS4J_MUST_HAVE_A_CORRESPONDING_TRIAL = "Test seletions passed to tests4j MUST have a corresponding trial.";
