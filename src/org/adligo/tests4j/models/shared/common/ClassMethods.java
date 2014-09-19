@@ -278,4 +278,14 @@ public class ClassMethods {
 		}
 		return sb.toString();
 	}
+	
+	public static String getSimpleName(Object j) {
+		return getSimpleName(j.getClass());
+	}
+	
+	public static String getSimpleName(Class j) {
+		String toRet = j.getName();
+		int lastDot = toRet.lastIndexOf(".");
+		return toRet.substring(lastDot + 1, toRet.length());
+	}
 }

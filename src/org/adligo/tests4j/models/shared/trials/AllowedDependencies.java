@@ -20,7 +20,9 @@ public @interface AllowedDependencies {
 	 * please order the dependencies
 	 * from most depended on to least
 	 * depended on.
-	 * @return
+	 * 
+	 * @return the class names of the dependency groups in order
+	 * from least dependent to most dependent. 
 	 */
 	Class<? extends I_DependencyGroup>[] groups();
 }

@@ -217,4 +217,5 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 * @return
 	 */
 	public I_Tests4J_ProgressMonitor getProgressMonitor();
+	
 }

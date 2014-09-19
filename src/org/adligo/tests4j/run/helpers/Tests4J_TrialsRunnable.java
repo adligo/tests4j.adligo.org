@@ -434,7 +434,6 @@ public class Tests4J_TrialsRunnable implements Runnable,
 				TestResultMutant trm = afterSouceFileTrialTestsProcessor.afterSourceFileTrialTests(result);
 				//add the default afterSourceFileTrialTests result
 				if (trm != null) {
-					//otherwise skip adding this test, and 1 assert.
 					result.addResult(trm);
 				}
 				

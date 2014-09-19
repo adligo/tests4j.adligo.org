@@ -8,8 +8,11 @@ import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_TestFailureType;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailureType;
+import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
+
+import com.sun.scenario.effect.Merge;
 
 public class DependencyTestFailureMutant implements I_DependencyTestFailure {
 	private List<String> groupNames_ = new ArrayList<String>();
@@ -17,6 +20,19 @@ public class DependencyTestFailureMutant implements I_DependencyTestFailure {
 	private String calledClass;
 	private I_FieldSignature field;
 	private I_MethodSignature method;
+	private String message = Tests4J_Constants.CONSTANTS
+				.getResultMessages().getCalledMethodOrFieldsOutsideOfAllowedDepenencies();
+	
+	public DependencyTestFailureMutant() {
+	}
+	
+	public DependencyTestFailureMutant(I_DependencyTestFailure other){
+		groupNames_.addAll(other.getGroupNames());
+		sourceClass = other.getSourceClass();
+		calledClass = other.getCalledClass();
+		field = other.getField();
+		method = other.getMethod();
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.results.I_DependencyTestFailure#getGroupNames()
@@ -83,7 +99,7 @@ public class DependencyTestFailureMutant implements I_DependencyTestFailure {
 	}
 	@Override
 	public String getFailureMessage() {
-		return "Called method or field outside of @AllowedDependencies.";
+		return message;
 	}
 	@Override
 	public String getFailureDetail() {

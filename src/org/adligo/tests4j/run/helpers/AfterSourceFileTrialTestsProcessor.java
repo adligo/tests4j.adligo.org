@@ -6,7 +6,6 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.common.AssertCompareFailureMutant;
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -17,6 +16,7 @@ import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
+import org.adligo.tests4j.models.shared.results.DependencyTestFailure;
 import org.adligo.tests4j.models.shared.results.DependencyTestFailureMutant;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
@@ -58,6 +58,9 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 	 * @param trialResultMutant which gets populated
 	 *    with the code coverage and class dependencies here.
 	 *    
+	 *    also this manipuates the trialResultMutants HadAfterTrialTests
+	 *    field to true or false.
+	 *    
 	 * @return
 	 */
 	public TestResultMutant afterSourceFileTrialTests(SourceFileTrialResultMutant trialResultMutant) {
@@ -98,7 +101,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		Class<?> parentClass = trialClass;
 		while (working) {
 			try {
-				clazzMethod = parentClass.getMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
+				clazzMethod = parentClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
 				//clazzMethod = trialClass.getDeclaredMethod(AFTER_TRIAL_TESTS, I_SourceFileTrialResult.class);
 			} catch (NoSuchMethodException e) {
 				//do nothing
@@ -115,6 +118,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 				}
 			} 
 		}
+		
 		trialResultMutant.setRanAfterTrialTests(false);
 		if (clazzMethod != null) {
 			trialResultMutant.setHadAfterTrialTests(true);
@@ -276,7 +280,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 						hashCounter);
 				testResultMutant.setPassed(true); 
 			} else {
-				testResultMutant.setFailure(depNotAllowed);
+				testResultMutant.setFailure(new DependencyTestFailure(depNotAllowed));
 				testResultMutant.setPassed(false); 
 			}
 		} else {
