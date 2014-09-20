@@ -39,5 +39,5 @@ public @interface SourceFileScope {
 	  * so this will only work when a coverage plug-in is present.
 	  * @return
 	  */
-	 int allowedCircularDependencies() default CircularDependencies.NONE;
+	 int allowedCircularDependencies() default CircularDependencies.Na;
 }

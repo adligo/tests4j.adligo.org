@@ -1,4 +1,4 @@
-package org.adligo.tests4j.run.helpers;
+package org.adligo.tests4j.run.memory;
 
 import java.util.Collections;
 import java.util.List;

@@ -7,6 +7,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
+import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
+import org.adligo.tests4j.run.memory.Tests4J_Memory;
 
 /**
  * @see I_Tests4J_Controls controlls

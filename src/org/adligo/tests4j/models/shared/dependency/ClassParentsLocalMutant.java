@@ -5,9 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.InitialContext;
-
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
 
 /**
  * a mutable implementation of {@link I_ClassParents}
@@ -76,6 +73,7 @@ public class ClassParentsLocalMutant implements I_ClassParentsLocal {
 			for (I_ClassParentsLocal pp: parentParents) {
 				addParent(pp);
 			}
+			//allow circular dependency in package
 			parents.add(new ClassParentsLocal(parent));
 			currentParents.add(parent.getName());
 		}

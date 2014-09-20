@@ -33,6 +33,9 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 	
 	@Override
 	public BigDecimal getPercentageCovered() {
+		if (coverageUnits_ == null || coveredCoverageUnits_ == null) {
+			return new BigDecimal("0.00");
+		}
 		BigDecimal coverageUnitsBD = new BigDecimal(coverageUnits_.getBig());
 		BigDecimal coveredCoverageUnitsBD = new BigDecimal(coveredCoverageUnits_.getBig());
 		if (coverageUnitsBD == null || coveredCoverageUnitsBD == null) {

@@ -41,11 +41,13 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Progress;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
+import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.discovery.TrialState;
+import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.run.output.TrialOutput;
 import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -444,6 +446,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 				
 					TestResult dependencyResult = afterSouceFileTrialTestsProcessor.testDependencies(result);
 					result.addResult(dependencyResult);
+					
 				}
 				trialState.addTestCompleted();
 				return result;

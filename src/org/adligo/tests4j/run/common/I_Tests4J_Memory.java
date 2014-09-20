@@ -1,4 +1,4 @@
-package org.adligo.tests4j.run.helpers;
+package org.adligo.tests4j.run.common;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;

@@ -283,9 +283,36 @@ public class ClassMethods {
 		return getSimpleName(j.getClass());
 	}
 	
-	public static String getSimpleName(Class j) {
+	public static String getSimpleName(Class<?> j) {
 		String toRet = j.getName();
 		int lastDot = toRet.lastIndexOf(".");
 		return toRet.substring(lastDot + 1, toRet.length());
+	}
+	/**
+	 * this removes any inner class name ie $*
+	 * from your class
+	 * @param className
+	 * @return
+	 */
+	public static String getSourceClassName(String className) {
+		int lastDot = className.indexOf("$");
+		if (lastDot == -1) {
+			return className;
+		}
+		return className.substring(0, lastDot);
+	}
+	
+	/**
+	 * this removes any inner class name ie $*
+	 * from your class
+	 * @param className
+	 * @return
+	 */
+	public static String getPackageName(String className) {
+		int lastDot = className.lastIndexOf(".");
+		if (lastDot == -1) {
+			return className;
+		}
+		return className.substring(0, lastDot);
 	}
 }

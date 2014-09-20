@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.results;
+package org.adligo.tests4j.models.shared.dependency.asserts;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,28 +7,27 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_TestFailureType;
+import org.adligo.tests4j.models.shared.asserts.common.SourceTestFailureMutant;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailureType;
 import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 
-import com.sun.scenario.effect.Merge;
-
-public class DependencyTestFailureMutant implements I_DependencyTestFailure {
+public class AllowedDependencyFailureMutant extends SourceTestFailureMutant 
+	implements I_AllowedDependencyFailure {
 	private List<String> groupNames_ = new ArrayList<String>();
-	private Class<?> sourceClass;
 	private String calledClass;
 	private I_FieldSignature field;
 	private I_MethodSignature method;
 	private String message = Tests4J_Constants.CONSTANTS
 				.getResultMessages().getCalledMethodOrFieldsOutsideOfAllowedDepenencies();
 	
-	public DependencyTestFailureMutant() {
+	public AllowedDependencyFailureMutant() {
 	}
 	
-	public DependencyTestFailureMutant(I_DependencyTestFailure other){
+	public AllowedDependencyFailureMutant(I_AllowedDependencyFailure other){
+		super(other);
 		groupNames_.addAll(other.getGroupNames());
-		sourceClass = other.getSourceClass();
 		calledClass = other.getCalledClass();
 		field = other.getField();
 		method = other.getMethod();
@@ -49,16 +48,7 @@ public class DependencyTestFailureMutant implements I_DependencyTestFailure {
 			}
 		}
 	}
-	/* (non-Javadoc)
-	 * @see org.adligo.tests4j.models.shared.results.I_DependencyTestFailure#getSourceClass()
-	 */
-	@Override
-	public Class<?> getSourceClass() {
-		return sourceClass;
-	}
-	public void setSourceClass(Class<?> sourceClass) {
-		this.sourceClass = sourceClass;
-	}
+
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.results.I_DependencyTestFailure#getCalledClass()
 	 */
@@ -91,7 +81,7 @@ public class DependencyTestFailureMutant implements I_DependencyTestFailure {
 	}
 	@Override
 	public I_TestFailureType getType() {
-		return TestFailureType.TestFailure;
+		return TestFailureType.AssertDependencyFailure;
 	}
 	@Override
 	public I_AssertType getAssertType() {
@@ -100,10 +90,6 @@ public class DependencyTestFailureMutant implements I_DependencyTestFailure {
 	@Override
 	public String getFailureMessage() {
 		return message;
-	}
-	@Override
-	public String getFailureDetail() {
-		return null;
 	}
 	
 }

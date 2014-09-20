@@ -38,11 +38,13 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.MetaTrial;
 import org.adligo.tests4j.models.shared.trials.SourceFileTrial;
+import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.discovery.TrialState;
+import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -196,11 +198,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					}
 					if (memory.hasCoveragePlugin()) {
 						TestMetadataMutant tscMin = new TestMetadataMutant();
-						tscMin.setTestName(SourceFileTrial.TEST_SOURCE_CLASS_MIN_COVERAGE);
+						tscMin.setTestName(SourceFileTrial.TEST_MIN_COVERAGE);
 						tmm.addTest(tscMin);
 						
 						TestMetadataMutant tscDep = new TestMetadataMutant();
-						tscDep.setTestName(SourceFileTrial.TEST_SOURCE_CLASS_DEPENDENCIES);
+						tscDep.setTestName(SourceFileTrial.TEST_DEPENDENCIES);
 						tmm.addTest(tscDep);
 					}
 					break;

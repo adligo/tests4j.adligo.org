@@ -43,7 +43,7 @@ import org.adligo.tests4j.models.shared.trials.SourceFileScope;
 import org.adligo.tests4j.models.shared.trials.SuppressOutput;
 import org.adligo.tests4j.models.shared.trials.TrialTimeout;
 import org.adligo.tests4j.models.shared.trials.UseCaseScope;
-import org.adligo.tests4j.run.helpers.I_Tests4J_Memory;
+import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -567,7 +567,12 @@ public class TrialDescription implements I_TrialDescription {
 		if (pcm.getChildren().size() >= 1) {
 			return new PackageCoverage(pcm);
 		}
-		
+		if (sourceFileScope != null) {
+			Class<?> srcClass = sourceFileScope.sourceClass();
+			if (srcClass.isInterface()) {
+				return new PackageCoverage();
+			}
+		}
 		throw new IllegalArgumentException("no package coverage for trial " + trialClass_.getName() +
 				" with package " + packageName + Tests4J_System.lineSeperator() + 
 				" on thread "+ Thread.currentThread().getName() + " " +

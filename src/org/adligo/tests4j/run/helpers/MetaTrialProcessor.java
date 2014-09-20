@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertListener;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.common.Platform;
@@ -21,13 +22,13 @@ import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrialInputData;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrialParamsAware;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
+import org.adligo.tests4j.run.memory.Tests4J_Memory;
 
-public class MetaTrialProcessor implements I_Tests4J_AssertListener {
+public class MetaTrialProcessor implements I_AssertListener {
 	private static final String AFTER_METADATA_CALCULATED_METHOD = 
 			"afterMetadataCalculated(I_TrialRunMetadata p)";
 	private static final String AFTER_NON_META_TRIALS_RUN_METHOD = 

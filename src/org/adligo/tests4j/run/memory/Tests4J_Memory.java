@@ -1,4 +1,4 @@
-package org.adligo.tests4j.run.helpers;
+package org.adligo.tests4j.run.memory;
 
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -22,10 +22,14 @@ import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.models.shared.trials.I_TrialParams;
+import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
+import org.adligo.tests4j.run.helpers.Tests4J_NotificationManager;
+import org.adligo.tests4j.run.helpers.Tests4J_ProcessInfo;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -97,7 +101,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		log = logIn;
 	}
 	
-	protected synchronized void initialize(Tests4J_ParamsReader p) {
+	public synchronized void initialize(Tests4J_ParamsReader p) {
 		
 		
 		List<Class<? extends I_AbstractTrial>> trials = p.getTrials();
@@ -301,11 +305,11 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return reporter;
 	}
 
-	protected void setReporter(I_Tests4J_Listener reporter) {
+	public void setReporter(I_Tests4J_Listener reporter) {
 		this.reporter = reporter;
 	}
 
-	protected void setListener(I_Tests4J_Listener p) {
+	public void setListener(I_Tests4J_Listener p) {
 		listener = new Tests4J_ListenerDelegator(p, log);
 	}
 	/**
@@ -320,11 +324,11 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return notifier;
 	}
 
-	protected void setSystem(I_System system) {
+	public void setSystem(I_System system) {
 		this.system = system;
 	}
 	
-	protected boolean hasTrialThatCanRun() {
+	public boolean hasTrialThatCanRun() {
 		return hasTrialThatCanRun.get();
 	}
 	
@@ -332,39 +336,39 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return system.getTime();
 	}
 
-	protected Long getStartTime() {
+	public Long getStartTime() {
 		return startTime.get();
 	}
 
-	protected Long getSetupEndTime() {
+	public Long getSetupEndTime() {
 		return setupEndTime.get();
 	}
 
-	protected Long getTrialEndTime() {
+	public Long getTrialEndTime() {
 		return trialEndTime.get();
 	}
 
-	protected Long getRemoteEndTime() {
+	public Long getRemoteEndTime() {
 		return remoteEndTime.get();
 	}
 
-	protected void setStartTime(long p) {
+	public void setStartTime(long p) {
 		startTime.set(p);
 	}
 
-	protected void setSetupEndTime(long p) {
+	public void setSetupEndTime(long p) {
 		setupEndTime.set(p);
 	}
 
-	protected void setTrialEndTime(long p) {
+	public void setTrialEndTime(long p) {
 		trialEndTime.set(p);
 	}
 
-	protected void setRemoteEndTime(long p) {
+	public void setRemoteEndTime(long p) {
 		remoteEndTime.set(p);
 	}
 
-	protected int getTrialsToSetup() {
+	public int getTrialsToSetup() {
 		return trialClasses.size();
 	}
 
@@ -372,15 +376,15 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return metadata.getAllTestsCount();
 	}
 
-	protected Tests4J_ProcessInfo getSetupProcessInfo() {
+	public Tests4J_ProcessInfo getSetupProcessInfo() {
 		return setupProcessInfo;
 	}
 
-	protected Tests4J_ProcessInfo getTrialProcessInfo() {
+	public Tests4J_ProcessInfo getTrialProcessInfo() {
 		return trialProcessInfo;
 	}
 
-	protected Tests4J_ProcessInfo getRemoteProcessInfo() {
+	public Tests4J_ProcessInfo getRemoteProcessInfo() {
 		return remoteProcessInfo;
 	}
 

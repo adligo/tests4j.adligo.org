@@ -1,23 +1,29 @@
 package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.asserts.common.AssertCompareFailureMutant;
 import org.adligo.tests4j.models.shared.asserts.common.AssertType;
+import org.adligo.tests4j.models.shared.common.ClassMethods;
 import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.coverage.SourceFileCoverage;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
 import org.adligo.tests4j.models.shared.dependency.I_ClassParentsLocal;
 import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
+import org.adligo.tests4j.models.shared.dependency.asserts.AllowedDependencyFailure;
+import org.adligo.tests4j.models.shared.dependency.asserts.AllowedDependencyFailureMutant;
+import org.adligo.tests4j.models.shared.dependency.asserts.CircularDependencyFailure;
+import org.adligo.tests4j.models.shared.dependency.asserts.CircularDependencyFailureMutant;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
-import org.adligo.tests4j.models.shared.results.DependencyTestFailure;
-import org.adligo.tests4j.models.shared.results.DependencyTestFailureMutant;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
@@ -29,6 +35,7 @@ import org.adligo.tests4j.models.shared.trials.CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
+import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
@@ -43,9 +50,7 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  *
  */
 public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsProcessor {
-	public static final String TEST_DEPENDENCIES = "testDependencies(SourceFileTrialResultMutant trialResultMutant)";
-	private static final String TEST_MIN_COVERAGE =
-			"testMinCoverage";
+
 	private I_Tests4J_Log log;
 	
 	public AfterSourceFileTrialTestsProcessor(I_Tests4J_Memory memory) {
@@ -84,8 +89,12 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 			}
 			coverage = rec.endRecording();
 			I_SourceFileCoverage cover = trialDesc.findSourceFileCoverage(coverage);
+			Class<?> srcFile = trialDesc.getSourceFileClass();
+			
 			if (cover != null) {
 				trialResultMutant.setSourceFileCoverage(cover);
+			} else if (srcFile != null && srcFile.isInterface()) {
+				trialResultMutant.setSourceFileCoverage(new SourceFileCoverage());
 			} else {
 				log.onThrowable(new IllegalStateException("A internal error"
 						+ " has occured in tests4j, no coverage for class " + 
@@ -126,9 +135,6 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 			trialResultMutant.setHadAfterTrialTests(false);
 			return null;
 		}
-		
-		
-		
 		
 		boolean passed = false;
 		try {
@@ -183,7 +189,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 			}
 			testResultMutant.incrementAssertionCount(1);
 		}
-		testResultMutant.setName(TEST_MIN_COVERAGE);
+		testResultMutant.setName(I_SourceFileTrial.TEST_MIN_COVERAGE);
 		
 		TestResult result = new TestResult(testResultMutant);
 		return result;
@@ -193,42 +199,85 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 	public TestResult testDependencies(SourceFileTrialResultMutant trialResultMutant) {
 		TrialDescription trialDesc = super.getTrialDescription();
 		TestResultMutant testResultMutant = new TestResultMutant();
-		testResultMutant.setName(TEST_DEPENDENCIES);
+		testResultMutant.setName(I_SourceFileTrial.TEST_DEPENDENCIES);
 		I_CircularDependencies circle = trialDesc.getAllowedCircularDependencies();
 		CircularDependencies c = CircularDependencies.get(circle);
 		
+		boolean failed = false;
 		I_ClassDependenciesLocal deps = trialDesc.getSourceClassDependencies();
 		if (deps != null) {
 			switch (c) {
-				case INNER_CLASSES_ONLY_:
+				case InnerClasses:
 					if (deps.hasCircularDependencies()) {
 						Set<String> classes = deps.getCircularDependenciesNames();
 						Class<?> sourceClass = trialDesc.getSourceFileClass();
-						String name = sourceClass.getName();
+						String name = ClassMethods.getSourceClassName(sourceClass.getName());
 						//a crude test for inner classes
 						for (String className: classes) {
-							if (className.indexOf(name) != 0) {
-								failCircularDependencies(deps, testResultMutant);
+							className = ClassMethods.getSourceClassName(className);
+							if ( !name.equals(className)) {
+								classes.remove(name);
+								classes.remove(sourceClass.getName());
+								CircularDependencyFailureMutant tfm =failCircularDependencies(classes,  
+										trialDesc.getSourceFileClass());
+								tfm.setAllowedType(CircularDependencies.InnerClasses);
+								testResultMutant.setFailure(new CircularDependencyFailure(tfm));
+								failed = true;
 								break;
 							}
 						}
 						testResultMutant.incrementAssertionCount(1);
 					}
 					break;
-				case NONE_:
+				case WithInPackage:
+					if (deps.hasCircularDependencies()) {
+						Set<String> classes = deps.getCircularDependenciesNames();
+						Class<?> sourceClass = trialDesc.getSourceFileClass();
+						String sourcePackageName = ClassMethods.getPackageName(sourceClass.getName());
+						//a crude test for inner classes
+						Iterator<String> it = classes.iterator();
+						while (it.hasNext()) {
+							String className = it.next();
+							String pacakgeName = ClassMethods.getPackageName(className);
+							if (sourcePackageName.equals(pacakgeName)) {
+								it.remove();
+							}
+						}
+						if (classes.size() >= 1) {
+							CircularDependencyFailureMutant tfm =failCircularDependencies(classes,  
+									trialDesc.getSourceFileClass());
+							tfm.setAllowedType(CircularDependencies.WithInPackage);
+							testResultMutant.setFailure(new CircularDependencyFailure(tfm));
+							failed = true;
+						}
+						testResultMutant.incrementAssertionCount(1);
+					}
+					break;
+				case None:
 				default:
 					if (deps.hasCircularDependencies()) {
-						failCircularDependencies(deps, testResultMutant);
+						Set<String> names = deps.getCircularDependenciesNames();
+						Class<?> sourceClass = trialDesc.getSourceFileClass();
+						
+						if (names.size() == 1) {
+							if (names.contains(sourceClass.getName())) {
+								break;
+							}
+						}
+						failed = true;
+						CircularDependencyFailureMutant tfm = failCircularDependencies(deps.getCircularDependenciesNames(),  
+								trialDesc.getSourceFileClass());
+						tfm.setAllowedType(CircularDependencies.None);
+						testResultMutant.setFailure(new CircularDependencyFailure(tfm));
 					}
 					testResultMutant.incrementAssertionCount(1);
 			}
 		}
 		I_DependencyGroup dg =  trialDesc.getDependencyGroup();
-		Set<I_ClassParentsLocal> depsLocal = deps.getDependenciesLocal();
 		List<I_ClassAttributes> refs =  deps.getReferences();
 		
 		String sourceClassName = trialDesc.getSourceFileClass().getName();
-		DependencyTestFailureMutant depNotAllowed = null;
+		AllowedDependencyFailureMutant depNotAllowed = null;
 		//set above for error as in 
 		// org.adligo.something.ClassA void foo(int, byte) 
 		if (dg != null) {
@@ -244,7 +293,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 						Set<I_FieldSignature> flds = ref.getFields();
 						for (I_FieldSignature fld: flds) {
 							if ( !dg.isInGroup(className, fld)) {
-								depNotAllowed = new DependencyTestFailureMutant();
+								depNotAllowed = new AllowedDependencyFailureMutant();
 								depNotAllowed.setSourceClass(trialDesc.getSourceFileClass());
 								depNotAllowed.setField(fld);
 								depNotAllowed.setCalledClass(ref.getName());
@@ -259,7 +308,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 							Set<I_MethodSignature> mtds = ref.getMethods();
 							for (I_MethodSignature mtd: mtds) {
 								if ( !dg.isInGroup(className, mtd)) {
-									depNotAllowed = new DependencyTestFailureMutant();
+									depNotAllowed = new AllowedDependencyFailureMutant();
 									depNotAllowed.setSourceClass(trialDesc.getSourceFileClass());
 									depNotAllowed.setMethod(mtd);
 									depNotAllowed.setCalledClass(className);
@@ -280,30 +329,29 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 						hashCounter);
 				testResultMutant.setPassed(true); 
 			} else {
-				testResultMutant.setFailure(new DependencyTestFailure(depNotAllowed));
+				testResultMutant.setFailure(new AllowedDependencyFailure(depNotAllowed));
 				testResultMutant.setPassed(false); 
 			}
 		} else {
-			testResultMutant.setPassed(true); 
+			if (!failed) {
+				testResultMutant.setPassed(true); 
+			}
 		}
 		TestResult result = new TestResult(testResultMutant);
 		return result;
 	}
 
 
-	public void failCircularDependencies(I_ClassDependenciesLocal deps,
-			TestResultMutant testResultMutant) {
+	public CircularDependencyFailureMutant failCircularDependencies(Collection<String> classesOutOfBounds,
+			Class<?> sourceClass) {
 		I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
 		
-		AssertCompareFailureMutant tfm = new AssertCompareFailureMutant();
+		CircularDependencyFailureMutant tfm = new CircularDependencyFailureMutant();
 		tfm.setFailureMessage(messages.getSourceClassHasCircularDependency());
-		tfm.setActualClass(Set.class.getName());
-		tfm.setExpectedClass(Set.class.getName());
-		
-		tfm.setExpectedValue("");
-		tfm.setActualValue(deps.getCircularDependencies().toString());
+		tfm.setAssertType(AssertType.AssertDependency);
+		tfm.setClassesOutOfBounds(classesOutOfBounds);
+		tfm.setSourceClass(sourceClass);
 		tfm.setAssertType(AssertType.AssertEquals);
-		testResultMutant.setFailure(tfm);
-		testResultMutant.setPassed(false);
+		return tfm;
 	}
 }

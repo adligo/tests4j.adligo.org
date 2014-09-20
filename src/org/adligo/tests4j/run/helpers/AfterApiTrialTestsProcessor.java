@@ -11,6 +11,7 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_ApiTrial;
+import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 
 /**

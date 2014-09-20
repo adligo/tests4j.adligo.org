@@ -17,7 +17,7 @@ import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrumentation;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager;
-import org.adligo.tests4j.run.helpers.Tests4J_Memory;
+import org.adligo.tests4j.run.memory.Tests4J_Memory;
 
 public class TrialDescriptionProcessor {
 	private Tests4J_Memory memory;

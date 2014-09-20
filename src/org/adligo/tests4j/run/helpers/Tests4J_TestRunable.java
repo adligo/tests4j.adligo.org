@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertListener;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
@@ -15,9 +16,9 @@ import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.output.TrialOutput;
 import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -29,7 +30,7 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  * @author scott
  *
  */
-public class Tests4J_TestRunable implements Runnable, I_Tests4J_AssertListener {
+public class Tests4J_TestRunable implements Runnable, I_AssertListener {
 
 	private Method testMethod;
 	private I_AbstractTrial trial;

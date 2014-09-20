@@ -29,6 +29,7 @@ import org.adligo.tests4j.models.shared.asserts.UniformThrownAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.CompareAssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertListener;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertionData;
@@ -41,7 +42,6 @@ import org.adligo.tests4j.models.shared.common.I_PlatformContainer;
 import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -66,7 +66,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
-	private I_Tests4J_AssertListener listener;
+	private I_AssertListener listener;
 	private I_Tests4J_Log log;
 	private I_PlatformContainer platform;
 	private I_EvaluatorLookup evaluationLookup;

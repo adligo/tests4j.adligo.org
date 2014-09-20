@@ -13,6 +13,7 @@ import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.discovery.TrialState;
+import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {

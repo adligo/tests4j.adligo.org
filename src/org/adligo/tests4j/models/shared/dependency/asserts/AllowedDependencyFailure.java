@@ -1,25 +1,36 @@
-package org.adligo.tests4j.models.shared.results;
+package org.adligo.tests4j.models.shared.dependency.asserts;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.models.shared.asserts.common.I_TestFailureType;
+import org.adligo.tests4j.models.shared.asserts.common.SourceTestFailure;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 
-public class DependencyTestFailure implements I_DependencyTestFailure {
-	private DependencyTestFailureMutant mutant_;
+public class AllowedDependencyFailure extends SourceTestFailure 
+	implements I_AllowedDependencyFailure {
+	private AllowedDependencyFailureMutant mutant_;
+	private List<String> groupNames_;
 	
-	public DependencyTestFailure(I_DependencyTestFailure failure) {
-		mutant_ = new DependencyTestFailureMutant(failure);
+	public AllowedDependencyFailure() {
+		mutant_ = new AllowedDependencyFailureMutant();
+		groupNames_ = Collections.emptyList();
+	}
+	public AllowedDependencyFailure(I_AllowedDependencyFailure failure) {
+		super(failure);
+		mutant_ = new AllowedDependencyFailureMutant(failure);
+		List<String> ogn = failure.getGroupNames();
+		if (ogn != null) {
+			groupNames_ = Collections.unmodifiableList(ogn);
+		} else {
+			groupNames_ = Collections.emptyList();
+		}
 	}
 
 	public List<String> getGroupNames() {
-		return mutant_.getGroupNames();
-	}
-
-	public Class<?> getSourceClass() {
-		return mutant_.getSourceClass();
+		return groupNames_;
 	}
 
 	public int hashCode() {

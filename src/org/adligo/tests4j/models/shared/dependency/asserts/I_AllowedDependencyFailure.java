@@ -1,16 +1,14 @@
-package org.adligo.tests4j.models.shared.results;
+package org.adligo.tests4j.models.shared.dependency.asserts;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.models.shared.asserts.common.I_SourceTestFailure;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 
-public interface I_DependencyTestFailure extends I_TestFailure {
+public interface I_AllowedDependencyFailure extends I_SourceTestFailure {
 
 	public abstract List<String> getGroupNames();
-
-	public abstract Class<?> getSourceClass();
 
 	public abstract String getCalledClass();
 

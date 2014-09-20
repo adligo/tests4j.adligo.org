@@ -7,6 +7,7 @@ import org.adligo.tests4j.models.shared.asserts.common.I_AssertThrownFailure;
 import org.adligo.tests4j.models.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.models.shared.asserts.common.I_SimpleAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.I_TestFailureType;
+import org.adligo.tests4j.models.shared.asserts.common.I_AssertListener;
 import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.models.shared.asserts.common.I_ThrownAssertCommand;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
@@ -14,7 +15,6 @@ import org.adligo.tests4j.models.shared.asserts.common.TestFailureBuilder;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.models.shared.asserts.common.TestFailureType;
 import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_AssertListener;
 
 /**
  * this class processes the assert commands
@@ -29,7 +29,7 @@ public class AssertionProcessor {
 	/**
 	 * @param cmd
 	 */
-	public static void evaluate(I_Tests4J_AssertListener listener, I_SimpleAssertCommand cmd) {
+	public static void evaluate(I_AssertListener listener, I_SimpleAssertCommand cmd) {
 		if (cmd.evaluate()) {
 			synchronized (listener) {
 				listener.assertCompleted(cmd);
@@ -41,7 +41,7 @@ public class AssertionProcessor {
 		}
 	}
 	
-	public static void evaluate(I_Tests4J_AssertListener listener, I_ThrownAssertCommand cmd, I_Thrower p) {
+	public static void evaluate(I_AssertListener listener, I_ThrownAssertCommand cmd, I_Thrower p) {
 		if (cmd.evaluate(p)) {
 			synchronized (listener) {
 				listener.assertCompleted(cmd);
@@ -53,7 +53,7 @@ public class AssertionProcessor {
 		}
 	}
 
-	public static void onAssertionFailure(I_Tests4J_AssertListener listener,
+	public static void onAssertionFailure(I_AssertListener listener,
 			I_AssertionData data, String failureMessage) {
 		
 		TestFailureBuilder builder = new TestFailureBuilder();

@@ -29,7 +29,7 @@ import org.adligo.tests4j.models.shared.system.Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.xml.XML_Builder;
 import org.adligo.tests4j.run.Tests4J;
-import org.adligo.tests4j.run.helpers.Tests4J_ThreadFactory;
+import org.adligo.tests4j.run.memory.Tests4J_ThreadFactory;
 import org.adligo.tests4j.run.remote.io.I_CharacterInputStream;
 import org.adligo.tests4j.run.remote.io.UTF8_InputStream;
 import org.adligo.tests4j.run.remote.socket_api.AfterShutdownHandler;

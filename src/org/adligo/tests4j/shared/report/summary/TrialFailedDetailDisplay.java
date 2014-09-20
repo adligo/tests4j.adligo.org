@@ -20,8 +20,9 @@ import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
 import org.adligo.tests4j.models.shared.asserts.line_text.TextLinesCompare;
 import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
+import org.adligo.tests4j.models.shared.dependency.asserts.I_AllowedDependencyFailure;
+import org.adligo.tests4j.models.shared.dependency.asserts.I_CircularDependencyFailure;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.models.shared.results.I_DependencyTestFailure;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
@@ -81,7 +82,11 @@ public class TrialFailedDetailDisplay {
 								break;
 							case AssertDependency:
 								 addDependencyFailure(
-										 trial, (I_DependencyTestFailure) tf);
+										 trial, (I_AllowedDependencyFailure) tf);
+								break;
+							case AssertCircularDependency:
+								 addCircularDependencyFailure(
+										 trial, (I_CircularDependencyFailure) tf);
 								break;
 							case AssertNull:
 							case AssertNotNull:
@@ -127,7 +132,7 @@ public class TrialFailedDetailDisplay {
 				+ log.getLineSeperator());
 	}
 	
-	private void addDependencyFailure(I_TrialResult trial, I_DependencyTestFailure tf) {
+	private void addDependencyFailure(I_TrialResult trial, I_AllowedDependencyFailure tf) {
 		IllegalStateException x = new IllegalStateException();
 		x.fillInStackTrace();
 		StackTraceElement[] stack = x.getStackTrace();
@@ -167,6 +172,36 @@ public class TrialFailedDetailDisplay {
 		log.onThrowable(dfe);
 	}
 	
+	
+	private void addCircularDependencyFailure(I_TrialResult trial, I_CircularDependencyFailure tf) {
+		IllegalStateException x = new IllegalStateException();
+		x.fillInStackTrace();
+		StackTraceElement[] stack = x.getStackTrace();
+		StackTraceElement top = new StackTraceElement(
+				trial.getTrialClassName(), "<init>", 
+				tf.getSourceClass().getSimpleName() + ".java",
+				1);
+		if (stack.length == 0) {
+			stack = new StackTraceElement[1];
+		}
+		stack[0] = top;
+		
+		String message = null;
+		
+		List<String> classNames = tf.getClassesOutOfBounds();
+		message =  messages.getIndent() +  messages.getIndent() +
+				"SourceClass: " + tf.getSourceClass().getName() + log.getLineSeperator() +
+				messages.getIndent() +  messages.getIndent() +
+				"CircularDependencies: " + tf.getAllowedType() + " " +
+					classNames.toString() + log.getLineSeperator();
+		
+		
+		DependencyFailureException dfe = 
+				new DependencyFailureException(tf.getFailureMessage() + log.getLineSeperator() +
+						message,
+						stack);
+		log.onThrowable(dfe);
+	}
 	private void addStringCompare(String expectedValue, String actualValue, StringBuilder sb) {
 		TextLinesCompare tlc = new TextLinesCompare();
 		

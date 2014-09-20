@@ -49,10 +49,16 @@ public class SourceFileCoverage implements I_SourceFileCoverage {
 	}
 
 	public int getLastLine() {
+		if (lines == null) {
+			return 0;
+		}
 		return lines.size();
 	}
 
 	public I_LineCoverage getLineCoverage(int p) {
+		if (lines == null) {
+			return null;
+		}
 		return lines.get(p);
 	}
 
