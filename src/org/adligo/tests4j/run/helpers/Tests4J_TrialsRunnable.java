@@ -69,7 +69,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	private I_Tests4J_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
-	private I_Tests4J_Log logger;
+	private I_Tests4J_Log log_;
 	private I_AbstractTrial trial;
 	private BaseTrialResultMutant trialResultMutant;
 	
@@ -110,14 +110,14 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		processInfo = p.getTrialProcessInfo();
 		notifier = pNotificationManager;
 		
-		logger = p.getLog();
+		log_ = p.getLog();
 		threadManager = p.getThreadManager();
 		
 		testsRunner = new Tests4J_TestRunable(memory);
 		testsRunner.setListener(this);
 		testRunService = threadManager.createNewTestRunService();
 		
-		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), logger);
+		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), log_);
 		bindings.setAssertListener(testsRunner);
 		
 		afterSouceFileTrialTestsProcessor = new AfterSourceFileTrialTestsProcessor(memory);
@@ -158,7 +158,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 						}
 						
 					} catch (Exception x) {
-						logger.onThrowable(x);
+						log_.onThrowable(x);
 					} 
 					
 					
@@ -172,14 +172,14 @@ public class Tests4J_TrialsRunnable implements Runnable,
 								//once in all of the trial threads, having a trial running
 								//in two threads at the same time would be confusing to the users
 								synchronized (trialClazz) {
-									if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
-										logger.log("Thread " + Thread.currentThread().getName() +
+									if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
+										log_.log("Thread " + Thread.currentThread().getName() +
 												" is running trial;\n" +trialDescription.getTrialName());
 									}
 									runTrial();
 								}	
 							} catch (Exception x) {
-								logger.onThrowable(x);
+								log_.onThrowable(x);
 							} 
 						}
 					} 
@@ -198,13 +198,13 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			testRunService.shutdownNow();
 			finished = true;
 		} catch (Exception x) {
-			logger.onThrowable(x);
+			log_.onThrowable(x);
 		}
 		//its not on the main thread so join
 		try {
 			Thread.currentThread().join();
 		} catch (InterruptedException e) {
-			logger.onThrowable(e);
+			log_.onThrowable(e);
 		}
 	}
 
@@ -220,8 +220,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	
 	private void runTrial() throws RejectedExecutionException  {
 		
-		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
-			logger.log("running trial " + trialName);
+		if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
+			log_.log("running trial " + trialName);
 		}
 		apiTrialResultMutant = null;
 		sourceFileTrialResultMutant = null;
@@ -245,13 +245,13 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		testsRunner.setTrial(trial);
 		testsRunner.setCod(outputDelegator);
 		testsRunner.setOut(out);
-		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
-			logger.log("running trial tests " + trialName);
+		if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
+			log_.log("running trial tests " + trialName);
 		}
 		runTests();
 		
-		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
-			logger.log("finished trial tests" + trialName);
+		if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
+			log_.log("finished trial tests" + trialName);
 		}
 		if (trialResultMutant.isPassed()) {
 			//skip this method unless everything passed in the trial
@@ -259,8 +259,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		}
 		runAfterTrial();
 		
-		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
-			logger.log("calculating trial results " + trialName);
+		if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
+			log_.log("calculating trial results " + trialName);
 		}
 		
 		onTrialCompleted();
@@ -286,8 +286,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			default:
 				result = new BaseTrialResult(trialResultMutant);
 		}
-		if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
-			logger.log("notifying trial finished " + trialName);
+		if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
+			log_.log("notifying trial finished " + trialName);
 		}
 		notifier.onTrialCompleted(result);
 	}
@@ -380,8 +380,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			testName_ = method.getName();
 			notifier.startingTest(trialName, testName_);
 			
-			if (logger.isLogEnabled(Tests4J_TrialsRunnable.class)) {
-				logger.log("starting test; " +trialName + "."+  method.getName());
+			if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
+				log_.log("starting test; " +trialName + "."+  method.getName());
 			}
 			
 			//trial.beforeTests();
@@ -454,7 +454,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 				afterApiTrialTestsProcessor.reset(trialDescription, 
 						trialThreadLocalCoverageRecorder, trial);
 				ApiTrialResultMutant apiResult = getApiTrialResult();
-				TestResultMutant apiTrm = afterApiTrialTestsProcessor.afterApiTrialTests(apiResult);
+				TestResultMutant apiTrm = afterApiTrialTestsProcessor.afterApiTrialTests(
+						apiResult, log_);
 				if (apiTrm != null) {
 					apiResult.addResult(apiTrm);
 				}

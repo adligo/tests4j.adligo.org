@@ -9,6 +9,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.trials.AllowedDependencies;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 
 public class AllowedDependenciesAuditor {
 
@@ -19,7 +20,7 @@ public class AllowedDependenciesAuditor {
 	 * @return
 	 */
 	public static DependencyGroupAggregate audit(I_TrialDescription trialDesc,
-			List<I_TrialFailure> failures) {
+			List<I_TrialFailure> failures, I_Tests4J_Memory memory) {
 		
 		Class<? extends I_AbstractTrial> trial = trialDesc.getTrialClass();
 		AllowedDependencies ad = trial.getAnnotation(AllowedDependencies.class);
@@ -29,11 +30,18 @@ public class AllowedDependenciesAuditor {
 				List<I_DependencyGroup> dgs = new ArrayList<I_DependencyGroup>();
 				for (Class<? extends I_DependencyGroup> cls: groupClasses) {
 					if (cls != null) {
-						try {
-							dgs.add(cls.newInstance());
-						} catch (Exception x) {
-							failures.add(new TrialFailure("Problem creating new " +
-									cls.getName(), x.getMessage()));
+						I_DependencyGroup dep = memory.getDependencyGroup(cls);
+						if (dep != null) {
+							dgs.add(dep);
+						} else {
+							try {
+								I_DependencyGroup dg = cls.newInstance();
+								memory.putIfAbsent(cls, dg);
+								dgs.add(dg);
+							} catch (Exception x) {
+								failures.add(new TrialFailure("Problem creating new " +
+										cls.getName(), x.getMessage()));
+							}
 						}
 					}
 				}

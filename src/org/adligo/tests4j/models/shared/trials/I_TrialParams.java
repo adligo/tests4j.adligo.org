@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.trials;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
 import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
 
 /**
@@ -15,7 +14,17 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_TrialParams extends I_XML_Producer, I_XML_Consumer {
+public interface I_TrialParams extends I_XML_Producer {
 
-	public Object get(String key);
+	public String get(String key);
+	public Integer getInt(String key);
+	public Short getShort(String key);
+	public Long getLong(String key);
+	
+	public Double getDouble(String key);
+	public Float getFloat(String key);
+
+	public Byte getByte(String key);
+	public Boolean getBoolean(String key);
+	public Character getChar(String key);
 }

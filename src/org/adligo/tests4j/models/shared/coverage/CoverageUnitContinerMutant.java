@@ -2,6 +2,9 @@ package org.adligo.tests4j.models.shared.coverage;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
+
+import org.adligo.tests4j.models.shared.common.ClassMethods;
 
 /**
  * @see I_CoverageUnitsContainer 
@@ -33,12 +36,19 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 	
 	@Override
 	public BigDecimal getPercentageCovered() {
-		if (coverageUnits_ == null || coveredCoverageUnits_ == null) {
-			return new BigDecimal("0.00");
+		if (coverageUnits_ == null) {
+			return new BigDecimal("100.00");
 		}
 		BigDecimal coverageUnitsBD = new BigDecimal(coverageUnits_.getBig());
+		if (coverageUnitsBD == null || coverageUnitsBD.doubleValue() == 0.0) {
+			return new BigDecimal("100.00");
+		}
+		if (coveredCoverageUnits_ == null) {
+			return new BigDecimal("0.00");
+		}
 		BigDecimal coveredCoverageUnitsBD = new BigDecimal(coveredCoverageUnits_.getBig());
-		if (coverageUnitsBD == null || coveredCoverageUnitsBD == null) {
+		if (coverageUnitsBD == null || coveredCoverageUnitsBD == null ||
+				coverageUnitsBD.doubleValue() == 0.0) {
 			return new BigDecimal("100.00");
 		} else if (coverageUnitsBD.intValue() == 0) {
 			return new BigDecimal("100.00");
@@ -48,8 +58,8 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 			}
 			BigDecimal pct = coveredCoverageUnitsBD.divide(coverageUnitsBD, MathContext.DECIMAL128);
 			BigDecimal toRet = pct.multiply(new BigDecimal(100), MathContext.DECIMAL128);
-			MathContext mc = new MathContext(2);
-			return toRet.round(mc);
+			toRet = toRet.setScale(2, RoundingMode.HALF_UP);
+			return toRet;
 		} 
 	}
 	
@@ -65,23 +75,28 @@ public class CoverageUnitContinerMutant implements I_CoverageUnitsContainer {
 	public void addCoverageUnits(I_CoverageUnits coverageUnits) {
 		if (coverageUnits_ == null) {
 			coverageUnits_ = new CoverageUnits(coverageUnits.getBig());
+		} else {
+			coverageUnits_ = new CoverageUnits(
+					coverageUnits_.getBig().add(coverageUnits.getBig()));
 		}
-		coverageUnits_ = new CoverageUnits(coverageUnits_.getBig().add(coverageUnits.getBig()));
 	}
 
 	public void addCoveredCoverageUnits(I_CoverageUnits coveredCoverageUnits) {
 		if (coveredCoverageUnits_ == null) {
 			coveredCoverageUnits_ = new CoverageUnits(coveredCoverageUnits.getBig());
-		}
-		coveredCoverageUnits_ = new CoverageUnits(
+		} else {
+			coveredCoverageUnits_ = new CoverageUnits(
 				coveredCoverageUnits_.getBig().add(coveredCoverageUnits.getBig()));
+		}
 	}
 	
-	public void toString(StringBuilder sb) {
-		sb.append("coverageUnits=");
-		sb.append(coverageUnits_);
-		sb.append(", coveredCoverageUnits=");
-		sb.append(coveredCoverageUnits_);
+	public String toString() {
+		return toString(this) + "]";
+	}
+	public String toString(I_CoverageUnitsContainer other) {
+		return ClassMethods.getSimpleName(other.getClass()) + 
+				" [" + other.getCoverageUnits() + 
+				"/" + other.getCoveredCoverageUnits();
 	}
 
 	@Override

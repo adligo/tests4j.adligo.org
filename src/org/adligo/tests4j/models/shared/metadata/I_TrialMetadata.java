@@ -6,7 +6,7 @@ import org.adligo.tests4j.models.shared.common.I_TrialType;
 import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
 import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
 
-public interface I_TrialMetadata extends I_XML_Producer, I_XML_Consumer {
+public interface I_TrialMetadata extends I_XML_Producer {
 	public static final String TAG_NAME = "trialMetadata";
 	public static final String TRIAL_NAME_ATTRIBUTE = "name";
 	public static final String TIMEOUT_ATTRIBUTE = "timeout";

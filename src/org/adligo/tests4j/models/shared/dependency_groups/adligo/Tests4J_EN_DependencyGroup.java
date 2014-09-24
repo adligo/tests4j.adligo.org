@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.dependency.DependencyGroupBaseDelegate;
-import org.adligo.tests4j.models.shared.dependency.NameOnlyDependencyGroup;
 import org.adligo.tests4j.models.shared.en.Tests4J_AnnotationErrors;
 import org.adligo.tests4j.models.shared.en.Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.models.shared.en.Tests4J_EclipseErrors;
@@ -14,7 +12,7 @@ import org.adligo.tests4j.models.shared.en.Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.models.shared.en.Tests4J_ReportMessages;
 import org.adligo.tests4j.models.shared.en.Tests4J_ResultMessages;
 
-public class Tests4J_EN_DependencyGroup extends DependencyGroupBaseDelegate {
+public class Tests4J_EN_DependencyGroup extends Tests4J_DependencyGroup {
 
 	public Tests4J_EN_DependencyGroup() {
 		Set<String> names = new HashSet<String>();
@@ -31,7 +29,7 @@ public class Tests4J_EN_DependencyGroup extends DependencyGroupBaseDelegate {
 		Tests4J_I18N_DependencyGroup dg = new Tests4J_I18N_DependencyGroup();
 		names.addAll(dg.getClassNames());
 		
-		super.setDelegate(new NameOnlyDependencyGroup(names));
+		setupDelegates(names);
 	}
 	
 	private void add(Set<String> names, Class<?> c) {

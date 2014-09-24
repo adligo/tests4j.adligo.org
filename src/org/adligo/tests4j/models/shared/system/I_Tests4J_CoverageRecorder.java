@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
 import java.util.List;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 
@@ -24,8 +25,10 @@ public interface I_Tests4J_CoverageRecorder {
 	 * Note the items in the I_PackageCoverage
 	 * are should only be packages that actually have classes,
 	 * with all child packages rolled in.
+	 * @param the names of the classes for 
+	 *    which coverage info is requested.
 	 */
-	public List<I_PackageCoverage> endRecording();
+	public List<I_PackageCoverage> endRecording(Set<String> classNames);
 	
 	
 }

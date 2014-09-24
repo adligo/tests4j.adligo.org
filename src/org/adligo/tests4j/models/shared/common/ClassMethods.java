@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A class for reflection like code that runs the 
@@ -25,7 +27,9 @@ public class ClassMethods {
 	public static final String LONG = "long";
 	public static final String SHORT = "short";
 	public static final String DOUBLE = "double";
+	public static final String VOID = "void";
 	private static final Map<Character,String> PRIMITIVES = getPrimitives();
+	private static final Set<String> PRIMITIVE_CLASSES = getPrimitiveClasses();
 	private static final Map<String,String> PRIMITIVES_CONSTANT_MAP = getPrimitivesConstantMap();
 	
 	private static Map<Character,String> getPrimitives() {
@@ -39,9 +43,25 @@ public class ClassMethods {
 		toRet.put('J', LONG);
 		toRet.put('S', SHORT);
 		toRet.put('D', DOUBLE);
+		toRet.put('V', VOID);
 		return Collections.unmodifiableMap(toRet);
 	}
 	
+	private static Set<String> getPrimitiveClasses() {
+		Set<String> toRet = new HashSet<String>();
+		toRet.add(Boolean.class.getName());
+		toRet.add(Byte.class.getName());
+		toRet.add(Character.class.getName());
+		toRet.add(Double.class.getName());
+		
+		toRet.add(Float.class.getName());
+		toRet.add(Long.class.getName());
+		toRet.add(Integer.class.getName());
+		toRet.add(Short.class.getName());
+		
+		toRet.add(Void.class.getName());
+		return Collections.unmodifiableSet(toRet);
+	}
 	private static Map<String,String> getPrimitivesConstantMap() {
 		Map<String,String> toRet = new HashMap<String,String>();
 		toRet.put(BOOLEAN,"BOOLEAN");
@@ -53,25 +73,47 @@ public class ClassMethods {
 		toRet.put(LONG,"LONG");
 		toRet.put(SHORT,"SHORT");
 		toRet.put(DOUBLE, "DOUBLE");
+		toRet.put(VOID, "VOID");
 		return Collections.unmodifiableMap(toRet);
 	}
 	/**
 	 * This method uses the set of 
 	 * primitives and the class name to discover
-	 * if the class is a primitive, rather
+	 * if the class is a primitive class wrapper, rather
 	 * than reflection which isn't available in GWT.
 	 * @param c
 	 * @return
 	 */
-	public static boolean isPrimitive(Class<?> c) {
-		return PRIMITIVES.containsValue(c.getName());
+	public static boolean isPrimitiveClass(Class<?> c) {
+		return isPrimitiveClass(c.getName());
+	}
+	/**
+	 * This method uses the set of 
+	 * primitives and the class name to discover
+	 * if the class is a primitive class wrapper, rather
+	 * than reflection which isn't available in GWT.
+	 * @param c
+	 * @return
+	 */
+	public static boolean isPrimitiveClass(String p) {
+		return PRIMITIVE_CLASSES.contains(p);
+	}
+	
+	/**
+	 * returns true if the class names match
+	 * @param example
+	 * @param c
+	 * @return
+	 */
+	public static boolean isClass(Class<?> example, Class<?> c) {
+		return example.getName().equals(c.getName());
 	}
 	/**
 	 * This method uses the set of 
 	 * primitives and the class name to discover
 	 * if the class is a primitive, rather
 	 * than reflection which isn't available in GWT.
-	 * @param c
+	 * @param s The short name of the type ie "boolean".
 	 * @return
 	 */
 	public static boolean isPrimitive(String s) {
@@ -279,14 +321,13 @@ public class ClassMethods {
 		return sb.toString();
 	}
 	
-	public static String getSimpleName(Object j) {
-		return getSimpleName(j.getClass());
+	public static String getSimpleName(Class<?> j) {
+		return getSimpleName(j.getName());
 	}
 	
-	public static String getSimpleName(Class<?> j) {
-		String toRet = j.getName();
-		int lastDot = toRet.lastIndexOf(".");
-		return toRet.substring(lastDot + 1, toRet.length());
+	public static String getSimpleName(String name) {
+		int lastDot = name.lastIndexOf(".");
+		return name.substring(lastDot + 1, name.length());
 	}
 	/**
 	 * this removes any inner class name ie $*

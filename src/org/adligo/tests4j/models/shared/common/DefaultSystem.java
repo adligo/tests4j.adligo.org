@@ -46,8 +46,12 @@ public class DefaultSystem implements I_System {
 
 	@Override
 	public String getJseVersion() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean isMainSystem() {
+		return false;
 	}
 
 }

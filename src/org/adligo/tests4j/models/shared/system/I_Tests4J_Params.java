@@ -22,7 +22,7 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
+public interface I_Tests4J_Params extends I_XML_Producer {
 	public static final String TAG_NAME = "tests4j_Params";
 	public static final String COVERAGE_PLUGIN_FACTORY_ATTRIBUTE= "coveragePluginFactory";
 	public static final String EVALUATOR_LOOKUP_ATTRIBUTE = "evaluatorLookup";
@@ -217,5 +217,13 @@ public interface I_Tests4J_Params extends I_XML_Producer, I_XML_Consumer {
 	 * @return
 	 */
 	public I_Tests4J_ProgressMonitor getProgressMonitor();
+	
+	/**
+	 * this can provide additional information about 
+	 * what is getting tested.  Other information 
+	 * come from the @SourceFileScope and @PackageScope annotations.
+	 * @return
+	 */
+	public I_Tests4J_SourceInfoParams getSourceInfoParams();
 	
 }

@@ -2,6 +2,7 @@ package org.adligo.tests4j.run.helpers;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -74,6 +75,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		I_AbstractTrial trial = super.getTrial();
 		Class<? extends I_AbstractTrial> trialClass = trial.getClass();
 		TrialDescription trialDesc = super.getTrialDescription();
+		Class<?> sourceFileClass = trialDesc.getSourceFileClass();
 		
 		I_ClassDependenciesLocal deps =  trialDesc.getSourceClassDependencies();
 		trialResultMutant.setDependencies(deps);
@@ -87,7 +89,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 						log.getLineSeperator() +
 						" for " + trialResultMutant.getSourceFileName());
 			}
-			coverage = rec.endRecording();
+			coverage = rec.endRecording(Collections.singleton(sourceFileClass.getName()));
 			I_SourceFileCoverage cover = trialDesc.findSourceFileCoverage(coverage);
 			Class<?> srcFile = trialDesc.getSourceFileClass();
 			

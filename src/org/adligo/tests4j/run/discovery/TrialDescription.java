@@ -21,7 +21,6 @@ import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageMutant;
-import org.adligo.tests4j.models.shared.dependency.DependencyGroupAggregate;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
 import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
@@ -83,11 +82,13 @@ public class TrialDescription implements I_TrialDescription {
 	private I_ClassDependenciesLocal sourceClassDependencies;
 	boolean printToStdOut_ = true;
 	private I_DependencyGroup deps_;
+	private I_Tests4J_Memory memory_;
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
-			I_Tests4J_Memory pMem) {
-		reporter = pMem.getLog();
+			I_Tests4J_Memory memory) {
+		reporter = memory.getLog();
 		trialClass_ = pTrialClass;
+		memory_ = memory;
 		if (reporter.isLogEnabled(TrialDescription.class)) {
 			reporter.log("Creating TrialDescription for " + trialClass_);
 		}
@@ -96,9 +97,10 @@ public class TrialDescription implements I_TrialDescription {
 	}
 
 	public TrialDescription(I_Tests4J_CoverageTrialInstrumentation instrIn,
-			I_Tests4J_Memory pMem) {
-		reporter = pMem.getLog();
+			I_Tests4J_Memory memory) {
+		reporter = memory.getLog();
 		trialClass_ = instrIn.getInstrumentedClass();
+		memory_ = memory;
 		if (reporter.isLogEnabled(TrialDescription.class)) {
 			reporter.log("Creating TrialDescription for " + trialClass_);
 		}
@@ -159,7 +161,7 @@ public class TrialDescription implements I_TrialDescription {
 		
 		switch(tt) {
 			case SourceFileTrial:
-					deps_ = AllowedDependenciesAuditor.audit(this, failures);
+					deps_ = AllowedDependenciesAuditor.audit(this, failures, memory_);
 					sourceFileScope = trialClass_.getAnnotation(SourceFileScope.class);
 					afterTrialTestsMethod_ =
 							NonTests4jMethodDiscovery.findNonTests4jMethod(trialClass_, 

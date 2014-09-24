@@ -1,7 +1,11 @@
 package org.adligo.tests4j.run.helpers;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
@@ -12,7 +16,9 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_ApiTrial;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * This class should behave like a model (not thread safe)
@@ -28,13 +34,15 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 		super(memory);
 	}
 	
-	public TestResultMutant afterApiTrialTests(ApiTrialResultMutant trialResultMutant) {
+	public TestResultMutant afterApiTrialTests(ApiTrialResultMutant trialResultMutant,
+			I_Tests4J_Log log) {
 		
 		Method clazzMethod = null;
 		List<I_PackageCoverage> coverage;
 		I_AbstractTrial trial = super.getTrial();
 		Class<? extends I_AbstractTrial> trialClass = trial.getClass();
 		TrialDescription trialDesc = super.getTrialDescription();
+		String packageName = trialDesc.getPackageName();
 		
 		try {
 			clazzMethod = trialClass.getMethod(AFTER_TRIAL_TESTS, I_ApiTrialResult.class);
@@ -55,10 +63,20 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 		
 		I_Tests4J_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
 		if (rec != null) {
-			coverage = rec.endRecording();
-			I_PackageCoverage cover = trialDesc.findPackageCoverage(coverage);
-			if (cover != null) {
-				trialResultMutant.setPackageCoverage(cover);
+			try {
+				PackageDiscovery pg = new PackageDiscovery(packageName);
+				Set<String> classNames = new HashSet<String>();
+				classNames.addAll(pg.getClassNames());
+				List<PackageDiscovery> subs =  pg.getSubPackages();
+				addClasses(subs, classNames);
+				
+				coverage = rec.endRecording(Collections.singleton(packageName));
+				I_PackageCoverage cover = trialDesc.findPackageCoverage(coverage);
+				if (cover != null) {
+					trialResultMutant.setPackageCoverage(cover);
+				}
+			} catch (IOException x) {
+				log.onThrowable(x);
 			}
 		}
 		
@@ -82,5 +100,13 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 		afterTrialTestsResultMutant.setPassed(passed);
 		afterTrialTestsResultMutant.setName(AFTER_API_TRIAL_TESTS_METHOD);
 		return afterTrialTestsResultMutant;
+	}
+	
+	public void addClasses(List<PackageDiscovery> pgs, Set<String> classNames) {
+		for (PackageDiscovery pg: pgs) {
+			classNames.addAll(pg.getClassNames());
+			List<PackageDiscovery> subs = pg.getSubPackages();
+			addClasses(subs, classNames);
+		}
 	}
 }

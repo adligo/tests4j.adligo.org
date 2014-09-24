@@ -10,6 +10,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.common.I_System;
+import org.adligo.tests4j.models.shared.dependency.I_Dependency;
+import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
@@ -17,11 +19,12 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_SourceInfoParams;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
+import org.adligo.tests4j.models.shared.system.Tests4J_SourceInfoParamsDelegate;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
-import org.adligo.tests4j.models.shared.trials.I_TrialParams;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
@@ -66,6 +69,8 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private Tests4J_ProcessInfo setupProcessInfo;
 	private Tests4J_ProcessInfo trialProcessInfo;
 	private Tests4J_ProcessInfo remoteProcessInfo;
+	private Tests4J_SourceInfoParamsDelegate sourceInfoParamsDelegate_;
+	
 	/**
 	 * a safe wrapper around the I_TrialRunListener passed to Test4J.run
 	 * this should never be null during the trial run
@@ -91,6 +96,8 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private AtomicLong trialEndTime = new AtomicLong();
 	private AtomicLong remoteEndTime = new AtomicLong();
 	private Tests4J_NotificationManager notifier;
+	private ConcurrentHashMap<String,I_DependencyGroup> dependencyGroupInstances_ =
+			new ConcurrentHashMap<String,I_DependencyGroup>();
 	/**
 	 * 
 	 * @param params
@@ -144,6 +151,11 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		evaluationLookup = p.getEvaluatorLookup();
 		notifier = new Tests4J_NotificationManager(this);
 		metaTrialParams_ = p.getMetaTrialParams();
+		
+		I_Tests4J_SourceInfoParams siParams = p.getSourceInfoParams();
+		if (siParams != null) {
+			sourceInfoParamsDelegate_ = new Tests4J_SourceInfoParamsDelegate(siParams, log);
+		}
 	}
 	
 	/**
@@ -404,6 +416,17 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return metaTrialParams_;
 	}
 
+	public I_DependencyGroup getDependencyGroup(Class<?> c) {
+		return dependencyGroupInstances_.get(c.getName());
+	}
+	
+	public void putIfAbsent(Class<?> c, I_DependencyGroup group) {
+		dependencyGroupInstances_.putIfAbsent(c.getName(), group);
+	}
+
+	public I_Tests4J_SourceInfoParams getSourceInfoParams() {
+		return sourceInfoParamsDelegate_;
+	}
 
 
 }

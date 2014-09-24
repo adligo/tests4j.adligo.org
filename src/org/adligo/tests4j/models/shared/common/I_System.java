@@ -56,4 +56,11 @@ public interface I_System {
 	 * @return
 	 */
 	public PrintStream getOut();
+	
+	/**
+	 * this is used to distinguish if it is the main log
+	 * for debugging breakpoints
+	 * @return
+	 */
+	public boolean isMainSystem();
 }

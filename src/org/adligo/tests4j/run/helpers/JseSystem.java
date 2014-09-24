@@ -54,4 +54,9 @@ public class JseSystem implements I_System {
 		return System.getProperty("java.version", "");
 	}
 
+	@Override
+	public boolean isMainSystem() {
+		return true;
+	}
+
 }

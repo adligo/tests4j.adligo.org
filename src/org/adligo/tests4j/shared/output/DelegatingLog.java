@@ -43,10 +43,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 			throw new IllegalArgumentException(DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM);
 		}
 		lineSeperator = pSystem.lineSeperator();
-		String systemClassName = pSystem.getClass().getName();
-		if (DefaultSystem.class.getName().equals(systemClassName)) {
-			mainLog = true;
-		}
+		mainLog = pSystem.isMainSystem();
 		out = pOut;
 		if (logsOn != null) {
 			Set<Entry<Class<?>,Boolean>> entries = logsOn.entrySet();

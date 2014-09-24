@@ -9,7 +9,7 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_TestMetadata extends I_XML_Producer, I_XML_Consumer {
+public interface I_TestMetadata extends I_XML_Producer {
 	public static final String TAG_NAME = "testMetadata";
 	public static final String NAME_ATTRIBUTE = "name";
 	public static final String TIMEOUT_ATTRIBUTE="timeout";

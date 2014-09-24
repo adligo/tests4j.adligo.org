@@ -17,7 +17,7 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_Tests4J_RemoteInfo extends I_XML_Consumer, I_XML_Producer {
+public interface I_Tests4J_RemoteInfo extends I_XML_Producer {
 	public static final String TAG_NAME = "remoteInfo";
 	public static final String HOST_ATTRIBUTE = "host";
 	public static final String PORT_ATTRIBUTE = "port";

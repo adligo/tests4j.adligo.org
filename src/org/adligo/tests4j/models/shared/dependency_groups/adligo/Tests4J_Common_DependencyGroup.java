@@ -1,6 +1,8 @@
 package org.adligo.tests4j.models.shared.dependency_groups.adligo;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.common.CacheControl;
@@ -24,10 +26,12 @@ import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.common.Tests4J_ConstantsWrapper;
 import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.models.shared.dependency.DependencyGroupAggregate;
 import org.adligo.tests4j.models.shared.dependency.DependencyGroupBaseDelegate;
+import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.dependency.NameOnlyDependencyGroup;
 
-public class Tests4J_Common_DependencyGroup extends DependencyGroupBaseDelegate {
+public class Tests4J_Common_DependencyGroup extends Tests4J_DependencyGroup {
 
 	public Tests4J_Common_DependencyGroup() {
 		Set<String> names = new HashSet<String>();
@@ -64,7 +68,8 @@ public class Tests4J_Common_DependencyGroup extends DependencyGroupBaseDelegate 
 		
 		Tests4J_EN_DependencyGroup dg = new Tests4J_EN_DependencyGroup();
 		names.addAll(dg.getClassNames());
-		super.setDelegate(new NameOnlyDependencyGroup(names));
+		
+		setupDelegates(names);
 	}
 	
 	private void add(Set<String> names, Class<?> c) {

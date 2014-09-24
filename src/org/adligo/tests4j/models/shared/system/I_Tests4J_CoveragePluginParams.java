@@ -11,7 +11,7 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_Tests4J_CoveragePluginParams extends I_XML_Consumer, I_XML_Producer {
+public interface I_Tests4J_CoveragePluginParams extends I_XML_Producer {
 	/**
 	 * if true a new I_Tests4J_CoverageRecorder
 	 * is created for each trial/test thread combination

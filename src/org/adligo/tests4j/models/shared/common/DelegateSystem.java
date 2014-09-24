@@ -80,4 +80,9 @@ public class DelegateSystem implements I_System {
 	public String getJseVersion() {
 		return delegate.getJseVersion();
 	}
+
+	@Override
+	public boolean isMainSystem() {
+		return delegate.isMainSystem();
+	}
 }

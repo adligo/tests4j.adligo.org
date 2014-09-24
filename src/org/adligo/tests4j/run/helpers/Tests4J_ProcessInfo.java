@@ -94,7 +94,7 @@ public class Tests4J_ProcessInfo implements I_Tests4J_ProcessInfo {
 		List<I_Tests4J_TrialProgress> toRet = new ArrayList<I_Tests4J_TrialProgress>();
 		for (I_Tests4J_Runnable runnable: runnables) {
 			I_Tests4J_TrialProgress state = runnable.getTrial();
-			if ( state != null) {
+			if ( state != null && state.getPctDone() < 100.0) {
 				toRet.add(state);
 			}
 		}

@@ -111,7 +111,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 	}
 
 	@Override
-	public synchronized I_Tests4J_TrialProgress getTrial() {
+	public I_Tests4J_TrialProgress getTrial() {
 		if (state == null) {
 			return null; 
 		}

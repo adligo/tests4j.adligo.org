@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,6 +33,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_SourceInfoParams;
 import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.ApiTrial;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
@@ -83,6 +85,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	private final AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private final AtomicBoolean describeTrialError = new AtomicBoolean(false);
 	private TrialQueueDecisionTree trialQueueDecisionTree;
+	private Set<String> testedClasses_ = new TreeSet<String>();
 	
 	private volatile I_TrialRunMetadata metadata = null;
 	private MetaTrialProcessor metaProcessor;
@@ -151,7 +154,9 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		
 		TrialRunMetadataMutant trmm = new TrialRunMetadataMutant();
 		
-		Set<String> packages = new HashSet<String>();
+		Set<String> packages_ = new HashSet<String>();
+		I_Tests4J_SourceInfoParams siParams = memory.getSourceInfoParams();
+		packages_.addAll(siParams.getPackagesTested());
 		
 		int totalTests = 0;
 		while (it.hasNext()) {
@@ -159,7 +164,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			TrialDescription td = state.getTrialDescription();
 			String packageName = td.getPackageName();
 			if (!StringMethods.isEmpty(packageName)) {
-				packages.add(packageName);
+				packages_.add(packageName);
 			}
 			TrialMetadataMutant tmm = new TrialMetadataMutant();
 			tmm.setTrialName(td.getTrialName());
@@ -241,10 +246,10 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			}
 			trmm.addTrial(tmm);
 		}
-		for (String packageName: packages) {
+		for (String packageName: packages_) {
 			try {
 				PackageDiscovery classDiscovery = new PackageDiscovery(packageName);
-				addClasses(trmm, classDiscovery);
+				addClasses(trmm, classDiscovery, siParams);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -264,32 +269,36 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	}
 
 	private void addClasses(TrialRunMetadataMutant trmm,
-			PackageDiscovery classDiscovery) {
+			PackageDiscovery classDiscovery, I_Tests4J_SourceInfoParams siParams) {
 		List<String> classes = classDiscovery.getClassNames();
+		
 		for (String clazz: classes) {
-			if (clazz.indexOf("$") == -1) {
-				SourceInfoMetadataMutant sim = new SourceInfoMetadataMutant();
-				sim.setName(clazz);
-				try {
-					Class<?> czx = Class.forName(clazz);
-					//TODO this would be better done with a .java
-					//source file parser, but this is good enough for now
-					if (czx.isInterface()) {
-						sim.setHasInterface(true);
+			if (siParams.isTestable(clazz)) {
+				if (clazz.indexOf("$") == -1) {
+					testedClasses_.add(clazz);
+					SourceInfoMetadataMutant sim = new SourceInfoMetadataMutant();
+					sim.setName(clazz);
+					try {
+						Class<?> czx = Class.forName(clazz);
+						//TODO this would be better done with a .java
+						//source file parser, but this is good enough for now
+						if (czx.isInterface()) {
+							sim.setHasInterface(true);
+						}
+						if (czx.isEnum()) {
+							sim.setHasEnum(true);
+						}
+						sim.setHasClass(true);
+					} catch (ClassNotFoundException x) {
+						log.onThrowable(x);
 					}
-					if (czx.isEnum()) {
-						sim.setHasEnum(true);
-					}
-					sim.setHasClass(true);
-				} catch (ClassNotFoundException x) {
-					log.onThrowable(x);
+					trmm.setSourceInfo(clazz, sim);
 				}
-				trmm.setSourceInfo(clazz, sim);
 			}
 		}
 		List<PackageDiscovery> subs =  classDiscovery.getSubPackages();
 		for (PackageDiscovery sub: subs) {
-			addClasses(trmm, sub);
+			addClasses(trmm, sub, siParams);
 		}
 	}
 
@@ -498,7 +507,10 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		I_Tests4J_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
 		if (allCoverageRecorder != null) {
 			//
-			List<I_PackageCoverage> packageCoverage = allCoverageRecorder.endRecording();
+			if (log.isMainLog()) {
+				log.log("main log results");
+			}
+			List<I_PackageCoverage> packageCoverage = allCoverageRecorder.endRecording(testedClasses_);
 			List<I_PackageCoverage> toAdd = new ArrayList<I_PackageCoverage>();
 			
 			//filter out trial/test code from result

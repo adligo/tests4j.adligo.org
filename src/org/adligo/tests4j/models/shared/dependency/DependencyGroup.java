@@ -8,6 +8,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+/**
+ * a threadsafe implementation of I_DependencyGroup
+ * @author scott
+ *
+ */
 public class DependencyGroup implements I_DependencyGroup {
 	private Map<String, I_ClassAttributes> classMap;
 	

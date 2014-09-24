@@ -47,7 +47,6 @@ public class DefaultLog implements I_Tests4J_Log {
 		}
 		system = pSystem;
 		
-		
 		if (logsOn != null) {
 			Set<Entry<Class<?>,Boolean>> entries = logsOn.entrySet();
 			logs = new HashMap<String, Boolean>();
@@ -105,11 +104,7 @@ public class DefaultLog implements I_Tests4J_Log {
 
 	@Override
 	public boolean isMainLog() {
-		String systemClassName = system.getClass().getName();
-		if (DefaultSystem.class.getName().equals(systemClassName)) {
-			return true;
-		}
-		return false;
+		return system.isMainSystem();
 	}
 
 	@Override

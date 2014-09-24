@@ -44,6 +44,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	//there is a deadlock problem in setup, so run it single threaded, unless your improving
 	private Integer recommendedSetupThreadCount = 1;
 	private I_Tests4J_ProgressMonitor progressMonitor = new Tests4J_DefaultProgressMonitor(Tests4J_System.SYSTEM);
+	private I_Tests4J_SourceInfoParams sourceInfoParams = new Tests4J_SourceInfoParams();
 	
 	/**
 	 * OutputStreams are not passed between jvms of course.
@@ -80,6 +81,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		recommendedTrialThreadCount = p.getRecommendedTrialThreadCount();
 		recommendedSetupThreadCount = p.getRecommendedSetupThreadCount();
 		recommendedRemoteThreadCount = p.getRecommendedRemoteThreadCount();
+		sourceInfoParams = p.getSourceInfoParams();
 		
 		Map<Class<?>, Boolean> otherSettings = p.getLogStates();
 		if (otherSettings != null) {
@@ -396,5 +398,13 @@ public class Tests4J_Params implements I_Tests4J_Params {
 			return true;
 		}
 		return false;
+	}
+
+	public I_Tests4J_SourceInfoParams getSourceInfoParams() {
+		return sourceInfoParams;
+	}
+
+	public void setSourceInfoParams(I_Tests4J_SourceInfoParams sourceInfoParams) {
+		this.sourceInfoParams = sourceInfoParams;
 	}
 }

@@ -20,6 +20,7 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginParams;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
+import org.adligo.tests4j.models.shared.system.I_Tests4J_SourceInfoParams;
 import org.adligo.tests4j.models.shared.system.Tests4J_CoveragePluginParams;
 import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
 import org.adligo.tests4j.models.shared.system.Tests4J_Selection;
@@ -70,7 +71,8 @@ public class Tests4J_ParamsReader {
 	private List<OutputStream> additionalReportOutputStreams = new ArrayList<OutputStream>();
 	private I_MetaTrialParams<? extends I_MetaTrialInputData> metaTrialParams_;
 	private I_TrialParamsFactory trialParamsQueue_;
-
+	private I_Tests4J_SourceInfoParams sourceInfoParams_;
+	
 	/**
 	 * turn into local instances to block further propagation of issues
 	 * with external implementations.  Also this recurses 
@@ -202,7 +204,7 @@ public class Tests4J_ParamsReader {
 			runnable = false;
 			return;
 		}
-		
+		sourceInfoParams_ = params.getSourceInfoParams();
 	}
 
 	protected void determineThreadCounts() {
@@ -350,5 +352,9 @@ public class Tests4J_ParamsReader {
 	
 	public I_TrialParamsFactory getTrialParamsQueue() {
 		return trialParamsQueue_;
+	}
+
+	public I_Tests4J_SourceInfoParams getSourceInfoParams() {
+		return sourceInfoParams_;
 	}
 }

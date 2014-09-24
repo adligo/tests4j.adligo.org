@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.metadata;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
 import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
 
 /**
@@ -10,7 +9,7 @@ import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_UseCaseMetadata extends I_XML_Producer, I_XML_Consumer {
+public interface I_UseCaseMetadata extends I_XML_Producer {
 	public static final String TAG_NAME = "useCase";
 	public static final String NOWN_ATTRIBUTE = "nown";
 	public static final String VERB_ATTRIBUTE = "verb";

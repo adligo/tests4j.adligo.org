@@ -42,7 +42,9 @@ public interface I_TrialRunMetadata {
 	public int getAllTestsCount();
 	
 	/**
-	 * return the source file for a .java file name
+	 * returns the source file for .java files name which
+	 * are the target of some trial 
+	 * (see SoruceFileTrial,ApiTrial annotations)
 	 * i.e.  "org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata"
 	 * @param name
 	 * @return
