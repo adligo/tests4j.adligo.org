@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.trials;
 
-import org.adligo.tests4j.models.shared.common.ClassMethods;
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.common.ClassMethods;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
 public class TrialParamValue implements I_TrialParamValue {
 	public static final String TAG_NAME = "value";

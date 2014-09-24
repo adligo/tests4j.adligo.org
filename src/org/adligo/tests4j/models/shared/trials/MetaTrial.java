@@ -1,8 +1,8 @@
 package org.adligo.tests4j.models.shared.trials;
 
-import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
+import org.adligo.tests4j.shared.common.TrialType;
 
 /**
  * The basic meta trial, which does nothing,

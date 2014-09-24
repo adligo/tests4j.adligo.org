@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency;
 
-import org.adligo.tests4j.models.shared.common.ClassMethods;
+import org.adligo.tests4j.shared.common.ClassMethods;
 
 
 /**

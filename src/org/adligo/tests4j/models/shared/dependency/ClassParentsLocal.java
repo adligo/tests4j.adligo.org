@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
 
 public class ClassParentsLocal implements I_ClassParentsLocal {

@@ -1,8 +1,8 @@
 package org.adligo.tests4j.run.remote.socket_api;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
-import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
-import org.adligo.tests4j.models.shared.xml.XML_Chars;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.xml.I_XML_Producer;
+import org.adligo.tests4j.shared.xml.XML_Chars;
 
 import com.sun.xml.internal.ws.util.StringUtils;
 

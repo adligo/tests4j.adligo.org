@@ -3,22 +3,22 @@ package org.adligo.tests4j.models.shared.dependency_groups.adligo;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.asserts.line_text.DiffIndexes;
-import org.adligo.tests4j.models.shared.asserts.line_text.DiffIndexesMutant;
-import org.adligo.tests4j.models.shared.asserts.line_text.DiffIndexesPair;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_DiffIndexes;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_DiffIndexesPair;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiff;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_LineDiffType;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLines;
-import org.adligo.tests4j.models.shared.asserts.line_text.I_TextLinesCompareResult;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineDiff;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffMutant;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineDiffType;
-import org.adligo.tests4j.models.shared.asserts.line_text.LineSplitter;
-import org.adligo.tests4j.models.shared.asserts.line_text.TextLines;
-import org.adligo.tests4j.models.shared.asserts.line_text.TextLinesCompare;
-import org.adligo.tests4j.models.shared.asserts.line_text.TextLinesCompareResult;
+import org.adligo.tests4j.shared.asserts.line_text.DiffIndexes;
+import org.adligo.tests4j.shared.asserts.line_text.DiffIndexesMutant;
+import org.adligo.tests4j.shared.asserts.line_text.DiffIndexesPair;
+import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexes;
+import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexesPair;
+import org.adligo.tests4j.shared.asserts.line_text.I_LineDiff;
+import org.adligo.tests4j.shared.asserts.line_text.I_LineDiffType;
+import org.adligo.tests4j.shared.asserts.line_text.I_TextLines;
+import org.adligo.tests4j.shared.asserts.line_text.I_TextLinesCompareResult;
+import org.adligo.tests4j.shared.asserts.line_text.LineDiff;
+import org.adligo.tests4j.shared.asserts.line_text.LineDiffMutant;
+import org.adligo.tests4j.shared.asserts.line_text.LineDiffType;
+import org.adligo.tests4j.shared.asserts.line_text.LineSplitter;
+import org.adligo.tests4j.shared.asserts.line_text.TextLines;
+import org.adligo.tests4j.shared.asserts.line_text.TextLinesCompare;
+import org.adligo.tests4j.shared.asserts.line_text.TextLinesCompareResult;
 
 public class Tests4J_AssertsLineText_DependencyGroup extends Tests4J_DependencyGroup {
 

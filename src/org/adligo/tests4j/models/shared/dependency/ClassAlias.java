@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.dependency;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.common.StringMethods;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
 /**
  * A immutable implementation of I_ClassAlias.

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.asserts.common.AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.I_TestFailureType;
-import org.adligo.tests4j.models.shared.asserts.common.SourceTestFailureMutant;
-import org.adligo.tests4j.models.shared.asserts.common.TestFailureType;
-import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
+import org.adligo.tests4j.shared.asserts.common.AssertType;
+import org.adligo.tests4j.shared.asserts.common.I_AssertType;
+import org.adligo.tests4j.shared.asserts.common.I_TestFailureType;
+import org.adligo.tests4j.shared.asserts.common.SourceTestFailureMutant;
+import org.adligo.tests4j.shared.asserts.common.TestFailureType;
+import org.adligo.tests4j.shared.common.Tests4J_Constants;
 
 public class AllowedDependencyFailureMutant extends SourceTestFailureMutant 
 	implements I_AllowedDependencyFailure {

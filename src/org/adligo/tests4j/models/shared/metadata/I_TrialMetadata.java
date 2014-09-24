@@ -2,9 +2,9 @@ package org.adligo.tests4j.models.shared.metadata;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.I_TrialType;
-import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
-import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
+import org.adligo.tests4j.shared.common.I_TrialType;
+import org.adligo.tests4j.shared.xml.I_XML_Consumer;
+import org.adligo.tests4j.shared.xml.I_XML_Producer;
 
 public interface I_TrialMetadata extends I_XML_Producer {
 	public static final String TAG_NAME = "trialMetadata";

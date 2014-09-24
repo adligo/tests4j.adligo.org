@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.system;
 
-import org.adligo.tests4j.models.shared.common.I_System;
+import org.adligo.tests4j.shared.common.I_System;
 
 public class Tests4J_DefaultProgressMonitor implements I_Tests4J_ProgressMonitor {
 	private I_System system;

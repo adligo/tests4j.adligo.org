@@ -2,10 +2,10 @@ package org.adligo.tests4j.models.shared.trials;
 
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
+import org.adligo.tests4j.shared.common.TrialType;
 
 @TrialTypeAnnotation(type = TrialType.API_TRIAL_TYPE)
 public class ApiTrial extends AbstractTrial implements I_ApiTrial  {

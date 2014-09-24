@@ -2,9 +2,9 @@ package org.adligo.tests4j.models.shared.trials;
 
 import java.util.Collection;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_ExpectedThrownData;
-import org.adligo.tests4j.models.shared.asserts.common.I_Thrower;
-import org.adligo.tests4j.models.shared.common.I_Platform;
+import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrownData;
+import org.adligo.tests4j.shared.asserts.common.I_Thrower;
+import org.adligo.tests4j.shared.common.I_Platform;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**

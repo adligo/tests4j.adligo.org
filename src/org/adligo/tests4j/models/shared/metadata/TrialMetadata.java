@@ -5,8 +5,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.I_TrialType;
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.common.I_TrialType;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
 public class TrialMetadata implements I_TrialMetadata {
 	private TrialMetadataMutant mutant;

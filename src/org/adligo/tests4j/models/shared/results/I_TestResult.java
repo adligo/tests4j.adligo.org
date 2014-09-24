@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.results;
 
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
 
 public interface I_TestResult {
 

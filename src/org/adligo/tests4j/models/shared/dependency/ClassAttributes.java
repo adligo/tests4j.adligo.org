@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.dependency;
 import java.util.Collections;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.shared.common.StringMethods;
 
 public class ClassAttributes implements I_ClassAttributes {
 	public static final String REQUIRES_A_CLASS_NAME = ClassAttributes.class.getSimpleName() + " requires a className.";

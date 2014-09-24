@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.results;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.I_TrialType;
+import org.adligo.tests4j.shared.common.I_TrialType;
 
 public interface I_TrialResult {
 

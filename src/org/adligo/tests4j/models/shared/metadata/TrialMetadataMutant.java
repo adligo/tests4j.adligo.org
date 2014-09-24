@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.I_TrialType;
-import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.common.TrialType;
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
-import org.adligo.tests4j.models.shared.xml.XML_Parser;
+import org.adligo.tests4j.shared.common.I_TrialType;
+import org.adligo.tests4j.shared.common.StringMethods;
+import org.adligo.tests4j.shared.common.TrialType;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.xml.XML_Parser;
 
 public class TrialMetadataMutant implements I_TrialMetadata {
 	public static final String READ_XML_ERROR = "Tag " + I_TrialMetadata.TAG_NAME + " not found!";

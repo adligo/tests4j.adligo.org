@@ -6,7 +6,7 @@ import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.adligo.tests4j.models.shared.common.Tests4J_System;
+import org.adligo.tests4j.shared.common.Tests4J_System;
 import org.adligo.tests4j.shared.output.ByteListOutputStream;
 import org.adligo.tests4j.shared.output.I_OutputBuffer;
 

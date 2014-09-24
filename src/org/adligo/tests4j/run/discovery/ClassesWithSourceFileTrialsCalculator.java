@@ -13,12 +13,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.adligo.tests4j.models.shared.common.ClassMethods;
-import org.adligo.tests4j.models.shared.common.I_TrialType;
-import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.metadata.I_SourceInfoMetadata;
 import org.adligo.tests4j.models.shared.metadata.I_TrialMetadata;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.shared.common.ClassMethods;
+import org.adligo.tests4j.shared.common.I_TrialType;
+import org.adligo.tests4j.shared.common.TrialType;
 
 public class ClassesWithSourceFileTrialsCalculator {
 	private I_TrialRunMetadata metadata;

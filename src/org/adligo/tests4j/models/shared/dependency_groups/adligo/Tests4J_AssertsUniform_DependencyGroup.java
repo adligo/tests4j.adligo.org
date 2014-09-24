@@ -3,19 +3,19 @@ package org.adligo.tests4j.models.shared.dependency_groups.adligo;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.asserts.uniform.Evaluation;
-import org.adligo.tests4j.models.shared.asserts.uniform.EvaluationMutant;
-import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookup;
-import org.adligo.tests4j.models.shared.asserts.uniform.EvaluatorLookupMutant;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_Evaluation;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionCommand;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_UniformThrownAssertionEvaluator;
-import org.adligo.tests4j.models.shared.asserts.uniform.StringUniformEvaluator;
-import org.adligo.tests4j.models.shared.asserts.uniform.ThrowableUniformEvaluator;
-import org.adligo.tests4j.models.shared.asserts.uniform.UniformThrownAssertionEvaluator;
+import org.adligo.tests4j.shared.asserts.uniform.Evaluation;
+import org.adligo.tests4j.shared.asserts.uniform.EvaluationMutant;
+import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookup;
+import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookupMutant;
+import org.adligo.tests4j.shared.asserts.uniform.I_Evaluation;
+import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
+import org.adligo.tests4j.shared.asserts.uniform.I_UniformAssertionCommand;
+import org.adligo.tests4j.shared.asserts.uniform.I_UniformAssertionEvaluator;
+import org.adligo.tests4j.shared.asserts.uniform.I_UniformThrownAssertionCommand;
+import org.adligo.tests4j.shared.asserts.uniform.I_UniformThrownAssertionEvaluator;
+import org.adligo.tests4j.shared.asserts.uniform.StringUniformEvaluator;
+import org.adligo.tests4j.shared.asserts.uniform.ThrowableUniformEvaluator;
+import org.adligo.tests4j.shared.asserts.uniform.UniformThrownAssertionEvaluator;
 
 public class Tests4J_AssertsUniform_DependencyGroup extends Tests4J_DependencyGroup {
 

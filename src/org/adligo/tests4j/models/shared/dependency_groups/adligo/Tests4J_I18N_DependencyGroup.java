@@ -3,14 +3,14 @@ package org.adligo.tests4j.models.shared.dependency_groups.adligo;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_Constants;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_EclipseErrors;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ParamsReaderMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_EclipseErrors;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_ParamsReaderMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 
 public class Tests4J_I18N_DependencyGroup extends Tests4J_DependencyGroup {
 

@@ -3,8 +3,8 @@ package org.adligo.tests4j.models.shared.results;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.shared.common.StringMethods;
 
 public class TestResultMutant implements I_TestResult {
 	public static final String TEST_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_NAME = 

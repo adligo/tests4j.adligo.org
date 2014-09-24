@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.adligo.tests4j.models.shared.common.I_CacheControl;
-import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
-import org.adligo.tests4j.models.shared.common.LegacyAPI_Issues;
+import org.adligo.tests4j.shared.common.I_CacheControl;
+import org.adligo.tests4j.shared.common.JavaAPIVersion;
+import org.adligo.tests4j.shared.common.LegacyAPI_Issues;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 

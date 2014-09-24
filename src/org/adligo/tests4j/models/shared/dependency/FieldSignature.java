@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.shared.common.StringMethods;
 
 public class FieldSignature implements I_FieldSignature {
 	public static final String FIELD_SIGNATURE_REQUIRES_A_CLASS_NAME = "FieldSignature requires a className";

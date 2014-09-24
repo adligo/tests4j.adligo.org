@@ -2,8 +2,8 @@ package org.adligo.tests4j.run.helpers;
 
 import java.io.PrintStream;
 
-import org.adligo.tests4j.models.shared.common.DefaultSystem;
-import org.adligo.tests4j.models.shared.common.I_System;
+import org.adligo.tests4j.shared.common.DefaultSystem;
+import org.adligo.tests4j.shared.common.I_System;
 
 public class JseSystem implements I_System {
 	/**

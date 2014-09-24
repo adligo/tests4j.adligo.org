@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.I_System;
-import org.adligo.tests4j.models.shared.common.DefaultSystem;
-import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.common.Tests4J_System;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.shared.common.DefaultSystem;
+import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.common.Tests4J_System;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 
 /**
  * This is the main logging class for Tests4J,

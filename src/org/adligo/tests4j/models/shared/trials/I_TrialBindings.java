@@ -1,8 +1,8 @@
 package org.adligo.tests4j.models.shared.trials;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertListener;
-import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.models.shared.common.I_PlatformContainer;
+import org.adligo.tests4j.shared.asserts.common.I_AssertListener;
+import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
+import org.adligo.tests4j.shared.common.I_PlatformContainer;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**

@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.models.shared.trials.I_Trial;
 import org.adligo.tests4j.models.shared.trials.I_TrialParamsFactory;
-import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
-import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
+import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
+import org.adligo.tests4j.shared.xml.I_XML_Consumer;
+import org.adligo.tests4j.shared.xml.I_XML_Producer;
 
 /**
  * This class encapsulates parameters

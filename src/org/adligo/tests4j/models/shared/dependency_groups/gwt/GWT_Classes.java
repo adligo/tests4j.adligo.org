@@ -70,9 +70,9 @@ import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
-import org.adligo.tests4j.models.shared.common.JavaAPIVersion;
-import org.adligo.tests4j.models.shared.common.LegacyAPI_Issues;
 import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Lang;
+import org.adligo.tests4j.shared.common.JavaAPIVersion;
+import org.adligo.tests4j.shared.common.LegacyAPI_Issues;
 
 
 /**

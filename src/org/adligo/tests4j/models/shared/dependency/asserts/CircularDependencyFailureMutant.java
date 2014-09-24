@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.asserts.common.AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.I_TestFailureType;
-import org.adligo.tests4j.models.shared.asserts.common.SourceTestFailureMutant;
-import org.adligo.tests4j.models.shared.asserts.common.TestFailureType;
 import org.adligo.tests4j.models.shared.trials.I_CircularDependencies;
+import org.adligo.tests4j.shared.asserts.common.AssertType;
+import org.adligo.tests4j.shared.asserts.common.I_AssertType;
+import org.adligo.tests4j.shared.asserts.common.I_TestFailureType;
+import org.adligo.tests4j.shared.asserts.common.SourceTestFailureMutant;
+import org.adligo.tests4j.shared.asserts.common.TestFailureType;
 
 public class CircularDependencyFailureMutant  extends SourceTestFailureMutant implements I_CircularDependencyFailure {
 	private I_CircularDependencies type_;

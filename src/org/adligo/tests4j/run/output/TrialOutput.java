@@ -3,7 +3,7 @@ package org.adligo.tests4j.run.output;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.adligo.tests4j.models.shared.common.Tests4J_System;
+import org.adligo.tests4j.shared.common.Tests4J_System;
 import org.adligo.tests4j.shared.output.I_ToggleOutputBuffer;
 
 /**

@@ -3,11 +3,11 @@ package org.adligo.tests4j.gen.dependency_groups;
 import java.io.PrintStream;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
 import org.adligo.tests4j.models.shared.dependency.MethodSignature;
+import org.adligo.tests4j.shared.common.Tests4J_System;
 
 /**
  * this class generates a sibling

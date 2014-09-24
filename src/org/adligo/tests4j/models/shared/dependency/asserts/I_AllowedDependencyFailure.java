@@ -2,9 +2,9 @@ package org.adligo.tests4j.models.shared.dependency.asserts;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_SourceTestFailure;
 import org.adligo.tests4j.models.shared.dependency.I_FieldSignature;
 import org.adligo.tests4j.models.shared.dependency.I_MethodSignature;
+import org.adligo.tests4j.shared.asserts.common.I_SourceTestFailure;
 
 public interface I_AllowedDependencyFailure extends I_SourceTestFailure {
 

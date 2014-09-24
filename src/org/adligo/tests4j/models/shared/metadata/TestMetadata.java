@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.metadata;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
 public class TestMetadata implements I_TestMetadata {
 	private TestMetadataMutant mutant;

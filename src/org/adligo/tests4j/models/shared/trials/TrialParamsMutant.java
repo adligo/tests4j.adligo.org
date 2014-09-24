@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.trials;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
 public class TrialParamsMutant implements I_TrialParams {
 	private Map<String, TrialParamValue> items = new HashMap<String, TrialParamValue>();

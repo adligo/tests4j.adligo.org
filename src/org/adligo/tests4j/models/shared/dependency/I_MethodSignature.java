@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency;
 
-import org.adligo.tests4j.models.shared.common.I_Immutable;
+import org.adligo.tests4j.shared.common.I_Immutable;
 
 
 /**

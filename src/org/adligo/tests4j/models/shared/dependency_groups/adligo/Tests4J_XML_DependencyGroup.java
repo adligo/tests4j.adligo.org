@@ -3,12 +3,12 @@ package org.adligo.tests4j.models.shared.dependency_groups.adligo;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
-import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
-import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
-import org.adligo.tests4j.models.shared.xml.XML_Builder;
-import org.adligo.tests4j.models.shared.xml.XML_Chars;
-import org.adligo.tests4j.models.shared.xml.XML_Parser;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.xml.I_XML_Consumer;
+import org.adligo.tests4j.shared.xml.I_XML_Producer;
+import org.adligo.tests4j.shared.xml.XML_Builder;
+import org.adligo.tests4j.shared.xml.XML_Chars;
+import org.adligo.tests4j.shared.xml.XML_Parser;
 
 public class Tests4J_XML_DependencyGroup extends Tests4J_DependencyGroup {
 

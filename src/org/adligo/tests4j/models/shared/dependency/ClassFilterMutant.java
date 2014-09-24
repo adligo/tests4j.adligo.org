@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.dependency;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.common.ClassMethods;
+import org.adligo.tests4j.shared.common.ClassMethods;
 
 /**
  * add ignroed packages like "java."

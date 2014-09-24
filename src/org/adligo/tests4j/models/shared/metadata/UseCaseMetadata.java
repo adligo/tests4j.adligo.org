@@ -1,10 +1,10 @@
 package org.adligo.tests4j.models.shared.metadata;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_AnnotationErrors;
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
-import org.adligo.tests4j.models.shared.xml.XML_Parser;
+import org.adligo.tests4j.shared.common.StringMethods;
+import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.xml.XML_Parser;
 
 
 /**

@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.results;
 
-import org.adligo.tests4j.models.shared.common.I_Immutable;
+import org.adligo.tests4j.shared.common.I_Immutable;
 
 public class TrialFailure implements I_TrialFailure, I_Immutable {
 	private String message;

@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.adligo.tests4j.models.shared.common.I_TrialType;
-import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.common.TrialType;
+import org.adligo.tests4j.shared.common.I_TrialType;
+import org.adligo.tests4j.shared.common.StringMethods;
+import org.adligo.tests4j.shared.common.TrialType;
 
 public class BaseTrialResultMutant implements I_TrialResult {
 	public static final String COVERAGE_IS_NOT_CURRENTLY_SUPPORTED_BY_J_TESTS = "Coverage is not currently supported by JTests";

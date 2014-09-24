@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.dependency;
 
 import java.util.Arrays;
 
-import org.adligo.tests4j.models.shared.common.StringMethods;
+import org.adligo.tests4j.shared.common.StringMethods;
 
 public class MethodSignature implements I_MethodSignature {
 	public static final String REQUIRES_A_NON_EMPTY_METHOD_NAME_IN = MethodSignature.class.getSimpleName() + 

@@ -3,18 +3,18 @@ package org.adligo.tests4j.models.shared.dependency_groups.adligo;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.asserts.AbstractAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.AbstractCompareAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.AssertionFailureLocation;
-import org.adligo.tests4j.models.shared.asserts.AssertionProcessor;
-import org.adligo.tests4j.models.shared.asserts.BooleanAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.ContainsAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.DoubleAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.IdenticalAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.IdenticalStringAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.ThrownAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.UniformAssertCommand;
-import org.adligo.tests4j.models.shared.asserts.UniformThrownAssertCommand;
+import org.adligo.tests4j.shared.asserts.AbstractAssertCommand;
+import org.adligo.tests4j.shared.asserts.AbstractCompareAssertCommand;
+import org.adligo.tests4j.shared.asserts.AssertionFailureLocation;
+import org.adligo.tests4j.shared.asserts.AssertionProcessor;
+import org.adligo.tests4j.shared.asserts.BooleanAssertCommand;
+import org.adligo.tests4j.shared.asserts.ContainsAssertCommand;
+import org.adligo.tests4j.shared.asserts.DoubleAssertCommand;
+import org.adligo.tests4j.shared.asserts.IdenticalAssertCommand;
+import org.adligo.tests4j.shared.asserts.IdenticalStringAssertCommand;
+import org.adligo.tests4j.shared.asserts.ThrownAssertCommand;
+import org.adligo.tests4j.shared.asserts.UniformAssertCommand;
+import org.adligo.tests4j.shared.asserts.UniformThrownAssertCommand;
 
 public class Tests4J_Asserts_DependencyGroup extends Tests4J_DependencyGroup {
 

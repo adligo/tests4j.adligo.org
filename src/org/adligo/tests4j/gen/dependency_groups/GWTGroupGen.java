@@ -3,10 +3,10 @@ package org.adligo.tests4j.gen.dependency_groups;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.Tests4J_System;
 import org.adligo.tests4j.models.shared.dependency_groups.gwt.v2_6.GWT_2_6_Log;
 import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Lang;
 import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Util;
+import org.adligo.tests4j.shared.common.Tests4J_System;
 
 
 public class GWTGroupGen {

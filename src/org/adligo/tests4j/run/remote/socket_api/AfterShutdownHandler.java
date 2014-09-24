@@ -1,7 +1,7 @@
 package org.adligo.tests4j.run.remote.socket_api;
 
-import org.adligo.tests4j.models.shared.common.I_System;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
+import org.adligo.tests4j.shared.common.I_System;
 
 public class AfterShutdownHandler implements I_AfterMessageHandler {
 	private I_System system;

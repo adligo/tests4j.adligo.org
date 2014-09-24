@@ -5,22 +5,22 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertCommand;
-import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertListener;
-import org.adligo.tests4j.models.shared.asserts.common.TestFailure;
-import org.adligo.tests4j.models.shared.asserts.common.TestFailureMutant;
-import org.adligo.tests4j.models.shared.common.Platform;
-import org.adligo.tests4j.models.shared.common.StackTraceBuilder;
-import org.adligo.tests4j.models.shared.common.StringMethods;
-import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.TrialBindings;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.shared.asserts.common.I_AssertCommand;
+import org.adligo.tests4j.shared.asserts.common.I_AssertListener;
+import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.shared.asserts.common.TestFailure;
+import org.adligo.tests4j.shared.asserts.common.TestFailureMutant;
+import org.adligo.tests4j.shared.common.Platform;
+import org.adligo.tests4j.shared.common.StackTraceBuilder;
+import org.adligo.tests4j.shared.common.StringMethods;
+import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 
 /**
  * a abstract class to help keep the TrialInstancesProcessor

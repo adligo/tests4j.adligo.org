@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.metadata;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
+import org.adligo.tests4j.shared.xml.I_XML_Producer;
 
 /**
  * a in memory representation of a use case

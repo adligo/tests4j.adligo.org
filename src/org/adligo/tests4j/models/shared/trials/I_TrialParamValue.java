@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.trials;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
+import org.adligo.tests4j.shared.xml.I_XML_Producer;
 
 /**
  * a interface for passing between class loaders

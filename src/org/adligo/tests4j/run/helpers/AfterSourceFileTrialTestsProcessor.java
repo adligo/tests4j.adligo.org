@@ -7,10 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.asserts.common.AssertCompareFailureMutant;
-import org.adligo.tests4j.models.shared.asserts.common.AssertType;
-import org.adligo.tests4j.models.shared.common.ClassMethods;
-import org.adligo.tests4j.models.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverage;
@@ -24,7 +20,6 @@ import org.adligo.tests4j.models.shared.dependency.asserts.AllowedDependencyFail
 import org.adligo.tests4j.models.shared.dependency.asserts.AllowedDependencyFailureMutant;
 import org.adligo.tests4j.models.shared.dependency.asserts.CircularDependencyFailure;
 import org.adligo.tests4j.models.shared.dependency.asserts.CircularDependencyFailureMutant;
-import org.adligo.tests4j.models.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
@@ -38,6 +33,11 @@ import org.adligo.tests4j.models.shared.trials.I_CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.discovery.TrialDescription;
+import org.adligo.tests4j.shared.asserts.common.AssertCompareFailureMutant;
+import org.adligo.tests4j.shared.asserts.common.AssertType;
+import org.adligo.tests4j.shared.common.ClassMethods;
+import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**

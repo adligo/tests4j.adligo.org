@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.system;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Consumer;
-import org.adligo.tests4j.models.shared.xml.I_XML_Producer;
+import org.adligo.tests4j.shared.xml.I_XML_Consumer;
+import org.adligo.tests4j.shared.xml.I_XML_Producer;
 
 /**
  * a interface for connecting to a remote jvm running a tests4j instance,

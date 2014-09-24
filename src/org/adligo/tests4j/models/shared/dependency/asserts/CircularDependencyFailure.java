@@ -3,10 +3,10 @@ package org.adligo.tests4j.models.shared.dependency.asserts;
 import java.util.Collections;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_AssertType;
-import org.adligo.tests4j.models.shared.asserts.common.I_TestFailureType;
-import org.adligo.tests4j.models.shared.asserts.common.SourceTestFailure;
 import org.adligo.tests4j.models.shared.trials.I_CircularDependencies;
+import org.adligo.tests4j.shared.asserts.common.I_AssertType;
+import org.adligo.tests4j.shared.asserts.common.I_TestFailureType;
+import org.adligo.tests4j.shared.asserts.common.SourceTestFailure;
 
 public class CircularDependencyFailure extends SourceTestFailure implements I_CircularDependencyFailure {
 	private List<String> classesOutOfBounds_;

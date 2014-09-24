@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.results;
 import java.util.Collections;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
 
 public class TestResult implements I_TestResult {
 	private TestResultMutant mutant;

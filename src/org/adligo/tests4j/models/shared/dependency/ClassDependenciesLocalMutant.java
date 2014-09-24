@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
 /**
  * a mutable implementation of {@link I_ClassDependencies}

@@ -2,8 +2,6 @@ package org.adligo.tests4j.run.discovery;
 
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.common.I_TrialType;
-import org.adligo.tests4j.models.shared.common.TrialType;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
@@ -18,6 +16,8 @@ import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrument
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager;
 import org.adligo.tests4j.run.memory.Tests4J_Memory;
+import org.adligo.tests4j.shared.common.I_TrialType;
+import org.adligo.tests4j.shared.common.TrialType;
 
 public class TrialDescriptionProcessor {
 	private Tests4J_Memory memory;
