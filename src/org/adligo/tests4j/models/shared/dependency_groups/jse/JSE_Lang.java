@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_8.JSE_1_8_Lang;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_8.I_JSE_1_8_Lang;
 
 
 /**
@@ -23,7 +23,7 @@ import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_8.JSE_1_8_Lang;
  * @author scott
  *
  */
-public class JSE_Lang implements JSE_1_8_Lang, I_PackageConstantLookup {
+public class JSE_Lang implements I_JSE_1_8_Lang, I_PackageConstantLookup {
 	public static final JSE_Lang INSTANCE = new JSE_Lang();
 	private static final Map<String,String> CONSTANT_LOOKUP = getConstantLookup();
 	

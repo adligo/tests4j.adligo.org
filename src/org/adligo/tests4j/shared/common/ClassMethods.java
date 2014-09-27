@@ -186,6 +186,7 @@ public class ClassMethods {
 	 * @return
 	 */
 	public static String toResource(String clazzName) {
+		StringBuilder sb = new StringBuilder();
 		return '/' + clazzName.replace('.', '/') + ".class";
 	}
 	

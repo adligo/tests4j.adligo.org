@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency_groups.jse;
 
-import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_Sql;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.I_JSE_1_7_Sql;
 
 
 /**
@@ -13,7 +13,7 @@ import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_Sql;
  * @author scott
  *
  */
-public class JSE_Sql implements JSE_1_7_Sql {
+public class JSE_Sql implements I_JSE_1_7_Sql {
 	public static final JSE_Sql INSTANCE = new JSE_Sql();
 	
 	private JSE_Sql() {};

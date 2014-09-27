@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency_groups.jse;
 
-import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_Math;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.I_JSE_1_7_Math;
 
 
 /**
@@ -13,7 +13,7 @@ import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_Math;
  * @author scott
  *
  */
-public class JSE_Math implements JSE_1_7_Math {
+public class JSE_Math implements I_JSE_1_7_Math {
 	public static final JSE_Math INSTANCE = new JSE_Math();
 	
 	private JSE_Math() {};

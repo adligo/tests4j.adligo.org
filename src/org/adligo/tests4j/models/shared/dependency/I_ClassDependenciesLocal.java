@@ -2,6 +2,8 @@ package org.adligo.tests4j.models.shared.dependency;
 
 import java.util.Set;
 
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAliasLocal;
+
 /**
  * This interface contains information
  * about which classes/interfaces/enum/annotation

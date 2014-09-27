@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.shared.common.ClassMethods;
 import org.adligo.tests4j.shared.common.StringMethods;
 
 public class TestResultMutant implements I_TestResult {
@@ -150,7 +151,7 @@ public class TestResultMutant implements I_TestResult {
 	}
 	
 	public static String toString(I_TestResult result) {
-		return result.getClass().getSimpleName() + " [name=" +
+		return ClassMethods.getSimpleName(result) + " [name=" +
 				result.getName() + ", passed=" + 
 				result.isPassed() + ", ignored=" + 
 				result.isIgnored() + "]";

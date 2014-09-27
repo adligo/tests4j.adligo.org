@@ -9,15 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginFactory;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePluginParams;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_SourceInfoParams;
-import org.adligo.tests4j.models.shared.system.Tests4J_CoveragePluginParams;
-import org.adligo.tests4j.models.shared.system.Tests4J_RemoteInfo;
-import org.adligo.tests4j.models.shared.system.Tests4J_Selection;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrialInputData;
@@ -32,7 +23,16 @@ import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.shared.report.summary.DefaultReporterStates;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePluginFactory;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePluginParams;
+import org.adligo.tests4j.system.shared.I_Tests4J_Params;
+import org.adligo.tests4j.system.shared.I_Tests4J_Selection;
+import org.adligo.tests4j.system.shared.I_Tests4J_SourceInfoParams;
+import org.adligo.tests4j.system.shared.Tests4J_CoveragePluginParams;
+import org.adligo.tests4j.system.shared.Tests4J_RemoteInfo;
+import org.adligo.tests4j.system.shared.Tests4J_Selection;
+import org.adligo.tests4j.system.shared.report.summary.DefaultReporterStates;
 
 /**
  * @diagram_sync with Overview.seq on 8/20/2014

@@ -1,8 +1,8 @@
 package org.adligo.tests4j.models.shared.results;
 
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependencies;
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAttributes;
 
 public interface I_SourceFileTrialResult extends I_TrialResult {
 	public I_SourceFileCoverage getSourceFileCoverage();

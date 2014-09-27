@@ -26,12 +26,6 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_SourceInfoParams;
-import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.models.shared.trials.ApiTrial;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
@@ -48,6 +42,12 @@ import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.system.shared.I_Tests4J_Listener;
+import org.adligo.tests4j.system.shared.I_Tests4J_ProcessInfo;
+import org.adligo.tests4j.system.shared.I_Tests4J_SourceInfoParams;
+import org.adligo.tests4j.system.shared.Tests4J_ListenerDelegator;
 
 /**
  * This class handles event notification

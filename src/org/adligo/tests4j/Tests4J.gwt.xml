@@ -14,4 +14,5 @@
   <!-- Specify the paths for translatable code                    -->
   <source path='shared'/>
   <source path='models/shared'/>
+  <source path='system/shared'/>
 </module>

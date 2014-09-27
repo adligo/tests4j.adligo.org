@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency_groups.jse;
 
-import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_Log;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.I_JSE_1_7_Log;
 
 
 /**
@@ -13,7 +13,7 @@ import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_Log;
  * @author scott
  *
  */
-public class JSE_Log implements JSE_1_7_Log {
+public class JSE_Log implements I_JSE_1_7_Log {
 	public static final JSE_Log INSTANCE = new JSE_Log();
 	
 	private JSE_Log() {};

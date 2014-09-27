@@ -8,18 +8,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.adligo.tests4j.models.shared.dependency.I_Dependency;
-import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_ProcessInfo;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Selection;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_SourceInfoParams;
-import org.adligo.tests4j.models.shared.system.Tests4J_ListenerDelegator;
-import org.adligo.tests4j.models.shared.system.Tests4J_SourceInfoParamsDelegate;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
@@ -31,9 +21,19 @@ import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.helpers.Tests4J_NotificationManager;
 import org.adligo.tests4j.run.helpers.Tests4J_ProcessInfo;
+import org.adligo.tests4j.shared.asserts.dependency.I_Dependency;
+import org.adligo.tests4j.shared.asserts.dependency.I_DependencyGroup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.system.shared.I_Tests4J_Listener;
+import org.adligo.tests4j.system.shared.I_Tests4J_ProcessInfo;
+import org.adligo.tests4j.system.shared.I_Tests4J_Selection;
+import org.adligo.tests4j.system.shared.I_Tests4J_SourceInfoParams;
+import org.adligo.tests4j.system.shared.Tests4J_ListenerDelegator;
+import org.adligo.tests4j.system.shared.Tests4J_SourceInfoParamsDelegate;
 
 /**
  * Instances of this class represent the main

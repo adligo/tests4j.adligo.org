@@ -1,7 +1,8 @@
 package org.adligo.tests4j.shared.output;
 
 /**
- * A output delegateor that can be used by multiple threads.
+ * A output delegateor that can be used by multiple threads
+ * when running on a platform with threading (i.e. not GWT).
  * @author scott
  *
  */

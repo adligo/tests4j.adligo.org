@@ -1,13 +1,13 @@
 package org.adligo.tests4j.models.shared.dependency_groups.adligo;
 
-import org.adligo.tests4j.models.shared.dependency.DependencyGroup;
-import org.adligo.tests4j.models.shared.dependency.DependencyGroupBaseDelegate;
-import org.adligo.tests4j.models.shared.dependency.DependencyGroupMutant;
 import org.adligo.tests4j.models.shared.dependency_groups.gwt.v2_6.GWT_2_6_Annot;
 import org.adligo.tests4j.models.shared.dependency_groups.gwt.v2_6.GWT_2_6_IO;
 import org.adligo.tests4j.models.shared.dependency_groups.gwt.v2_6.GWT_2_6_Lang;
 import org.adligo.tests4j.models.shared.dependency_groups.gwt.v2_6.GWT_2_6_Math;
 import org.adligo.tests4j.models.shared.dependency_groups.gwt.v2_6.GWT_2_6_Util;
+import org.adligo.tests4j.shared.asserts.dependency.DependencyGroup;
+import org.adligo.tests4j.shared.asserts.dependency.DependencyGroupBaseDelegate;
+import org.adligo.tests4j.shared.asserts.dependency.DependencyGroupMutant;
 
 
 /**

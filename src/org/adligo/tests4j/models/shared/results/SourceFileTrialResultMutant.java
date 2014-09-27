@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageMutant;
-import org.adligo.tests4j.models.shared.dependency.I_ClassAttributes;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependencies;
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAttributes;
 
 public class SourceFileTrialResultMutant extends BaseTrialResultMutant implements I_SourceFileTrialResult {
 	private SourceFileCoverageMutant coverage;

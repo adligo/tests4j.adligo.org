@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.adligo.tests4j.shared.asserts.dependency.ClassAlias;
 import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
 

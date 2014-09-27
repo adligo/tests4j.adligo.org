@@ -3,7 +3,7 @@ package org.adligo.tests4j.models.shared.dependency_groups.jse;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_Util;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.I_JSE_1_7_Util;
 
 
 /**
@@ -16,7 +16,7 @@ import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_Util;
  * @author scott
  *
  */
-public class JSE_Util implements JSE_1_7_Util, I_PackageConstantLookup {
+public class JSE_Util implements I_JSE_1_7_Util, I_PackageConstantLookup {
 	public static final JSE_Util INSTANCE = new JSE_Util();
 	private static final Map<String,String> CONSTANT_LOOKUP = getConstantLookup();
 	

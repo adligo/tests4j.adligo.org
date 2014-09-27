@@ -1,10 +1,5 @@
 package org.adligo.tests4j.run.helpers;
 
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrumentation;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Runnable;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
-import org.adligo.tests4j.models.shared.system.Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.SubProgress;
@@ -15,6 +10,11 @@ import org.adligo.tests4j.run.discovery.TrialState;
 import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoverageTrialInstrumentation;
+import org.adligo.tests4j.system.shared.I_Tests4J_Runnable;
+import org.adligo.tests4j.system.shared.I_Tests4J_TrialProgress;
+import org.adligo.tests4j.system.shared.Tests4J_TrialProgress;
 
 public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 

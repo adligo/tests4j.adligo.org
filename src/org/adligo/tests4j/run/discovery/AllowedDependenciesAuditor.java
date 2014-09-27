@@ -3,13 +3,13 @@ package org.adligo.tests4j.run.discovery;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.dependency.DependencyGroupAggregate;
-import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.models.shared.trials.AllowedDependencies;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.shared.asserts.dependency.AllowedDependencies;
+import org.adligo.tests4j.shared.asserts.dependency.DependencyGroupAggregate;
+import org.adligo.tests4j.shared.asserts.dependency.I_DependencyGroup;
 
 public class AllowedDependenciesAuditor {
 

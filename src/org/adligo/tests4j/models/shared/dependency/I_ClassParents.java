@@ -2,6 +2,8 @@ package org.adligo.tests4j.models.shared.dependency;
 
 import java.util.List;
 
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAlias;
+
 /**
  * this interface is used to track which 
  * classes bytes have been cached in memory.

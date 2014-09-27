@@ -7,6 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.shared.asserts.dependency.ClassAliasLocal;
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAlias;
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAliasLocal;
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAttributes;
 import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
 /**

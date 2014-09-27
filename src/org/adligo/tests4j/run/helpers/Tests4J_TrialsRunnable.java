@@ -23,12 +23,6 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Runnable;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_TestFinishedListener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_TrialProgress;
-import org.adligo.tests4j.models.shared.system.Tests4J_TrialProgress;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.models.shared.trials.I_Progress;
@@ -51,6 +45,12 @@ import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.system.shared.I_Tests4J_Runnable;
+import org.adligo.tests4j.system.shared.I_Tests4J_TestFinishedListener;
+import org.adligo.tests4j.system.shared.I_Tests4J_TrialProgress;
+import org.adligo.tests4j.system.shared.Tests4J_TrialProgress;
 
 /**
  * A Runnable that polls the queue of trials that 

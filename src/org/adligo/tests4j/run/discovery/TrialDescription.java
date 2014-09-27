@@ -16,18 +16,14 @@ import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageMutant;
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
-import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageTrialInstrumentation;
 import org.adligo.tests4j.models.shared.trials.AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_CircularDependencies;
 import org.adligo.tests4j.models.shared.trials.IgnoreTrial;
 import org.adligo.tests4j.models.shared.trials.PackageScope;
 import org.adligo.tests4j.models.shared.trials.SourceFileScope;
@@ -35,6 +31,9 @@ import org.adligo.tests4j.models.shared.trials.SuppressOutput;
 import org.adligo.tests4j.models.shared.trials.TrialTimeout;
 import org.adligo.tests4j.models.shared.trials.UseCaseScope;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.shared.asserts.dependency.CircularDependencies;
+import org.adligo.tests4j.shared.asserts.dependency.I_CircularDependencies;
+import org.adligo.tests4j.shared.asserts.dependency.I_DependencyGroup;
 import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.shared.common.StringMethods;
@@ -44,6 +43,7 @@ import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoverageTrialInstrumentation;
 
 /**
  * a generally immutable class that represents/wrapps

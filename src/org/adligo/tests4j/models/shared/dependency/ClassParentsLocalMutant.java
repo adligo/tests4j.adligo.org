@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.shared.asserts.dependency.ClassAlias;
+
 
 /**
  * a mutable implementation of {@link I_ClassParents}

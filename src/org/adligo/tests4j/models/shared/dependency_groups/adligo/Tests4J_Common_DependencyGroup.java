@@ -5,10 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.dependency.DependencyGroupAggregate;
-import org.adligo.tests4j.models.shared.dependency.DependencyGroupBaseDelegate;
-import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
-import org.adligo.tests4j.models.shared.dependency.NameOnlyDependencyGroup;
+import org.adligo.tests4j.shared.asserts.dependency.DependencyGroupAggregate;
+import org.adligo.tests4j.shared.asserts.dependency.DependencyGroupBaseDelegate;
+import org.adligo.tests4j.shared.asserts.dependency.I_DependencyGroup;
+import org.adligo.tests4j.shared.asserts.dependency.NameOnlyDependencyGroup;
 import org.adligo.tests4j.shared.common.CacheControl;
 import org.adligo.tests4j.shared.common.ClassMethods;
 import org.adligo.tests4j.shared.common.DefaultSystem;

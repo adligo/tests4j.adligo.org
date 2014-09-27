@@ -1,5 +1,7 @@
 package org.adligo.tests4j.shared.asserts.common;
 
+import org.adligo.tests4j.shared.common.ClassMethods;
+
 
 public class TestFailureMutant implements I_TestFailure {
 	private I_AssertType assertType;
@@ -39,7 +41,7 @@ public class TestFailureMutant implements I_TestFailure {
 	}
 	
 	public String toString(I_TestFailure p) {
-		return p.getClass().getSimpleName() + " [type=" + p.getAssertType() + ", failureMessage="
+		return ClassMethods.getSimpleName(p) + " [type=" + p.getAssertType() + ", failureMessage="
 				+ p.getFailureMessage() + "]";
 	}
 	

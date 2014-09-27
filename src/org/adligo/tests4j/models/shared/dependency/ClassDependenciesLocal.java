@@ -6,6 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.shared.asserts.dependency.ClassAliasLocal;
+import org.adligo.tests4j.shared.asserts.dependency.ClassAttributes;
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAlias;
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAliasLocal;
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAttributes;
+
 /**
  * a immutable implementation of {@link I_ClassDependencies}
  * @author scott

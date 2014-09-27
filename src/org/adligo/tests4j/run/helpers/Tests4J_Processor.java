@@ -10,14 +10,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.adligo.tests4j.models.shared.dependency_groups.gwt.GWT_Classes;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Delegate;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Listener;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Params;
-import org.adligo.tests4j.models.shared.system.I_Tests4J_ProgressMonitor;
-import org.adligo.tests4j.models.shared.system.Tests4J_DelegateProgressMonitor;
 import org.adligo.tests4j.run.Tests4J_UncaughtExceptionHandler;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
@@ -36,8 +28,16 @@ import org.adligo.tests4j.shared.output.I_OutputBuffer;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.output.ListDelegateOutputBuffer;
 import org.adligo.tests4j.shared.output.PrintStreamOutputBuffer;
-import org.adligo.tests4j.shared.output.SafeOutputStremBuffer;
-import org.adligo.tests4j.shared.report.summary.SummaryReporter;
+import org.adligo.tests4j.shared.output.SafeOutputStreamBuffer;
+import org.adligo.tests4j.system.shared.I_Tests4J_Controls;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.system.shared.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.system.shared.I_Tests4J_Delegate;
+import org.adligo.tests4j.system.shared.I_Tests4J_Listener;
+import org.adligo.tests4j.system.shared.I_Tests4J_Params;
+import org.adligo.tests4j.system.shared.I_Tests4J_ProgressMonitor;
+import org.adligo.tests4j.system.shared.Tests4J_DelegateProgressMonitor;
+import org.adligo.tests4j.system.shared.report.summary.SummaryReporter;
 
 /**
  * ok this is the main processing class which does this;
@@ -105,7 +105,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		if (outs.size() >= 1) {
 			List<I_OutputBuffer> outputBuffers = new ArrayList<I_OutputBuffer>();
 			for (OutputStream ob: outs) {
-				outputBuffers.add(new SafeOutputStremBuffer(log, ob));
+				outputBuffers.add(new SafeOutputStreamBuffer(log, ob));
 			}
 			outputBuffers.add(new PrintStreamOutputBuffer(system.getOut()));
 			PrintStream out = new  JsePrintOutputStream(new ListDelegateOutputBuffer(outputBuffers));

@@ -3,6 +3,9 @@ package org.adligo.tests4j.models.shared.dependency;
 import java.util.List;
 import java.util.Set;
 
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAlias;
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAttributes;
+
 /**
  * A circular a reference loop ie;
  * ClassA.init()  calls -> ClassB.foo();

@@ -1,5 +1,7 @@
 package org.adligo.tests4j.shared.asserts.line_text;
 
+import org.adligo.tests4j.shared.common.ClassMethods;
+
 public class LineDiffMutant implements I_LineDiff {
 	public static final String LINE_NUMBERS_MUST_BE_NEGATIVE_ONE_OR_GREATER = "LineDiff requires line numbers of -1 or greater.";
 	private LineDiffType type;
@@ -129,7 +131,7 @@ public class LineDiffMutant implements I_LineDiff {
 	}
 	
 	public String toString(Class<?> c) {
-		return c.getSimpleName() + " [type=" + type + ", exampleLineNbr="
+		return ClassMethods.getSimpleName(c) + " [type=" + type + ", exampleLineNbr="
 				+ expectedLineNbr + ", actualLineNbr=" + actualLineNbr + "]";
 	}
 }

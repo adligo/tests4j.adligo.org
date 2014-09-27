@@ -1,12 +1,12 @@
 package org.adligo.tests4j.models.shared.dependency_groups.gwt.v2_6;
 
-import org.adligo.tests4j.models.shared.dependency.ClassAttributes;
-import org.adligo.tests4j.models.shared.dependency.ClassAttributesMutant;
-import org.adligo.tests4j.models.shared.dependency.FieldSignature;
-import org.adligo.tests4j.models.shared.dependency.MethodSignature;
 import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Lang;
 import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Log;
 import org.adligo.tests4j.models.shared.dependency_groups.jse.JSE_Util;
+import org.adligo.tests4j.shared.asserts.dependency.ClassAttributes;
+import org.adligo.tests4j.shared.asserts.dependency.ClassAttributesMutant;
+import org.adligo.tests4j.shared.asserts.dependency.FieldSignature;
+import org.adligo.tests4j.shared.asserts.dependency.MethodSignature;
 import org.adligo.tests4j.shared.common.ClassMethods;
 
 public class GWT_2_6_Log {

@@ -2,6 +2,8 @@ package org.adligo.tests4j.models.shared.dependency;
 
 import java.util.List;
 
+import org.adligo.tests4j.shared.asserts.dependency.I_ClassAliasLocal;
+
 /**
  * The local version of I_ClassParents,
  * which includes the actual class instances.

@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.dependency.DependencyGroupAggregate;
-import org.adligo.tests4j.models.shared.dependency.DependencyGroupBaseDelegate;
-import org.adligo.tests4j.models.shared.dependency.I_DependencyGroup;
-import org.adligo.tests4j.models.shared.dependency.NameOnlyDependencyGroup;
+import org.adligo.tests4j.shared.asserts.dependency.DependencyGroupAggregate;
+import org.adligo.tests4j.shared.asserts.dependency.DependencyGroupBaseDelegate;
+import org.adligo.tests4j.shared.asserts.dependency.I_DependencyGroup;
+import org.adligo.tests4j.shared.asserts.dependency.NameOnlyDependencyGroup;
 
+/**
+ * base class for Tests4J_DependencyGroups,
+ * 
+ * @author scott
+ *
+ */
 public class Tests4J_DependencyGroup extends DependencyGroupBaseDelegate {
 
 	public void setupDelegates(Set<String> names) {

@@ -6,9 +6,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.adligo.tests4j.models.shared.system.I_Tests4J_Controls;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.memory.Tests4J_Memory;
+import org.adligo.tests4j.system.shared.I_Tests4J_Controls;
 
 /**
  * @see I_Tests4J_Controls controlls

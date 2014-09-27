@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.dependency_groups.jse;
 
-import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_LangAnnot;
+import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.I_JSE_1_7_LangAnnot;
 
 
 /**
@@ -13,7 +13,7 @@ import org.adligo.tests4j.models.shared.dependency_groups.jse.v1_7.JSE_1_7_LangA
  * @author scott
  *
  */
-public class JSE_LangAnnot implements JSE_1_7_LangAnnot {
+public class JSE_LangAnnot implements I_JSE_1_7_LangAnnot {
 	public static final JSE_LangAnnot INSTANCE = new JSE_LangAnnot();
 	
 	private JSE_LangAnnot() {};
