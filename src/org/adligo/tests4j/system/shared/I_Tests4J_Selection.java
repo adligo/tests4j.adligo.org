@@ -1,6 +1,6 @@
 package org.adligo.tests4j.system.shared;
 
-import org.adligo.tests4j.models.shared.trials.I_Trial;
+import org.adligo.tests4j.system.shared.trials.I_Trial;
 
 /**
  * the selection of a single test

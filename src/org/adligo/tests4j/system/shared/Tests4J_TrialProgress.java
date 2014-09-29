@@ -1,6 +1,6 @@
 package org.adligo.tests4j.system.shared;
 
-import org.adligo.tests4j.models.shared.trials.I_Progress;
+import org.adligo.tests4j.system.shared.trials.I_Progress;
 
 /**
  * this class represents progress of a trial,

@@ -23,10 +23,6 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.I_Progress;
-import org.adligo.tests4j.models.shared.trials.TrialBindings;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -51,6 +47,10 @@ import org.adligo.tests4j.system.shared.I_Tests4J_Runnable;
 import org.adligo.tests4j.system.shared.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.system.shared.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.system.shared.Tests4J_TrialProgress;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.system.shared.trials.I_Progress;
+import org.adligo.tests4j.system.shared.trials.TrialBindings;
 
 /**
  * A Runnable that polls the queue of trials that 

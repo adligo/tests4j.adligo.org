@@ -3,8 +3,8 @@ package org.adligo.tests4j.run.discovery;
 import java.lang.reflect.Method;
 
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
-import org.adligo.tests4j.models.shared.trials.AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
+import org.adligo.tests4j.system.shared.trials.AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 
 /**
  * TODO extract the method 

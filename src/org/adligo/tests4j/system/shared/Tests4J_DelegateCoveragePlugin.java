@@ -3,8 +3,8 @@ package org.adligo.tests4j.system.shared;
 import java.io.IOException;
 
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 
 /**
  * this class protects tests4j from unexpected exceptions

@@ -9,12 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.I_MetaTrialInputData;
-import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
-import org.adligo.tests4j.models.shared.trials.I_Trial;
-import org.adligo.tests4j.models.shared.trials.I_TrialParamsFactory;
 import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformAssertionEvaluator;
@@ -33,6 +27,12 @@ import org.adligo.tests4j.system.shared.Tests4J_CoveragePluginParams;
 import org.adligo.tests4j.system.shared.Tests4J_RemoteInfo;
 import org.adligo.tests4j.system.shared.Tests4J_Selection;
 import org.adligo.tests4j.system.shared.report.summary.DefaultReporterStates;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrialInputData;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
+import org.adligo.tests4j.system.shared.trials.I_Trial;
+import org.adligo.tests4j.system.shared.trials.I_TrialParamsFactory;
 
 /**
  * @diagram_sync with Overview.seq on 8/20/2014

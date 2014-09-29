@@ -1,7 +1,7 @@
 package org.adligo.tests4j.system.shared;
 
 import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 
 public class Tests4J_CoverageTrialInstrumentation implements I_Tests4J_CoverageTrialInstrumentation {
 	private Class<? extends I_AbstractTrial> instrumentedClass;

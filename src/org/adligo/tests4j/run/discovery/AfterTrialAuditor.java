@@ -6,10 +6,10 @@ import java.util.Collection;
 
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.models.shared.trials.AfterTrial;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.system.shared.trials.AfterTrial;
 
 /**
  * audits a method to see if it conforms to @AfterTrial

@@ -6,9 +6,9 @@ import org.adligo.tests4j.models.shared.results.I_UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_UseCaseTrial;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_UseCaseTrial;
 
 /**
  * TODO extract the method 

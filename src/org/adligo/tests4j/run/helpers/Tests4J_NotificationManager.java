@@ -26,11 +26,6 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
-import org.adligo.tests4j.models.shared.trials.ApiTrial;
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.MetaTrial;
-import org.adligo.tests4j.models.shared.trials.SourceFileTrial;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TestDescription;
@@ -48,6 +43,11 @@ import org.adligo.tests4j.system.shared.I_Tests4J_Listener;
 import org.adligo.tests4j.system.shared.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.system.shared.I_Tests4J_SourceInfoParams;
 import org.adligo.tests4j.system.shared.Tests4J_ListenerDelegator;
+import org.adligo.tests4j.system.shared.trials.ApiTrial;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.system.shared.trials.MetaTrial;
+import org.adligo.tests4j.system.shared.trials.SourceFileTrial;
 
 /**
  * This class handles event notification

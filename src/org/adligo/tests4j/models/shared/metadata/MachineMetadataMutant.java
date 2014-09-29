@@ -27,12 +27,14 @@ public class MachineMetadataMutant implements I_MachineMetadata {
 		//machdep.cpu.brand_string: Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz
 		//machdep.cpu.family: 6
 		//machdep.cpu.model: 30
+		/*
 		System.out.println(System.getenv("PROCESSOR_IDENTIFIER"));
 		System.out.println(System.getenv("PROCESSOR_ARCHITECTURE"));
 		System.out.println(System.getenv("PROCESSOR_ARCHITEW6432"));
 		System.out.println(System.getenv("NUMBER_OF_PROCESSORS"));
 		
 		System.out.println(Runtime.getRuntime().availableProcessors());
+		*/
 		//Runtime.getRuntime().totalMemory();
 		//Runtime.getRuntime().freeMemory()
 	}

@@ -1,8 +1,7 @@
 package org.adligo.tests4j.system.shared;
 
-import org.adligo.tests4j.models.shared.trials.SourceFileScope;
-import org.adligo.tests4j.shared.xml.I_XML_Consumer;
 import org.adligo.tests4j.shared.xml.I_XML_Producer;
+import org.adligo.tests4j.system.shared.trials.SourceFileScope;
 
 /**
  * parameters for the coverage plug-in,

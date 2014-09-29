@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.TrialTypeAnnotation;
 import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.TrialTypeAnnotation;
 
 public class TrialTypeFinder {
 	public static I_TrialType getTypeInternal(Class<? extends I_AbstractTrial> trialClass,

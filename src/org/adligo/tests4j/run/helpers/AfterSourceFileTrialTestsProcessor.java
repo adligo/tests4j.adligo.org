@@ -16,9 +16,6 @@ import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.trials.AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_SourceFileTrial;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.shared.asserts.common.AssertCompareFailureMutant;
@@ -38,6 +35,9 @@ import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.system.shared.trials.AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 
 /**
  * TODO extract the method 

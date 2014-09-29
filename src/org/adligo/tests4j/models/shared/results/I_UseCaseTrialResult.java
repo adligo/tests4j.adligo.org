@@ -1,7 +1,7 @@
 package org.adligo.tests4j.models.shared.results;
 
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
-import org.adligo.tests4j.models.shared.trials.UseCaseScope;
+import org.adligo.tests4j.system.shared.trials.UseCaseScope;
 
 /**
  * @see UseCaseScope

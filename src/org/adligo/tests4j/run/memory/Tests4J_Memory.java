@@ -10,9 +10,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
@@ -34,6 +31,9 @@ import org.adligo.tests4j.system.shared.I_Tests4J_Selection;
 import org.adligo.tests4j.system.shared.I_Tests4J_SourceInfoParams;
 import org.adligo.tests4j.system.shared.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.system.shared.Tests4J_SourceInfoParamsDelegate;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
 
 /**
  * Instances of this class represent the main

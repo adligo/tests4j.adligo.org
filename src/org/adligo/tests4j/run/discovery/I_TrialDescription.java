@@ -1,7 +1,7 @@
 package org.adligo.tests4j.run.discovery;
 
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.shared.common.I_TrialType;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 
 /**
  * this interface was added to provide easy mocking

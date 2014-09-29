@@ -41,7 +41,7 @@ public class AssertionFailureLocation extends Exception {
 		Set<String> toRet = new HashSet<String>();
 		
 		toRet.add(AssertionFailureLocation.class.getName());
-		toRet.add("org.adligo.tests4j.models.shared.trials.AbstractTrial");
+		toRet.add("org.adligo.tests4j.system.shared.trials.AbstractTrial");
 		toRet.add("org.adligo.tests4j.shared.asserts.AssertionProcessor");
 		
 		return Collections.unmodifiableSet(toRet);

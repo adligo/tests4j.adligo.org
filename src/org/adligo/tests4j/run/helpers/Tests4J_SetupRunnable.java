@@ -1,8 +1,5 @@
 package org.adligo.tests4j.run.helpers;
 
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.models.shared.trials.SubProgress;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
@@ -15,6 +12,9 @@ import org.adligo.tests4j.system.shared.I_Tests4J_CoverageTrialInstrumentation;
 import org.adligo.tests4j.system.shared.I_Tests4J_Runnable;
 import org.adligo.tests4j.system.shared.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.system.shared.Tests4J_TrialProgress;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.system.shared.trials.SubProgress;
 
 public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 

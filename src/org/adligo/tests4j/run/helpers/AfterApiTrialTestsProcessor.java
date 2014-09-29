@@ -12,13 +12,13 @@ import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.models.shared.trials.I_AbstractTrial;
-import org.adligo.tests4j.models.shared.trials.I_ApiTrial;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+import org.adligo.tests4j.system.shared.trials.I_ApiTrial;
 
 /**
  * This class should behave like a model (not thread safe)

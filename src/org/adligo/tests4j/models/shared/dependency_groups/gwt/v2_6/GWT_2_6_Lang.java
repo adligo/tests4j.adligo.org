@@ -11,23 +11,8 @@ import org.adligo.tests4j.shared.asserts.dependency.FieldSignature;
 import org.adligo.tests4j.shared.asserts.dependency.MethodSignature;
 import org.adligo.tests4j.shared.common.ClassMethods;
 
-public class GWT_2_6_Lang extends DependencyGroup {
+public class GWT_2_6_Lang  {
 	
-	public static DependencyGroupMutant create() {
-		DependencyGroupMutant dgm = new DependencyGroupMutant();
-		
-		dgm.addClassMethods(getAppendable());
-		dgm.addClassMethods(getArithmeticException());
-		dgm.addClassMethods(getArrayIndexOutOfBoundsException());
-		dgm.addClassMethods(getArrayStoreException());
-		dgm.addClassMethods(getAssertionError());
-		dgm.addClassMethods(getAutoCloseable());
-		dgm.addClassMethods(getBoolean());
-		dgm.addClassMethods(getCharacter());
-		dgm.addClassMethods(getCharSequence());
-		
-		return dgm;
-	}
 	public static ClassAttributes getAppendable() {
 		ClassAttributesMutant toRet = new ClassAttributesMutant();
 		toRet.setName(JSE_Lang.APPENDABLE);
@@ -2019,8 +2004,5 @@ public class GWT_2_6_Lang extends DependencyGroup {
 
 	public static void addVoidMembers(ClassAttributesMutant toRet) {
 		toRet.addField(new FieldSignature("TYPE", JSE_Lang.CLASS));
-	}
-	public GWT_2_6_Lang() {
-		super(create());
 	}
 }
