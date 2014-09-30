@@ -3,7 +3,7 @@ package org.adligo.tests4j.run.helpers;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.I_Tests4J_ProcessInfo;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
 
 public interface I_Tests4J_NotificationManager {
 

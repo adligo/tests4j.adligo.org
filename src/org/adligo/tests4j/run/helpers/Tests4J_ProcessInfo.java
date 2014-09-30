@@ -6,9 +6,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.adligo.tests4j.shared.common.StringMethods;
-import org.adligo.tests4j.system.shared.I_Tests4J_ProcessInfo;
-import org.adligo.tests4j.system.shared.I_Tests4J_Runnable;
-import org.adligo.tests4j.system.shared.I_Tests4J_TrialProgress;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Runnable;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_TrialProgress;
 
 public class Tests4J_ProcessInfo implements I_Tests4J_ProcessInfo {
 	private String processName;

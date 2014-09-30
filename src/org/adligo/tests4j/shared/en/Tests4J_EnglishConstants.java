@@ -1,6 +1,6 @@
 package org.adligo.tests4j.shared.en;
 
-import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_EclipseErrors;
@@ -36,7 +36,7 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	private static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = 
 			"Classes which implement I_AbstractTrial must have a zero argument constructor.";
 	
-	private Tests4J_AnnotationErrors annotationErrors = new Tests4J_AnnotationErrors();
+	private Tests4J_AnnotationMessages annotationErrors = new Tests4J_AnnotationMessages();
 	private I_Tests4J_AssertionInputMessages assertionInputMessages =
 			new Tests4J_AssertionInputMessages();
 	private I_Tests4J_ResultMessages assertionResultMessages =
@@ -53,7 +53,7 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	private Tests4J_EnglishConstants() {}
 	
 	@Override
-	public I_Tests4J_AnnotationErrors getAnnotationErrors() {
+	public I_Tests4J_AnnotationMessages getAnnotationMessages() {
 		return annotationErrors;
 	}
 

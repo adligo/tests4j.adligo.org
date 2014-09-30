@@ -15,6 +15,10 @@ import java.util.Set;
  * the reflection and reading of the virtual assembler
  * opcode instructions.
  * 
+ * must have a 
+ * public static final I_DependencyGroup INSTANCE
+ * field or a public constructor.
+ * 
  * @author scott
  *
  */

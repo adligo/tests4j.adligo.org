@@ -4,8 +4,8 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.shared.asserts.dependency.I_DependencyGroup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.system.shared.I_Tests4J_SourceInfoParams;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_SourceInfoParams;
 
 public interface I_Tests4J_Memory {
 

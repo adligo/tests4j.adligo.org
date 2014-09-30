@@ -32,10 +32,10 @@ import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.common.Tests4J_System;
 import org.adligo.tests4j.shared.common.TrialType;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.I_Tests4J_CoverageTrialInstrumentation;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageTrialInstrumentation;
 import org.adligo.tests4j.system.shared.trials.AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.IgnoreTrial;
@@ -168,7 +168,7 @@ public class TrialDescription implements I_TrialDescription {
 									"afterTrialTests", new Class[] {I_SourceFileTrialResult.class});
 					if (sourceFileScope == null) {
 						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-						I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+						I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 						
 						failures.add(new TrialFailure(
 								annonErrors.getNoSourceFileScope(),
@@ -178,7 +178,7 @@ public class TrialDescription implements I_TrialDescription {
 						Class<?> clazz = sourceFileScope.sourceClass();
 						if (clazz == null) {
 							I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-							I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+							I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 							
 							failures.add(new TrialFailure(
 									annonErrors.getSourceFileScopeEmptyClass(),
@@ -188,7 +188,7 @@ public class TrialDescription implements I_TrialDescription {
 						minCoverage_ = sourceFileScope.minCoverage();
 						if (minCoverage_ > 100.0 || minCoverage_ < 0.0) {
 							I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-							I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+							I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 							
 							failures.add(new TrialFailure( 
 									annonErrors.getMinCoverageMustBeBetweenZeroAndOneHundred(),
@@ -206,7 +206,7 @@ public class TrialDescription implements I_TrialDescription {
 								"afterTrialTests", new Class[] {I_ApiTrialResult.class});
 				if (packageScope == null) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 					
 					failures.add(new TrialFailure(
 							annonErrors.getNoPackageScope(),
@@ -216,7 +216,7 @@ public class TrialDescription implements I_TrialDescription {
 				String testedPackageName = packageScope.packageName();
 				if (StringMethods.isEmpty(testedPackageName)) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 					
 					failures.add(new TrialFailure(
 							annonErrors.getPackageScopeEmptyName(),
@@ -229,7 +229,7 @@ public class TrialDescription implements I_TrialDescription {
 				useCaseScope = trialClass_.getAnnotation(UseCaseScope.class);
 				if (useCaseScope == null) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 					
 					failures.add(new TrialFailure(
 							annonErrors.getNoUseCaseScope(),
@@ -239,7 +239,7 @@ public class TrialDescription implements I_TrialDescription {
 				String system = useCaseScope.system();
 				if (StringMethods.isEmpty(system)) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 					
 					failures.add(new TrialFailure(
 							annonErrors.getUseCaseScopeEmptySystem()
@@ -250,7 +250,7 @@ public class TrialDescription implements I_TrialDescription {
 				String nown = useCaseScope.nown();
 				if (StringMethods.isEmpty(nown)) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 					
 					failures.add(new TrialFailure(
 							annonErrors.getUseCaseScopeEmptyNown(), 
@@ -262,7 +262,7 @@ public class TrialDescription implements I_TrialDescription {
 				String verb = useCaseScope.verb();
 				if (StringMethods.isEmpty(verb)) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 					
 					failures.add(new TrialFailure(
 							annonErrors.getUseCaseScopeEmptyVerb(),
@@ -314,7 +314,7 @@ public class TrialDescription implements I_TrialDescription {
 						beforeTrialMethod = method;
 					} else {
 						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-						I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+						I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 						
 						failures.add(new TrialFailure(
 								annonErrors.getMultipleBeforeTrial(),
@@ -327,7 +327,7 @@ public class TrialDescription implements I_TrialDescription {
 						afterTrialMethod = method;
 					} else {
 						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-						I_Tests4J_AnnotationErrors annonErrors = consts.getAnnotationErrors();
+						I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
 						
 						failures.add(new TrialFailure(
 								annonErrors.getMultipleAfterTrial(),

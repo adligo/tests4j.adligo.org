@@ -2,7 +2,7 @@ package org.adligo.tests4j.models.shared.metadata;
 
 import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.shared.xml.XML_Parser;
 
@@ -24,11 +24,11 @@ public class UseCaseMetadata implements I_UseCaseMetadata {
 		nown = pNown;
 		verb = pVerb;
 		if (StringMethods.isEmpty(nown)) {
-			I_Tests4J_AnnotationErrors messages = Tests4J_Constants.CONSTANTS.getAnnotationErrors();
+			I_Tests4J_AnnotationMessages messages = Tests4J_Constants.CONSTANTS.getAnnotationMessages();
 			throw new IllegalArgumentException(messages.getUseCaseScopeEmptyNown());
 		}
 		if (StringMethods.isEmpty(verb)) {
-			I_Tests4J_AnnotationErrors messages = Tests4J_Constants.CONSTANTS.getAnnotationErrors();
+			I_Tests4J_AnnotationMessages messages = Tests4J_Constants.CONSTANTS.getAnnotationMessages();
 			throw new IllegalArgumentException(messages.getUseCaseScopeEmptyVerb());
 		}
 	}

@@ -20,7 +20,7 @@ import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.I_Tests4J_TestFinishedListener;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 
 /**

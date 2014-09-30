@@ -21,7 +21,7 @@ public interface I_Tests4J_Constants {
 	public static final String HEADER = ": ";
 	public static final String PREFIX_HEADER = PREFIX + HEADER;
 	
-	public I_Tests4J_AnnotationErrors getAnnotationErrors();
+	public I_Tests4J_AnnotationMessages getAnnotationMessages();
 	
 	
 	public I_Tests4J_AssertionInputMessages getAssertionInputMessages();

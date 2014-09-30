@@ -34,7 +34,7 @@ import org.adligo.tests4j.shared.common.ClassMethods;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.system.shared.trials.AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
@@ -287,7 +287,15 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 			for (I_ClassAttributes ref: refs) {
 				String className = ref.getName();
 				if ( !sourceClassName.equals(className)) {
-					if (dg.isInGroup(className)) {
+					boolean result = false;
+					try {
+						result = dg.isInGroup(className);
+					} catch (Exception x) {
+						log.onThrowable(new IllegalStateException("Problem with dependency group in trial " +
+								log.getLineSeperator() + trialDesc.getTrialName(), x));
+					}
+					
+					if (result) {
 						//this ref is expceted
 						hashCounter = hashCounter * prime + className.hashCode();
 					} else {

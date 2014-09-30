@@ -7,7 +7,7 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.trials.IgnoreTest;
 import org.adligo.tests4j.system.shared.trials.Test;
@@ -39,7 +39,7 @@ public class TestAuditor {
 			Class<?> [] params = method.getParameterTypes();
 			if (params.length != 0) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getHasParams(),
@@ -48,7 +48,7 @@ public class TestAuditor {
 			}
 			if (Modifier.isAbstract(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getIsAbstract(),
@@ -57,7 +57,7 @@ public class TestAuditor {
 			}
 			if (Modifier.isStatic(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getIsStatic(),
@@ -66,7 +66,7 @@ public class TestAuditor {
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getIsNotPublic(),
@@ -76,7 +76,7 @@ public class TestAuditor {
 			long timeout = test.timeout();
 			if (timeout < 0) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationErrors errors = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getHasNegativeTimeout(),

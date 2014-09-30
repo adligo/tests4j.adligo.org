@@ -1,7 +1,5 @@
 package org.adligo.tests4j.system.shared.trials;
 
-import org.adligo.tests4j.shared.xml.I_XML_Consumer;
-import org.adligo.tests4j.shared.xml.I_XML_Producer;
 
 /**
  * just a simple marker interface so that

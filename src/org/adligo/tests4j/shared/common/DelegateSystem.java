@@ -18,7 +18,7 @@ public class DelegateSystem implements I_System {
 	
 	private MethodBlocker getMethodBlocker() {
 		List<String> allowedCallers = new ArrayList<String>();
-		allowedCallers.add("org.adligo.tests4j.run.Tests4J");
+		allowedCallers.add("org.adligo.tests4j.run.api.Tests4J");
 		allowedCallers.add("org.adligo.tests4j_tests.shared.common.mocks.ThreadLocalSystemMock");
 		
 		return new MethodBlocker(DelegateSystem.class, "setDelegate", allowedCallers);

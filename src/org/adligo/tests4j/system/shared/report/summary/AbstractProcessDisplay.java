@@ -8,8 +8,8 @@ import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.I_Tests4J_ProcessInfo;
-import org.adligo.tests4j.system.shared.I_Tests4J_TrialProgress;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.system.shared.trials.I_Progress;
 
 /**

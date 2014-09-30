@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.adligo.tests4j.models.shared.dependency_groups.gwt.GWT_Classes;
-import org.adligo.tests4j.run.Tests4J_UncaughtExceptionHandler;
+import org.adligo.tests4j.run.api.Tests4J_UncaughtExceptionHandler;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
@@ -29,14 +29,14 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.output.ListDelegateOutputBuffer;
 import org.adligo.tests4j.shared.output.PrintStreamOutputBuffer;
 import org.adligo.tests4j.shared.output.SafeOutputStreamBuffer;
-import org.adligo.tests4j.system.shared.I_Tests4J_Controls;
-import org.adligo.tests4j.system.shared.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.system.shared.I_Tests4J_CoverageRecorder;
-import org.adligo.tests4j.system.shared.I_Tests4J_Delegate;
-import org.adligo.tests4j.system.shared.I_Tests4J_Listener;
-import org.adligo.tests4j.system.shared.I_Tests4J_Params;
-import org.adligo.tests4j.system.shared.I_Tests4J_ProgressMonitor;
-import org.adligo.tests4j.system.shared.Tests4J_DelegateProgressMonitor;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Controls;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePlugin;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageRecorder;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Delegate;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_ProgressMonitor;
+import org.adligo.tests4j.system.shared.api.Tests4J_DelegateProgressMonitor;
 import org.adligo.tests4j.system.shared.report.summary.SummaryReporter;
 
 /**

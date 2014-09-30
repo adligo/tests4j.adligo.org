@@ -7,7 +7,7 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.trials.BeforeTrial;
 /**
@@ -29,7 +29,7 @@ public class BeforeTrialAuditor {
 				
 			if (!Modifier.isStatic(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationErrors messages = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
 			
 				failures.add(new TrialFailure(
 						messages.getBeforeTrialNotStatic(),
@@ -38,7 +38,7 @@ public class BeforeTrialAuditor {
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationErrors messages = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
 			
 				failures.add(new TrialFailure(
 						messages.getBeforeTrialNotPublic(),
@@ -48,7 +48,7 @@ public class BeforeTrialAuditor {
 			Class<?> [] params = method.getParameterTypes();
 			if (params.length != 0) {
 				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationErrors messages = consts.getAnnotationErrors();
+				I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
 			
 				failures.add(new TrialFailure(
 						messages.getBeforeTrialHasParams(),

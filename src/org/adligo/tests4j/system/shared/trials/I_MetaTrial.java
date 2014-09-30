@@ -1,7 +1,6 @@
 package org.adligo.tests4j.system.shared.trials;
 
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
-import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 
 /**

@@ -1,6 +1,6 @@
 package org.adligo.tests4j.shared.common;
 
-import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_EclipseErrors;
@@ -62,8 +62,8 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 	public I_Tests4J_ParamsReaderMessages getParamReaderMessages() {
 		return delegate.getParamReaderMessages();
 	}
-	public I_Tests4J_AnnotationErrors getAnnotationErrors() {
-		return delegate.getAnnotationErrors();
+	public I_Tests4J_AnnotationMessages getAnnotationMessages() {
+		return delegate.getAnnotationMessages();
 	}
 
 

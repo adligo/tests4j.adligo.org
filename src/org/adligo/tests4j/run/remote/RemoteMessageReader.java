@@ -2,7 +2,7 @@ package org.adligo.tests4j.run.remote;
 
 import java.io.IOException;
 
-import org.adligo.tests4j.run.remote.io.I_CharacterInputStream;
+import org.adligo.tests4j.run.io.I_CharacterInputStream;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
 import org.adligo.tests4j.shared.xml.I_XML_Producer;
 

@@ -1,9 +1,5 @@
 package org.adligo.tests4j.system.shared.trials;
 
-import java.util.Set;
-
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.shared.common.TrialType;
 

@@ -7,7 +7,7 @@ import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.common.TrialType;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationErrors;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.TrialTypeAnnotation;
 
@@ -28,7 +28,7 @@ public class TrialTypeFinder {
 		}
 		
 		if (type == null) {
-			I_Tests4J_AnnotationErrors messages = Tests4J_Constants.CONSTANTS.getAnnotationErrors();
+			I_Tests4J_AnnotationMessages messages = Tests4J_Constants.CONSTANTS.getAnnotationMessages();
 			failures.add(new TrialFailure(messages.getTrialTypeMissing(), trialClass.getName()));
 		}
 		I_TrialType typeEnum = TrialType.get(type.type());
