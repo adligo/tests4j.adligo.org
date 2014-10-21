@@ -1,7 +1,7 @@
 package org.adligo.tests4j.run.common;
 
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.shared.asserts.dependency.I_DependencyGroup;
+import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePlugin;
@@ -23,8 +23,8 @@ public interface I_Tests4J_Memory {
 	
 	public int getFailureResultsSize();
 
-	public I_DependencyGroup getDependencyGroup(Class<?> c);
+	public I_ReferenceGroup getDependencyGroup(Class<?> c);
 	
-	public void putIfAbsent(Class<?> c, I_DependencyGroup group);
+	public void putIfAbsent(Class<?> c, I_ReferenceGroup group);
 	
 }

@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.adligo.tests4j.models.shared.association.I_ClassAssociations;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageMutant;
-import org.adligo.tests4j.models.shared.dependency.I_ClassDependencies;
-import org.adligo.tests4j.shared.asserts.dependency.I_ClassAttributes;
+import org.adligo.tests4j.shared.asserts.reference.I_ClassAttributes;
 
 public class SourceFileTrialResultMutant extends BaseTrialResultMutant implements I_SourceFileTrialResult {
 	private SourceFileCoverageMutant coverage;
 	private String sourceFileName;
-	private I_ClassDependencies dependencies;
-	private Map<String, I_ClassAttributes> attributeRefs_;
+	private I_ClassAssociations dependencies;
+	private Map<String, I_ClassAttributes> references_;
 	
 	public SourceFileTrialResultMutant() {}
 
@@ -75,32 +75,32 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 		return true;
 	}
 
-	public I_ClassDependencies getDependencies() {
+	public I_ClassAssociations getDependencies() {
 		return dependencies;
 	}
 
-	public void setDependencies(I_ClassDependencies classDependencies) {
-		if (attributeRefs_ != null) {
-			attributeRefs_.clear();
+	public void setDependencies(I_ClassAssociations classDependencies) {
+		if (references_ != null) {
+			references_.clear();
 		} else {
-			attributeRefs_ = new HashMap<>();
+			references_ = new HashMap<>();
 		}
 		dependencies = classDependencies;
 		if (dependencies != null) {
 			List<I_ClassAttributes> ars = dependencies.getReferences();
 			for (I_ClassAttributes ar: ars) {
-				attributeRefs_.put(ar.getName(), ar);
+				references_.put(ar.getName(), ar);
 			}
 		}
 	}
 
 	@Override
-	public I_ClassAttributes getAttributes(String className) {
-		return attributeRefs_.get(className);
+	public I_ClassAttributes getReferences(String className) {
+		return references_.get(className);
 	}
 
 	@Override
 	public I_ClassAttributes getSourceClassAttributes() {
-		return attributeRefs_.get(sourceFileName);
+		return references_.get(sourceFileName);
 	}
 }

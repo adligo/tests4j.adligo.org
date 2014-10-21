@@ -26,58 +26,58 @@ import org.adligo.tests4j.shared.common.StackTraceBuilder;
  */
 public class AssertionProcessor {
 
-	/**
-	 * @param cmd
-	 */
-	public static void evaluate(I_AssertListener listener, I_SimpleAssertCommand cmd) {
-		if (cmd.evaluate()) {
-			synchronized (listener) {
-				listener.assertCompleted(cmd);
-			}
-		} else {
-			synchronized (listener) {
-				onAssertionFailure(listener, cmd.getData(), cmd.getFailureMessage());
-			}
-		}
-	}
-	
-	public static void evaluate(I_AssertListener listener, I_ThrownAssertCommand cmd, I_Thrower p) {
-		if (cmd.evaluate(p)) {
-			synchronized (listener) {
-				listener.assertCompleted(cmd);
-			}
-		} else {
-			synchronized (listener) {
-				onAssertionFailure(listener, cmd.getData(), cmd.getFailureMessage());
-			}
-		}
-	}
+  /**
+   * @param cmd
+   */
+  public static void evaluate(I_AssertListener listener, I_SimpleAssertCommand cmd) {
+    if (cmd.evaluate()) {
+      synchronized (listener) {
+        listener.assertCompleted(cmd);
+      }
+    } else {
+      synchronized (listener) {
+        onAssertionFailure(listener, cmd.getData(), cmd.getFailureMessage());
+      }
+    }
+  }
+  
+  public static void evaluate(I_AssertListener listener, I_ThrownAssertCommand cmd, I_Thrower p) {
+    if (cmd.evaluate(p)) {
+      synchronized (listener) {
+        listener.assertCompleted(cmd);
+      }
+    } else {
+      synchronized (listener) {
+        onAssertionFailure(listener, cmd.getData(), cmd.getFailureMessage());
+      }
+    }
+  }
 
-	public static void onAssertionFailure(I_AssertListener listener,
-			I_AssertionData data, String failureMessage) {
-		
-		TestFailureBuilder builder = new TestFailureBuilder();
-		TestFailureMutant tfm =  builder.build(data, failureMessage);
-		
-		AssertionFailureLocation afl = new AssertionFailureLocation();
-		String locationFailedStackTrace = StackTraceBuilder.toString(afl, true);
-		tfm.setFailureDetail(locationFailedStackTrace);
-		
-		I_TestFailureType tft = tfm.getType();
-		TestFailureType type = TestFailureType.get(tft);
-		switch(type) {
-			case TestFailure:
-					TestFailure failure = new TestFailure(tfm);
-					listener.assertFailed(failure);
-				break;
-			case AssertCompareFailure:
-					AssertCompareFailure acf = new AssertCompareFailure((I_AssertCompareFailure) tfm);
-					listener.assertFailed(acf);
-				break;
-			default:
-					AssertThrownFailure atf = new AssertThrownFailure((I_AssertThrownFailure) tfm);
-					listener.assertFailed(atf);
-		}
-	}
-	
+  public static void onAssertionFailure(I_AssertListener listener,
+      I_AssertionData data, String failureMessage) {
+    
+    TestFailureBuilder builder = new TestFailureBuilder();
+    TestFailureMutant tfm =  builder.build(data, failureMessage);
+    
+    AssertionFailureLocation afl = new AssertionFailureLocation();
+    String locationFailedStackTrace = StackTraceBuilder.toString(afl, true);
+    tfm.setFailureDetail(locationFailedStackTrace);
+    
+    I_TestFailureType tft = tfm.getType();
+    TestFailureType type = TestFailureType.get(tft);
+    switch(type) {
+      case TestFailure:
+          TestFailure failure = new TestFailure(tfm);
+          listener.assertFailed(failure);
+        break;
+      case AssertCompareFailure:
+          AssertCompareFailure acf = new AssertCompareFailure((I_AssertCompareFailure) tfm);
+          listener.assertFailed(acf);
+        break;
+      default:
+          AssertThrownFailure atf = new AssertThrownFailure((I_AssertThrownFailure) tfm);
+          listener.assertFailed(atf);
+    }
+  }
+  
 }

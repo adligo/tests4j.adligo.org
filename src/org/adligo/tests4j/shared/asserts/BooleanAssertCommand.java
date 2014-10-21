@@ -1,8 +1,5 @@
 package org.adligo.tests4j.shared.asserts;
 
-import java.util.Collections;
-import java.util.Set;
-
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertionData;
@@ -41,26 +38,24 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 
 	@Override
 	public boolean evaluate() {
-		switch (type) {
-			case AssertTrue:
-				if (Boolean.TRUE.equals(value)) {
-					return true;
-				}
-				break;
-			case AssertFalse:
-				if (Boolean.FALSE.equals(value)) {
-					return true;
-				}
-				break;
-			case AssertNull:
-				if (value == null) {
-					return true;
-				}
-				break;
-			case AssertNotNull:
-				if (value != null) {
-					return true;
-				}
+		//switch statements cause the class to reference java.lang.NoSuchFieldError
+		//which isn't in GWT yet
+		if (AssertType.AssertTrue == type) {
+			if (Boolean.TRUE.equals(value)) {
+				return true;
+			}
+		} else if (AssertType.AssertFalse == type) {
+			if (Boolean.FALSE.equals(value)) {
+				return true;
+			}
+		} else if (AssertType.AssertNull == type) {
+			if (value == null) {
+				return true;
+			}
+		} else if (AssertType.AssertNotNull == type) {
+			if (value != null) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -111,7 +106,7 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 			case AssertNotNull:
 				return "";
 		}
-		return "";
+		return Character.BYTES;
 	}
 
 

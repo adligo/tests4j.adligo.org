@@ -85,4 +85,5 @@ public class DelegateSystem implements I_System {
 	public boolean isMainSystem() {
 		return delegate.isMainSystem();
 	}
+
 }

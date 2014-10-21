@@ -10,6 +10,7 @@ import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.output.TrialOutput;
+import org.adligo.tests4j.shared.asserts.common.AssertionFailedException;
 import org.adligo.tests4j.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.shared.asserts.common.I_AssertListener;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailure;

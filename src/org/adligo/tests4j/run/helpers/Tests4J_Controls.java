@@ -56,6 +56,7 @@ public class Tests4J_Controls implements I_Tests4J_Controls {
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace(ps);
+			this.shutdown();
 		}
 	}
 

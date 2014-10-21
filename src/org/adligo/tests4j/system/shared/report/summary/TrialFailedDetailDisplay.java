@@ -1,21 +1,23 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.shared.asserts.common.AssertType;
+import org.adligo.tests4j.shared.asserts.common.AssertionFailedException;
 import org.adligo.tests4j.shared.asserts.common.I_AssertCompareFailure;
 import org.adligo.tests4j.shared.asserts.common.I_AssertThrownFailure;
 import org.adligo.tests4j.shared.asserts.common.I_AssertType;
+import org.adligo.tests4j.shared.asserts.common.I_SourceTestFailure;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
 import org.adligo.tests4j.shared.asserts.common.I_ThrowableInfo;
-import org.adligo.tests4j.shared.asserts.dependency.I_AllowedDependencyFailure;
-import org.adligo.tests4j.shared.asserts.dependency.I_CircularDependencyFailure;
-import org.adligo.tests4j.shared.asserts.dependency.I_FieldSignature;
 import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexes;
 import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexesPair;
 import org.adligo.tests4j.shared.asserts.line_text.I_LineDiff;
@@ -24,23 +26,71 @@ import org.adligo.tests4j.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.shared.asserts.line_text.LineDiffType;
 import org.adligo.tests4j.shared.asserts.line_text.TextLinesCompare;
+import org.adligo.tests4j.shared.asserts.reference.I_AllowedReferencesFailure;
+import org.adligo.tests4j.shared.asserts.reference.I_CircularDependencyFailure;
+import org.adligo.tests4j.shared.asserts.reference.I_FieldSignature;
+import org.adligo.tests4j.shared.asserts.reference.I_MethodSignature;
 import org.adligo.tests4j.shared.common.ClassMethods;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 
 public class TrialFailedDetailDisplay {
 	private I_Tests4J_Log log;
 	private I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
+	private Map<I_AssertType,Runnable> switchReplacement;
+	private StringBuilder sb;
+	private I_TestFailure testFailure;
+	private I_TrialResult trialResult;
 	
 	public TrialFailedDetailDisplay(I_Tests4J_Log pLog) {
 		log = pLog;
+		//this is a dumb way to obvoid using a switch
+		//statement because it puts a java.lang.NoSuchFieldError
+		// in the class, which isn't implemented by GWT
+		switchReplacement = new HashMap<I_AssertType, Runnable>();
+		Runnable thownRun = new Runnable() {
+			@Override
+			public void run() {
+				I_AssertThrownFailure atf = (I_AssertThrownFailure) testFailure;
+				addThrownMessages(atf,sb);
+			}
+		};
+		switchReplacement.put(AssertType.AssertThrown, thownRun);
+		switchReplacement.put(AssertType.AssertThrownUniform, thownRun);
+
+		switchReplacement.put(AssertType.AssertContains, new Runnable() {
+			public void run() {
+				I_AssertCompareFailure ac = (I_AssertCompareFailure) testFailure;
+				addExpected(ac.getExpectedValue(), ac.getExpectedClass(), sb);
+			}
+		});
+		
+		switchReplacement.put(AssertType.AssertReferences, new Runnable() {
+			
+			@Override
+			public void run() {
+				addReferenceFailure(
+						 trialResult, (I_AllowedReferencesFailure) testFailure);
+			}
+		});
+		 
+		switchReplacement.put(AssertType.AssertCircularDependency, new Runnable() {
+			
+			@Override
+			public void run() {
+				 addCircularDependencyFailure(
+						 trialResult, (I_CircularDependencyFailure) testFailure);
+			}
+		});
 	}
 
 	public void logTrialFailure(I_TrialResult trial) {
 		if ( !log.isLogEnabled(TrialFailedDetailDisplay.class)) {
 			return;
 		}
+		trialResult = trial;
 		
 		String trialName = trial.getName();
 		StringBuilder sb = new StringBuilder();
@@ -64,48 +114,31 @@ public class TrialFailedDetailDisplay {
 				
 				sb.append(messages.getIndent() + trialName + "."  + testName + messages.getFailedEOS() +
 						log.getLineSeperator());
-				I_TestFailure tf = tr.getFailure();
-				if (tf != null) {
-					sb.append(messages.getIndent() + tf.getFailureMessage() + log.getLineSeperator());
-					I_AssertType type =  tf.getAssertType();
+				testFailure = tr.getFailure();
+				if (testFailure != null) {
+					sb.append(messages.getIndent() + testFailure.getFailureMessage() + log.getLineSeperator());
+					I_AssertType type =  testFailure.getAssertType();
 					
 					if (type != null) {
-						AssertType at = AssertType.getType(type);
-						switch (at) {
-							case AssertThrown:
-							case AssertThrownUniform:
-								I_AssertThrownFailure atf = (I_AssertThrownFailure) tf;
-								addThrownMessages(atf,sb);
-								break;
-							case AssertContains:
-								I_AssertCompareFailure ac = (I_AssertCompareFailure) tf;
-								addExpected(ac.getExpectedValue(), ac.getExpectedClass(), sb);
-								break;
-							case AssertDependency:
-								 addDependencyFailure(
-										 trial, (I_AllowedDependencyFailure) tf);
-								break;
-							case AssertCircularDependency:
-								 addCircularDependencyFailure(
-										 trial, (I_CircularDependencyFailure) tf);
-								break;
-							case AssertNull:
-							case AssertNotNull:
-								break;
-							default:
-								I_AssertCompareFailure acf = (I_AssertCompareFailure) tf;
-								if (String.class.getName().equals(acf.getExpectedClass())) {
-									if (String.class.getName().equals(acf.getActualClass())) {
-										addStringCompare(acf.getExpectedValue(), acf.getActualValue(), sb);
-									} else {
-										addCompareFailure(acf, sb);
-									}
-								} else {
+						Runnable run = switchReplacement.get(type);
+						if (run != null) {
+							run.run();
+						} else {
+							I_AssertCompareFailure acf = (I_AssertCompareFailure) testFailure;
+							if (String.class.getName().equals(acf.getExpectedClass())) {
+								if (String.class.getName().equals(acf.getActualClass())) {
+									addStringCompare(acf.getExpectedValue(), acf.getActualValue(), sb);
+								} else  {
 									addCompareFailure(acf, sb);
 								}
+							} else if (I_SourceFileTrial.TEST_MIN_COVERAGE.equals(testName)) {
+								addCoverageFailure(trial, acf, sb);
+							} else {
+								addCompareFailure(acf, sb);
+							}
 						}
 					}
-					String failureDetail = tf.getFailureDetail();
+					String failureDetail = testFailure.getFailureDetail();
 					if (failureDetail != null) {
 						sb.append(failureDetail);
 					}
@@ -125,6 +158,7 @@ public class TrialFailedDetailDisplay {
 	
 	private void addCompareFailure(I_AssertCompareFailure acf, StringBuilder sb) {
 		addExpected(acf.getExpectedValue(), acf.getExpectedClass(), sb);
+	
 		sb.append(messages.getIndent() + messages.getActual() + log.getLineSeperator());
 		sb.append(messages.getIndent() + messages.getIndent()+ messages.getClassHeadding() + 
 					acf.getActualClass()
@@ -133,13 +167,26 @@ public class TrialFailedDetailDisplay {
 				+ log.getLineSeperator());
 	}
 	
-	private void addDependencyFailure(I_TrialResult trial, I_AllowedDependencyFailure tf) {
+	private void addCoverageFailure(I_TrialResult tr, I_AssertCompareFailure acf, StringBuilder sb) {
+		StackTraceElement[] stack = createSourceClassTrialStack(tr);
+		
+		AssertionFailedException afe = new AssertionFailedException(sb.toString() +
+				messages.getIndent() + messages.getExpected() + " " + acf.getExpectedValue() + 
+				messages.getIndent() + messages.getActual() + " " + acf.getActualValue());
+		afe.setStackTrace(stack);
+		log.onThrowable(afe);
+		
+	}
+	
+	private void addReferenceFailure(I_TrialResult trial, I_AllowedReferencesFailure tf) {
 		IllegalStateException x = new IllegalStateException();
 		x.fillInStackTrace();
 		StackTraceElement[] stack = x.getStackTrace();
+		
+		String trialClassName = trial.getTrialClassName();
 		StackTraceElement top = new StackTraceElement(
-				trial.getTrialClassName(), "<init>", 
-				ClassMethods.getSimpleName(tf) + ".java",
+				trialClassName, "<init>", 
+				ClassMethods.getSimpleName(trialClassName) + ".java",
 				1);
 		if (stack.length == 0) {
 			stack = new StackTraceElement[1];
@@ -150,20 +197,27 @@ public class TrialFailedDetailDisplay {
 		
 		List<String> groupNames = tf.getGroupNames();
 		message =  messages.getIndent() +  messages.getIndent() +
-				"@AllowedDependencies: " + groupNames.toString() + log.getLineSeperator();
+				"@AllowedReferences: " + groupNames.toString() + log.getLineSeperator();
 		I_FieldSignature field = tf.getField();
+		I_MethodSignature method = tf.getMethod();
 		if (field != null) {
 			message = message + messages.getIndent() + messages.getIndent()+
 					"SourceClass: " + tf.getSourceClass().getName() + 
 					".java" + log.getLineSeperator() +
 					messages.getIndent() + messages.getIndent()+
 					" called field " + tf.getCalledClass() + ". " + field;
+		} else if (method != null){
+			message = message + messages.getIndent() + messages.getIndent()+
+					"SourceClass: " + tf.getSourceClass().getName() + ".java" + 
+					log.getLineSeperator() +
+					messages.getIndent() + messages.getIndent()+
+					" called method " + tf.getCalledClass() + ". " + method;
 		} else {
 			message = message + messages.getIndent() + messages.getIndent()+
 					"SourceClass: " + tf.getSourceClass().getName() + ".java" + 
 					log.getLineSeperator() +
 					messages.getIndent() + messages.getIndent()+
-					" called method " + tf.getCalledClass() + ". " + tf.getMethod();
+					" called class " + tf.getCalledClass() + ". ";
 		}
 		
 		DependencyFailureException dfe = 
@@ -175,17 +229,7 @@ public class TrialFailedDetailDisplay {
 	
 	
 	private void addCircularDependencyFailure(I_TrialResult trial, I_CircularDependencyFailure tf) {
-		IllegalStateException x = new IllegalStateException();
-		x.fillInStackTrace();
-		StackTraceElement[] stack = x.getStackTrace();
-		StackTraceElement top = new StackTraceElement(
-				trial.getTrialClassName(), "<init>", 
-				ClassMethods.getSimpleName(tf.getSourceClass()) + ".java",
-				1);
-		if (stack.length == 0) {
-			stack = new StackTraceElement[1];
-		}
-		stack[0] = top;
+		StackTraceElement[] stack = createSourceClassTrialStack(trial, tf);
 		
 		String message = null;
 		
@@ -203,6 +247,68 @@ public class TrialFailedDetailDisplay {
 						stack);
 		log.onThrowable(dfe);
 	}
+
+	public StackTraceElement[] createSourceClassTrialStack(I_TrialResult trial,
+			I_SourceTestFailure tf) {
+		IllegalStateException x = new IllegalStateException();
+		x.fillInStackTrace();
+		StackTraceElement[] stack = x.getStackTrace();
+		//generate a clickable stack trace for the trial and source class
+		String trialClassName = trial.getTrialClassName();
+		StackTraceElement top = new StackTraceElement(
+				trialClassName, "<init>", 
+				ClassMethods.getSimpleName(trialClassName) + ".java",
+				1);
+		
+		Class<?> sc = tf.getSourceClass();
+		String sourceClassName = sc.getName();
+		StackTraceElement second = new StackTraceElement(
+				sourceClassName, "<init>", 
+				ClassMethods.getSimpleName(sourceClassName) + ".java",
+				1);
+		if (stack.length <= 2) {
+			stack = new StackTraceElement[2];
+		} else {
+			//move the stack down so we can add 2 elements at the top
+			StackTraceElement[] stackClone = Arrays.copyOf(stack, stack.length);
+			for (int i = 0; i < stack.length; i++) {
+				if (i + 2 < stack.length) {
+					StackTraceElement ste = stackClone[i];
+					stack[i + 2] = ste;
+				}
+			}
+		}
+		stack[0] = top;
+		stack[1] = second;
+		return stack;
+	}
+	
+	public StackTraceElement[] createSourceClassTrialStack(I_TrialResult trial) {
+		IllegalStateException x = new IllegalStateException();
+		x.fillInStackTrace();
+		StackTraceElement[] stack = x.getStackTrace();
+		//generate a clickable stack trace for the trial and source class
+		String trialClassName = trial.getTrialClassName();
+		StackTraceElement top = new StackTraceElement(
+				trialClassName, "<init>", 
+				ClassMethods.getSimpleName(trialClassName) + ".java",
+				1);
+	
+		if (stack.length <= 1) {
+			stack = new StackTraceElement[1];
+		} else {
+			//move the stack down so we can add 2 elements at the top
+			StackTraceElement[] stackClone = Arrays.copyOf(stack, stack.length);
+			for (int i = 0; i < stack.length; i++) {
+				if (i + 1 < stack.length) {
+					StackTraceElement ste = stackClone[i];
+					stack[i + 1] = ste;
+				}
+			}
+		}
+		stack[0] = top;
+		return stack;
+	}
 	private void addStringCompare(String expectedValue, String actualValue, StringBuilder sb) {
 		TextLinesCompare tlc = new TextLinesCompare();
 		
@@ -217,20 +323,14 @@ public class TrialFailedDetailDisplay {
 		for (I_LineDiff diff: lineDiffs) {
 			I_LineDiffType diffType = diff.getType();
 			LineDiffType ldt = LineDiffType.get(diffType);
-			switch(ldt) {
-				case PartialMatch:
-					if( firstDiff == null) {
-						firstDiff = diff;
-					}
-					break;
-				case MissingActualLine:
-						missingActualLines.add(diff.getActualLineNbr());
-					break;
-				case MissingExpectedLine:
-						missingExpectedLines.add(diff.getExpectedLineNbr());
-					break;
-				default:
-					//do nothing
+			if (LineDiffType.PartialMatch == ldt) {
+				if( firstDiff == null) {
+					firstDiff = diff;
+				}
+			} else if (LineDiffType.MissingActualLine == ldt) {
+				missingActualLines.add(diff.getActualLineNbr());
+			} else if (LineDiffType.MissingExpectedLine == ldt) {
+				missingExpectedLines.add(diff.getExpectedLineNbr());
 			}
 		}
 		if (missingExpectedLines.size() > 1) {

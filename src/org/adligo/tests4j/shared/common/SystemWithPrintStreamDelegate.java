@@ -63,4 +63,5 @@ public class SystemWithPrintStreamDelegate implements I_System {
 	public boolean isMainSystem() {
 		return delegate.isMainSystem();
 	}
+
 }

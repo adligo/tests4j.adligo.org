@@ -18,8 +18,8 @@ import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.helpers.Tests4J_NotificationManager;
 import org.adligo.tests4j.run.helpers.Tests4J_ProcessInfo;
-import org.adligo.tests4j.shared.asserts.dependency.I_Dependency;
-import org.adligo.tests4j.shared.asserts.dependency.I_DependencyGroup;
+import org.adligo.tests4j.shared.asserts.reference.I_Dependency;
+import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -96,8 +96,8 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private AtomicLong trialEndTime = new AtomicLong();
 	private AtomicLong remoteEndTime = new AtomicLong();
 	private Tests4J_NotificationManager notifier;
-	private ConcurrentHashMap<String,I_DependencyGroup> dependencyGroupInstances_ =
-			new ConcurrentHashMap<String,I_DependencyGroup>();
+	private ConcurrentHashMap<String,I_ReferenceGroup> dependencyGroupInstances_ =
+			new ConcurrentHashMap<String,I_ReferenceGroup>();
 	/**
 	 * 
 	 * @param params
@@ -416,11 +416,11 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return metaTrialParams_;
 	}
 
-	public I_DependencyGroup getDependencyGroup(Class<?> c) {
+	public I_ReferenceGroup getDependencyGroup(Class<?> c) {
 		return dependencyGroupInstances_.get(c.getName());
 	}
 	
-	public void putIfAbsent(Class<?> c, I_DependencyGroup group) {
+	public void putIfAbsent(Class<?> c, I_ReferenceGroup group) {
 		dependencyGroupInstances_.putIfAbsent(c.getName(), group);
 	}
 

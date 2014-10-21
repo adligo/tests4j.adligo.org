@@ -35,7 +35,7 @@ public enum AssertType implements I_AssertType {
 	AssertEquals(4), AssertNotEquals(5), AssertSame(6), AssertNotSame(7),
 	AssertThrown(8), AssertThrownUniform(9), 
 	AssertUniform(10), AssertNotUniform(11), AssertContains(12), 
-	AssertGreaterThanOrEquals(13), AssertDependency(14), AssertCircularDependency(15);
+	AssertGreaterThanOrEquals(13), AssertReferences(14), AssertCircularDependency(15);
 	
 	public static Set<AssertType> BOOLEAN_TYPES = getBooleanTypes();
 	public static Set<AssertType> EQUAL_TYPES = getEqualTypes();
@@ -101,8 +101,8 @@ public enum AssertType implements I_AssertType {
 		add(AssertNotUniform, toRet);
 		add(AssertContains, toRet);
 		add(AssertGreaterThanOrEquals, toRet);
-		add(AssertDependency, toRet);
 		add(AssertCircularDependency, toRet);
+		add(AssertReferences, toRet);
 		return Collections.unmodifiableMap(toRet);
 	}
 	

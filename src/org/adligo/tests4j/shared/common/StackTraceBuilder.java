@@ -35,7 +35,9 @@ public class StackTraceBuilder {
 		if (stack != null) {
 			//stack trace will, be null in GWT client
 			for (int i = 0; i < stack.length; i++) {
-				sb.append(currentIndent +"at " + stack[i] + Tests4J_System.SYSTEM.lineSeperator());
+			  StackTraceElement ste = stack[i];
+				sb.append(currentIndent +"at " + ste.getClassName() + "." + 
+				      ste.getMethodName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")" + Tests4J_System.SYSTEM.lineSeperator());
 			}
 		}
 	}

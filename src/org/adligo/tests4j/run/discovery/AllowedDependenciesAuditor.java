@@ -7,9 +7,9 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
-import org.adligo.tests4j.shared.asserts.dependency.AllowedDependencies;
-import org.adligo.tests4j.shared.asserts.dependency.DependencyGroupAggregate;
-import org.adligo.tests4j.shared.asserts.dependency.I_DependencyGroup;
+import org.adligo.tests4j.shared.asserts.reference.AllowedReferences;
+import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
+import org.adligo.tests4j.shared.asserts.reference.ReferenceGroupAggregate;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -25,27 +25,27 @@ public class AllowedDependenciesAuditor {
 	 * @param failures
 	 * @return
 	 */
-	public static DependencyGroupAggregate audit(I_TrialDescription trialDesc,
+	public static ReferenceGroupAggregate audit(I_TrialDescription trialDesc,
 			List<I_TrialFailure> failures, I_Tests4J_Memory memory) {
 		
 		Class<? extends I_AbstractTrial> trial = trialDesc.getTrialClass();
-		AllowedDependencies ad = trial.getAnnotation(AllowedDependencies.class);
+		AllowedReferences ad = trial.getAnnotation(AllowedReferences.class);
 		if (ad != null) {
-			Class<? extends I_DependencyGroup>[] groupClasses = ad.groups();
+			Class<? extends I_ReferenceGroup>[] groupClasses = ad.groups();
 			if (groupClasses != null && groupClasses.length >= 1) {
-				List<I_DependencyGroup> dgs = new ArrayList<I_DependencyGroup>();
+				List<I_ReferenceGroup> dgs = new ArrayList<I_ReferenceGroup>();
 				I_Tests4J_Log log =  memory.getLog();
 				
-				for (Class<? extends I_DependencyGroup> cls: groupClasses) {
+				for (Class<? extends I_ReferenceGroup> cls: groupClasses) {
 					if (cls != null) {
-						I_DependencyGroup dep = memory.getDependencyGroup(cls);
+						I_ReferenceGroup dep = memory.getDependencyGroup(cls);
 						if (dep != null) {
 							dgs.add(dep);
 						} else {
 							try {
 								Field field = cls.getField(INSTANCE);
 								if (field != null) {
-									dep = (I_DependencyGroup) field.get(null);
+									dep = (I_ReferenceGroup) field.get(null);
 								}
 							} catch (NoSuchFieldException e) {
 								
@@ -64,7 +64,7 @@ public class AllowedDependenciesAuditor {
 									//try to cache it
 									dep = memory.getDependencyGroup(cls);
 									if (dep == null) {
-										I_DependencyGroup dg = cls.newInstance();
+										I_ReferenceGroup dg = cls.newInstance();
 										memory.putIfAbsent(cls, dg);
 									}
 								} catch (Exception x) {
@@ -78,7 +78,7 @@ public class AllowedDependenciesAuditor {
 						}
 					}
 				}
-				return new DependencyGroupAggregate(dgs);
+				return new ReferenceGroupAggregate(dgs);
 			}
 		}
 		return null;

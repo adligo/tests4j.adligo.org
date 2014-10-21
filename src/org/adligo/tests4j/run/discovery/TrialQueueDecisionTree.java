@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
+import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
 import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
@@ -113,7 +113,7 @@ public class TrialQueueDecisionTree {
 			TrialDescription td =  ts.getTrialDescription();
 			String sourceClassName = td.getSourceFileClass().getName();
 			allSourceClassDependents.add(sourceClassName);
-			I_ClassDependenciesLocal dependencies = td.getSourceClassDependencies();
+			I_ClassAssociationsLocal dependencies = td.getSourceClassDependencies();
 			nonSourceClassDependents.addAll(dependencies.getDependencyNames());
 			nonSourceClassDependents.remove(sourceClassName);
 		}
@@ -124,7 +124,7 @@ public class TrialQueueDecisionTree {
 			while (it.hasNext()) {
 				TrialState ts =it.next();
 				TrialDescription td =  ts.getTrialDescription();
-				I_ClassDependenciesLocal dependencies = td.getSourceClassDependencies();
+				I_ClassAssociationsLocal dependencies = td.getSourceClassDependencies();
 				Set<String> dependencyNames = dependencies.getDependencyNames();
 				Set<String> copy = new HashSet<String>(dependencyNames);
 				copy.removeAll(nonSourceClassDependents);

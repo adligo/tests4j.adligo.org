@@ -33,6 +33,7 @@ import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.run.output.TrialOutput;
 import org.adligo.tests4j.shared.asserts.common.TestFailure;
 import org.adligo.tests4j.shared.asserts.common.TestFailureMutant;
+import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.Platform;
 import org.adligo.tests4j.shared.common.StackTraceBuilder;
@@ -50,6 +51,7 @@ import org.adligo.tests4j.system.shared.api.Tests4J_TrialProgress;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.system.shared.trials.I_Progress;
+import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 import org.adligo.tests4j.system.shared.trials.TrialBindings;
 
 /**
@@ -440,12 +442,21 @@ public class Tests4J_TrialsRunnable implements Runnable,
 				}
 				
 				if (memory.hasCoveragePlugin()) {
-					TestResult minCoverageResult = afterSouceFileTrialTestsProcessor.testMinCoverage(result);
-					result.addResult(minCoverageResult);
-					trialState.addTestCompleted();
-				
+					if (trialDescription.getReferenceGroupAggregate() != null) {
+						TestResult referencesResult = afterSouceFileTrialTestsProcessor.testReferences(result);
+						result.addResult(referencesResult);
+						notifier.onTestCompleted(trialName, I_SourceFileTrial.TEST_REFERENCES, referencesResult.isPassed());
+						trialState.addTestCompleted();
+					}
 					TestResult dependencyResult = afterSouceFileTrialTestsProcessor.testDependencies(result);
 					result.addResult(dependencyResult);
+					notifier.onTestCompleted(trialName, I_SourceFileTrial.TEST_DEPENDENCIES, dependencyResult.isPassed());
+					trialState.addTestCompleted();
+					
+					TestResult minCoverageResult = afterSouceFileTrialTestsProcessor.testMinCoverage(result);
+					result.addResult(minCoverageResult);
+					notifier.onTestCompleted(trialName, I_SourceFileTrial.TEST_MIN_COVERAGE, minCoverageResult.isPassed());
+					trialState.addTestCompleted();
 					
 				}
 				trialState.addTestCompleted();

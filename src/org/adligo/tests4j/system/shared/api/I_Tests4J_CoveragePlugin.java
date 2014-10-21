@@ -3,7 +3,7 @@ package org.adligo.tests4j.system.shared.api;
 import java.io.IOException;
 import java.util.List;
 
-import org.adligo.tests4j.models.shared.dependency.I_ClassDependenciesLocal;
+import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 
 /**

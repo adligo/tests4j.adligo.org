@@ -15,12 +15,19 @@ public class SourceFileTrial extends AbstractTrial implements I_SourceFileTrial 
 	 * so it can't be over ridden, the actual logic for this
 	 * is in the SourceFileTrialProcessor
 	 */
-	public final void testSourceClassMinCoverage() {}
+	public final void testMinCoverage(I_SourceFileTrialResult trialResultMutant) {}
 	
 	/**
 	 * this method simply reserves the method name, 
 	 * so it can't be over ridden, the actual logic for this
 	 * is in the SourceFileTrialProcessor
 	 */
-	public final void testSourceClassDependencies() {}
+	public final void testDependencies(I_SourceFileTrialResult trialResultMutant) {}
+	
+	/**
+	 * this method simply reserves the method name, 
+	 * so it can't be over ridden, the actual logic for this
+	 * is in the SourceFileTrialProcessor
+	 */
+	public final void testReferences(I_SourceFileTrialResult trialResultMutant) {}
 }

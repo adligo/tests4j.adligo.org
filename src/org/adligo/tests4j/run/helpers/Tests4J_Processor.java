@@ -9,7 +9,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
-import org.adligo.tests4j.models.shared.dependency_groups.gwt.GWT_Classes;
 import org.adligo.tests4j.run.api.Tests4J_UncaughtExceptionHandler;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;

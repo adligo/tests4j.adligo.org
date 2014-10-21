@@ -2,7 +2,6 @@ package org.adligo.tests4j.shared.asserts;
 
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.CompareAssertionData;
-import org.adligo.tests4j.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.shared.asserts.common.I_SimpleCompareAssertCommand;
 import org.adligo.tests4j.shared.asserts.line_text.I_TextLinesCompareResult;
@@ -52,33 +51,32 @@ public class IdenticalStringAssertCommand extends AbstractCompareAssertCommand
 		
 		//classloader issues
 		AssertType type = AssertType.getType(super.getType());
-		switch (type) {
-			case AssertEquals:
-				   if(expected == null) {
-					   if (actual == null) {
-						   return true;
-					   }
-				   } else {
-					   boolean toRet = result.isMatched();
-					   if (toRet) {
-						   result = null;
-					   }
-					   return toRet;
+		//switch statements cause the class to reference java.lang.NoSuchFieldError
+		//which isn't in GWT yet
+		if (AssertType.AssertEquals == type) {
+			   if(expected == null) {
+				   if (actual == null) {
+					   return true;
 				   }
-				break;
-			case AssertNotEquals:
-				   if(expected == null) {
-					   if (actual == null) {
-						   return false;
-					   }
-				   } else {
-					   boolean toRet = !result.isMatched();
-					   if (toRet) {
-						   result = null;
-					   }
-					   return toRet;
+			   } else {
+				   boolean toRet = result.isMatched();
+				   if (toRet) {
+					   result = null;
 				   }
-				break;
+				   return toRet;
+			   }
+		} else if (AssertType.AssertNotEquals == type) {
+			   if(expected == null) {
+				   if (actual == null) {
+					   return false;
+				   }
+			   } else {
+				   boolean toRet = !result.isMatched();
+				   if (toRet) {
+					   result = null;
+				   }
+				   return toRet;
+			   }
 		}
 		
 		return false;

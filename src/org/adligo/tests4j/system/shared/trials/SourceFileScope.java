@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.adligo.tests4j.shared.asserts.dependency.CircularDependencies;
+import org.adligo.tests4j.shared.asserts.reference.CircularDependencies;
 
 /**
  * Note this was originally ClassScope,

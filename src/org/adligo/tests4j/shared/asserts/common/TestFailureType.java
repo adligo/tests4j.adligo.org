@@ -12,7 +12,7 @@ import java.util.Map;
  *
  */
 public enum TestFailureType implements I_TestFailureType {
-	TestFailure(0), AssertCompareFailure(1), AssertThrownFailure(2), AssertDependencyFailure(3);
+	TestFailure(0), AssertCompareFailure(1), AssertThrownFailure(2), AssertReferencesFailure(3), AssertDependencyFailure(4);
 	private static final Map<Integer, TestFailureType> TYPES = getTypes();
 	
 	private static Map<Integer, TestFailureType> getTypes() {
@@ -20,7 +20,8 @@ public enum TestFailureType implements I_TestFailureType {
 		toRet.put(0, TestFailure);
 		toRet.put(1, AssertCompareFailure);
 		toRet.put(2, AssertThrownFailure);
-		toRet.put(3, AssertDependencyFailure);
+		toRet.put(3, AssertReferencesFailure);
+		toRet.put(4, AssertDependencyFailure);
 		return Collections.unmodifiableMap(toRet);
 	}
 	

@@ -53,5 +53,4 @@ public class DefaultSystem implements I_System {
 	public boolean isMainSystem() {
 		return false;
 	}
-
 }
