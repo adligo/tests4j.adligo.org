@@ -3,9 +3,6 @@
     xmlns:tns1="http://www.adligo.org/fabricate/xml/io/library" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
     <tns:stages>
-        <tns:stage>maven-obtain</tns:stage>
-        <tns:stage>jar</tns:stage>
-        <tns:stage>test</tns:stage>
-        <tns:stage>publish</tns:stage>
+        <tns:stage name="jar" />
     </tns:stages>
  </tns:fabricate_project>
