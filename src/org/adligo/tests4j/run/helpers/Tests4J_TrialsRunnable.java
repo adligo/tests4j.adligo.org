@@ -93,7 +93,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
-	private Tests4J_ProcessInfo processInfo;
+	private Tests4J_PhaseOverseer processInfo;
 	private TrialQueueDecisionTree trialQueueDecisionTree;
 	private TrialState trialState;
 	
@@ -109,7 +109,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			I_Tests4J_NotificationManager pNotificationManager) {
 		memory = p;
 		trialQueueDecisionTree = p.getTrialQueueDecisionTree();
-		processInfo = p.getTrialProcessInfo();
+		processInfo = p.getTrialPhaseOverseer();
 		notifier = pNotificationManager;
 		
 		log_ = p.getLog();

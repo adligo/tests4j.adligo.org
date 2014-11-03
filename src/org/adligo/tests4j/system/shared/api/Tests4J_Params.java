@@ -43,7 +43,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private Integer recommendedRemoteThreadCount;
 	//there is a deadlock problem in setup, so run it single threaded, unless your improving
 	private Integer recommendedSetupThreadCount = 1;
-	private I_Tests4J_ProgressMonitor progressMonitor = new Tests4J_DefaultProgressMonitor(Tests4J_System.SYSTEM);
+	private I_Tests4J_ProgressParams progressParams_ = new Tests4J_DefaultProgressParams();
 	private I_Tests4J_SourceInfoParams sourceInfoParams = new Tests4J_SourceInfoParams();
 	
 	/**
@@ -360,12 +360,12 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	
 
 	@Override
-	public I_Tests4J_ProgressMonitor getProgressMonitor() {
-		return progressMonitor;
+	public I_Tests4J_ProgressParams getProgressMonitor() {
+		return progressParams_;
 	}
 
-	public void setProgressMonitor(I_Tests4J_ProgressMonitor progressMonitor) {
-		this.progressMonitor = progressMonitor;
+	public void setProgressMonitor(I_Tests4J_ProgressParams progressMonitor) {
+		this.progressParams_ = progressMonitor;
 	}
 
 	@Override

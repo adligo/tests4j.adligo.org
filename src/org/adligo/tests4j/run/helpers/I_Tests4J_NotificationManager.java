@@ -1,9 +1,9 @@
 package org.adligo.tests4j.run.helpers;
 
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
 
 public interface I_Tests4J_NotificationManager {
 
@@ -17,7 +17,7 @@ public interface I_Tests4J_NotificationManager {
 	 */
 	public void onDoneRunningNonMetaTrials();
 	
-	public void onProgress(I_Tests4J_ProcessInfo info);
+	public void onProgress(I_PhaseState info);
 	
 	public abstract void startingTrial(String name);
 
@@ -43,6 +43,6 @@ public interface I_Tests4J_NotificationManager {
 	
 	public boolean hasDescribeTrialError();
 	
-	public void onProcessStateChange(I_Tests4J_ProcessInfo info);
+	public void onProcessStateChange(I_PhaseState info);
 
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
@@ -17,7 +18,8 @@ import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.helpers.Tests4J_NotificationManager;
-import org.adligo.tests4j.run.helpers.Tests4J_ProcessInfo;
+import org.adligo.tests4j.run.helpers.Tests4J_PhaseInfoParamsMutant;
+import org.adligo.tests4j.run.helpers.Tests4J_PhaseOverseer;
 import org.adligo.tests4j.shared.asserts.reference.I_Dependency;
 import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
@@ -26,9 +28,10 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_ProgressParams;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Selection;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_SourceInfoParams;
+import org.adligo.tests4j.system.shared.api.Tests4J_DelegateProgressMonitor;
 import org.adligo.tests4j.system.shared.api.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.system.shared.api.Tests4J_SourceInfoParamsDelegate;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
@@ -66,9 +69,9 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	private int allTrialCount;
 	private I_Tests4J_CoveragePlugin coveragePlugin;
 	private final I_Tests4J_Log log;
-	private Tests4J_ProcessInfo setupProcessInfo;
-	private Tests4J_ProcessInfo trialProcessInfo;
-	private Tests4J_ProcessInfo remoteProcessInfo;
+	private Tests4J_PhaseOverseer setupProcessInfo;
+	private Tests4J_PhaseOverseer trialProcessInfo;
+	private Tests4J_PhaseOverseer remoteProcessInfo;
 	private Tests4J_SourceInfoParamsDelegate sourceInfoParamsDelegate_;
 	
 	/**
@@ -114,9 +117,17 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		List<Class<? extends I_AbstractTrial>> trials = p.getTrials();
 		
 		allTrialCount = trials.size();
-		trialProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.TRIALS, 
-				p.getTrialThreadCount(), allTrialCount);
+		I_Tests4J_ProgressParams progressMonitor = p.getProgressMonitor();
+		long notificationInterval = progressMonitor.getNotificationInterval();
 		
+		Tests4J_PhaseInfoParamsMutant trialPhaseInfo = new Tests4J_PhaseInfoParamsMutant();
+		trialPhaseInfo.setProcessName(I_PhaseState.TRIALS);
+		int trialThreads = p.getTrialThreadCount();
+		trialPhaseInfo.setThreadCount(trialThreads);
+		trialPhaseInfo.setCount(allTrialCount);
+		trialPhaseInfo.setNotificationInterval(notificationInterval);
+		trialPhaseInfo.setTime(getSystem());
+		trialProcessInfo = new Tests4J_PhaseOverseer(trialPhaseInfo);
 		
 		threadManager = new Tests4J_ThreadManager(system, log);
 		
@@ -135,14 +146,26 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		boolean hasCoveragePlugin = (coveragePlugin != null);
 		trialQueueDecisionTree = new TrialQueueDecisionTree(allTrialCount, log, hasCoveragePlugin);
 		
-		setupProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.SETUP, 
-				p.getSetupThreadCount(), allTrialCount);
+		Tests4J_PhaseInfoParamsMutant setupPhaseInfo = new Tests4J_PhaseInfoParamsMutant();
+		setupPhaseInfo.setProcessName(I_PhaseState.SETUP);
+		int setupThreads = p.getSetupThreadCount();
+		setupPhaseInfo.setThreadCount(setupThreads);
+		setupPhaseInfo.setCount(allTrialCount);
+		setupPhaseInfo.setNotificationInterval(notificationInterval);
+		setupPhaseInfo.setTime(getSystem());
+		setupProcessInfo = new Tests4J_PhaseOverseer(setupPhaseInfo);
 
 		//todo when remote functionality is added
-		remoteProcessInfo = new Tests4J_ProcessInfo(I_Tests4J_ProcessInfo.REMOTES, 
-				0, 0);
-		threadManager.setupSetupProcess(setupProcessInfo);
-		threadManager.setupTrialsProcess(trialProcessInfo);
+		Tests4J_PhaseInfoParamsMutant remotePhaseInfo = new Tests4J_PhaseInfoParamsMutant();
+		remotePhaseInfo.setProcessName(I_PhaseState.REMOTES);
+		remotePhaseInfo.setThreadCount(0);
+		remotePhaseInfo.setCount(0);
+		remotePhaseInfo.setNotificationInterval(notificationInterval);
+		remotePhaseInfo.setTime(getSystem());
+		remoteProcessInfo = new Tests4J_PhaseOverseer(remotePhaseInfo);
+		
+		threadManager.setupSetupProcess(setupThreads);
+		threadManager.setupTrialsProcess(trialThreads);
 		//threadManager.setupRemoteProcess(remoteProcessInfo);
 		
 		trialClasses.addAll(trials);
@@ -388,15 +411,15 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return metadata.getAllTestsCount();
 	}
 
-	public Tests4J_ProcessInfo getSetupProcessInfo() {
+	public Tests4J_PhaseOverseer getSetupPhaseOverseer() {
 		return setupProcessInfo;
 	}
 
-	public Tests4J_ProcessInfo getTrialProcessInfo() {
+	public Tests4J_PhaseOverseer getTrialPhaseOverseer() {
 		return trialProcessInfo;
 	}
 
-	public Tests4J_ProcessInfo getRemoteProcessInfo() {
+	public Tests4J_PhaseOverseer getRemotePhaseOverseer() {
 		return remoteProcessInfo;
 	}
 

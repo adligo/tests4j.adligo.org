@@ -11,6 +11,7 @@ import java.util.TreeMap;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
@@ -19,7 +20,6 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
 	private boolean snare = false;
@@ -197,11 +197,11 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 
 
 	@Override
-	public synchronized void onProgress(I_Tests4J_ProcessInfo info) {
+	public synchronized void onProgress(I_PhaseState info) {
 		String processName = info.getProcessName();
-		if  (I_Tests4J_ProcessInfo.SETUP.equals(processName)) {
+		if  (I_PhaseState.SETUP.equals(processName)) {
 					setupProgressDisplay.onProgress(logger, info);
-		} else if (I_Tests4J_ProcessInfo.TRIALS.equals(processName)) {
+		} else if (I_PhaseState.TRIALS.equals(processName)) {
 				trialsProgressDisplay.onProgress(logger, info);
 		} else {
 				remoteProgressDisplay.onProgress(logger, info);
@@ -209,11 +209,11 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	}
 
 	@Override
-	public void onProccessStateChange(I_Tests4J_ProcessInfo info) {
+	public void onProccessStateChange(I_PhaseState info) {
 		String processName = info.getProcessName();
-		if  (I_Tests4J_ProcessInfo.SETUP.equals(processName)) {
+		if  (I_PhaseState.SETUP.equals(processName)) {
 					setupProcessDisplay.onProccessStateChange(logger, info);
-		} else if (I_Tests4J_ProcessInfo.TRIALS.equals(processName)) {
+		} else if (I_PhaseState.TRIALS.equals(processName)) {
 				trialsProcessDisplay.onProccessStateChange(logger, info);
 		} else {
 				remoteProcessDisplay.onProccessStateChange(logger, info);

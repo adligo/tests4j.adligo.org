@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.run.api.Tests4J;
@@ -34,7 +35,6 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.xml.XML_Builder;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Controls;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_RemoteInfo;
 import org.adligo.tests4j.system.shared.api.Tests4J_Params;
 import org.adligo.tests4j.system.shared.api.Tests4J_RemoteInfo;
@@ -385,13 +385,13 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	}
 
 	@Override
-	public void onProgress(I_Tests4J_ProcessInfo info) {
+	public void onProgress(I_PhaseState info) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void onProccessStateChange(I_Tests4J_ProcessInfo info) {
+	public void onProccessStateChange(I_PhaseState info) {
 		// TODO Auto-generated method stub
 		
 	}

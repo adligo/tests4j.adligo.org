@@ -24,7 +24,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 	private I_Tests4J_Log logger;
 	private TrialDescriptionProcessor trialDescriptionProcessor;
 	private TrialQueueDecisionTree trialQueueDecisionTree;
-	private Tests4J_ProcessInfo processInfo;
+	private Tests4J_PhaseOverseer processInfo;
 	private String trialName;
 	private Class<? extends I_AbstractTrial> currentTrial;
 	private TrialState state;
@@ -40,7 +40,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 		trialQueueDecisionTree = p.getTrialQueueDecisionTree();
 		notifier = pNotificationManager;
 		logger = p.getLog();
-		processInfo = memory.getSetupProcessInfo();
+		processInfo = memory.getSetupPhaseOverseer();
 		
 		trialDescriptionProcessor = new TrialDescriptionProcessor(memory);
 	}

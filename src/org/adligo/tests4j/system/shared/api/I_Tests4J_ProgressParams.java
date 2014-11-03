@@ -1,5 +1,7 @@
 package org.adligo.tests4j.system.shared.api;
 
+import java.math.BigDecimal;
+
 /**
  * this interface allows you to 
  * customize when tests4j should send
@@ -8,22 +10,16 @@ package org.adligo.tests4j.system.shared.api;
  * @author scott
  *
  */
-public interface I_Tests4J_ProgressMonitor {
+public interface I_Tests4J_ProgressParams {
+  public static final BigDecimal ONE_HUNDRED = new BigDecimal("100.00");
 	public static final String SETUP = "setup";
 	public static final String TRIALS = "trials";
 	public static final String REMOTES = "remotes";
 	
 	/**
-	 * the interval to to check 
-	 * if the next time has been reached.
+	 * The amount of time (milliseconds) between percentage notifications
+	 * about the progress of one of the phases
 	 * @return
 	 */
-	public long getSleepTime();
-	/**
-	 * the next time to send notification
-	 * for a phase
-	 * @param phase one of the constants in this class.
-	 * @return
-	 */
-	public long getNextNotifyTime(String phase);
+	public long getNotificationInterval();
 }

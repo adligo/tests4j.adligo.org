@@ -1,6 +1,7 @@
 package org.adligo.tests4j.system.shared.api;
 
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 
@@ -67,11 +68,11 @@ public interface I_Tests4J_Listener {
 	 * 
 	 * @diagram_sync BROKEN changed type on 8/19/2014 Overview.seq sync on 7/25/2014
 	 */
-	public void onProgress(I_Tests4J_ProcessInfo info);
+	public void onProgress(I_PhaseState info);
 	
 	/**
 	 * @param process the name of the process, @see I_Tests4J_ProcessInfo
 	 * 
 	 */
-	public void onProccessStateChange(I_Tests4J_ProcessInfo info);
+	public void onProccessStateChange(I_PhaseState info);
 }

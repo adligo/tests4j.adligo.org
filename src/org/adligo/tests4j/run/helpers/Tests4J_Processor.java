@@ -1,14 +1,6 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.run.api.Tests4J_UncaughtExceptionHandler;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
@@ -34,9 +26,17 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Delegate;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_ProgressMonitor;
-import org.adligo.tests4j.system.shared.api.Tests4J_DelegateProgressMonitor;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_ProgressParams;
 import org.adligo.tests4j.system.shared.report.summary.SummaryReporter;
+
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 
 /**
  * ok this is the main processing class which does this;
@@ -50,7 +50,6 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	public static final String REQUIRES_SETUP_IS_CALLED_BEFORE_RUN = " requires setup is called before run.";
 	private Tests4J_Memory memory;
 	private I_Tests4J_Log log;
-	private Tests4J_DelegateProgressMonitor progressMonitor;
 	private long nextSetupProgresss;
 	private long nextTrialsProgresss;
 	private long nextRemotesProgresss;
@@ -98,7 +97,6 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		
 		memory = new Tests4J_Memory(log);
 		memory.setSystem(system);
-		progressMonitor = new Tests4J_DelegateProgressMonitor(log, pParams.getProgressMonitor());
 		
 		List<OutputStream> outs =  pParams.getAdditionalReportOutputStreams();
 		if (outs.size() >= 1) {
@@ -167,8 +165,8 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		notifier = memory.getNotifier();
 		
 		
-		Tests4J_ProcessInfo setupProcessInfo = memory.getSetupProcessInfo();
-		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
+		Tests4J_PhaseOverseer setupProcessInfo = memory.getSetupPhaseOverseer();
+		Tests4J_PhaseOverseer trialProcessInfo = memory.getTrialPhaseOverseer();
 		//Tests4J_ProcessInfo remoteProcessInfo = memory.getTrialProcessInfo();
 		try {
 			startRecordingAllTrialsRun();
@@ -254,9 +252,10 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	 *                9.2 seconds with 8 threads
 	 *                8.7 seconds with 16 threads
 	 */
-	private void submitSetupRunnables(Tests4J_ProcessInfo info) {
-		notifier.onProcessStateChange(info);
-		int setupThreadCount = info.getThreadCount();
+	private void submitSetupRunnables(Tests4J_PhaseOverseer info) {
+	  I_PhaseState initial = info.getIntialPhaseState();
+		notifier.onProcessStateChange(info.getIntialPhaseState());
+		int setupThreadCount = initial.getThreadCount();
 		trialQueueDecisionTree = memory.getTrialQueueDecisionTree();
 		
 		if (log.isLogEnabled(Tests4J_Processor.class)) {
@@ -275,7 +274,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		monitorSetup();
 
 	}
-	protected void runSetupRunnable(Tests4J_ProcessInfo info,
+	protected void runSetupRunnable(Tests4J_PhaseOverseer info,
 			ExecutorService runService) {
 		Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory, notifier); 
 		info.addRunnable(sr);
@@ -290,42 +289,20 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	}
 	
 	private void monitorSetup() {
-		Tests4J_ProcessInfo setupProcessInfo = memory.getSetupProcessInfo();
+		Tests4J_PhaseOverseer setupPhaseOverseer = memory.getSetupPhaseOverseer();
 		
-		boolean sentSetup100 = false;
-		boolean sentSetup0 = false;
-		nextSetupProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.SETUP);
-		while (!trialQueueDecisionTree.isFull()) {
-			try {
-				
-				Thread.sleep(progressMonitor.getSleepTime());
-				if (!sentSetup100) {
-					if (system.getTime() > nextSetupProgresss) {
-					
-						if (setupProcessInfo.getPercentDone() >= 100.0) {
-							sentSetup100 = true;
-						} else if (setupProcessInfo.getPercentDone() == 0.0) {
-							if (!sentSetup0) {
-								sentSetup0 = true;
-								notifier.onProgress(setupProcessInfo);
-								nextSetupProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.SETUP);
-							}
-						} else {
-							notifier.onProgress(setupProcessInfo);
-							nextSetupProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.SETUP);
-						}
-					}
-				}
-				String next = cod.poll();
-				while (next != null) {
-					system.println(next);
-					next = cod.poll();
-				}
-			} catch (InterruptedException x) {
-				throw new RuntimeException(x);
-			}
+		I_PhaseState state = null;
+		try {
+		  state = setupPhaseOverseer.pollPhaseState();
+  		while (!setupPhaseOverseer.isCountDoneCountMatch()) {
+  		  notifier.onProgress(state);
+  		  printLogs();
+  		  state = setupPhaseOverseer.pollPhaseState();
+  		}
+		} catch (InterruptedException x) {
+		  throw new RuntimeException(x);
 		}
-		notifier.onProgress(setupProcessInfo);
+		notifier.onProgress(state);
 
 		long now = memory.getTime();
 		memory.setSetupEndTime(now);
@@ -341,11 +318,10 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		}
 	}
 	
-	private void submitTrialsRunnables(Tests4J_ProcessInfo info) {
-		
-		
-		notifier.onProcessStateChange(info);
-		int trialThreadCount = info.getThreadCount();
+	private void submitTrialsRunnables(Tests4J_PhaseOverseer info) {
+		I_PhaseState initial = info.getIntialPhaseState();
+		notifier.onProcessStateChange(initial);
+		int trialThreadCount = initial.getThreadCount();
 		
 		if (log.isLogEnabled(Tests4J_Processor.class)) {
 			log.log("Starting submitTrialRunnables with " + trialThreadCount + " trial threads.");
@@ -360,7 +336,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 			runTrialRunnable(info, cod, runService);
 		}
 	}
-	protected void runTrialRunnable(Tests4J_ProcessInfo info,
+	protected void runTrialRunnable(Tests4J_PhaseOverseer info,
 			I_ConcurrentOutputDelegator od, ExecutorService runService) {
 		Tests4J_TrialsRunnable tip = new Tests4J_TrialsRunnable(memory, notifier); 
 		info.addRunnable(tip);
@@ -375,27 +351,20 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	}
 	
 	private void monitorTrials() {
-		Tests4J_ProcessInfo trialProcessInfo = memory.getTrialProcessInfo();
+		Tests4J_PhaseOverseer trialPhaseOverseer = memory.getTrialPhaseOverseer();
 		
-		nextTrialsProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.TRIALS);
-		while (!trialQueueDecisionTree.areAllTrialsFinished()) {
-			try {
-				Thread.sleep(progressMonitor.getSleepTime());
-				if (system.getTime() > nextTrialsProgresss) {
-					notifier.onProgress(trialProcessInfo);
-					nextTrialsProgresss = progressMonitor.getNextNotifyTime(I_Tests4J_ProgressMonitor.TRIALS);
-				}
-				
-				String next = cod.poll();
-				while (next != null) {
-					system.println(next);
-					next = cod.poll();
-				}
-			} catch (InterruptedException x) {
-				throw new RuntimeException(x);
-			}
-		}
-		notifier.onProgress(trialProcessInfo);
+		I_PhaseState state = null;
+    try {
+      state = trialPhaseOverseer.pollPhaseState();
+      while (!trialPhaseOverseer.isCountDoneCountMatch()) {
+        notifier.onProgress(state);
+        printLogs();
+        state = trialPhaseOverseer.pollPhaseState();
+      }
+    } catch (InterruptedException x) {
+      throw new RuntimeException(x);
+    }
+		notifier.onProgress(state);
 		long now = system.getTime();
 		memory.setTrialEndTime(now);
 		if (log.isLogEnabled(Tests4J_Processor.class)) {
@@ -431,4 +400,12 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		return controls;
 	}
 
+	
+	private void printLogs() {
+	  String next = cod.poll();
+    while (next != null) {
+      system.println(next);
+      next = cod.poll();
+    }
+	}
 }

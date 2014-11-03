@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.run.common.I_Tests4J_RemoteRunner;
 import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
 import org.adligo.tests4j.run.helpers.ThreadLogMessageBuilder;
@@ -19,7 +20,6 @@ import org.adligo.tests4j.run.remote.RemoteRunnerStateEnum;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
 
 /**
  * This class manages all child threads 
@@ -66,19 +66,19 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 
 	}
 	
-	public void setupSetupProcess(I_Tests4J_ProcessInfo info) {
+	public void setupSetupProcess(int threadCount) {
 		setupFactory  = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SETUP_THREAD_NAME,log);
-		setupService = Executors.newFixedThreadPool(info.getThreadCount(), setupFactory);
+		setupService = Executors.newFixedThreadPool(threadCount, setupFactory);
 	}
 	
-	public void setupTrialsProcess(I_Tests4J_ProcessInfo info) {
+	public void setupTrialsProcess(int threadCount) {
 		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log);
-		trialRunService = Executors.newFixedThreadPool(info.getThreadCount(), trialFactory);
+		trialRunService = Executors.newFixedThreadPool(threadCount, trialFactory);
 	}
 	
-	public void setupRemoteProcess(I_Tests4J_ProcessInfo info) {
+	public void setupRemoteProcess(int threadCount) {
 		remoteFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log);
-		remoteService = Executors.newFixedThreadPool(info.getThreadCount(), remoteFactory);
+		remoteService = Executors.newFixedThreadPool(threadCount, remoteFactory);
 	}
 	
 	public void shutdown() {

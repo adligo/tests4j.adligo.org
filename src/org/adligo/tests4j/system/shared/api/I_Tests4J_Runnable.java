@@ -3,7 +3,8 @@ package org.adligo.tests4j.system.shared.api;
 
 /**
  * this interface helps tests4j determine what is 
- * still being worked on, when if it hangs
+ * still being worked on when a PhaseState is created.
+ * 
  * @author scott
  *
  */

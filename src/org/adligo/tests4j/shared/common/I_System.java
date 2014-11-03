@@ -10,7 +10,7 @@ import java.io.PrintStream;
  * @author scott
  *
  */
-public interface I_System {
+public interface I_System extends I_Time {
 	/**
 	 * just like System.out.println(p)
 	 * stubbed for testing
@@ -23,12 +23,6 @@ public interface I_System {
 	 * System.exit(0) can be tested for
 	 */
 	public void exitJvm(int p);
-	
-	/**
-	 * just a wrapper for System.currentTimeMillis
-	 * @return
-	 */
-	public long getTime();
 	
 	/**
 	 * a wrapper around System.getLineSeperator

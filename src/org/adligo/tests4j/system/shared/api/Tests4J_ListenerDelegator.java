@@ -1,6 +1,7 @@
 package org.adligo.tests4j.system.shared.api;
 
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -41,7 +42,7 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 	}
 	
 	@Override
-	public void onProgress(I_Tests4J_ProcessInfo process) {
+	public void onProgress(I_PhaseState process) {
 		if (delegate == null) {
 			return;
 		}
@@ -109,7 +110,7 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 	}
 
 	@Override
-	public void onProccessStateChange(I_Tests4J_ProcessInfo info) {
+	public void onProccessStateChange(I_PhaseState info) {
 		if (delegate == null) {
 			return;
 		}

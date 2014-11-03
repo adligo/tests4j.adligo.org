@@ -22,6 +22,7 @@ import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.TrialRunMetadataMutant;
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
@@ -41,7 +42,6 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_SourceInfoParams;
 import org.adligo.tests4j.system.shared.api.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.system.shared.trials.ApiTrial;
@@ -569,7 +569,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	}
 
 	@Override
-	public void onProgress(I_Tests4J_ProcessInfo info) {
+	public void onProgress(I_PhaseState info) {
 		if (info.getPercentDone() <= 100.0) {
 			if (!doneRunningTrials.get()) {
 				listener.onProgress(info);
@@ -588,7 +588,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	}
 
 	@Override
-	public void onProcessStateChange(I_Tests4J_ProcessInfo info) {
+	public void onProcessStateChange(I_PhaseState info) {
 		listener.onProccessStateChange(info);
 		reporter.onProccessStateChange(info);
 	}

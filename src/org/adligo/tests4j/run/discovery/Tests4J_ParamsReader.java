@@ -21,6 +21,7 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePluginFactory;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePluginParams;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_ProgressParams;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Selection;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_SourceInfoParams;
 import org.adligo.tests4j.system.shared.api.Tests4J_CoveragePluginParams;
@@ -72,7 +73,7 @@ public class Tests4J_ParamsReader {
 	private I_MetaTrialParams<? extends I_MetaTrialInputData> metaTrialParams_;
 	private I_TrialParamsFactory trialParamsQueue_;
 	private I_Tests4J_SourceInfoParams sourceInfoParams_;
-	
+	private I_Tests4J_ProgressParams progressMonitor_;
 	/**
 	 * turn into local instances to block further propagation of issues
 	 * with external implementations.  Also this recurses 
@@ -204,6 +205,7 @@ public class Tests4J_ParamsReader {
 			runnable = false;
 			return;
 		}
+		progressMonitor_ = params.getProgressMonitor();
 		sourceInfoParams_ = params.getSourceInfoParams();
 	}
 
@@ -357,4 +359,8 @@ public class Tests4J_ParamsReader {
 	public I_Tests4J_SourceInfoParams getSourceInfoParams() {
 		return sourceInfoParams_;
 	}
+
+  public I_Tests4J_ProgressParams getProgressMonitor() {
+    return progressMonitor_;
+  }
 }

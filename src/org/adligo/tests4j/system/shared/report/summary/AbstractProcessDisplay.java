@@ -1,16 +1,17 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_ProcessInfo;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.system.shared.trials.I_Progress;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Descendants of this class are simply there for the 
@@ -24,7 +25,7 @@ public abstract class AbstractProcessDisplay {
 	private int timesAtPct;
 	
 	
-	public void onProccessStateChange(I_Tests4J_Log log, I_Tests4J_ProcessInfo processInfo) {
+	public void onProccessStateChange(I_Tests4J_Log log, I_PhaseState processInfo) {
 		if (log.isLogEnabled(this.getClass())) {
 			I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
 			int started = processInfo.getRunnablesStarted();
@@ -42,11 +43,11 @@ public abstract class AbstractProcessDisplay {
 						"/" + processInfo.getRunnablesStarted();
 				message = message.replace("<X/>", runnables);
 				
-				String doneString = "" + processInfo.getDone() + "/" +
+				String doneString = "" + processInfo.getDoneCount() + "/" +
 						processInfo.getCount();
 				message = message.replace("<Y/>", doneString);
 				String z = messages.getNonMetaTrials();
-				if (I_Tests4J_ProcessInfo.SETUP.equals(processInfo.getProcessName())) {
+				if (I_PhaseState.SETUP.equals(processInfo.getProcessName())) {
 					z = messages.getTrialDescriptionsInStatement();
 				}
 				message = message.replace("<Z/>", z);
@@ -58,7 +59,7 @@ public abstract class AbstractProcessDisplay {
 	}
 
 	protected String addCurrentRunningInfoToStalledProcess(I_Tests4J_Log log,
-			I_Tests4J_ProcessInfo processInfo, String message) {
+			I_PhaseState processInfo, String message) {
 		StringBuilder sb = new StringBuilder();
 		if (timesAtPct >= 2) {
 			
@@ -94,7 +95,7 @@ public abstract class AbstractProcessDisplay {
 		return message;
 	}
 
-	protected void getTimesAtThisPct(I_Tests4J_ProcessInfo processInfo) {
+	protected void getTimesAtThisPct(I_PhaseState processInfo) {
 		double newPct = processInfo.getPercentDone();
 		String npString = PercentFormat.format(newPct, 2);
 		if (pct.equals(npString)) {
@@ -105,7 +106,7 @@ public abstract class AbstractProcessDisplay {
 		}
 	}
 	
-	public void onProgress(I_Tests4J_Log log, I_Tests4J_ProcessInfo processInfo) {
+	public void onProgress(I_Tests4J_Log log, I_PhaseState processInfo) {
 		//check the child class logEnable
 		if (log.isLogEnabled(this.getClass())) {
 			getTimesAtThisPct(processInfo);

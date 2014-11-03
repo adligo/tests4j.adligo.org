@@ -207,16 +207,11 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	public void addAdditionalReportOutputStreams(OutputStream out);
 	
 	/**
-	 * The time between progress updates in milliseconds
-	 * defaults to one second (or 1000 milliseconds).
-	 * Note I have noticed on my machine that the
-	 * Thread.currentThread().sleep seems to start out slow (taking longer
-	 * than the value), and then becomes fast (taking less time that the setting)
-	 * for this reason, the first 5 usages of this setting are cut by 25%.
+	 * 
 	 *  
 	 * @return
 	 */
-	public I_Tests4J_ProgressMonitor getProgressMonitor();
+	public I_Tests4J_ProgressParams getProgressMonitor();
 	
 	/**
 	 * this can provide additional information about 
