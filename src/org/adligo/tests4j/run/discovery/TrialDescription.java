@@ -1,16 +1,5 @@
 package org.adligo.tests4j.run.discovery;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
@@ -26,11 +15,12 @@ import org.adligo.tests4j.run.common.I_Tests4J_Memory;
 import org.adligo.tests4j.shared.asserts.reference.CircularDependencies;
 import org.adligo.tests4j.shared.asserts.reference.I_CircularDependencies;
 import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
+import org.adligo.tests4j.shared.common.DefaultSystem;
+import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.shared.common.Tests4J_System;
 import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
@@ -45,6 +35,17 @@ import org.adligo.tests4j.system.shared.trials.SuppressOutput;
 import org.adligo.tests4j.system.shared.trials.TrialTimeout;
 import org.adligo.tests4j.system.shared.trials.UseCaseScope;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * a generally immutable class that represents/wrapps
  * a Trial class adding the reflection Methods exc
@@ -54,7 +55,7 @@ import org.adligo.tests4j.system.shared.trials.UseCaseScope;
  *
  */
 public class TrialDescription implements I_TrialDescription {
-
+  private static final I_System SYS = new DefaultSystem();
 	/**
 	 * this may be either the non instrumented class instance
 	 * or the instrumented class instance, as instances of 
@@ -564,7 +565,7 @@ public class TrialDescription implements I_TrialDescription {
 				
 			} 
 			pkgs.append(coverName);
-			pkgs.append(Tests4J_System.lineSeperator());
+			pkgs.append(SYS.lineSeperator());
 		}
 		if (pcm.getChildren().size() >= 1) {
 			return new PackageCoverage(pcm);
@@ -576,7 +577,7 @@ public class TrialDescription implements I_TrialDescription {
 			}
 		}
 		throw new IllegalArgumentException("no package coverage for trial " + trialClass_.getName() +
-				" with package " + packageName + Tests4J_System.lineSeperator() + 
+				" with package " + packageName + SYS.lineSeperator() + 
 				" on thread "+ Thread.currentThread().getName() + " " +
 				pkgs.toString());
 	}

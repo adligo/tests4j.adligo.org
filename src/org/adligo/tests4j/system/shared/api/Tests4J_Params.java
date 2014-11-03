@@ -1,5 +1,14 @@
 package org.adligo.tests4j.system.shared.api;
 
+import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookup;
+import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
+import org.adligo.tests4j.shared.common.ClassMethods;
+import org.adligo.tests4j.shared.xml.I_XML_Builder;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
+import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
+import org.adligo.tests4j.system.shared.trials.I_Trial;
+import org.adligo.tests4j.system.shared.trials.I_TrialParamsFactory;
+
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,17 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookup;
-import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.shared.common.ClassMethods;
-import org.adligo.tests4j.shared.common.Tests4J_System;
-import org.adligo.tests4j.shared.xml.I_XML_Builder;
-import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
-import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
-import org.adligo.tests4j.system.shared.trials.I_Trial;
-import org.adligo.tests4j.system.shared.trials.I_TrialParams;
-import org.adligo.tests4j.system.shared.trials.I_TrialParamsFactory;
 
 
 public class Tests4J_Params implements I_Tests4J_Params {

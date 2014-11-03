@@ -29,78 +29,78 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  *
  */
 public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
-	private Tests4J_ThreadFactory tests4jFactory;
-	private Tests4J_ThreadFactory trialFactory;
-	private Tests4J_ThreadFactory testFactory;
-	private Tests4J_ThreadFactory setupFactory;
-	private Tests4J_ThreadFactory remoteFactory;
-	private ExecutorService tests4jService;
-	private ExecutorService setupService;
-	private ExecutorService trialRunService;
-	private ExecutorService remoteService;
+	private Tests4J_ThreadFactory tests4jFactory_;
+	private Tests4J_ThreadFactory trialFactory_;
+	private Tests4J_ThreadFactory testFactory_;
+	private Tests4J_ThreadFactory setupFactory_;
+	private Tests4J_ThreadFactory remoteFactory_;
+	private ExecutorService tests4jService_;
+	private ExecutorService setupService_;
+	private ExecutorService trialRunService_;
+	private ExecutorService remoteService_;
 	
-	private List<ExecutorService> testExecutorServices = new CopyOnWriteArrayList<ExecutorService>();
-	private List<Future<?>> setupFutures = new CopyOnWriteArrayList<Future<?>>();
-	private List<Future<?>> trialFutures = new CopyOnWriteArrayList<Future<?>>();
-	private List<Future<?>> remoteFutures = new CopyOnWriteArrayList<Future<?>>();
-	private CopyOnWriteArrayList<I_Tests4J_RemoteRunner> remoteRunners = 
+	private List<ExecutorService> testExecutorServices_ = new CopyOnWriteArrayList<ExecutorService>();
+	private List<Future<?>> setupFutures_ = new CopyOnWriteArrayList<Future<?>>();
+	private List<Future<?>> trialFutures_ = new CopyOnWriteArrayList<Future<?>>();
+	private List<Future<?>> remoteFutures_ = new CopyOnWriteArrayList<Future<?>>();
+	private CopyOnWriteArrayList<I_Tests4J_RemoteRunner> remoteRunners_ = 
 			new CopyOnWriteArrayList<I_Tests4J_RemoteRunner>();
 			
-	private Map<ExecutorService, Future<?>> testRuns = new ConcurrentHashMap<ExecutorService, Future<?>>();
-	private I_System system;
-	private I_Tests4J_Log log;
+	private Map<ExecutorService, Future<?>> testRuns_ = new ConcurrentHashMap<ExecutorService, Future<?>>();
+	private I_System system_;
+	private I_Tests4J_Log log_;
 	
 	
 	public Tests4J_ThreadManager(I_System systemIn, I_Tests4J_Log logIn) {
 		if (systemIn == null) {
 			throw new IllegalArgumentException("" + this.getClass().getSimpleName() + " requires a system.");
 		}
-		system = systemIn;
+		system_ = systemIn;
 		if (logIn == null) {
 			throw new IllegalArgumentException("" + this.getClass().getSimpleName() + " requires a log.");
 		}
-		log = logIn;
-		tests4jFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.THREAD_NAME, log);
-		tests4jService = Executors.newSingleThreadExecutor(tests4jFactory);
-		testFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,log);
+		log_ = logIn;
+		tests4jFactory_ = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.THREAD_NAME, log_);
+		tests4jService_ = Executors.newSingleThreadExecutor(tests4jFactory_);
+		testFactory_ = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,log_);
 
 	}
 	
 	public void setupSetupProcess(int threadCount) {
-		setupFactory  = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SETUP_THREAD_NAME,log);
-		setupService = Executors.newFixedThreadPool(threadCount, setupFactory);
+		setupFactory_  = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SETUP_THREAD_NAME,log_);
+		setupService_ = Executors.newFixedThreadPool(threadCount, setupFactory_);
 	}
 	
 	public void setupTrialsProcess(int threadCount) {
-		trialFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log);
-		trialRunService = Executors.newFixedThreadPool(threadCount, trialFactory);
+		trialFactory_ = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log_);
+		trialRunService_ = Executors.newFixedThreadPool(threadCount, trialFactory_);
 	}
 	
 	public void setupRemoteProcess(int threadCount) {
-		remoteFactory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log);
-		remoteService = Executors.newFixedThreadPool(threadCount, remoteFactory);
+		remoteFactory_ = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log_);
+		remoteService_ = Executors.newFixedThreadPool(threadCount, remoteFactory_);
 	}
 	
 	public void shutdown() {
-		if (log.isLogEnabled(Tests4J_ThreadManager.class)) {
-			log.log("Tests4J_Manager.shutdown on " + ThreadLogMessageBuilder.getThreadWithGroupNameForLog());
+		if (log_.isLogEnabled(Tests4J_ThreadManager.class)) {
+			log_.log("Tests4J_Manager.shutdown on " + ThreadLogMessageBuilder.getThreadWithGroupNameForLog());
 		}
 		
-		if (remoteService != null) {
+		if (remoteService_ != null) {
 			//notify the remote runners first, as it will take some time
 			//for the socket communication to occur.
-			for (I_Tests4J_RemoteRunner remote: remoteRunners) {
+			for (I_Tests4J_RemoteRunner remote: remoteRunners_) {
 				remote.shutdown();
 			}
 		}
 		shutdownLocal();
 		
 		boolean remotesShutdown = false;
-		if (remoteRunners.size() == 0) {
+		if (remoteRunners_.size() == 0) {
 			remotesShutdown = true;
 		} else {
 			while (!remotesShutdown) {
-				for (I_Tests4J_RemoteRunner remote: remoteRunners) {
+				for (I_Tests4J_RemoteRunner remote: remoteRunners_) {
 					if (remote.getState() != RemoteRunnerStateEnum.SHUTDOWN) {
 						remotesShutdown = false;
 						try {
@@ -117,18 +117,18 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 		
 		
 		//shutdown remotes
-		system.exitJvm(0);	
+		system_.exitJvm(0);	
 	}
 
 
 	public void shutdownTestThreads() {
-		for (ExecutorService testService: testExecutorServices) {
+		for (ExecutorService testService: testExecutorServices_) {
 			testService.shutdownNow();
 		}
 	}
 	
 	public ExecutorService getTrialRunService() {
-		return trialRunService;
+		return trialRunService_;
 	}
 	
 	/* (non-Javadoc)
@@ -136,13 +136,13 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	 */
 	@Override
 	public ExecutorService createNewTestRunService() {
-		ExecutorService toRet = Executors.newSingleThreadExecutor(testFactory);
-		testExecutorServices.add(toRet);
+		ExecutorService toRet = Executors.newSingleThreadExecutor(testFactory_);
+		testExecutorServices_.add(toRet);
 		return toRet;
 	}
 	
 	public void setTestRunFuture(ExecutorService exe, Future<?> future) {
-		testRuns.put(exe,  future);
+		testRuns_.put(exe,  future);
 	}
 	
 	/* (non-Javadoc)
@@ -150,7 +150,7 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	 */
 	@Override
 	public void addTrialFuture(Future<?> future) {
-		trialFutures.add(future);
+		trialFutures_.add(future);
 	}
 	
 	/* (non-Javadoc)
@@ -158,7 +158,7 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	 */
 	@Override
 	public void addSetupFuture(Future<?> future) {
-		setupFutures.add(future);
+		setupFutures_.add(future);
 	}
 	
 	/* (non-Javadoc)
@@ -166,17 +166,17 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	 */
 	@Override
 	public void addRemoteFuture(Future<?> future) {
-		remoteFutures.add(future);
+		remoteFutures_.add(future);
 	}
 	
 	public List<I_Tests4J_RemoteRunner> getRemoteRunners() {
-		return new ArrayList<I_Tests4J_RemoteRunner>(remoteRunners);
+		return new ArrayList<I_Tests4J_RemoteRunner>(remoteRunners_);
 	}
 
 	public void setRemoteRunners(
 			Collection<I_Tests4J_RemoteRunner> p) {
-		remoteRunners.clear();
-		remoteRunners.addAll(p);
+		remoteRunners_.clear();
+		remoteRunners_.addAll(p);
 	}
 	
 	/* (non-Javadoc)
@@ -184,7 +184,7 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	 */
 	@Override
 	public void addRemoteRunner(I_Tests4J_RemoteRunner p) {
-		remoteRunners.add(p);
+		remoteRunners_.add(p);
 	}
 
 
@@ -193,7 +193,7 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	 */
 	@Override
 	public ExecutorService getSetupService() {
-		return setupService;
+		return setupService_;
 	}
 
 
@@ -202,23 +202,23 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	 */
 	@Override
 	public ExecutorService getRemoteService() {
-		return remoteService;
+		return remoteService_;
 	}
 
 
 	@Override
 	public void shutdownLocal() {
 		//if there is a setupService there is also a trialService
-		if (setupService != null) {
-			for (Future<?> future: setupFutures) {
+		if (setupService_ != null) {
+			for (Future<?> future: setupFutures_) {
 				if (!future.isDone()) {
 					future.cancel(true);
 				}
 			}
-			setupService.shutdownNow();
+			setupService_.shutdownNow();
 			
 			shutdownTestThreads();
-			Set<Entry<ExecutorService, Future<?>>> testRunEntries = testRuns.entrySet();
+			Set<Entry<ExecutorService, Future<?>>> testRunEntries = testRuns_.entrySet();
 			for (Entry<ExecutorService, Future<?>> e: testRunEntries) {
 				ExecutorService es =  e.getKey();
 				es.shutdownNow();
@@ -227,21 +227,21 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 					future.cancel(true);
 				}
 			}
-			for (Future<?> future: trialFutures) {
+			for (Future<?> future: trialFutures_) {
 				if (!future.isDone()) {
 					future.cancel(true);
 				}
 			}
-			trialRunService.shutdownNow();
+			trialRunService_.shutdownNow();
 		}
 		
-		if (remoteService == null) {
-			system.exitJvm(0);	
+		if (remoteService_ == null) {
+			system_.exitJvm(0);	
 		}
 	}
 
 	@Override
 	public ExecutorService getTests4jService() {
-		return tests4jService;
+		return tests4jService_;
 	}
 }

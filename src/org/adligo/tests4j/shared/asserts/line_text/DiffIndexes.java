@@ -1,8 +1,8 @@
 package org.adligo.tests4j.shared.asserts.line_text;
 
+import org.adligo.tests4j.shared.common.DefaultSystem;
 import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.common.StringMethods;
-import org.adligo.tests4j.shared.common.Tests4J_System;
 
 /**
  * a immutable class to represent 
@@ -33,6 +33,7 @@ public class DiffIndexes implements I_DiffIndexes {
 	public static final String DIFF_LEFT_TO_RIGHT_NEEDS_CORRESPONDING_RIGHT_TO_LEFT_DIFF = "Diff left to right, needs corresponding right to left diff.";
 	public static final String START_END_DIFF_REQUIRES_POSITIVE_INDEXES = "DiffIndexes requires positive indexes.";
 	public static final String [] EMPTY_STRING_ARRAY = new String [] {};
+	private static final I_System SYS = new DefaultSystem();
 	/**
 	 * @see I_DiffIndexes#getDiffLeftToRight()
 	 */
@@ -103,7 +104,7 @@ public class DiffIndexes implements I_DiffIndexes {
 							}
 						} else if (matchRightToLeft < diffRightToLeft){
 							throw new IllegalArgumentException(MATCH_ERROR_PART_ONE + 
-									Tests4J_System.SYSTEM.lineSeperator() +
+							    SYS.lineSeperator() +
 									MATCH_L2R_DIFF_L2R_MATCH_R2L_DIFF_R2L);
 						}
 					}
@@ -116,7 +117,7 @@ public class DiffIndexes implements I_DiffIndexes {
 							}
 						} else if (diffRightToLeft < matchRightToLeft) {
 							throw new IllegalArgumentException(MATCH_ERROR_PART_ONE +
-									Tests4J_System.SYSTEM.lineSeperator() +
+							    SYS.lineSeperator() +
 									DIFF_L2R_MATCH_L2R_DIFF_R2L_MATCH_R2L);
 						}
 					} else {

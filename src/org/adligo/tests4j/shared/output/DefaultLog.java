@@ -1,16 +1,15 @@
 package org.adligo.tests4j.shared.output;
 
+import org.adligo.tests4j.shared.common.DefaultSystem;
+import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.adligo.tests4j.shared.common.DefaultSystem;
-import org.adligo.tests4j.shared.common.I_System;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.shared.common.Tests4J_System;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 
 /**
  * This is the main logging class for Tests4J,
@@ -30,7 +29,7 @@ public class DefaultLog implements I_Tests4J_Log {
 	protected I_System system;
 	
 	public DefaultLog() {
-		this(Tests4J_System.SYSTEM, null);
+		this(new DefaultSystem(), null);
 	}
 	
 	/**

@@ -10,7 +10,7 @@ package org.adligo.tests4j.shared.common;
  *
  */
 public class StackTraceBuilder {
-	
+	private static final I_System SYS = new DefaultSystem();
 	private static final String TAB = "\t";
 
 	public static String toString(Throwable t, boolean deep) {
@@ -30,14 +30,15 @@ public class StackTraceBuilder {
 	
 	private static void toString(Throwable t, StringBuilder sb, String currentIndent) {
 		
-		sb.append(currentIndent + t.toString()  + Tests4J_System.SYSTEM.lineSeperator());
+		sb.append(currentIndent + t.toString()  + SYS.lineSeperator());
 		StackTraceElement [] stack = t.getStackTrace();
 		if (stack != null) {
 			//stack trace will, be null in GWT client
 			for (int i = 0; i < stack.length; i++) {
 			  StackTraceElement ste = stack[i];
 				sb.append(currentIndent +"at " + ste.getClassName() + "." + 
-				      ste.getMethodName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")" + Tests4J_System.SYSTEM.lineSeperator());
+				      ste.getMethodName() + "(" + ste.getFileName() + ":" + ste.getLineNumber() + ")" + 
+				    SYS.lineSeperator());
 			}
 		}
 	}

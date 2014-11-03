@@ -1,5 +1,18 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
+import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
+import org.adligo.tests4j.shared.common.DefaultSystem;
+import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.shared.output.DefaultLog;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Collection;
@@ -8,18 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
-import org.adligo.tests4j.models.shared.results.I_PhaseState;
-import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.shared.output.DefaultLog;
-import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
 	private boolean snare = false;
@@ -53,7 +54,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	
 	public SummaryReporter(I_Tests4J_Log p) {
 		logger = p;
-		threadDisplay = new ThreadDisplay(p);
+		threadDisplay = new ThreadDisplay(p, new DefaultSystem());
 		testsReporter = new TestDisplay(p, threadDisplay);
 		trialsReporter = new TrialDisplay(p, threadDisplay);
 		trialFailedDetail = new TrialFailedDetailDisplay(p);

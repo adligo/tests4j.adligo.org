@@ -1,5 +1,29 @@
 package org.adligo.tests4j.run.remote;
 
+import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.results.I_PhaseState;
+import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
+import org.adligo.tests4j.run.api.Tests4J;
+import org.adligo.tests4j.run.io.I_CharacterInputStream;
+import org.adligo.tests4j.run.io.UTF8_InputStream;
+import org.adligo.tests4j.run.memory.Tests4J_ThreadFactory;
+import org.adligo.tests4j.run.remote.socket_api.AfterShutdownHandler;
+import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
+import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
+import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
+import org.adligo.tests4j.shared.common.DefaultSystem;
+import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.common.StringMethods;
+import org.adligo.tests4j.shared.output.DefaultLog;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+import org.adligo.tests4j.shared.xml.XML_Builder;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Controls;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_RemoteInfo;
+import org.adligo.tests4j.system.shared.api.Tests4J_Params;
+import org.adligo.tests4j.system.shared.api.Tests4J_RemoteInfo;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,30 +38,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
-import org.adligo.tests4j.models.shared.results.I_PhaseState;
-import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.run.api.Tests4J;
-import org.adligo.tests4j.run.io.I_CharacterInputStream;
-import org.adligo.tests4j.run.io.UTF8_InputStream;
-import org.adligo.tests4j.run.memory.Tests4J_ThreadFactory;
-import org.adligo.tests4j.run.remote.socket_api.AfterShutdownHandler;
-import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
-import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
-import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
-import org.adligo.tests4j.shared.common.I_System;
-import org.adligo.tests4j.shared.common.StringMethods;
-import org.adligo.tests4j.shared.common.Tests4J_System;
-import org.adligo.tests4j.shared.output.DefaultLog;
-import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-import org.adligo.tests4j.shared.xml.XML_Builder;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_Controls;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_RemoteInfo;
-import org.adligo.tests4j.system.shared.api.Tests4J_Params;
-import org.adligo.tests4j.system.shared.api.Tests4J_RemoteInfo;
 
 public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	private BlockingQueue<Tests4J_SocketMessage> messages = new ArrayBlockingQueue<>(100);
@@ -56,14 +56,14 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	private AfterShutdownHandler afterShutdownHandler;
 	private ExecutorService listenerService;
 	private I_Tests4J_Controls controlls;
-	
+	private I_System system_;
 	
 	public static void main(String [] args) {
 		//note these lines will never be testable as it runs System.exit(0);
 		Tests4J_SocketServerRunner runner = new Tests4J_SocketServerRunner();
 		
 		
-		runner.main(args, Tests4J_System.SYSTEM);
+		runner.main(args, new DefaultSystem());
 	}
 	
 	public void main(String[] args, I_System pSystem) {
@@ -111,7 +111,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	
 	public void startup() {
 		
-		startup(Tests4J_System.SYSTEM);
+		//startup(Tests4J_System.SYSTEM);
 	}
 	
 	public void startup(I_System pSystem) {
@@ -226,7 +226,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 				x.printStackTrace();
 			}
 		}
-		Tests4J_System.exitJvm(0);
+		//Tests4J_System.exitJvm(0);
 	}
 	@Override
 	public void onMetadataCalculated(I_TrialRunMetadata metadata) {

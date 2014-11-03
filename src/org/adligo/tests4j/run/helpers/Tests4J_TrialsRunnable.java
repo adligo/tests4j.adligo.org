@@ -95,7 +95,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	private AfterUseCaseTrialTestsProcessor afterUseCaseTrialTestsProcessor;
 	private Tests4J_PhaseOverseer processInfo;
 	private TrialQueueDecisionTree trialQueueDecisionTree;
-	private TrialState trialState;
+	private volatile TrialState trialState;
 	
 	/**
 	 * 
@@ -529,9 +529,6 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		return finished;
 	}
 
-	public synchronized TrialDescription getTrialDescription() {
-		return trialDescription;
-	}
 
 	public I_ConcurrentOutputDelegator getOutputDelegator() {
 		return outputDelegator;
@@ -542,7 +539,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	}
 
 	@Override
-	public synchronized I_Tests4J_TrialProgress getTrial() {
+	public I_Tests4J_TrialProgress getTrial() {
 		if (trialState == null) {
 			return null; 
 		}

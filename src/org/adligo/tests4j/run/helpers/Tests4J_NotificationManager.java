@@ -110,7 +110,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	/**
 	 * @diagram_sync on 8/20/2014 with Overview.seq 
 	 */
-	public void onSetupDone() {
+	public synchronized void onSetupDone() {
 		doneDescribeingTrials.set(true);
 		
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {

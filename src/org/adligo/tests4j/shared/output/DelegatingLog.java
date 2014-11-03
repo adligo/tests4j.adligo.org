@@ -1,16 +1,14 @@
 package org.adligo.tests4j.shared.output;
 
+import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.adligo.tests4j.shared.common.DefaultSystem;
-import org.adligo.tests4j.shared.common.I_System;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.shared.common.Tests4J_System;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 
 /**
  * This is the main logging class for Tests4J,
@@ -26,10 +24,10 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
  */
 public class DelegatingLog implements I_Tests4J_Log {
 	public static final String DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM = "DefaultReporter requires a non null I_System.";
-	private Map<String, Boolean>  logs = new HashMap<String,Boolean>();
-	private String lineSeperator;
-	private boolean mainLog;
-	private I_OutputBuffer out;
+	private Map<String, Boolean>  logs_ = new HashMap<String,Boolean>();
+	private boolean mainLog_;
+	private I_OutputBuffer out_;
+	private I_System system_;
 	/**
 	 * create a DefaultReporter, this should be able to handle
 	 * any sort of error/exception from the I_Tests4J_Params 
@@ -42,28 +40,28 @@ public class DelegatingLog implements I_Tests4J_Log {
 		if (pSystem == null) {
 			throw new IllegalArgumentException(DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM);
 		}
-		lineSeperator = pSystem.lineSeperator();
-		mainLog = pSystem.isMainSystem();
-		out = pOut;
+		system_ = pSystem;
+		mainLog_ = pSystem.isMainSystem();
+		out_ = pOut;
 		if (logsOn != null) {
 			Set<Entry<Class<?>,Boolean>> entries = logsOn.entrySet();
-			logs = new HashMap<String, Boolean>();
+			logs_ = new HashMap<String, Boolean>();
 			for (Entry<Class<?>,Boolean> e: entries) {
 				if (e != null) {
 					Class<?> c = e.getKey();
 					Boolean value = e.getValue();
 					if (c != null && value != null) {
-						logs.put(c.getName(), value);
+						logs_.put(c.getName(), value);
 					}
 				}
 			}
 		}
-		logs = Collections.unmodifiableMap(logs);
+		logs_ = Collections.unmodifiableMap(logs_);
 	}
 	
 	@Override
 	public void log(String p) {
-		out.add(p);
+		out_.add(p);
 	}
 
 	@Override
@@ -80,7 +78,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 		log(currentIndent + t.toString());
 		for (int i = 0; i < stack.length; i++) {
 			sb.append(currentIndent +"at " + stack[i]);
-			sb.append(lineSeperator);
+			sb.append(system_.lineSeperator());
 		}
 		Throwable cause = t.getCause();
 		if (cause != null) {
@@ -95,7 +93,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 			return false;
 		}
 		String clazzName = clazz.getName();
-		Boolean result = logs.get(clazzName);
+		Boolean result = logs_.get(clazzName);
 		if (result == null) {
 			return false;
 		}
@@ -104,12 +102,12 @@ public class DelegatingLog implements I_Tests4J_Log {
 
 	@Override
 	public boolean isMainLog() {
-		return mainLog;
+		return mainLog_;
 	}
 
 	@Override
 	public String getLineSeperator() {
-		return lineSeperator;
+		return system_.lineSeperator();
 	}
 
 	@Override
@@ -118,7 +116,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 				Tests4J_Constants.CONSTANTS.getReportMessages();
 		
 		return reportMessages.getOnThreadZ().replaceAll("<Z/>", 
-				Tests4J_System.getCurrentThreadName());
+				system_.getCurrentThreadName());
 	}
 
 

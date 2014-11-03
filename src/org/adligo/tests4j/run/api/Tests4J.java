@@ -1,21 +1,20 @@
 package org.adligo.tests4j.run.api;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.adligo.tests4j.run.helpers.DefaultDelegateFactory;
 import org.adligo.tests4j.run.helpers.JseSystem;
-import org.adligo.tests4j.shared.common.DelegateSystem;
 import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.common.MethodBlocker;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.shared.common.Tests4J_System;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Controls;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Delegate;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_DelegateFactory;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The main api to run tests for the Tests4J framework.
@@ -47,10 +46,14 @@ public class Tests4J {
 	 * should go through the regular trial run to the Tests4JTrial trial.
 	 */
 	private static ThreadLocal<I_Tests4J_DelegateFactory> FACTORY = getFactoryInternal();
-	
-	static {
-		((DelegateSystem) Tests4J_System.SYSTEM).setDelegate(new JseSystem());
-	}
+
+	 /**
+   * wrapper around some java.lang.System
+   * methods so that tests4j can make sure
+   * it makes some System calls.
+   */
+  private I_System system_ = new JseSystem();
+  
 	private static MethodBlocker getSetFactoryMethodBlocker() {
 		List<String> allowedCallers = new ArrayList<String>();
 		allowedCallers.add("org.adligo.tests4j_tests.run.api.mocks.MockTests4J");
@@ -80,7 +83,6 @@ public class Tests4J {
 		}
 		//sets up logging for the run, from the params
 		Tests4J instance = new Tests4J();
-		instance.setSystem(Tests4J_System.SYSTEM);
 		return instance.instanceRun(pParams, pListener);
 	}
 	
@@ -95,7 +97,6 @@ public class Tests4J {
 	 */
 	public static I_Tests4J_Controls run(I_Tests4J_Params pParams) {
 		Tests4J instance = new Tests4J();
-		instance.setSystem(Tests4J_System.SYSTEM);
 		return instance.instanceRun(pParams, null);
 	}
 	
@@ -119,12 +120,7 @@ public class Tests4J {
 	 */
 	protected Tests4J() {}
 	
-	/**
-	 * wrapper around some java.lang.System
-	 * methods so that tests4j can make sure
-	 * it makes some System calls.
-	 */
-	private I_System system = Tests4J_System.SYSTEM;
+
 	/**
 	 * not part of the public api,
 	 * but used when test4j tests itself.
@@ -145,7 +141,7 @@ public class Tests4J {
 		
 		I_Tests4J_DelegateFactory factory = getFactory();
 		//@diagram_sync with Overview.seq on 8/22/2014
-		I_Tests4J_Delegate delegate =  factory.create(system);
+		I_Tests4J_Delegate delegate =  factory.create(system_);
 
 		//@diagram_sync with Overview.seq on 7/21/2014
 		if (delegate.setup(pListener,pParams)) {
@@ -165,12 +161,15 @@ public class Tests4J {
 		return factory;
 	}
 
-	protected I_System getSystem() {
-		return system;
+	protected  I_System getSystem() {
+		return system_;
 	}
 
-	protected void setSystem(I_System system) {
-		this.system = system;
+	@SuppressWarnings("unused")
+  protected void setSystem(I_System system) {
+	  new MethodBlocker(Tests4J.class, "setSystem", 
+	      Collections.singleton("org.adligo.tests4j_tests.trials_api.common.Tests4JRunnerMock"));
+	  system_ = system;
 	}
 	
 	

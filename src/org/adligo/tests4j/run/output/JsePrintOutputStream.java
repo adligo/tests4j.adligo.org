@@ -1,14 +1,15 @@
 package org.adligo.tests4j.run.output;
 
+import org.adligo.tests4j.shared.common.DefaultSystem;
+import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.output.ByteListOutputStream;
+import org.adligo.tests4j.shared.output.I_OutputBuffer;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.PrintStream;
 import java.util.Formatter;
 import java.util.Locale;
-
-import org.adligo.tests4j.shared.common.Tests4J_System;
-import org.adligo.tests4j.shared.output.ByteListOutputStream;
-import org.adligo.tests4j.shared.output.I_OutputBuffer;
 
 /**
  * this is used to replace System.out and System.err,
@@ -20,6 +21,7 @@ import org.adligo.tests4j.shared.output.I_OutputBuffer;
  *
  */
 public class JsePrintOutputStream extends PrintStream {
+  private static final I_System SYS = new DefaultSystem();
 	public static final String NULL = "null";
 	private ByteListOutputStream out;
 	private I_OutputBuffer outBuffer;
@@ -129,7 +131,7 @@ public class JsePrintOutputStream extends PrintStream {
 
 	@Override
 	public void println() {
-		print(Tests4J_System.lineSeperator());
+		print(SYS.lineSeperator());
 		flush();
 	}
 

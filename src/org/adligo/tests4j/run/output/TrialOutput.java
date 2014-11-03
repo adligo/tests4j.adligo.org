@@ -1,10 +1,11 @@
 package org.adligo.tests4j.run.output;
 
+import org.adligo.tests4j.shared.common.DefaultSystem;
+import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.output.I_ToggleOutputBuffer;
+
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.adligo.tests4j.shared.common.Tests4J_System;
-import org.adligo.tests4j.shared.output.I_ToggleOutputBuffer;
 
 /**
  * Output for a trial (ie System.out, System.err, log.log),
@@ -14,6 +15,7 @@ import org.adligo.tests4j.shared.output.I_ToggleOutputBuffer;
  *
  */
 public class TrialOutput implements I_ToggleOutputBuffer {
+  private static final I_System SYS = new DefaultSystem();
 	private ConcurrentLinkedQueue<String> output = new ConcurrentLinkedQueue<String>();
 	private AtomicBoolean printing_ = new AtomicBoolean(true);
 	
@@ -27,7 +29,7 @@ public class TrialOutput implements I_ToggleOutputBuffer {
 		String s = output.poll();
 		while (s != null) {
 			sb.append(s);
-			sb.append(Tests4J_System.lineSeperator());
+			sb.append(SYS.lineSeperator());
 			s = output.poll();
 		}
 		return sb.toString();

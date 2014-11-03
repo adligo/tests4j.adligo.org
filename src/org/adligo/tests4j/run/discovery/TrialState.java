@@ -17,7 +17,7 @@ public class TrialState implements I_TrialStateNameIdKey {
 	private final Class<? extends I_AbstractTrial> trialClass;
 	private final TrialStateNameIdKey key;
 	private AtomicInteger id = new AtomicInteger();
-	private TrialDescription desc;
+	private volatile TrialDescription desc;
 	private AtomicBoolean approvedForInstrumentation = new AtomicBoolean(false);
 	private AtomicBoolean approvedForRun = new AtomicBoolean(false);
 	private AtomicBoolean readyForRun = new AtomicBoolean(false);
