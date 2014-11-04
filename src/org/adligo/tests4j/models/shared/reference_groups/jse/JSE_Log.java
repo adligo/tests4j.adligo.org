@@ -2,6 +2,7 @@ package org.adligo.tests4j.models.shared.reference_groups.jse;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.association.I_PackageConstantLookup;
 import org.adligo.tests4j.models.shared.reference_groups.jse.v1_8.I_JSE_1_8_Log;
@@ -25,6 +26,7 @@ import org.adligo.tests4j.shared.asserts.reference.ReferenceGroupBaseDelegate;
 public class JSE_Log extends ReferenceGroupBaseDelegate implements I_JSE_1_8_Log, I_PackageConstantLookup {
 	public static final String JAVA_LOG = "java.util.logging";
 	private static final Map<String,String> CONSTANT_LOOKUP = getConstantLookup();
+	public static final Set<String> CLASS_NAMES = CONSTANT_LOOKUP.keySet();
 	public static final JSE_Log INSTANCE = new JSE_Log();
 	
 	private static Map<String,String> getConstantLookup() {

@@ -5,7 +5,7 @@ import java.util.concurrent.Future;
 
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
 
-public interface I_Tests4J_ThreadManager {
+public interface I_ThreadManager {
 
 	public ExecutorService createNewTestRunService();
 
@@ -15,7 +15,7 @@ public interface I_Tests4J_ThreadManager {
 
 	public void addRemoteFuture(Future<?> future);
 
-	public void addRemoteRunner(I_Tests4J_RemoteRunner p);
+	public void addRemoteRunner(I_RemoteRunner p);
 
 	public ExecutorService getTests4jService();
 	

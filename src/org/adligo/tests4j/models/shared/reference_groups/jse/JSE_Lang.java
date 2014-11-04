@@ -1,13 +1,14 @@
 package org.adligo.tests4j.models.shared.reference_groups.jse;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.adligo.tests4j.models.shared.association.I_PackageConstantLookup;
 import org.adligo.tests4j.models.shared.reference_groups.jse.v1_8.I_JSE_1_8_Lang;
 import org.adligo.tests4j.shared.asserts.reference.NameOnlyReferenceGroup;
 import org.adligo.tests4j.shared.asserts.reference.ReferenceGroupBaseDelegate;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -25,6 +26,7 @@ import org.adligo.tests4j.shared.asserts.reference.ReferenceGroupBaseDelegate;
  */
 public class JSE_Lang extends ReferenceGroupBaseDelegate implements I_JSE_1_8_Lang, I_PackageConstantLookup {
 	private static final Map<String,String> CONSTANT_LOOKUP = getConstantLookup();
+	public static final Set<String> CLASS_NAMES = CONSTANT_LOOKUP.keySet();
 	public static final JSE_Lang INSTANCE = new JSE_Lang();
 	
 	private static Map<String,String> getConstantLookup() {

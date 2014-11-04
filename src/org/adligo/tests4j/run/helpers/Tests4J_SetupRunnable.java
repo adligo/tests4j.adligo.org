@@ -24,7 +24,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 	private I_Tests4J_Log logger;
 	private TrialDescriptionProcessor trialDescriptionProcessor;
 	private TrialQueueDecisionTree trialQueueDecisionTree;
-	private Tests4J_PhaseOverseer processInfo;
+	private Tests4J_PhaseOverseer phaseOverseer_;
 	private String trialName;
 	private Class<? extends I_AbstractTrial> currentTrial;
 	private TrialState state;
@@ -40,7 +40,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 		trialQueueDecisionTree = p.getTrialQueueDecisionTree();
 		notifier = pNotificationManager;
 		logger = p.getLog();
-		processInfo = memory.getSetupPhaseOverseer();
+		phaseOverseer_ = memory.getSetupPhaseOverseer();
 		
 		trialDescriptionProcessor = new TrialDescriptionProcessor(memory);
 	}
@@ -50,22 +50,23 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 		if (logger.isLogEnabled(Tests4J_SetupRunnable.class)) {
 			logger.log("" + this + " on " + Thread.currentThread().getName() + " starting.");
 		}
-		processInfo.addRunnableStarted();
+		phaseOverseer_.addRunnableStarted();
 		Class<? extends I_AbstractTrial> trialClazz = memory.pollTrialClasses();
 		
 		while (trialClazz != null && !notifier.hasDescribeTrialError()) {
 			trialName = trialClazz.getName();
 			state = new TrialState(trialName, trialClazz);
 			checkAndApprove(trialClazz, state);
-			processInfo.addDone();
+			
 			trialQueueDecisionTree.addTrial(state);
+			phaseOverseer_.addDone();
 			trialClazz = memory.pollTrialClasses();
 		}
 		if (logger.isLogEnabled(Tests4J_SetupRunnable.class)) {
 			logger.log("" + this + " on " + Thread.currentThread().getName() + " finished.");
 		}
 		trialName = null;
-		processInfo.addRunnableFinished();
+		phaseOverseer_.addRunnableFinished();
 		//its not on the main thread so join
 		try {
 			Thread.currentThread().join();

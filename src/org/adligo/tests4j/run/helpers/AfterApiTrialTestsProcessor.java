@@ -12,7 +12,7 @@ import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.run.common.I_Memory;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -30,7 +30,7 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 	private static final String AFTER_API_TRIAL_TESTS_METHOD =
 			"afterTrialTests(I_ApiTrialResult p)";
 	
-	public AfterApiTrialTestsProcessor(I_Tests4J_Memory memory) {
+	public AfterApiTrialTestsProcessor(I_Memory memory) {
 		super(memory);
 	}
 	

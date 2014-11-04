@@ -37,6 +37,7 @@ public class Tests4J_PhaseOverseer {
 	 */
 	private final ArrayBlockingQueue<I_PhaseState> nextPhaseStates_ = new ArrayBlockingQueue<I_PhaseState>(100);
 	private final AtomicBoolean countDoneCountMatch_ = new AtomicBoolean(false);
+	private Semaphore phaseStateSemaphor_ = new Semaphore(1);
 	
 	public Tests4J_PhaseOverseer(Tests4J_PhaseInfoParamsMutant in) {
 		processName_ = in.getProcessName();
@@ -56,8 +57,19 @@ public class Tests4J_PhaseOverseer {
     
   		long now = time_.getTime();
   		if (lastNotificationTime_.get() + notificationInterval_ < now ) {
-		    lastNotificationTime_.set(now);
-		    addPhaseState();
+  		  boolean acquired = false;
+  		  try {
+  		    phaseStateSemaphor_.acquire();
+  		    acquired = true;
+  		    lastNotificationTime_.set(now);
+  		    addPhaseState();
+  		  } catch (InterruptedException x) {
+  		    //do nothing several threads may try to obtain the single semaphore lock
+  		  } finally {
+  		    if (acquired) {
+  		      phaseStateSemaphor_.release();
+  		    }
+  		  }
   		}
 		}
 		

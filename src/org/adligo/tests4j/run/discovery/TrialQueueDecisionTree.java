@@ -14,10 +14,10 @@ import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class TrialQueueDecisionTree {
-	private final int trialCount;
-	private final AtomicInteger trialsAdded = new AtomicInteger(0);
-	private I_Tests4J_Log log;
-	private boolean coveragePlugin;
+	private final int trialCount_;
+	private final AtomicInteger trialsAdded_ = new AtomicInteger(0);
+	private I_Tests4J_Log log_;
+	private boolean coveragePlugin_;
 	/**
 	 * note this may not match with the trial count,
 	 * since trials can be added more than once.
@@ -45,13 +45,13 @@ public class TrialQueueDecisionTree {
 	private TrialState metaTrialState;
 	
 	public TrialQueueDecisionTree(int count, I_Tests4J_Log pLog, boolean coveragePluginIn) {
-		trialCount = count;
-		log = pLog;
-		coveragePlugin = coveragePluginIn;
+		trialCount_ = count;
+		log_ = pLog;
+		coveragePlugin_ = coveragePluginIn;
 	}
 	
 	public synchronized boolean addTrial(TrialState state) {
-		trialsAdded.addAndGet(1);
+		trialsAdded_.addAndGet(1);
 		String trialName = state.getTrialName();
 		AtomicInteger ai = trialCounts.get(trialName);
 		if (ai == null) {
@@ -84,7 +84,7 @@ public class TrialQueueDecisionTree {
 			nonApprovedTrials.add(state);
 		}
 		
-		if (trialCount == trialsAdded.get()) {
+		if (trialCount_ == trialsAdded_.get()) {
 			determineOrdering();
 			return true;
 		}
@@ -98,7 +98,7 @@ public class TrialQueueDecisionTree {
 	 */
 	private void determineOrdering() {
 		Collection<TrialState> tstates =  unorderedApprovedSourceFileTrials.values();
-		if (!coveragePlugin) {
+		if (!coveragePlugin_) {
 			sourceFileTrials.addAll(tstates);
 			return;
 		}
@@ -163,16 +163,16 @@ public class TrialQueueDecisionTree {
 		TrialState toRet = nonApprovedTrials.poll();
 		if (toRet == null) {
 			toRet = sourceFileTrials.poll();
-			if (toRet != null && coveragePlugin) {
+			if (toRet != null && coveragePlugin_) {
 				//make sure all prerequisites are finished running
 				Set<TrialState> preqStates =  sourceFilePrerequisiteRuns.get(toRet.getKey());
 				if (preqStates != null) {
 					for (TrialState ps: preqStates) {
 						if (!ps.getFinishedRun()) {
-							if (log.isLogEnabled(TrialQueueDecisionTree.class)) {
+							if (log_.isLogEnabled(TrialQueueDecisionTree.class)) {
 								String message = this.toString() + toRet.getTrialName() + 
 										" is waiting on " + ps.getTrialName();
-								log.log(message);
+								log_.log(message);
 							}
 							try {
 								ps.wait(100);
@@ -206,7 +206,7 @@ public class TrialQueueDecisionTree {
 				}
 			}
 		}
-		if (log.isLogEnabled(TrialQueueDecisionTree.class)) {
+		if (log_.isLogEnabled(TrialQueueDecisionTree.class)) {
 			String trialName = "null";
 			String trialId = "null";
 			if (toRet != null) {
@@ -215,7 +215,7 @@ public class TrialQueueDecisionTree {
 			}
 			String message = "" + this.getClass().getSimpleName() + " returning " + trialName + "[" + 
 					trialId + "]";
-			log.log(message);
+			log_.log(message);
 		}
 		statesPolled.addAndGet(1);
 		return toRet;
@@ -251,7 +251,7 @@ public class TrialQueueDecisionTree {
 	}
 
 	public int getTrialCount() {
-		return trialCount;
+		return trialCount_;
 	}
 	
 	public Collection<TrialState> getAllStates() {
@@ -259,12 +259,12 @@ public class TrialQueueDecisionTree {
 	}
 	
 	public synchronized boolean isFull() {
-		if (log.isLogEnabled(TrialQueueDecisionTree.class)) {
+		if (log_.isLogEnabled(TrialQueueDecisionTree.class)) {
 			String message = this.getClass().getName() + " trialCount = " + 
-							trialCount + " trialsAdded " + trialsAdded.get();
-			log.log(message);
+							trialCount_ + " trialsAdded " + trialsAdded_.get();
+			log_.log(message);
 		}
-		if (trialCount == trialsAdded.get()) {
+		if (trialCount_ == trialsAdded_.get()) {
 			return true;
 		}
 		return false;

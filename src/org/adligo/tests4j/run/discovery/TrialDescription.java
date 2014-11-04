@@ -11,7 +11,7 @@ import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.run.common.I_Memory;
 import org.adligo.tests4j.shared.asserts.reference.CircularDependencies;
 import org.adligo.tests4j.shared.asserts.reference.I_CircularDependencies;
 import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
@@ -83,10 +83,10 @@ public class TrialDescription implements I_TrialDescription {
 	private I_ClassAssociationsLocal sourceClassDependencies;
 	boolean printToStdOut_ = true;
 	private I_ReferenceGroup refs_;
-	private I_Tests4J_Memory memory_;
+	private I_Memory memory_;
 	
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
-			I_Tests4J_Memory memory) {
+			I_Memory memory) {
 		reporter = memory.getLog();
 		trialClass_ = pTrialClass;
 		memory_ = memory;
@@ -98,7 +98,7 @@ public class TrialDescription implements I_TrialDescription {
 	}
 
 	public TrialDescription(I_Tests4J_CoverageTrialInstrumentation instrIn,
-			I_Tests4J_Memory memory) {
+			I_Memory memory) {
 		reporter = memory.getLog();
 		trialClass_ = instrIn.getInstrumentedClass();
 		memory_ = memory;

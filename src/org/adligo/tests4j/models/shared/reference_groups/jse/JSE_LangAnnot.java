@@ -3,6 +3,7 @@ package org.adligo.tests4j.models.shared.reference_groups.jse;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.association.I_PackageConstantLookup;
 import org.adligo.tests4j.models.shared.reference_groups.jse.v1_8.I_JSE_1_8_LangAnnot;
@@ -26,6 +27,7 @@ import org.adligo.tests4j.shared.asserts.reference.ReferenceGroupBaseDelegate;
 public class JSE_LangAnnot extends ReferenceGroupBaseDelegate implements I_JSE_1_8_LangAnnot, I_PackageConstantLookup {
 	public static final String JAVA_LANG_ANNOTATION = "java.lang.annotation";
 	private static final Map<String,String> CONSTANT_LOOKUP = getConstantLookup();
+	public static final Set<String> CLASS_NAMES = CONSTANT_LOOKUP.keySet();
 	public static final JSE_LangAnnot INSTANCE = new JSE_LangAnnot();
 	
 	private static Map<String,String> getConstantLookup() {

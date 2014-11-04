@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.run.common.I_Memory;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.shared.asserts.common.I_AssertCommand;
 import org.adligo.tests4j.shared.asserts.common.I_AssertListener;
@@ -44,7 +44,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 	private List<Integer> delegatedTestAssertionHashes; 
 	private int assertions = 0;
 	
-	public AbstractAfterTrialTestsProcessor(I_Tests4J_Memory memory) {
+	public AbstractAfterTrialTestsProcessor(I_Memory memory) {
 		bindings = new TrialBindings(Platform.JSE, memory.getEvaluationLookup(), memory.getLog());
 		bindings.setAssertListener(this);
 	}

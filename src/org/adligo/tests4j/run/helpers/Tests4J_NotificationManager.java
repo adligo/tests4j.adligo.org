@@ -27,7 +27,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
-import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
+import org.adligo.tests4j.run.common.I_ThreadManager;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -62,7 +62,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	private AtomicBoolean doneDescribeingTrials = new AtomicBoolean(false);
 	private AtomicBoolean doneRunningTrials = new AtomicBoolean(false);
 	private Tests4J_Memory memory;
-	private I_Tests4J_ThreadManager threadManager;
+	private I_ThreadManager threadManager;
 	/**
 	 * always call reporter first then call listener
 	 */

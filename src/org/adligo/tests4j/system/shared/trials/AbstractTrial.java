@@ -66,11 +66,11 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	public static final String ASSERT_LISTENER_MAY_ONLY_BE_SET_BY = 
 				"The assert listener may only be set by a instance of org.adligo.jtests.run.JTestsRunner or org.adligo.jtests.run.client.JTestsGwtRunner.";
-	private I_AssertListener listener;
-	private I_Tests4J_Log log;
-	private I_PlatformContainer platform;
-	private I_EvaluatorLookup evaluationLookup;
-	private EvaluatorLookupMutant evaluationLookupOverrides = new EvaluatorLookupMutant();
+	private I_AssertListener listener_;
+	private I_Tests4J_Log log_;
+	private I_PlatformContainer platform_;
+	private I_EvaluatorLookup evaluationLookup_;
+	private EvaluatorLookupMutant evaluationLookupOverrides_ = new EvaluatorLookupMutant();
 	/**
 	 * Set the memory of the AbstractTrial
 	 * @param p
@@ -79,18 +79,18 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	public void setBindings(I_TrialBindings bindings) {
 		//throw npe for nulls
 		bindings.hashCode();
-		platform = bindings;
+		platform_ = bindings;
 		
-		listener = bindings.getAssertListener();
+		listener_ = bindings.getAssertListener();
 		//throw npe for nulls
-		listener.hashCode();
+		listener_.hashCode();
 		
-		log = bindings.getLog();
+		log_ = bindings.getLog();
 		//throw npe for nulls
-		log.hashCode();
+		log_.hashCode();
 		
-		evaluationLookup = bindings.getDefalutEvaluatorLookup();
-		evaluationLookup.hashCode();
+		evaluationLookup_ = bindings.getDefalutEvaluatorLookup();
+		evaluationLookup_.hashCode();
 	}
 	
 	/**
@@ -103,31 +103,31 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	 * @param evaluator
 	 */
 	protected void setEvaluatorLookup(Class<?> clazz, I_UniformAssertionEvaluator<?, ?> evaluator) {
-		evaluationLookupOverrides.setEvaluator(clazz, evaluator);
+		evaluationLookupOverrides_.setEvaluator(clazz, evaluator);
 	}
 	/**
 	 * @param cmd
 	 */
 	public void evaluate(I_SimpleAssertCommand cmd) {
-		AssertionProcessor.evaluate(listener, cmd);
+		AssertionProcessor.evaluate(listener_, cmd);
 	}
 	
 	public void evaluate(I_ThrownAssertCommand cmd, I_Thrower p) {
-		AssertionProcessor.evaluate(listener, cmd, p);
+		AssertionProcessor.evaluate(listener_, cmd, p);
 	}
 	
 	public void evaluateForNullExpected(Object expected) {
 		if (expected == null) {
 			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 			
-			AssertionProcessor.onAssertionFailure(listener, null, messages.getTheExpectedValueShouldNeverBeNull());
+			AssertionProcessor.onAssertionFailure(listener_, null, messages.getTheExpectedValueShouldNeverBeNull());
 		}
 	}
 
 	public void evaluateForNullThrower(I_Thrower thrower) {
 		if (thrower == null) {
 			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
-			AssertionProcessor.onAssertionFailure(listener, null, messages.getIThrowerIsRequired());
+			AssertionProcessor.onAssertionFailure(listener_, null, messages.getIThrowerIsRequired());
 		}
 	}
 	
@@ -260,7 +260,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 					new CompareAssertionData<Object>(expected, actual, AssertNotUniform), eval));
 		} else {
 			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
-			AssertionProcessor.onAssertionFailure(listener, null, messages.getNoEvaluatorFoundForClass());
+			AssertionProcessor.onAssertionFailure(listener_, null, messages.getNoEvaluatorFoundForClass());
 		}
 	}
 				
@@ -302,10 +302,10 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	public void assertThrownUniform(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
 		evaluateForNullExpected(pData);
 		evaluateForNullThrower(pThrower);
-		I_UniformThrownAssertionEvaluator<I_ThrownAssertionData> eval = evaluationLookup.getThrownEvaulator();
+		I_UniformThrownAssertionEvaluator<I_ThrownAssertionData> eval = evaluationLookup_.getThrownEvaulator();
 		if (eval == null) {
 			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
-			AssertionProcessor.onAssertionFailure(listener, null, messages.getTheUniformThrownEvaluatorIsNull());
+			AssertionProcessor.onAssertionFailure(listener_, null, messages.getTheUniformThrownEvaluatorIsNull());
 		} else {
 			evaluate(new UniformThrownAssertCommand(pMessage, pData, eval), pThrower);
 		}
@@ -323,7 +323,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 					new CompareAssertionData<Object>(expected, actual,AssertUniform), evaluator));
 		} else {
 			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
-			AssertionProcessor.onAssertionFailure(listener, null, messages.getNoEvaluatorFoundForClass());
+			AssertionProcessor.onAssertionFailure(listener_, null, messages.getNoEvaluatorFoundForClass());
 		}
 	}
 
@@ -341,9 +341,9 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@SuppressWarnings("unchecked")
 	private <D> I_UniformAssertionEvaluator<?, D> getEvaluator(Class<?> expectedClass) {
-		I_UniformAssertionEvaluator<?, ?> eval = evaluationLookupOverrides.findEvaluator(expectedClass);
+		I_UniformAssertionEvaluator<?, ?> eval = evaluationLookupOverrides_.findEvaluator(expectedClass);
 		if (eval == null) {
-			eval = evaluationLookup.findEvaluator(expectedClass);
+			eval = evaluationLookup_.findEvaluator(expectedClass);
 		}
 		return (I_UniformAssertionEvaluator<?, D>) eval;
 	}
@@ -375,10 +375,13 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	
 	public void log(String p) {
-		log.log(p);
+		log_.log(p);
 	}
 
-
+	public void log(Throwable t) {
+    log_.onThrowable(t);
+  }
+	
 	@Override
 	public void assertGreaterThanOrEquals(double p, float a) {
 		assertGreaterThanOrEquals(p, 0.0 + a);
@@ -420,11 +423,11 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	}
 	
 	public I_Platform getPlatform() {
-		return platform.getPlatform();
+		return platform_.getPlatform();
 	}
 
 	public I_Tests4J_Log getLog() {
-		return log;
+		return log_;
 	}
 	
 	public void showWidget(Object o) {

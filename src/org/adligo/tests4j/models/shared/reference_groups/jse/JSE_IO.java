@@ -3,6 +3,7 @@ package org.adligo.tests4j.models.shared.reference_groups.jse;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.association.I_PackageConstantLookup;
 import org.adligo.tests4j.models.shared.reference_groups.jse.v1_8.I_JSE_1_8_IO;
@@ -25,6 +26,7 @@ import org.adligo.tests4j.shared.asserts.reference.ReferenceGroupBaseDelegate;
 public class JSE_IO extends ReferenceGroupBaseDelegate implements I_JSE_1_8_IO, I_PackageConstantLookup {
 	public static final String JAVA_IO = "java.io";
 	private static final Map<String,String> CONSTANT_LOOKUP = getConstantLookup();
+	public static final Set<String> CLASS_NAMES = CONSTANT_LOOKUP.keySet();
 	public static final JSE_IO INSTANCE = new JSE_IO();
 	
 	private static Map<String,String> getConstantLookup() {

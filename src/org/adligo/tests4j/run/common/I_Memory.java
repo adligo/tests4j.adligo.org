@@ -5,9 +5,8 @@ import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePlugin;
-import org.adligo.tests4j.system.shared.api.I_Tests4J_SourceInfoParams;
 
-public interface I_Tests4J_Memory {
+public interface I_Memory {
 
 	public I_Tests4J_Log getLog();
 

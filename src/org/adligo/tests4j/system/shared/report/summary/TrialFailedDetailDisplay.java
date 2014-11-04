@@ -1,12 +1,5 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
@@ -30,11 +23,20 @@ import org.adligo.tests4j.shared.asserts.reference.I_AllowedReferencesFailure;
 import org.adligo.tests4j.shared.asserts.reference.I_CircularDependencyFailure;
 import org.adligo.tests4j.shared.asserts.reference.I_FieldSignature;
 import org.adligo.tests4j.shared.asserts.reference.I_MethodSignature;
+import org.adligo.tests4j.shared.common.ArrayUtils;
 import org.adligo.tests4j.shared.common.ClassMethods;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class TrialFailedDetailDisplay {
 	private I_Tests4J_Log log;
@@ -270,7 +272,7 @@ public class TrialFailedDetailDisplay {
 			stack = new StackTraceElement[2];
 		} else {
 			//move the stack down so we can add 2 elements at the top
-			StackTraceElement[] stackClone = Arrays.copyOf(stack, stack.length);
+			StackTraceElement[] stackClone = ArrayUtils.copyOf(stack);
 			for (int i = 0; i < stack.length; i++) {
 				if (i + 2 < stack.length) {
 					StackTraceElement ste = stackClone[i];
@@ -298,7 +300,7 @@ public class TrialFailedDetailDisplay {
 			stack = new StackTraceElement[1];
 		} else {
 			//move the stack down so we can add 2 elements at the top
-			StackTraceElement[] stackClone = Arrays.copyOf(stack, stack.length);
+			StackTraceElement[] stackClone = ArrayUtils.copyOf(stack);
 			for (int i = 0; i < stack.length; i++) {
 				if (i + 1 < stack.length) {
 					StackTraceElement ste = stackClone[i];

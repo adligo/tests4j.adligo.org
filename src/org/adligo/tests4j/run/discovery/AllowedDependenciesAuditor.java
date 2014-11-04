@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.run.common.I_Memory;
 import org.adligo.tests4j.shared.asserts.reference.AllowedReferences;
 import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.asserts.reference.ReferenceGroupAggregate;
@@ -26,7 +26,7 @@ public class AllowedDependenciesAuditor {
 	 * @return
 	 */
 	public static ReferenceGroupAggregate audit(I_TrialDescription trialDesc,
-			List<I_TrialFailure> failures, I_Tests4J_Memory memory) {
+			List<I_TrialFailure> failures, I_Memory memory) {
 		
 		Class<? extends I_AbstractTrial> trial = trialDesc.getTrialClass();
 		AllowedReferences ad = trial.getAnnotation(AllowedReferences.class);

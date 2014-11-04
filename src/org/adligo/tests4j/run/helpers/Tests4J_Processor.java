@@ -2,7 +2,7 @@ package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.run.api.Tests4J_UncaughtExceptionHandler;
-import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
+import org.adligo.tests4j.run.common.I_ThreadManager;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.run.output.ConcurrentOutputDelegateor;
@@ -51,7 +51,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	
 	private final I_System system_;
 	private Tests4J_ParamsReader reader_;
-	private I_Tests4J_ThreadManager threadManager_;
+	private I_ThreadManager threadManager_;
 	private I_Tests4J_NotificationManager notifier_;
 	
 	private Tests4J_Controls controls_;

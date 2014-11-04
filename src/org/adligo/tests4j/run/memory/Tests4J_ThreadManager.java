@@ -13,8 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.adligo.tests4j.models.shared.results.I_PhaseState;
-import org.adligo.tests4j.run.common.I_Tests4J_RemoteRunner;
-import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
+import org.adligo.tests4j.run.common.I_RemoteRunner;
+import org.adligo.tests4j.run.common.I_ThreadManager;
 import org.adligo.tests4j.run.helpers.ThreadLogMessageBuilder;
 import org.adligo.tests4j.run.remote.RemoteRunnerStateEnum;
 import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
@@ -28,7 +28,7 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  * @author scott
  *
  */
-public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
+public class Tests4J_ThreadManager implements I_ThreadManager {
 	private Tests4J_ThreadFactory tests4jFactory_;
 	private Tests4J_ThreadFactory trialFactory_;
 	private Tests4J_ThreadFactory testFactory_;
@@ -43,8 +43,8 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	private List<Future<?>> setupFutures_ = new CopyOnWriteArrayList<Future<?>>();
 	private List<Future<?>> trialFutures_ = new CopyOnWriteArrayList<Future<?>>();
 	private List<Future<?>> remoteFutures_ = new CopyOnWriteArrayList<Future<?>>();
-	private CopyOnWriteArrayList<I_Tests4J_RemoteRunner> remoteRunners_ = 
-			new CopyOnWriteArrayList<I_Tests4J_RemoteRunner>();
+	private CopyOnWriteArrayList<I_RemoteRunner> remoteRunners_ = 
+			new CopyOnWriteArrayList<I_RemoteRunner>();
 			
 	private Map<ExecutorService, Future<?>> testRuns_ = new ConcurrentHashMap<ExecutorService, Future<?>>();
 	private I_System system_;
@@ -89,7 +89,7 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 		if (remoteService_ != null) {
 			//notify the remote runners first, as it will take some time
 			//for the socket communication to occur.
-			for (I_Tests4J_RemoteRunner remote: remoteRunners_) {
+			for (I_RemoteRunner remote: remoteRunners_) {
 				remote.shutdown();
 			}
 		}
@@ -100,7 +100,7 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 			remotesShutdown = true;
 		} else {
 			while (!remotesShutdown) {
-				for (I_Tests4J_RemoteRunner remote: remoteRunners_) {
+				for (I_RemoteRunner remote: remoteRunners_) {
 					if (remote.getState() != RemoteRunnerStateEnum.SHUTDOWN) {
 						remotesShutdown = false;
 						try {
@@ -169,12 +169,12 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 		remoteFutures_.add(future);
 	}
 	
-	public List<I_Tests4J_RemoteRunner> getRemoteRunners() {
-		return new ArrayList<I_Tests4J_RemoteRunner>(remoteRunners_);
+	public List<I_RemoteRunner> getRemoteRunners() {
+		return new ArrayList<I_RemoteRunner>(remoteRunners_);
 	}
 
 	public void setRemoteRunners(
-			Collection<I_Tests4J_RemoteRunner> p) {
+			Collection<I_RemoteRunner> p) {
 		remoteRunners_.clear();
 		remoteRunners_.addAll(p);
 	}
@@ -183,7 +183,7 @@ public class Tests4J_ThreadManager implements I_Tests4J_ThreadManager {
 	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_ThreadManager#addRemoteRunner(org.adligo.tests4j.run.remote.Tests4J_RemoteRunner)
 	 */
 	@Override
-	public void addRemoteRunner(I_Tests4J_RemoteRunner p) {
+	public void addRemoteRunner(I_RemoteRunner p) {
 		remoteRunners_.add(p);
 	}
 

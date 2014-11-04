@@ -23,7 +23,7 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
-import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
+import org.adligo.tests4j.run.common.I_ThreadManager;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
@@ -68,7 +68,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			"Unexpected exception thrown from ";
 	
 	private Tests4J_Memory memory;
-	private I_Tests4J_ThreadManager threadManager;
+	private I_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notifier;
 	private TrialDescription trialDescription;
 	private I_Tests4J_Log log_;

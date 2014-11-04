@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
+import org.adligo.tests4j.run.common.I_ThreadManager;
 import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Controls;
 
@@ -19,7 +19,7 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_Controls;
  */
 public class Tests4J_Controls implements I_Tests4J_Controls {
 	private static final PrintStream ps = System.out;
-	private I_Tests4J_ThreadManager threadManager;
+	private I_ThreadManager threadManager;
 	private I_Tests4J_NotificationManager notificationManager;
 	private AtomicBoolean waiting = new AtomicBoolean(false);
 	private AtomicBoolean running = new AtomicBoolean(true);

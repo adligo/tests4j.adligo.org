@@ -16,7 +16,7 @@ import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.run.common.I_Memory;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.shared.asserts.common.AssertCompareFailureMutant;
 import org.adligo.tests4j.shared.asserts.common.AssertType;
@@ -53,7 +53,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 
 	private I_Tests4J_Log log;
 	
-	public AfterSourceFileTrialTestsProcessor(I_Tests4J_Memory memory) {
+	public AfterSourceFileTrialTestsProcessor(I_Memory memory) {
 		super(memory);
 		log = memory.getLog();
 	}

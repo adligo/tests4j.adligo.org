@@ -6,7 +6,7 @@ import org.adligo.tests4j.models.shared.results.I_UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
-import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.run.common.I_Memory;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_UseCaseTrial;
 
@@ -24,7 +24,7 @@ public class AfterUseCaseTrialTestsProcessor extends AbstractAfterTrialTestsProc
 	private static final String AFTER_USE_CASE_TRIAL_TESTS_METHOD =
 			"afterTrialTests(I_UseCaseTrialResult p)";
 	
-	public AfterUseCaseTrialTestsProcessor(I_Tests4J_Memory memory) {
+	public AfterUseCaseTrialTestsProcessor(I_Memory memory) {
 		super(memory);
 	}
 	

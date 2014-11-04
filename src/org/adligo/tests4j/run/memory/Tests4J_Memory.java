@@ -11,8 +11,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.run.common.I_Tests4J_Memory;
-import org.adligo.tests4j.run.common.I_Tests4J_ThreadManager;
+import org.adligo.tests4j.run.common.I_Memory;
+import org.adligo.tests4j.run.common.I_ThreadManager;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
@@ -47,7 +47,7 @@ import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
  * @author scott
  *
  */
-public class Tests4J_Memory implements I_Tests4J_Memory {
+public class Tests4J_Memory implements I_Memory {
 	private ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>> trialClasses = 
 			new ConcurrentLinkedQueue<Class<? extends I_AbstractTrial>>();
 	private AtomicBoolean metaTrial = new AtomicBoolean(false);
@@ -62,7 +62,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	 */
 	private ConcurrentHashMap<String,TrialDescription> trialDescriptions = new ConcurrentHashMap<String,TrialDescription>();
 
-	private I_MetaTrialParams metaTrialParams_;
+	private I_MetaTrialParams<?> metaTrialParams_;
 	private I_Tests4J_CoverageRecorder mainRecorder;
 	
 	private ConcurrentLinkedQueue<I_TrialResult> resultsBeforeMetadata = new ConcurrentLinkedQueue<I_TrialResult>();
@@ -88,7 +88,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	
 	private Tests4J_ThreadManager threadManager;
 	private ArrayBlockingQueue<I_TrialRunMetadata> metaTrialDataBlock = new ArrayBlockingQueue<I_TrialRunMetadata>(1);
-	private TrialQueueDecisionTree trialQueueDecisionTree;
+	private TrialQueueDecisionTree trialQueueDecisionTree_;
 	private I_TrialRunMetadata metadata;
 	private AtomicBoolean ranMetaTrial = new AtomicBoolean(false);
 	private boolean hasRemoteDelegation = false;
@@ -144,7 +144,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		}
 		coveragePlugin =  p.getCoveragePlugin();
 		boolean hasCoveragePlugin = (coveragePlugin != null);
-		trialQueueDecisionTree = new TrialQueueDecisionTree(allTrialCount, log, hasCoveragePlugin);
+		trialQueueDecisionTree_ = new TrialQueueDecisionTree(allTrialCount, log, hasCoveragePlugin);
 		
 		Tests4J_PhaseInfoParamsMutant setupPhaseInfo = new Tests4J_PhaseInfoParamsMutant();
 		setupPhaseInfo.setProcessName(I_PhaseState.SETUP);
@@ -284,7 +284,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 		return listener;
 	}
 
-	public I_Tests4J_ThreadManager getThreadManager() {
+	public I_ThreadManager getThreadManager() {
 		return threadManager;
 	}
 
@@ -432,7 +432,7 @@ public class Tests4J_Memory implements I_Tests4J_Memory {
 	}
 
 	public TrialQueueDecisionTree getTrialQueueDecisionTree() {
-		return trialQueueDecisionTree;
+		return trialQueueDecisionTree_;
 	}
 
 	public I_MetaTrialParams getMetaTrialParams() {

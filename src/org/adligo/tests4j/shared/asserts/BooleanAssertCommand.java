@@ -104,9 +104,11 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 			case AssertNull:
 				return null;
 			case AssertNotNull:
+			  //a non null instance
 				return "";
 		}
-		return Character.BYTES;
+	//a non null instance
+		return "";
 	}
 
 

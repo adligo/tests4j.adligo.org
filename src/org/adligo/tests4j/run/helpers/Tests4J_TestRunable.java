@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
-import org.adligo.tests4j.run.common.I_Tests4J_Memory;
+import org.adligo.tests4j.run.common.I_Memory;
 import org.adligo.tests4j.run.output.TrialOutput;
 import org.adligo.tests4j.shared.asserts.common.AssertionFailedException;
 import org.adligo.tests4j.shared.asserts.common.I_AssertCommand;
@@ -43,7 +43,7 @@ public class Tests4J_TestRunable implements Runnable, I_AssertListener {
 	private I_ConcurrentOutputDelegator cod;
 	private TrialOutput out;
 	
-	public Tests4J_TestRunable(I_Tests4J_Memory pMemory) {
+	public Tests4J_TestRunable(I_Memory pMemory) {
 		reporter = pMemory.getLog();
 	}
 	
