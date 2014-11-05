@@ -1,12 +1,17 @@
 package org.adligo.tests4j.run.memory;
 
+import org.adligo.tests4j.run.common.I_Threads;
+import org.adligo.tests4j.run.common.ThreadsDelegate;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * In order to correctly record code coverage the trial threads each have
@@ -14,103 +19,171 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  * use the numbered trial thread group.
  * Ie
  * thread tests4j-trial-1 with thread group tests4j-trial-1
- *         thread tests4j-test-1 with thread group tests4j-trial-1
- *         		thread custom-thread-1 with thread group tests4j-trial-1
+ *         thread tests4j-trial-1-test-1 with thread group        
+ *              tests4j-trial-1-group
+ *         		thread tests4j-trial-1-custom-1 with thread group 
+ *              tests4j-trial-1-group
  *                     
  * @author scott
  *
  */
 public final class Tests4J_ThreadFactory implements ThreadFactory {
-	public static final String THREAD_NAME = "tests4j-main";
+	public static final String NAME_NOT_ALLOWED = "Name not allowed!";
+  public static final String MAIN_THREAD_NAME = "tests4j-main";
+	public static final String MAIN_THREAD_GROUP = "tests4j-main-group";
 	
 	public static final String BASE_THREAD_NAME = "tests4j-";
 	/**
 	 * for the Tests4J_TrialsRunnables
 	 */
-	public static final String TRIAL_THREAD_NAME = BASE_THREAD_NAME + "trial";
+	public static final String TRIAL_THREAD_NAME = "trial";
+	public static final String TRIAL_THREAD_GROUP = BASE_THREAD_NAME + "trial-group";
 	/**
 	 * for the Tests4J_TestRunnables
 	 */
-	public static final String TEST_THREAD_NAME = BASE_THREAD_NAME + "test";
+	public static final String TEST_THREAD_NAME = "test";
 	/**
 	 * for the Tests4J_SetupRunnables
 	 */
-	public static final String SETUP_THREAD_NAME = BASE_THREAD_NAME + "setup";
+	public static final String SETUP_THREAD_NAME = "setup";
 	
 	/**
 	 * for the Tests4J_RemoteRunnables
 	 */
-	public static final String REMOTE_THREAD_NAME = BASE_THREAD_NAME + "remote";
+	public static final String REMOTE_THREAD_NAME = "remote";
 	
 	/**
 	 * for the Tests4J_ServerRunnables
 	 */
-	public static final String SERVER_THREAD_NAME = BASE_THREAD_NAME + "server";
+	public static final String SERVER_THREAD_NAME = "server";
+	
+	/**
+   * for the Tests4J_ServerRunnables
+   */
+  public static final String CUSTOM_THREAD_NAME = "custom";
+  
+  private static final Set<String> ALLOWED_NAMES = getAllowedNames();
+  private static final Set<String> getAllowedNames() {
+    Set<String> toRet = new HashSet<String>();
+    toRet.add(MAIN_THREAD_NAME);
+    toRet.add(TRIAL_THREAD_NAME);
+    toRet.add(TEST_THREAD_NAME);
+    toRet.add(SETUP_THREAD_NAME);
+    toRet.add(REMOTE_THREAD_NAME);
+    toRet.add(SERVER_THREAD_NAME);
+    toRet.add(CUSTOM_THREAD_NAME);
+    return Collections.unmodifiableSet(toRet);
+  }
+  
+  private I_Threads threads_;
+  private ThreadGroup instanceCreationThreadGroup_;
+  private ThreadGroup group_;
+  private Tests4J_ThreadFactory parent_;
+	
+  private List<Thread> threads = new CopyOnWriteArrayList<Thread>();
+	private AtomicInteger id_ = new AtomicInteger();
+	private String name_;
+	private I_Tests4J_Log log_;
+	
+	public Tests4J_ThreadFactory(I_Tests4J_Log log) {
+    this(MAIN_THREAD_NAME, log);
+  }
+	public Tests4J_ThreadFactory(I_Tests4J_Log log, I_Threads threads) {
+    this(MAIN_THREAD_NAME, log, threads);
+  }
+	public Tests4J_ThreadFactory(Tests4J_ThreadFactory parent, String name) {
+	  setParent(parent);
+	  setName(name);
+  }
+
+	public Tests4J_ThreadFactory(String name, I_Tests4J_Log log, I_Threads threads) {
+    setLog(log);
+    setThreads(threads);
+    instanceCreationThreadGroup_ = threads_.currentThread().getThreadGroup();
+    setName(name); 
+  }
+	
+  private void setParent(Tests4J_ThreadFactory parent) {
+    if (parent == null) {
+      throw new NullPointerException();
+    } else {
+      parent_ = parent;
+    }
+    log_ = parent.log_;
+  }
+	public Tests4J_ThreadFactory(String name, I_Tests4J_Log reporter) {
+	  this(name, reporter, null);
+  }
 	
 	
-	private List<Thread> threads = new CopyOnWriteArrayList<Thread>();
-	private AtomicInteger id = new AtomicInteger();
-	private String name;
-	private I_Tests4J_Log reporter;
-	private final ThreadGroup instanceCreationThreadGroup = Thread.currentThread().getThreadGroup();
-	
-	public Tests4J_ThreadFactory(String pName, I_Tests4J_Log pReporter) {
-		reporter = pReporter;
-		if (pName.contains(THREAD_NAME) || 
-				pName.contains(TRIAL_THREAD_NAME) || 
-				pName.contains(TEST_THREAD_NAME) ||
-				pName.contains(SETUP_THREAD_NAME) ||
-				pName.contains(REMOTE_THREAD_NAME) ||
-				pName.contains(SERVER_THREAD_NAME)) {
-			name = pName;
+  private void setLog(I_Tests4J_Log log) {
+    if (log == null) {
+	    throw new NullPointerException();
+	  } else {
+	    log_ = log;
+	  }
+  }
+
+  private void setThreads(I_Threads threads) {
+    if (threads == null) {
+		  threads_ = new ThreadsDelegate();
 		} else {
-			throw new IllegalArgumentException("Tests4J threads must start"
-					+ "with one of the pre defined name prefixes in " + 
-					Tests4J_ThreadFactory.class.getName());
+		  threads_ = threads;
 		}
-	}
+  }
+
+  private void setName(String name) {
+    if (name == null) {
+		  throw new NullPointerException();
+		} else {
+		  if (!ALLOWED_NAMES.contains(name)) {
+		    throw new IllegalArgumentException(NAME_NOT_ALLOWED);
+		  }
+		  if (MAIN_THREAD_NAME.equals(name)) {
+		    group_ = new ThreadGroup(instanceCreationThreadGroup_, MAIN_THREAD_GROUP);
+        name_ = name;
+        return;
+      } else if (parent_ == null) {
+        throw new IllegalArgumentException(NAME_NOT_ALLOWED);
+      }
+		  
+		  String parentName = parent_.name_;
+		  if (parentName.indexOf(BASE_THREAD_NAME) != 0) {
+        throw new IllegalArgumentException(NAME_NOT_ALLOWED);
+      }
+		  
+		  if (TEST_THREAD_NAME.equals(name) || CUSTOM_THREAD_NAME.equals(name)) {
+		     
+	      if (parentName.indexOf(TRIAL_THREAD_NAME) != BASE_THREAD_NAME.length()) {
+          throw new IllegalArgumentException(NAME_NOT_ALLOWED);
+        }
+	      group_ = parent_.group_;
+	      name_ = parentName + "-" + name;
+		  } else {
+		    group_ = new ThreadGroup(parent_.group_, BASE_THREAD_NAME + name + "-group");
+		    name_ = BASE_THREAD_NAME + name;
+		  }
+		  
+		}
+  }
 	
 	@Override
 	public Thread newThread(Runnable r) {
-		int newId = id.addAndGet(1);
-		Thread t = createNewThread(r, newId);
-		threads.add(t);
-		return t;
-	}
-
-
-	/**
-	 * do not change this method name,
-	 * it is checked for in the Tests4J_SecurityManager
-	 * @param r
-	 * @param newId
-	 * @return
-	 */
-	private Thread createNewThread(Runnable r, int newId) {
-		ThreadGroup parentThreadGroup = Thread.currentThread().getThreadGroup();
-		String threadAndGroupName = name + "-" + newId;
-		Thread t = null;
-		if (name.indexOf(TRIAL_THREAD_NAME) != -1) {
-			ThreadGroup group = new ThreadGroup(parentThreadGroup, threadAndGroupName);
-			t = new Thread(group, r, threadAndGroupName);
-		} else {
-			t = new Thread(parentThreadGroup, r, threadAndGroupName);
-		}
-		if (reporter.isLogEnabled(Tests4J_ThreadFactory.class)) {
-			StringBuilder sb = new StringBuilder();
-			ThreadGroup childGroup = t.getThreadGroup();
-			while (!instanceCreationThreadGroup.equals(childGroup)) {
-				sb.append("~group=");
-				sb.append(childGroup);
-				childGroup = childGroup.getParent();
-			}
-			reporter.log("Tests4J_ThreadFactory creating new thread " + threadAndGroupName + sb.toString());
-		}
-		return t;
+	  Thread t = null;
+	  if (name_.equals(MAIN_THREAD_NAME)) {
+	    t =  new Thread(group_, r, MAIN_THREAD_NAME);
+	  } else  {
+	    t = new Thread(group_, r, name_ + "-" + id_.incrementAndGet());
+	  }
+	  threads.add(t);
+	  return t;
 	}
 
 	public List<Thread> getThreads() {
 		return Collections.unmodifiableList(threads);
 	}
+  public ThreadGroup getInstanceCreationThreadGroup() {
+    return instanceCreationThreadGroup_;
+  }
 
 }

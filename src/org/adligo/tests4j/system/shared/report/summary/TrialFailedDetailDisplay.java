@@ -3,6 +3,7 @@ package org.adligo.tests4j.system.shared.report.summary;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.shared.asserts.common.AssertThrownFailure;
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.AssertionFailedException;
 import org.adligo.tests4j.shared.asserts.common.I_AssertCompareFailure;
@@ -10,7 +11,9 @@ import org.adligo.tests4j.shared.asserts.common.I_AssertThrownFailure;
 import org.adligo.tests4j.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_SourceTestFailure;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
+import org.adligo.tests4j.shared.asserts.common.I_TestFailureType;
 import org.adligo.tests4j.shared.asserts.common.I_ThrowableInfo;
+import org.adligo.tests4j.shared.asserts.common.TestFailureType;
 import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexes;
 import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexesPair;
 import org.adligo.tests4j.shared.asserts.line_text.I_LineDiff;
@@ -30,8 +33,6 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -61,7 +62,7 @@ public class TrialFailedDetailDisplay {
 		};
 		switchReplacement.put(AssertType.AssertThrown, thownRun);
 		switchReplacement.put(AssertType.AssertThrownUniform, thownRun);
-
+		
 		switchReplacement.put(AssertType.AssertContains, new Runnable() {
 			public void run() {
 				I_AssertCompareFailure ac = (I_AssertCompareFailure) testFailure;
@@ -126,18 +127,28 @@ public class TrialFailedDetailDisplay {
 						if (run != null) {
 							run.run();
 						} else {
-							I_AssertCompareFailure acf = (I_AssertCompareFailure) testFailure;
-							if (String.class.getName().equals(acf.getExpectedClass())) {
-								if (String.class.getName().equals(acf.getActualClass())) {
-									addStringCompare(acf.getExpectedValue(), acf.getActualValue(), sb);
-								} else  {
-									addCompareFailure(acf, sb);
-								}
-							} else if (I_SourceFileTrial.TEST_MIN_COVERAGE.equals(testName)) {
-								addCoverageFailure(trial, acf, sb);
-							} else {
-								addCompareFailure(acf, sb);
-							}
+						  I_TestFailureType tft =  testFailure.getType();
+						  if (TestFailureType.AssertThrownFailure.equals(TestFailureType.get(tft))) {
+						    I_AssertThrownFailure atf = (I_AssertThrownFailure) testFailure;
+						    sb.append(messages.getIndent() + messages.getIndent() + 
+						        atf.getFailureDetail());
+						  } else {
+  						  I_AssertType ast = testFailure.getAssertType();
+  						  
+  						  
+  							I_AssertCompareFailure acf = (I_AssertCompareFailure) testFailure;
+  							if (String.class.getName().equals(acf.getExpectedClass())) {
+  								if (String.class.getName().equals(acf.getActualClass())) {
+  									addStringCompare(acf.getExpectedValue(), acf.getActualValue(), sb);
+  								} else  {
+  									addCompareFailure(acf, sb);
+  								}
+  							} else if (I_SourceFileTrial.TEST_MIN_COVERAGE.equals(testName)) {
+  								addCoverageFailure(trial, acf, sb);
+  							} else {
+  								addCompareFailure(acf, sb);
+  							}
+  						}
 						}
 					}
 					String failureDetail = testFailure.getFailureDetail();

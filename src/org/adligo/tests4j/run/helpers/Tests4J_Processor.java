@@ -150,6 +150,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	}
 	
 	public void run() {
+	  memory_.initalizeExecutors();
 		Thread.setDefaultUncaughtExceptionHandler(new Tests4J_UncaughtExceptionHandler());
 		memory_.setSystem(system_);
 		long time = system_.getTime();

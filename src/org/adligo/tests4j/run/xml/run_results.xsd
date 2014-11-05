@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/TrialRunResults" xmlns:tns="http://www.example.org/TrialRunResults" elementFormDefault="qualified">
+
+	<import schemaLocation="coverage.xsd" 
+		namespace="http://www.adligo.org/tests4j/run/xml/io/coverage">
+	</import>
+</schema>

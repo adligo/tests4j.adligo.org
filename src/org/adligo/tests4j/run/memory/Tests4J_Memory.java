@@ -1,13 +1,5 @@
 package org.adligo.tests4j.run.memory;
 
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
@@ -20,7 +12,6 @@ import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.helpers.Tests4J_NotificationManager;
 import org.adligo.tests4j.run.helpers.Tests4J_PhaseInfoParamsMutant;
 import org.adligo.tests4j.run.helpers.Tests4J_PhaseOverseer;
-import org.adligo.tests4j.shared.asserts.reference.I_Dependency;
 import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.common.I_System;
@@ -31,12 +22,19 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_ProgressParams;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Selection;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_SourceInfoParams;
-import org.adligo.tests4j.system.shared.api.Tests4J_DelegateProgressMonitor;
 import org.adligo.tests4j.system.shared.api.Tests4J_ListenerDelegator;
 import org.adligo.tests4j.system.shared.api.Tests4J_SourceInfoParamsDelegate;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
+
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Instances of this class represent the main
@@ -101,6 +99,9 @@ public class Tests4J_Memory implements I_Memory {
 	private Tests4J_NotificationManager notifier;
 	private ConcurrentHashMap<String,I_ReferenceGroup> dependencyGroupInstances_ =
 			new ConcurrentHashMap<String,I_ReferenceGroup>();
+	private int setupThreads_;
+	private int trialThreads_;
+	private int remoteThreads_;
 	/**
 	 * 
 	 * @param params
@@ -122,8 +123,8 @@ public class Tests4J_Memory implements I_Memory {
 		
 		Tests4J_PhaseInfoParamsMutant trialPhaseInfo = new Tests4J_PhaseInfoParamsMutant();
 		trialPhaseInfo.setProcessName(I_PhaseState.TRIALS);
-		int trialThreads = p.getTrialThreadCount();
-		trialPhaseInfo.setThreadCount(trialThreads);
+		trialThreads_ = p.getTrialThreadCount();
+		trialPhaseInfo.setThreadCount(trialThreads_);
 		trialPhaseInfo.setCount(allTrialCount);
 		trialPhaseInfo.setNotificationInterval(notificationInterval);
 		trialPhaseInfo.setTime(getSystem());
@@ -148,8 +149,8 @@ public class Tests4J_Memory implements I_Memory {
 		
 		Tests4J_PhaseInfoParamsMutant setupPhaseInfo = new Tests4J_PhaseInfoParamsMutant();
 		setupPhaseInfo.setProcessName(I_PhaseState.SETUP);
-		int setupThreads = p.getSetupThreadCount();
-		setupPhaseInfo.setThreadCount(setupThreads);
+		setupThreads_ = p.getSetupThreadCount();
+		setupPhaseInfo.setThreadCount(setupThreads_);
 		setupPhaseInfo.setCount(allTrialCount);
 		setupPhaseInfo.setNotificationInterval(notificationInterval);
 		setupPhaseInfo.setTime(getSystem());
@@ -164,9 +165,8 @@ public class Tests4J_Memory implements I_Memory {
 		remotePhaseInfo.setTime(getSystem());
 		remoteProcessInfo = new Tests4J_PhaseOverseer(remotePhaseInfo);
 		
-		threadManager.setupSetupProcess(setupThreads);
-		threadManager.setupTrialsProcess(trialThreads);
-		//threadManager.setupRemoteProcess(remoteProcessInfo);
+		//remoteThreads_ = p.getRemoteThreadCount();
+		
 		
 		trialClasses.addAll(trials);
 		tests = new CopyOnWriteArraySet<I_Tests4J_Selection>(p.getTests());
@@ -181,6 +181,14 @@ public class Tests4J_Memory implements I_Memory {
 		}
 	}
 	
+	/**
+	 * note this is called after the main thread start execution
+	 */
+	public void initalizeExecutors() {
+	  threadManager.setupSetupProcess(setupThreads_);
+    threadManager.setupTrialsProcess(trialThreads_);
+    //threadManager.setupRemoteProcess(remoteProcessInfo);
+	}
 	/**
 	 * 
 	 * @return the trial classes which have been request to be run,

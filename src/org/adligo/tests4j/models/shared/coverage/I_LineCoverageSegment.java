@@ -1,6 +1,15 @@
 package org.adligo.tests4j.models.shared.coverage;
 /**
- * Notes on line coverage segment
+ * Notes on line coverage segment,
+ * first this interface provides a start and end short
+ * which allows you to have 32,766 characters per line
+ * and a Boolean (true, false, null) for if that part of the 
+ * line was covered.  The plan for displaying this information
+ * is to read the .java and corresponding .class files when a
+ * .java file is open in a IDE (i.e. Eclipse), and determine
+ * why a line segment is partially covered 
+ * for the Boolean covered = null case. 
+ * 
  * 
  * Ok branches seem to fall into two cases
  * loops that never occurred because the loop was empty

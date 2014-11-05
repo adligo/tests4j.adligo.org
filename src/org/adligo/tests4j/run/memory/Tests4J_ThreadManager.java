@@ -34,6 +34,7 @@ public class Tests4J_ThreadManager implements I_ThreadManager {
 	private Tests4J_ThreadFactory testFactory_;
 	private Tests4J_ThreadFactory setupFactory_;
 	private Tests4J_ThreadFactory remoteFactory_;
+	private Tests4J_ThreadFactory customFactory_;
 	private ExecutorService tests4jService_;
 	private ExecutorService setupService_;
 	private ExecutorService trialRunService_;
@@ -60,24 +61,27 @@ public class Tests4J_ThreadManager implements I_ThreadManager {
 			throw new IllegalArgumentException("" + this.getClass().getSimpleName() + " requires a log.");
 		}
 		log_ = logIn;
-		tests4jFactory_ = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.THREAD_NAME, log_);
+		tests4jFactory_ = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.MAIN_THREAD_NAME, log_);
 		tests4jService_ = Executors.newSingleThreadExecutor(tests4jFactory_);
-		testFactory_ = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TEST_THREAD_NAME,log_);
-
 	}
 	
 	public void setupSetupProcess(int threadCount) {
-		setupFactory_  = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SETUP_THREAD_NAME,log_);
+		setupFactory_  = new Tests4J_ThreadFactory(tests4jFactory_, 
+		    Tests4J_ThreadFactory.SETUP_THREAD_NAME);
 		setupService_ = Executors.newFixedThreadPool(threadCount, setupFactory_);
 	}
 	
 	public void setupTrialsProcess(int threadCount) {
-		trialFactory_ = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log_);
+		trialFactory_ = new Tests4J_ThreadFactory(tests4jFactory_,
+		    Tests4J_ThreadFactory.TRIAL_THREAD_NAME);
 		trialRunService_ = Executors.newFixedThreadPool(threadCount, trialFactory_);
+		testFactory_ = new Tests4J_ThreadFactory(trialFactory_, Tests4J_ThreadFactory.TEST_THREAD_NAME);
+		customFactory_ = new Tests4J_ThreadFactory(trialFactory_, Tests4J_ThreadFactory.CUSTOM_THREAD_NAME);
 	}
 	
 	public void setupRemoteProcess(int threadCount) {
-		remoteFactory_ = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.TRIAL_THREAD_NAME,log_);
+		remoteFactory_ = new Tests4J_ThreadFactory(tests4jFactory_,
+		    Tests4J_ThreadFactory.TRIAL_THREAD_NAME);
 		remoteService_ = Executors.newFixedThreadPool(threadCount, remoteFactory_);
 	}
 	
@@ -244,4 +248,8 @@ public class Tests4J_ThreadManager implements I_ThreadManager {
 	public ExecutorService getTests4jService() {
 		return tests4jService_;
 	}
+
+  public Tests4J_ThreadFactory getCustomFactory() {
+    return customFactory_;
+  }
 }

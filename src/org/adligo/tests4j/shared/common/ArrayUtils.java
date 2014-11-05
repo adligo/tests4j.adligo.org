@@ -16,4 +16,12 @@ public class ArrayUtils {
     */
     return (T[]) t.clone();
   }
+  
+  public static boolean[] copyOf(boolean[] t) {
+    boolean [] out = new boolean[t.length];
+    for (int i = 0; i < t.length; i++) {
+      out[i] = t[i];
+    }
+    return out;
+  }
 }

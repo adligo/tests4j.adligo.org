@@ -80,4 +80,14 @@ public class Tests4J_DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin 
 		return 0.0;
 	}
 
+  @Override
+  public I_Tests4J_CoverageRecorder createRecorder(String threadGroup, String javaFilter) {
+    try {
+      return delegate.createRecorder(threadGroup, javaFilter);
+    } catch (Exception t) {
+      reporter.onThrowable(t);
+    }
+    return null;
+  }
+
 }

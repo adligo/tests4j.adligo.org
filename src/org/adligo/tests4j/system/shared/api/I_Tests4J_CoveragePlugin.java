@@ -1,10 +1,8 @@
 package org.adligo.tests4j.system.shared.api;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+
+import java.io.IOException;
 
 /**
  * a pluggable interface for a this integrating testing api 
@@ -44,10 +42,22 @@ public interface I_Tests4J_CoveragePlugin {
 	
 	/**
 	 * Create a new recorder.
+	 * This should only be used to create the main recorder.
 	 * @return
 	 * @diagram Overview.seq sync on 5/1/2014
 	 */
 	public I_Tests4J_CoverageRecorder createRecorder();
 	
-
+	/**
+   * Create a new recorder.
+   * This should be used to create the thread local
+   * recorders.
+   * @param threadGroup the name of the ThreadGroup @see {@link Tests4J_OldThreadFactory}
+   *  that is used to determine if a probe hit should modify the ThreadLocal probes
+   *  that pertain to the current Trial/Test threads.
+   * @param 
+   * @return
+   * 
+   */
+  public I_Tests4J_CoverageRecorder createRecorder(String threadGroup, String javaFilter);
 }

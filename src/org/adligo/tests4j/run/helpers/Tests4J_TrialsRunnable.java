@@ -117,7 +117,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		
 		testsRunner = new Tests4J_TestRunable(memory);
 		testsRunner.setListener(this);
-		testRunService = threadManager.createNewTestRunService();
+		
 		
 		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), log_);
 		bindings.setAssertListener(testsRunner);
@@ -135,6 +135,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	@Override
 	public void run() {
 		try {
+		  testRunService = threadManager.createNewTestRunService();
 			processInfo.addRunnableStarted();
 			outputDelegator.setDelegate(out);
 			

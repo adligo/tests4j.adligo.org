@@ -7,7 +7,6 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.run.api.Tests4J;
 import org.adligo.tests4j.run.io.I_CharacterInputStream;
 import org.adligo.tests4j.run.io.UTF8_InputStream;
-import org.adligo.tests4j.run.memory.Tests4J_ThreadFactory;
 import org.adligo.tests4j.run.remote.socket_api.AfterShutdownHandler;
 import org.adligo.tests4j.run.remote.socket_api.I_AfterMessageHandler;
 import org.adligo.tests4j.run.remote.socket_api.Tests4J_Commands;
@@ -36,7 +35,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
@@ -132,8 +130,8 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	 * starts listening to the connection
 	 */
 	void start() {
-		Tests4J_ThreadFactory factory = new Tests4J_ThreadFactory(Tests4J_ThreadFactory.SERVER_THREAD_NAME, logger);
-		listenerService = Executors.newFixedThreadPool(1, factory);
+		//todo get the Tests4J_ThreadFactory here
+	  //listenerService = Executors.newFixedThreadPool(1, factory);
 		listenerService.execute(new Runnable() {
 			
 			@Override

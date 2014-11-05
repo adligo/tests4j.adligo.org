@@ -183,7 +183,8 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		return true;
 	}
 
-	public Integer getFailureThrowable() {
+	@SuppressWarnings("boxing")
+  public Integer getFailureThrowable() {
 		return failureThrowable;
 	}
 

@@ -19,8 +19,7 @@ public interface I_Tests4J_CoverageRecorder {
 	 */
 	public void startRecording();
 	/**
-	 * this ends recording for the context of the current recorder
-	 * for good and cleans up the memory resources.
+	 * this ends recording for the context of the current record.
 	 * 
 	 * Note the items in the I_PackageCoverage
 	 * are should only be packages that actually have classes,
