@@ -52,12 +52,17 @@ public interface I_Tests4J_CoveragePlugin {
    * Create a new recorder.
    * This should be used to create the thread local
    * recorders.
-   * @param threadGroup the name of the ThreadGroup @see {@link Tests4J_OldThreadFactory}
+   * @param trialThreadName the name of the trial thread @see {@link Tests4J_ThreadFactory}
    *  that is used to determine if a probe hit should modify the ThreadLocal probes
-   *  that pertain to the current Trial/Test threads.
-   * @param 
+   *  that pertain to the current Trial/Test threads.  As child
+   *  test and custom threads will have the trialThreaName as the first part
+   *  of their names.
+   *  
+   * @param javaFilter this is either a package name or Class name
+   * to filter the results for this recorder for api trials and source file
+   * trials respectively.
    * @return
    * 
    */
-  public I_Tests4J_CoverageRecorder createRecorder(String threadGroup, String javaFilter);
+  public I_Tests4J_CoverageRecorder createRecorder(String trialThreadName, String javaFilter);
 }

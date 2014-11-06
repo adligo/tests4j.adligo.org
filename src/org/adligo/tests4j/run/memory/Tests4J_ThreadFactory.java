@@ -37,7 +37,7 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	 * for the Tests4J_TrialsRunnables
 	 */
 	public static final String TRIAL_THREAD_NAME = "trial";
-	public static final String TRIAL_THREAD_GROUP = BASE_THREAD_NAME + "trial-group";
+	public static final String TRIAL_THREAD_GROUP_PREFIX = BASE_THREAD_NAME + "trial-";
 	/**
 	 * for the Tests4J_TestRunnables
 	 */
@@ -84,22 +84,39 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	private AtomicInteger id_ = new AtomicInteger();
 	private String name_;
 	private I_Tests4J_Log log_;
+	/**
+	 * Trial thread names to trial groups,
+	 * so that the thread local groups in the jacoco
+	 * project can use the creation trial thread name
+	 * as the filter, and reduce/eliminate code coverage randomness issues.
+	 */
+	private ConcurrentHashMap<String,ThreadGroup> trialThreadGroups_;
 	
 	public Tests4J_ThreadFactory(I_Tests4J_Log log) {
     this(MAIN_THREAD_NAME, log);
+  }
+	public Tests4J_ThreadFactory(String name, I_Tests4J_Log log) {
+    this(name, log, null);
   }
 	public Tests4J_ThreadFactory(I_Tests4J_Log log, I_Threads threads) {
     this(MAIN_THREAD_NAME, log, threads);
   }
 	public Tests4J_ThreadFactory(Tests4J_ThreadFactory parent, String name) {
 	  setParent(parent);
+	  setThreads(null);
 	  setName(name);
   }
 
-	public Tests4J_ThreadFactory(String name, I_Tests4J_Log log, I_Threads threads) {
+	public Tests4J_ThreadFactory(Tests4J_ThreadFactory parent, String name, I_Threads threads) {
+    setParent(parent);
+    setLog(parent_.log_);
+    setThreads(threads);
+    setName(name);
+  }
+	
+	private Tests4J_ThreadFactory(String name, I_Tests4J_Log log, I_Threads threads) {
     setLog(log);
     setThreads(threads);
-    instanceCreationThreadGroup_ = threads_.currentThread().getThreadGroup();
     setName(name); 
   }
 	
@@ -111,9 +128,7 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
     }
     log_ = parent.log_;
   }
-	public Tests4J_ThreadFactory(String name, I_Tests4J_Log reporter) {
-	  this(name, reporter, null);
-  }
+	
 	
 	
   private void setLog(I_Tests4J_Log log) {
@@ -130,6 +145,7 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 		} else {
 		  threads_ = threads;
 		}
+    instanceCreationThreadGroup_ = threads_.currentThread().getThreadGroup();
   }
 
   private void setName(String name) {
@@ -158,7 +174,14 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
           throw new IllegalArgumentException(NAME_NOT_ALLOWED);
         }
 	      group_ = parent_.group_;
-	      name_ = parentName + "-" + name;
+	      //the parent gets added later on based on execution,
+	      //in order to pair the trial and sub threads.
+	      name_ = name;
+		  } else if (TRIAL_THREAD_NAME.equals(name)){
+		    if (trialThreadGroups_ == null) {
+		      trialThreadGroups_ = new ConcurrentHashMap<String, ThreadGroup>();
+		    }
+		    name_ = BASE_THREAD_NAME + name;
 		  } else {
 		    group_ = new ThreadGroup(parent_.group_, BASE_THREAD_NAME + name + "-group");
 		    name_ = BASE_THREAD_NAME + name;
@@ -173,7 +196,21 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	  if (name_.equals(MAIN_THREAD_NAME)) {
 	    t =  new Thread(group_, r, MAIN_THREAD_NAME);
 	  } else  {
-	    t = new Thread(group_, r, name_ + "-" + id_.incrementAndGet());
+	    Thread current = threads_.currentThread();
+	    String currentThreadName = current.getName();
+	    if (currentThreadName.indexOf(BASE_THREAD_NAME + TRIAL_THREAD_NAME) == 0) {
+	      String trialChildThreadName = currentThreadName + "-" + 
+            name_ + "-" + id_.incrementAndGet();
+	      ThreadGroup group = parent_.trialThreadGroups_.get(currentThreadName);
+	      t = new Thread(group, r, trialChildThreadName);
+	    } else if (name_.equals(new String(BASE_THREAD_NAME + TRIAL_THREAD_NAME))) {
+	      String trialThreadName = name_ + "-" + id_.incrementAndGet();
+	      ThreadGroup group = new ThreadGroup(parent_.group_, trialThreadName + "-group");
+	      trialThreadGroups_.put(trialThreadName, group);
+	      t = new Thread(group, r, trialThreadName);
+	    } else {
+	      t = new Thread(group_, r, name_ + "-" + id_.incrementAndGet());
+	    }
 	  }
 	  threads.add(t);
 	  return t;

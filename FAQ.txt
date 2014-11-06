@@ -1,0 +1,11 @@
+Why is there a java v1_6 package?
+  At the time of this writing, GWT was seemingly based on 1.6 
+they were updating to 1.7 on the docs.  In addition older versions
+of java allow consumer users to use the older version with out needing
+to upgrade.  Also for testing java 1.6 even though it has been 
+end of life cycled.
+
+Tests4j will not work without modification on JDK 1.6 because of usage
+of jaxb for xml io, if you add jaxb to the ${JAVA_HOME} and
+add it to the tests4j class path it may work when run using some jdk 1.6.
+
