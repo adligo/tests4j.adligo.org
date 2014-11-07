@@ -19,20 +19,20 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 	implements I_SimpleAssertCommand, I_CompareAssertionData<Object> {
 	
 	public static final String BOOLEAN_ASSERT_COMMAND_REQUIRES_A_BOOLEAN_TYPE = "BooleanAssertCommand requires a boolean type.";
-	private Object value;
-	AssertType type;
+	private Object value_;
+	AssertType type_;
 	
-	public BooleanAssertCommand(I_AssertType pType,
-			String pFailureMessage, Object pValue) {
-		super(pType, pFailureMessage);
+	public BooleanAssertCommand(I_AssertType type,
+			String failureMessage, Object value) {
+		super(type, failureMessage);
 		
 		//copy it between classloaders
-		type = AssertType.getType(pType);
-		if (!AssertType.BOOLEAN_TYPES.contains(type)) {
+		type_ = AssertType.getType(type);
+		if (!AssertType.BOOLEAN_TYPES.contains(type_)) {
 			throw new IllegalArgumentException(
 					BOOLEAN_ASSERT_COMMAND_REQUIRES_A_BOOLEAN_TYPE);
 		}
-		value = pValue;
+		value_ = value;
 	}
 
 
@@ -40,20 +40,20 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 	public boolean evaluate() {
 		//switch statements cause the class to reference java.lang.NoSuchFieldError
 		//which isn't in GWT yet
-		if (AssertType.AssertTrue == type) {
-			if (Boolean.TRUE.equals(value)) {
+		if (AssertType.AssertTrue == type_) {
+			if (Boolean.TRUE.equals(value_)) {
 				return true;
 			}
-		} else if (AssertType.AssertFalse == type) {
-			if (Boolean.FALSE.equals(value)) {
+		} else if (AssertType.AssertFalse == type_) {
+			if (Boolean.FALSE.equals(value_)) {
 				return true;
 			}
-		} else if (AssertType.AssertNull == type) {
-			if (value == null) {
+		} else if (AssertType.AssertNull == type_) {
+			if (value_ == null) {
 				return true;
 			}
-		} else if (AssertType.AssertNotNull == type) {
-			if (value != null) {
+		} else if (AssertType.AssertNotNull == type_) {
+			if (value_ != null) {
 				return true;
 			}
 		}
@@ -65,7 +65,7 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result
-				+ ((value == null) ? 0 : value.hashCode());
+				+ ((value_ == null) ? 0 : value_.hashCode());
 		return result;
 	}
 
@@ -74,10 +74,10 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 		if (super.equals(obj)) {
 			try {
 				BooleanAssertCommand other = (BooleanAssertCommand) obj;
-				if (value == null) {
-					if (other.value != null)
+				if (value_ == null) {
+					if (other.value_ != null)
 						return false;
-				} else if (value.equals(other.value))
+				} else if (value_.equals(other.value_))
 					return true;
 			} catch (ClassCastException x) {
 				return false;
@@ -94,9 +94,10 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 	}
 
 
-	@Override
+	@SuppressWarnings({"boxing", "incomplete-switch"})
+  @Override
 	public Object getExpected() {
-		switch (type) {
+		switch (type_) {
 			case AssertTrue:
 				return true;
 			case AssertFalse:
@@ -107,13 +108,13 @@ public class BooleanAssertCommand extends AbstractAssertCommand
 			  //a non null instance
 				return "";
 		}
-	//a non null instance
+	  //a non null instance
 		return "";
 	}
 
 
 	@Override
 	public Object getActual() {
-		return value;
+		return value_;
 	}
 }

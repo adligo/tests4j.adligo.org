@@ -1,11 +1,11 @@
 package org.adligo.tests4j.run.helpers;
 
+import org.adligo.tests4j.run.common.I_JseSystem;
+
+import java.io.File;
 import java.io.PrintStream;
 
-import org.adligo.tests4j.shared.common.DefaultSystem;
-import org.adligo.tests4j.shared.common.I_System;
-
-public class JseSystem implements I_System {
+public class JseSystem implements I_JseSystem {
 	/**
 	 * capture the initial output stream at
 	 * class loading time, so that it can't be changed
@@ -58,5 +58,10 @@ public class JseSystem implements I_System {
 	public boolean isMainSystem() {
 		return true;
 	}
+
+  @Override
+  public File newFile(String path) {
+    return new File(path);
+  }
 
 }

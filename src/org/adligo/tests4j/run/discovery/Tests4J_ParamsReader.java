@@ -1,18 +1,10 @@
 package org.adligo.tests4j.run.discovery;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import org.adligo.tests4j.run.common.I_JseSystem;
+import org.adligo.tests4j.run.helpers.JseSystem;
 import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformAssertionEvaluator;
-import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.shared.output.DefaultLog;
@@ -35,6 +27,15 @@ import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.system.shared.trials.I_Trial;
 import org.adligo.tests4j.system.shared.trials.I_TrialParamsFactory;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @diagram_sync with Overview.seq on 8/20/2014
  * 
@@ -52,7 +53,8 @@ import org.adligo.tests4j.system.shared.trials.I_TrialParamsFactory;
  *
  */
 public class Tests4J_ParamsReader {
-	private I_Tests4J_Params params;
+  private I_JseSystem system_;
+	private I_Tests4J_Params params_;
 	private Map<Class<?>, Boolean> logStates;
 	private I_Tests4J_Log logger;
 	/**
@@ -74,6 +76,7 @@ public class Tests4J_ParamsReader {
 	private I_TrialParamsFactory trialParamsQueue_;
 	private I_Tests4J_SourceInfoParams sourceInfoParams_;
 	private I_Tests4J_ProgressParams progressMonitor_;
+
 	/**
 	 * turn into local instances to block further propagation of issues
 	 * with external implementations.  Also this recurses 
@@ -88,26 +91,27 @@ public class Tests4J_ParamsReader {
 	 * @param pParams
 	 * @param pReporter
 	 */
-	public Tests4J_ParamsReader(I_System pSystem, I_Tests4J_Params pParams) {
-		params = pParams;
+	public Tests4J_ParamsReader(I_JseSystem system, I_Tests4J_Params params) {
+	  system_ = system;
+	  params_ = params;
 		
 		logStates = new HashMap<Class<?>, Boolean>();
 		logStates.putAll(DefaultReporterStates.getDefalutLogStates());
 		try {
-			Map<Class<?>, Boolean>  paramStates = pParams.getLogStates();
+			Map<Class<?>, Boolean>  paramStates = params_.getLogStates();
 			if (paramStates != null) {
 				logStates.putAll(paramStates);
 			}
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		}
-		logger = new DefaultLog(pSystem, logStates);
+		logger = new DefaultLog(system_, logStates);
 	}
 	
 	public void read(I_Tests4J_Log loggerIn) {
 		logger = loggerIn;
 		try {
-			getTrialsFromParams(params);
+			getTrialsFromParams(params_);
 		} catch (Throwable t) {
 			//some error/exception with the trials, do NOT try to recover
 			logger.onThrowable(t);
@@ -135,7 +139,7 @@ public class Tests4J_ParamsReader {
 			return;
 		}
 		
-		List<OutputStream> outs = params.getAdditionalReportOutputStreams();
+		List<OutputStream> outs = params_.getAdditionalReportOutputStreams();
 		int counter = 0;
 		for (OutputStream out: outs) {
 			if (out != null) {
@@ -151,7 +155,7 @@ public class Tests4J_ParamsReader {
 		}
 		
 		try {
-			Set<I_Tests4J_Selection> paramTests = params.getTests();
+			Set<I_Tests4J_Selection> paramTests = params_.getTests();
 			
 			//remove the at most 1 element from Set
 			paramTests.remove(null);
@@ -197,22 +201,22 @@ public class Tests4J_ParamsReader {
 		Set<String> actualKeys = evals.keySet();
 		Set<String> defaultKeys = defaultEvals.keySet();
 		
-		metaTrialParams_ =  params.getMetaTrialParams();
-		trialParamsQueue_ = params.getTrialParamsQueue();
+		metaTrialParams_ =  params_.getMetaTrialParams();
+		trialParamsQueue_ = params_.getTrialParamsQueue();
 		if (!actualKeys.containsAll(defaultKeys)) {
 			I_Tests4J_ParamsReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
 			logger.log(constants.getTheEvaluatorsAreExpectedToContainTheDefaultKeys());
 			runnable = false;
 			return;
 		}
-		progressMonitor_ = params.getProgressMonitor();
-		sourceInfoParams_ = params.getSourceInfoParams();
+		progressMonitor_ = params_.getProgressMonitor();
+		sourceInfoParams_ = params_.getSourceInfoParams();
 	}
 
 	protected void determineThreadCounts() {
 		Integer recommendedTrialThreads = null;
 		try {
-			recommendedTrialThreads = params.getRecommendedTrialThreadCount();
+			recommendedTrialThreads = params_.getRecommendedTrialThreadCount();
 		} catch (Throwable t) {
 			//some error/exception with the trials, do try to recover
 			logger.onThrowable(t);
@@ -221,7 +225,7 @@ public class Tests4J_ParamsReader {
 		Integer recomendedSetupThreads = null;
 		
 		try {
-			recomendedSetupThreads = params.getRecommendedSetupThreadCount();
+			recomendedSetupThreads = params_.getRecommendedSetupThreadCount();
 		} catch (Throwable t) {
 			//some error/exception with the trials, do try to recover
 			logger.onThrowable(t);
@@ -235,7 +239,7 @@ public class Tests4J_ParamsReader {
 
 	private void readEvaluatorLookup() throws InstantiationException,
 			IllegalAccessException {
-		Class<?> elc = params.getEvaluatorLookup();
+		Class<?> elc = params_.getEvaluatorLookup();
 		if (elc == null) {
 			evaluatorLookup = EvaluatorLookup.DEFAULT_LOOKUP;
 		} else if (EvaluatorLookup.class.isAssignableFrom(elc)) {
@@ -277,8 +281,8 @@ public class Tests4J_ParamsReader {
 		
 		Tests4J_CoveragePluginParams coverageParams = null;
 		try {
-			coveragePluginFactoryClass = params.getCoveragePluginFactoryClass();
-			I_Tests4J_CoveragePluginParams coverageParamsIn = params.getCoverageParams();
+			coveragePluginFactoryClass = params_.getCoveragePluginFactoryClass();
+			I_Tests4J_CoveragePluginParams coverageParamsIn = params_.getCoverageParams();
 			if (coverageParamsIn == null) {
 				coverageParamsIn = new Tests4J_CoveragePluginParams();
 			}
@@ -294,7 +298,10 @@ public class Tests4J_ParamsReader {
 			coverageParams.setConcurrentRecording(false);
 		}
 		I_Tests4J_CoveragePluginFactory factory = coveragePluginFactoryClass.newInstance();
-		I_Tests4J_CoveragePlugin plugin = factory.create(coverageParams, logger);
+		Map<String,Object> runtimeParams = new HashMap<String, Object>();
+		runtimeParams.put(I_Tests4J_CoveragePluginFactory.LOG, logger);
+    runtimeParams.put(I_Tests4J_CoveragePluginFactory.SYSTEM, system_);
+		I_Tests4J_CoveragePlugin plugin = factory.create(coverageParams, runtimeParams);
 		
 		return plugin;
 	}

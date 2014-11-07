@@ -65,6 +65,14 @@ public class ThreadGroupFilter {
     }
 		
 	}
+
+  public String getFilter() {
+    return filter_;
+  }
+
+  public I_Threads getThreads() {
+    return threads_;
+  }
 	
 	
 }

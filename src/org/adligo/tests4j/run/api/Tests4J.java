@@ -1,5 +1,6 @@
 package org.adligo.tests4j.run.api;
 
+import org.adligo.tests4j.run.common.I_JseSystem;
 import org.adligo.tests4j.run.helpers.DefaultDelegateFactory;
 import org.adligo.tests4j.run.helpers.JseSystem;
 import org.adligo.tests4j.shared.common.I_System;
@@ -52,7 +53,7 @@ public class Tests4J {
    * methods so that tests4j can make sure
    * it makes some System calls.
    */
-  private I_System system_ = new JseSystem();
+  private I_JseSystem system_ = new JseSystem();
   
 	private static MethodBlocker getSetFactoryMethodBlocker() {
 		List<String> allowedCallers = new ArrayList<String>();
@@ -166,7 +167,7 @@ public class Tests4J {
 	}
 
 	@SuppressWarnings("unused")
-  protected void setSystem(I_System system) {
+  protected void setSystem(I_JseSystem system) {
 	  new MethodBlocker(Tests4J.class, "setSystem", 
 	      Collections.singleton("org.adligo.tests4j_tests.trials_api.common.Tests4JRunnerMock"));
 	  system_ = system;

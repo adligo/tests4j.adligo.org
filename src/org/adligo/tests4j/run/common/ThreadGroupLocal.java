@@ -2,9 +2,6 @@ package org.adligo.tests4j.run.common;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.adligo.tests4j.run.helpers.ThreadLogMessageBuilder;
-import org.adligo.tests4j.shared.output.I_Tests4J_Log;
-
 /**
  * This class is a ThreadLocal which 
  * obtains it's initial value from a a factory

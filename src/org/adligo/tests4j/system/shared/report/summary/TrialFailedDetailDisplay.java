@@ -423,6 +423,9 @@ public class TrialFailedDetailDisplay {
 	}
 	
 	public void addThrownMessages(I_AssertThrownFailure atf, StringBuilder sb) {
+	  if (atf == null) {
+	    return;
+	  }
 		sb.append(messages.getIndent() + atf.getFailureReason() +
 				log.getLineSeperator());
 		

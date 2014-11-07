@@ -11,31 +11,29 @@ package org.adligo.tests4j.shared.asserts.common;
  *
  */
 public class TestFailureBuilder {
-  private I_AssertionData data;
-  private String failureMessage;
-  private AssertType type;
+  private I_AssertionData data_;
+  private String failureMessage_;
+  private AssertType type_;
   
-  public TestFailureMutant build(I_AssertionData pData, String pFailureMessage) {
-    data = pData;
-    failureMessage = pFailureMessage;
-    if (data == null) {
+  public TestFailureMutant build(I_AssertionData data, String failureMessage) {
+    data_ = data;
+    failureMessage_ = failureMessage;
+    if (data_ == null) {
       return buildError();
     }
-    I_AssertType at = data.getType();
+    I_AssertType at = data_.getType();
     
     if (at == null) {
       return buildError();
     } else {
-      type =  AssertType.getType(at);
-      switch (type) {
+      type_ =  AssertType.getType(at);
+      switch (type_) {
         case AssertThrownUniform:
         case AssertThrown:
           return buildThrown();
         case AssertTrue:
         case AssertFalse:
-          return buildBoolean();
-        case AssertNull:
-          return buildNullOrNotNull();
+          return buildTrueFalse();
         case AssertContains:
           return buildContains();
         default:
@@ -46,15 +44,15 @@ public class TestFailureBuilder {
 
   private TestFailureMutant buildError() {
     AssertCompareFailureMutant atfm = new AssertCompareFailureMutant();
-    atfm.setFailureMessage(failureMessage);
+    atfm.setFailureMessage(failureMessage_);
     return atfm;
   }
   
   private AssertCompareFailureMutant buildDefault() {
-    I_CompareAssertionData<?> cad = (I_CompareAssertionData<?>) data;
+    I_CompareAssertionData<?> cad = (I_CompareAssertionData<?>) data_;
     AssertCompareFailureMutant atfm = new AssertCompareFailureMutant();
-    atfm.setAssertType(type);
-    atfm.setFailureMessage(failureMessage);
+    atfm.setAssertType(type_);
+    atfm.setFailureMessage(failureMessage_);
     
     Object cadExp = cad.getExpected();
     if (cadExp != null) {
@@ -69,20 +67,12 @@ public class TestFailureBuilder {
     return atfm;
   }
 
-  private AssertCompareFailureMutant buildNullOrNotNull() {
-    I_CompareAssertionData<?> cdNot = (I_CompareAssertionData<?>) data;
-    AssertCompareFailureMutant tfmNot = new AssertCompareFailureMutant();
-    tfmNot.setAssertType(type);
-    tfmNot.setFailureMessage(failureMessage);
-    
-    return tfmNot;
-  }
-
+  
   private AssertCompareFailureMutant buildContains() {
-    I_CollectionContainsAssertionData cdNot = (I_CollectionContainsAssertionData) data;
+    I_CollectionContainsAssertionData cdNot = (I_CollectionContainsAssertionData) data_;
     AssertCompareFailureMutant toRet = new AssertCompareFailureMutant();
-    toRet.setAssertType(type);
-    toRet.setFailureMessage(failureMessage);
+    toRet.setAssertType(type_);
+    toRet.setFailureMessage(failureMessage_);
     
     Object value = cdNot.getValue();
     if (value != null) {
@@ -94,11 +84,11 @@ public class TestFailureBuilder {
     }
     return toRet;
   }
-  private AssertCompareFailureMutant buildBoolean() {
-    I_CompareAssertionData<?> cd = (I_CompareAssertionData<?>) data;
+  private AssertCompareFailureMutant buildTrueFalse() {
+    I_CompareAssertionData<?> cd = (I_CompareAssertionData<?>) data_;
     AssertCompareFailureMutant tfm = new AssertCompareFailureMutant();
-    tfm.setAssertType(type);
-    tfm.setFailureMessage(failureMessage);
+    tfm.setAssertType(type_);
+    tfm.setFailureMessage(failureMessage_);
     
     Object expected = cd.getExpected();
     if (expected != null) {
@@ -114,11 +104,11 @@ public class TestFailureBuilder {
   }
 
   private AssertThrownFailureMutant buildThrown() {
-    I_ThrownAssertionData tad = (I_ThrownAssertionData) data;
+    I_ThrownAssertionData tad = (I_ThrownAssertionData) data_;
     
     AssertThrownFailureMutant mut = new AssertThrownFailureMutant();
-    mut.setAssertType(type);
-    mut.setFailureMessage(failureMessage);
+    mut.setAssertType(type_);
+    mut.setFailureMessage(failureMessage_);
     
     I_ExpectedThrownData exp = tad.getExpected();
     ThrowableInfo ei = new ThrowableInfo(exp);
