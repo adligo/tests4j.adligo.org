@@ -14,6 +14,8 @@ import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.run.common.I_ThreadManager;
+import org.adligo.tests4j.run.common.I_Threads;
+import org.adligo.tests4j.run.common.ThreadsDelegate;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
@@ -90,6 +92,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	
 	private String trialName;
 	private String testName_;
+	private I_Threads threads_ = new ThreadsDelegate();
 	private I_Tests4J_CoverageRecorder trialThreadLocalCoverageRecorder;
 	private AfterSourceFileTrialTestsProcessor afterSouceFileTrialTestsProcessor;
 	private AfterApiTrialTestsProcessor afterApiTrialTestsProcessor;
@@ -156,9 +159,24 @@ public class Tests4J_TrialsRunnable implements Runnable,
 							I_Tests4J_CoveragePlugin plugin = memory_.getCoveragePlugin();
 							if (plugin != null) {
 								if (plugin.isCanThreadGroupLocalRecord()) {
-									//@diagram sync on 7/5/2014
-									// for Overview.seq 
-									trialThreadLocalCoverageRecorder = plugin.createRecorder();
+									//@diagram sync on 11/8/2014
+									// for Basic_Overview.seq 
+								  Thread thread = threads_.currentThread();
+								  String threadName = thread.getName();
+								  String filter = null;
+								  I_TrialType trialType = trialDescription_.getType();
+								  TrialType type = TrialType.get(trialType);
+								  switch (type) {
+								    case SourceFileTrial:
+								        Class<?> clazz = trialDescription_.getSourceFileClass();
+								        filter = clazz.getName();
+								      break;
+								    case ApiTrial:
+                        filter = trialDescription_.getPackageName();
+                      break;
+								    default: //donothing
+								  }
+									trialThreadLocalCoverageRecorder = plugin.createRecorder(threadName, filter);
 									trialThreadLocalCoverageRecorder.startRecording();
 								}
 							}

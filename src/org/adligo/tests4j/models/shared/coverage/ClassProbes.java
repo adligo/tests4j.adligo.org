@@ -13,7 +13,12 @@ public class ClassProbes implements I_ClassProbes {
 	private String className_;
 	
 	public ClassProbes(I_ClassProbes other) {
-		probes_ = new Probes(other.getProbes());
+	  I_Probes probes = other.getProbes();
+	  if (probes != null) {
+	    probes_ = new Probes(probes);
+	  } else {
+	    probes_ = new Probes(new boolean[] {});
+	  }
 		classId_ = other.getClassId();
 		className_ = other.getClassName();
 	}

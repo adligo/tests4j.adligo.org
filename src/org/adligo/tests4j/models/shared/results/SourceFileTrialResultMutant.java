@@ -1,16 +1,16 @@
 package org.adligo.tests4j.models.shared.results;
 
+import org.adligo.tests4j.models.shared.association.I_ClassAssociations;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileProbes;
+import org.adligo.tests4j.models.shared.coverage.SourceFileProbesMutant;
+import org.adligo.tests4j.shared.asserts.reference.I_ClassAttributes;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.adligo.tests4j.models.shared.association.I_ClassAssociations;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageMutant;
-import org.adligo.tests4j.shared.asserts.reference.I_ClassAttributes;
-
 public class SourceFileTrialResultMutant extends BaseTrialResultMutant implements I_SourceFileTrialResult {
-	private SourceFileCoverageMutant coverage;
+	private SourceFileProbesMutant probes;
 	private String sourceFileName;
 	private I_ClassAssociations dependencies;
 	private Map<String, I_ClassAttributes> references_;
@@ -24,7 +24,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	public SourceFileTrialResultMutant(I_SourceFileTrialResult p, boolean cloneRelations) {
 		super(p, cloneRelations);
 		if (cloneRelations) {
-			coverage = new SourceFileCoverageMutant(p.getSourceFileCoverage());
+			probes = new SourceFileProbesMutant(p.getSourceFileProbes());
 		}
 		sourceFileName = p.getSourceFileName();
 		setDependencies(p.getDependencies());
@@ -39,12 +39,12 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	}
 	
 	@Override
-	public I_SourceFileCoverage getSourceFileCoverage() {
-		return coverage;
+	public I_SourceFileProbes getSourceFileProbes() {
+		return probes;
 	}
 
-	public void setSourceFileCoverage(I_SourceFileCoverage p) {
-		this.coverage = new SourceFileCoverageMutant(p);
+	public void setSourceFileProbes(I_SourceFileProbes p) {
+		this.probes = new SourceFileProbesMutant(p);
 	}
 
 	public String getSourceFileName() {
@@ -60,7 +60,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 		StringBuilder sb = new StringBuilder();
 		toString(this, sb);
 		sb.append(",coverage=");
-		sb.append(coverage);
+		sb.append(probes);
 		sb.append(",sourceFileName=");
 		sb.append(sourceFileName);
 		sb.append("]");
@@ -69,7 +69,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	
 	@Override
 	public boolean hasRecordedCoverage() {
-		if (coverage == null) {
+		if (probes == null) {
 			return false;
 		}
 		return true;

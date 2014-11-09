@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileProbes;
 
 /**
  * a coverage recorder that 
@@ -29,5 +30,9 @@ public interface I_Tests4J_CoverageRecorder {
 	 */
 	public List<I_PackageCoverage> endRecording(Set<String> classNames);
 	
-	
+	/**
+	 * for source file trials return the probes;
+	 * @return
+	 */
+	public I_SourceFileProbes getSourceFileCoverage();
 }

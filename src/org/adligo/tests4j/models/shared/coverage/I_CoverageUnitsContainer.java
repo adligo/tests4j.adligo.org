@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.coverage;
 
-import java.math.BigDecimal;
 
 /**
  * Implementations contain coverage units.
@@ -10,7 +9,7 @@ import java.math.BigDecimal;
  * @author scott
  *
  */
-public interface I_CoverageUnitsContainer {
+public interface I_CoverageUnitsContainer extends I_PercentCovered {
 	/**
 	 * Coverage Units are simply the count of all 
 	 * instructions/branches exc
@@ -23,18 +22,5 @@ public interface I_CoverageUnitsContainer {
 	 * @return
 	 */
 	public I_CoverageUnits getCoveredCoverageUnits();
-	
-	/**
-	 * Return the percentage of coverage units covered
-	 * from 0.00 to 100.00.
-	 * @return
-	 */
-	public BigDecimal getPercentageCovered();
-	
-	/**
-	 * same as getPercentageCovered but
-	 * return a double
-	 * @return
-	 */
-	public double getPercentageCoveredDouble();
+
 }

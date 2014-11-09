@@ -1,11 +1,11 @@
 package org.adligo.tests4j.models.shared.results;
 
 import org.adligo.tests4j.models.shared.association.I_ClassAssociations;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileProbes;
 import org.adligo.tests4j.shared.asserts.reference.I_ClassAttributes;
 
 public interface I_SourceFileTrialResult extends I_TrialResult {
-	public I_SourceFileCoverage getSourceFileCoverage();
+	public I_SourceFileProbes getSourceFileProbes();
 	/**
 	 * note this is the java class or interface name that matches with 
 	 * a .java file.

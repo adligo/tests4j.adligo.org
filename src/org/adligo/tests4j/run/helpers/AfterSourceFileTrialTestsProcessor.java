@@ -1,16 +1,10 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.coverage.SourceFileCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileProbes;
+import org.adligo.tests4j.models.shared.coverage.SourceFileProbesMutant;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
@@ -38,6 +32,13 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.system.shared.trials.AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
+
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * TODO extract the method 
@@ -81,6 +82,8 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		
 		List<I_PackageCoverage> coverage;
 		I_Tests4J_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
+		
+
 		if (rec != null) {
 			if (log.isLogEnabled(AfterSourceFileTrialTestsProcessor.class)) {
 				log.log("calling rec.endRecording() " + rec + log.getLineSeperator() + 
@@ -88,14 +91,13 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 						log.getLineSeperator() +
 						" for " + trialResultMutant.getSourceFileName());
 			}
-			coverage = rec.endRecording(Collections.singleton(sourceFileClass.getName()));
-			I_SourceFileCoverage cover = trialDesc.findSourceFileCoverage(coverage);
 			Class<?> srcFile = trialDesc.getSourceFileClass();
+			I_SourceFileProbes probes = rec.getSourceFileCoverage();
 			
-			if (cover != null) {
-				trialResultMutant.setSourceFileCoverage(cover);
+			if (probes != null) {
+				trialResultMutant.setSourceFileProbes(probes);
 			} else if (srcFile != null && srcFile.isInterface()) {
-				trialResultMutant.setSourceFileCoverage(new SourceFileCoverage());
+				trialResultMutant.setSourceFileProbes(new SourceFileProbesMutant());
 			} else {
 				log.onThrowable(new IllegalStateException("A internal error"
 						+ " has occured in tests4j, no coverage for class " + 
@@ -167,11 +169,11 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		super.startDelegatedTest();
 		
 		
-		I_SourceFileCoverage sourceCoverage =  trialResultMutant.getSourceFileCoverage();
-		if (sourceCoverage == null) {
+		I_SourceFileProbes sourceProbes =  trialResultMutant.getSourceFileProbes();
+		if (sourceProbes == null) {
 			testResultMutant.setPassed(false);
 		} else {
-			double pct = sourceCoverage.getPercentageCoveredDouble();
+			double pct = sourceProbes.getPercentageCoveredDouble();
 			if (minCoverage > pct) {
 				I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
 				
