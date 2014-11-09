@@ -1,8 +1,29 @@
-Other projects that will complement tests4j which 
-need to be implemented at some point;
+Short term list;
+Add Required Map<String,Object> runtime parameters to the @BeforeTrial methods
+   which must contain a ThreadFactory for trials that want to capture code coverage
+   on trial child threads.
+Add code coverage out put from I_PackageCoverage to 
+  I_PackageProbes to facilitate base64 enc to xml files in the format
+  int bytes for # of probes + probe bytes from boolean []
+  http://stackoverflow.com/questions/6374915/java-convert-int-to-byte-array-of-4-bytes
+Add new code coverage api to convert from probes back to 
+  (old coverage api + new coverage api)
+  for GUI and for asserts.
+Add export of results to files.
+Add fabricate run of tests4j_tests including fail on run failure
+extract tests4j_tests 4 gwt_refs to gwt_refs_tests
+Add fabricate run of tests4j_tests including fail on run failure
+Add tests4j_4eclipse basic run trial, package, packages 
+	runner only to text no gui other than runners.
+
+Add thread group filter using the new I_CoveragePlugin recorder api
+  which will create a ConcurrentHashMap whos keys are the classes touched 
+  by the thread group for this recorder.  Values will be the class ids from 
+  the data set thing from jacoco.
+   publish 
 
 
-
+Long term list;
    
 1) tests4j_4gwt (target tests4j_v0_2) 
 			This will contain some abstract code that will help
@@ -10,7 +31,7 @@ need to be implemented at some point;
         This will contain a server so that the tests from the browser
         can upload the results to a real JSE java environment, which 
         can then be sent elsewhere (i.e. a intellegence4j server)
-2) tests4j_gwt_generator (target tests4j_v0_2)
+2) tests4j_gwt (target tests4j_v0_2)
 			This will contain java code which will generate .java source 
 		code to actually run a project's tests in javascript.  This is 
 		the basic solution to the lack of reflection in gwt client code.

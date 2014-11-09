@@ -17,7 +17,7 @@ public class Tests4J_AnnotationMessages implements I_Tests4J_AnnotationMessages 
 	
 	private static final String BEFORE_TRIAL_NOT_PUBLIC = "Methods annotated with @BeforeTrial must be public.";
 	private static final String BEFORE_TRIAL_NOT_STATIC = "Methods annotated with @BeforeTrial must be static.";
-	private static final String BEFORE_TRIAL_HAS_PARAMS = "Methods annotated with @BeforeTrial must NOT take any parameters.";
+	private static final String BEFORE_TRIAL_HAS_PARAMS = "Methods annotated with @BeforeTrial must take a single Map<String,Object> parameter.";
 	
 	private static final String MIN_COVERAGE_MUST_BE_BETWEEN_0_0_AND_100_0_PERCENT = "The minCoverage must be between 0.0 and 100.0 percent.";
 
@@ -68,7 +68,7 @@ public class Tests4J_AnnotationMessages implements I_Tests4J_AnnotationMessages 
 	}
 	
 	@Override
-	public String getBeforeTrialHasParams() {
+	public String getBeforeTrialHasWrongParams() {
 		return BEFORE_TRIAL_HAS_PARAMS;
 	}
 

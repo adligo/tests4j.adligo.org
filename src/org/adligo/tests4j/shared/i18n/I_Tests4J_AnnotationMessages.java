@@ -12,7 +12,7 @@ public interface I_Tests4J_AnnotationMessages {
 	public String getAfterTrialNotStatic();
 	public String getAfterTrialNotPublic();
 	
-	public String getBeforeTrialHasParams();
+	public String getBeforeTrialHasWrongParams();
 	public String getBeforeTrialNotStatic();
 	public String getBeforeTrialNotPublic();
 	

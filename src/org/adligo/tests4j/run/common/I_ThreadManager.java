@@ -2,8 +2,7 @@ package org.adligo.tests4j.run.common;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-
-import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
+import java.util.concurrent.ThreadFactory;
 
 public interface I_ThreadManager {
 
@@ -24,6 +23,8 @@ public interface I_ThreadManager {
 	public ExecutorService getSetupService();
 
 	public ExecutorService getTrialRunService();
+	
+	public ThreadFactory getCustomThreadFactory();
 	
 	public void setTestRunFuture(ExecutorService exe, Future<?> future);
 	/**

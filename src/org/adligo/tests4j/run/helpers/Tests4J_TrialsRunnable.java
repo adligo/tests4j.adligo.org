@@ -1,20 +1,10 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
-
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
 import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
-import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
@@ -26,14 +16,12 @@ import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
 import org.adligo.tests4j.run.common.I_ThreadManager;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
-import org.adligo.tests4j.run.discovery.TrialDescriptionProcessor;
 import org.adligo.tests4j.run.discovery.TrialQueueDecisionTree;
 import org.adligo.tests4j.run.discovery.TrialState;
 import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.run.output.TrialOutput;
 import org.adligo.tests4j.shared.asserts.common.TestFailure;
 import org.adligo.tests4j.shared.asserts.common.TestFailureMutant;
-import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.Platform;
 import org.adligo.tests4j.shared.common.StackTraceBuilder;
@@ -48,11 +36,23 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_Runnable;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.system.shared.api.Tests4J_TrialProgress;
+import org.adligo.tests4j.system.shared.trials.BeforeTrial;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.system.shared.trials.I_Progress;
 import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 import org.adligo.tests4j.system.shared.trials.TrialBindings;
+
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A Runnable that polls the queue of trials that 
@@ -67,13 +67,14 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	public static final String UNEXPECTED_EXCEPTION_THROWN_FROM = 
 			"Unexpected exception thrown from ";
 	
-	private Tests4J_Memory memory;
-	private I_ThreadManager threadManager;
-	private I_Tests4J_NotificationManager notifier;
-	private TrialDescription trialDescription;
+	private Tests4J_Memory memory_;
+	private I_ThreadManager threadManager_;
+	private Map<String,Object> beforeTrialParams_;
+	private I_Tests4J_NotificationManager notifier_;
+	private TrialDescription trialDescription_;
 	private I_Tests4J_Log log_;
-	private I_AbstractTrial trial;
-	private BaseTrialResultMutant trialResultMutant;
+	private I_AbstractTrial trial_;
+	private BaseTrialResultMutant trialResultMutant_;
 	
 	private ExecutorService testRunService;
 	private Future<?> testResultFuture;
@@ -107,25 +108,28 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	 */
 	public Tests4J_TrialsRunnable(Tests4J_Memory p, 
 			I_Tests4J_NotificationManager pNotificationManager) {
-		memory = p;
+		memory_ = p;
 		trialQueueDecisionTree = p.getTrialQueueDecisionTree();
 		processInfo = p.getTrialPhaseOverseer();
-		notifier = pNotificationManager;
+		notifier_ = pNotificationManager;
 		
 		log_ = p.getLog();
-		threadManager = p.getThreadManager();
+		threadManager_ = p.getThreadManager();
 		
-		testsRunner = new Tests4J_TestRunable(memory);
+		testsRunner = new Tests4J_TestRunable(memory_);
 		testsRunner.setListener(this);
 		
 		
 		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), log_);
 		bindings.setAssertListener(testsRunner);
 		
-		afterSouceFileTrialTestsProcessor = new AfterSourceFileTrialTestsProcessor(memory);
-		afterApiTrialTestsProcessor = new AfterApiTrialTestsProcessor(memory);
-		afterUseCaseTrialTestsProcessor = new AfterUseCaseTrialTestsProcessor(memory);
+		afterSouceFileTrialTestsProcessor = new AfterSourceFileTrialTestsProcessor(memory_);
+		afterApiTrialTestsProcessor = new AfterApiTrialTestsProcessor(memory_);
+		afterUseCaseTrialTestsProcessor = new AfterUseCaseTrialTestsProcessor(memory_);
 		
+		beforeTrialParams_ = new HashMap<String,Object>();
+		beforeTrialParams_.put(BeforeTrial.THREAD_FACTORY, threadManager_.getCustomThreadFactory());
+		beforeTrialParams_ = Collections.unmodifiableMap(beforeTrialParams_);
 	}
 
 	/**
@@ -135,21 +139,21 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	@Override
 	public void run() {
 		try {
-		  testRunService = threadManager.createNewTestRunService();
+		  testRunService = threadManager_.createNewTestRunService();
 			processInfo.addRunnableStarted();
 			outputDelegator.setDelegate(out);
 			
 			trialState = trialQueueDecisionTree.poll();
 			while (trialState != null) {
-				trialDescription = trialState.getTrialDescription();
-				if (trialDescription != null) {
+				trialDescription_ = trialState.getTrialDescription();
+				if (trialDescription_ != null) {
 					Class<? extends I_AbstractTrial> trialClazz = trialState.getTrialClass();
 					
 					try {
 						if ( !I_MetaTrial.class.isAssignableFrom(trialClazz)) {
 							//start recording the trial coverage,
 							//code cover the creation of the class, in the trialDescrption
-							I_Tests4J_CoveragePlugin plugin = memory.getCoveragePlugin();
+							I_Tests4J_CoveragePlugin plugin = memory_.getCoveragePlugin();
 							if (plugin != null) {
 								if (plugin.isCanThreadGroupLocalRecord()) {
 									//@diagram sync on 7/5/2014
@@ -165,9 +169,9 @@ public class Tests4J_TrialsRunnable implements Runnable,
 					} 
 					
 					
-					if (trialDescription.isRunnable()) {
-						if (trialDescription.getType() != TrialType.MetaTrial) {
-							boolean printing = trialDescription.isPrintToStdOut(); 
+					if (trialDescription_.isRunnable()) {
+						if (trialDescription_.getType() != TrialType.MetaTrial) {
+							boolean printing = trialDescription_.isPrintToStdOut(); 
 							out.setPrinting(printing);
 							
 							try {
@@ -177,7 +181,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 								synchronized (trialClazz) {
 									if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 										log_.log("Thread " + Thread.currentThread().getName() +
-												" is running trial;\n" +trialDescription.getTrialName());
+												" is running trial;\n" +trialDescription_.getTrialName());
 									}
 									runTrial();
 								}	
@@ -187,7 +191,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 						}
 					} 
 				}
-				if (trialDescription.getType() != TrialType.MetaTrial) {
+				if (trialDescription_.getType() != TrialType.MetaTrial) {
 					processInfo.addDone();
 				}
 				trialState.setFinishedRun();
@@ -212,12 +216,12 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	}
 
 	private void failTrialOnException(String message, Throwable p, TrialType type) {
-		trialResultMutant.setPassed(false);
+		trialResultMutant_.setPassed(false);
 		String stack = StackTraceBuilder.toString(p, true);
 		TrialFailure failure = new TrialFailure(message, stack);
-		trialResultMutant.addFailure(failure);
+		trialResultMutant_.addFailure(failure);
 		if (type != null) {
-			trialResultMutant.setType(type);
+			trialResultMutant_.setType(type);
 		}
 	}
 	
@@ -230,22 +234,22 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		sourceFileTrialResultMutant = null;
 		useCaseTrialResultMutant = null;
 		
-		trialName = trialDescription.getTrialName();
+		trialName = trialDescription_.getTrialName();
 		trialName = trialName + "[" + trialState.getId() + "]";
-		notifier.startingTrial(trialName);
+		notifier_.startingTrial(trialName);
 		
 		
-		trial = trialDescription.getTrial();
-		trial.setBindings(bindings);
+		trial_ = trialDescription_.getTrial();
+		trial_.setBindings(bindings);
 		
-		trialResultMutant = new BaseTrialResultMutant();
+		trialResultMutant_ = new BaseTrialResultMutant();
 			
-		I_TrialType type = trialDescription.getType();
-		trialResultMutant.setType(type);
-		trialResultMutant.setTrialName(trialName);
+		I_TrialType type = trialDescription_.getType();
+		trialResultMutant_.setType(type);
+		trialResultMutant_.setTrialName(trialName);
 		runBeforeTrial();
 		
-		testsRunner.setTrial(trial);
+		testsRunner.setTrial(trial_);
 		testsRunner.setCod(outputDelegator);
 		testsRunner.setOut(out);
 		if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
@@ -256,9 +260,9 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 			log_.log("finished trial tests" + trialName);
 		}
-		if (trialResultMutant.isPassed()) {
+		if (trialResultMutant_.isPassed()) {
 			//skip this method unless everything passed in the trial
-			trialResultMutant = runAfterTrialTests();
+			trialResultMutant_ = runAfterTrialTests();
 		}
 		runAfterTrial();
 		
@@ -270,7 +274,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	}
 
 	public void onTrialCompleted() {
-		I_TrialType type = trialDescription.getType();
+		I_TrialType type = trialDescription_.getType();
 		I_TrialResult result;
 		TrialType tt = TrialType.get(type);
 		switch (tt) {
@@ -287,22 +291,22 @@ public class Tests4J_TrialsRunnable implements Runnable,
 					result = new SourceFileTrialResult(sourceFileTrialResultMutant);
 				break;
 			default:
-				result = new BaseTrialResult(trialResultMutant);
+				result = new BaseTrialResult(trialResultMutant_);
 		}
 		if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 			log_.log("notifying trial finished " + trialName);
 		}
-		notifier.onTrialCompleted(result);
+		notifier_.onTrialCompleted(result);
 	}
 
 	private UseCaseTrialResultMutant getUseCaseResult() {
 		if (useCaseTrialResultMutant != null) {
 			return useCaseTrialResultMutant;
 		}
-		useCaseTrialResultMutant = new UseCaseTrialResultMutant(trialResultMutant);
-		useCaseTrialResultMutant.setSystem(trialDescription.getSystemName());
-		useCaseTrialResultMutant.setUseCase(trialDescription.getUseCase());
-		useCaseTrialResultMutant.setTrialName(trialDescription.getTrialName());
+		useCaseTrialResultMutant = new UseCaseTrialResultMutant(trialResultMutant_);
+		useCaseTrialResultMutant.setSystem(trialDescription_.getSystemName());
+		useCaseTrialResultMutant.setUseCase(trialDescription_.getUseCase());
+		useCaseTrialResultMutant.setTrialName(trialDescription_.getTrialName());
 		return useCaseTrialResultMutant;
 	}
 
@@ -310,9 +314,9 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		if (apiTrialResultMutant != null) {
 			return apiTrialResultMutant;
 		}
-		ApiTrialResultMutant apiTrialTestResultMutant = new ApiTrialResultMutant(trialResultMutant);
-		apiTrialTestResultMutant.setPackageName(trialDescription.getPackageName());
-		apiTrialTestResultMutant.setTrialName(trialDescription.getTrialName());
+		ApiTrialResultMutant apiTrialTestResultMutant = new ApiTrialResultMutant(trialResultMutant_);
+		apiTrialTestResultMutant.setPackageName(trialDescription_.getPackageName());
+		apiTrialTestResultMutant.setTrialName(trialDescription_.getTrialName());
 		return apiTrialTestResultMutant;
 	}
 
@@ -326,26 +330,26 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		if (sourceFileTrialResultMutant != null) {
 			return sourceFileTrialResultMutant;
 		}
-		SourceFileTrialResultMutant sourceFileTrialResultMutant = new SourceFileTrialResultMutant(trialResultMutant);
-		Class<?> clazz = trialDescription.getSourceFileClass();
+		SourceFileTrialResultMutant sourceFileTrialResultMutant = new SourceFileTrialResultMutant(trialResultMutant_);
+		Class<?> clazz = trialDescription_.getSourceFileClass();
 		sourceFileTrialResultMutant.setSourceFileName(clazz.getName());
-		sourceFileTrialResultMutant.setTrialName(trialDescription.getTrialName());
+		sourceFileTrialResultMutant.setTrialName(trialDescription_.getTrialName());
 		sourceFileTrialResultMutant.setTrialClassName(
-				trialDescription.getTrialClass().getName());
+				trialDescription_.getTrialClass().getName());
 		return sourceFileTrialResultMutant;
 	}
 	
 	private void runBeforeTrial()  {
-		Method beforeTrial = trialDescription.getBeforeTrialMethod();
+		Method beforeTrial = trialDescription_.getBeforeTrialMethod();
 		if (beforeTrial != null) {
 			try {
-				beforeTrial.invoke(trial, new Object[] {});
+				beforeTrial.invoke(trial_, new Object[] {beforeTrialParams_});
 			} catch (Exception e) {
 				failTrialOnException(UNEXPECTED_EXCEPTION_THROWN_FROM + 
-						trialDescription.getTrialName() + 
+						trialDescription_.getTrialName() + 
 						"." + beforeTrial.getName(), e, null);
 			}
-			trialResultMutant.setBeforeTestOutput(out.getResults());
+			trialResultMutant_.setBeforeTestOutput(out.getResults());
 		}
 	}
 
@@ -354,8 +358,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	 * @return all suceeded
 	 */
 	private void runTests() throws RejectedExecutionException {
-		Iterator<TestDescription> methods = trialDescription.getTestMethods();
-		trialState.setTests(trialDescription.getTestMethodsSize());
+		Iterator<TestDescription> methods = trialDescription_.getTestMethods();
+		trialState.setTests(trialDescription_.getTestMethodsSize());
 		
 		while (methods.hasNext()) {
 			runTest(methods.next());
@@ -367,9 +371,9 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		Method method = tm.getMethod();
 		blocking.clear();
 		
-		if (memory.hasTestsFilter()) {
-			Class<?> trialClazz = trialDescription.getTrialClass();
-			if (!memory.runTest(trialClazz, method.getName())) {
+		if (memory_.hasTestsFilter()) {
+			Class<?> trialClazz = trialDescription_.getTrialClass();
+			if (!memory_.runTest(trialClazz, method.getName())) {
 				return;
 			}
 		}
@@ -378,10 +382,10 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			TestResultMutant trm = new TestResultMutant();
 			trm.setName(method.getName());
 			trm.setIgnored(true);
-			trialResultMutant.addResult(trm);
+			trialResultMutant_.addResult(trm);
 		} else {
 			testName_ = method.getName();
-			notifier.startingTest(trialName, testName_);
+			notifier_.startingTest(trialName, testName_);
 			
 			if (log_.isLogEnabled(Tests4J_TrialsRunnable.class)) {
 				log_.log("starting test; " +trialName + "."+  method.getName());
@@ -391,18 +395,18 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			testsRunner.setTestMethod(method);
 			testResultFuture = testRunService.submit(testsRunner);
 			
-			threadManager.setTestRunFuture(testRunService, testResultFuture);
+			threadManager_.setTestRunFuture(testRunService, testResultFuture);
 			
 			try {
 				Long timeout = tm.getTimeoutMillis();
 				if (timeout == 0L) {
 					TestResult result = blocking.take();
-					trialResultMutant.addResult(result);
-					notifier.onTestCompleted(trialName, method.getName(), result.isPassed());
+					trialResultMutant_.addResult(result);
+					notifier_.onTestCompleted(trialName, method.getName(), result.isPassed());
 				} else {
 					TestResult result = blocking.poll(tm.getTimeoutMillis(), TimeUnit.MILLISECONDS);
 					if (result != null) {
-						trialResultMutant.addResult(result);
+						trialResultMutant_.addResult(result);
 					} else {
 						TestResultMutant trm = new TestResultMutant(
 								testsRunner.getTestResult());
@@ -412,8 +416,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 						tfm.setFailureMessage(messages.getTestTimedOut());
 						trm.setFailure(new TestFailure(tfm));
 					
-						trialResultMutant.addResult(new TestResult(trm));
-						notifier.onTestCompleted(trialName, method.getName(), trm.isPassed());
+						trialResultMutant_.addResult(new TestResult(trm));
+						notifier_.onTestCompleted(trialName, method.getName(), trm.isPassed());
 					}
 				}
 			} catch (InterruptedException x) {
@@ -425,13 +429,13 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	
 	private BaseTrialResultMutant runAfterTrialTests() {
 		
-		I_TrialType type = trialDescription.getType();
+		I_TrialType type = trialDescription_.getType();
 		
 		TrialType tt = TrialType.get(type);
 		switch (tt) {
 			case SourceFileTrial:
-				afterSouceFileTrialTestsProcessor.reset(trialDescription, 
-						trialThreadLocalCoverageRecorder, trial);
+				afterSouceFileTrialTestsProcessor.reset(trialDescription_, 
+						trialThreadLocalCoverageRecorder, trial_);
 				SourceFileTrialResultMutant result = getSourceFileTrialResult();
 				
 				//this must be run, in order to calculate code coverage, when there is a 
@@ -442,29 +446,29 @@ public class Tests4J_TrialsRunnable implements Runnable,
 					result.addResult(trm);
 				}
 				
-				if (memory.hasCoveragePlugin()) {
-					if (trialDescription.getReferenceGroupAggregate() != null) {
+				if (memory_.hasCoveragePlugin()) {
+					if (trialDescription_.getReferenceGroupAggregate() != null) {
 						TestResult referencesResult = afterSouceFileTrialTestsProcessor.testReferences(result);
 						result.addResult(referencesResult);
-						notifier.onTestCompleted(trialName, I_SourceFileTrial.TEST_REFERENCES, referencesResult.isPassed());
+						notifier_.onTestCompleted(trialName, I_SourceFileTrial.TEST_REFERENCES, referencesResult.isPassed());
 						trialState.addTestCompleted();
 					}
 					TestResult dependencyResult = afterSouceFileTrialTestsProcessor.testDependencies(result);
 					result.addResult(dependencyResult);
-					notifier.onTestCompleted(trialName, I_SourceFileTrial.TEST_DEPENDENCIES, dependencyResult.isPassed());
+					notifier_.onTestCompleted(trialName, I_SourceFileTrial.TEST_DEPENDENCIES, dependencyResult.isPassed());
 					trialState.addTestCompleted();
 					
 					TestResult minCoverageResult = afterSouceFileTrialTestsProcessor.testMinCoverage(result);
 					result.addResult(minCoverageResult);
-					notifier.onTestCompleted(trialName, I_SourceFileTrial.TEST_MIN_COVERAGE, minCoverageResult.isPassed());
+					notifier_.onTestCompleted(trialName, I_SourceFileTrial.TEST_MIN_COVERAGE, minCoverageResult.isPassed());
 					trialState.addTestCompleted();
 					
 				}
 				trialState.addTestCompleted();
 				return result;
 			case ApiTrial:
-				afterApiTrialTestsProcessor.reset(trialDescription, 
-						trialThreadLocalCoverageRecorder, trial);
+				afterApiTrialTestsProcessor.reset(trialDescription_, 
+						trialThreadLocalCoverageRecorder, trial_);
 				ApiTrialResultMutant apiResult = getApiTrialResult();
 				TestResultMutant apiTrm = afterApiTrialTestsProcessor.afterApiTrialTests(
 						apiResult, log_);
@@ -474,8 +478,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 				trialState.addTestCompleted();
 				return apiResult;
 			case UseCaseTrial:
-				afterUseCaseTrialTestsProcessor.reset(trialDescription, 
-						trialThreadLocalCoverageRecorder, trial);
+				afterUseCaseTrialTestsProcessor.reset(trialDescription_, 
+						trialThreadLocalCoverageRecorder, trial_);
 				UseCaseTrialResultMutant useCaseResult = getUseCaseResult();
 				TestResultMutant useCaseTrm = afterUseCaseTrialTestsProcessor.afterUseCaseTrialTests(useCaseResult);
 				if (useCaseTrm != null) {
@@ -494,16 +498,16 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	
 	
 	private void runAfterTrial() {
-		Method afterTrial = trialDescription.getAfterTrialMethod();
+		Method afterTrial = trialDescription_.getAfterTrialMethod();
 		if (afterTrial != null) {
 			try {
-				afterTrial.invoke(trial, new Object[] {});
+				afterTrial.invoke(trial_, new Object[] {});
 			} catch (Exception e) {
 				failTrialOnException(UNEXPECTED_EXCEPTION_THROWN_FROM + 
 						trialName + 
 						"." + afterTrial.getName(), e, null);
 			}
-			trialResultMutant.setAfterTestOutput(out.getResults());
+			trialResultMutant_.setAfterTestOutput(out.getResults());
 		}
 	}
 	
@@ -556,7 +560,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 
 	@Override
 	public double getPctDone() {
-		return trial.getPctDone(testName_);
+		return trial_.getPctDone(testName_);
 	}
 
 }

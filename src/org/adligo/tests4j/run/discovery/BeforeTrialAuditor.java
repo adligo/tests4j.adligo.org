@@ -1,15 +1,16 @@
 package org.adligo.tests4j.run.discovery;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.List;
-
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.trials.BeforeTrial;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.Map;
 /**
  * audits a method to see if it conforms to @BeforeTrial
  * 
@@ -23,6 +24,7 @@ public class BeforeTrialAuditor {
 			List<I_TrialFailure> failures,
 			Method method) {
 		
+	  int initalFailuresSize = failures.size();
 		String trialName = trialDesc.getTrialName();
 		BeforeTrial bt = method.getAnnotation(BeforeTrial.class);
 		if (bt != null) {
@@ -46,16 +48,28 @@ public class BeforeTrialAuditor {
 
 			}
 			Class<?> [] params = method.getParameterTypes();
-			if (params.length != 0) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
-			
-				failures.add(new TrialFailure(
-						messages.getBeforeTrialHasParams(),
-						trialName + messages.getWasAnnotatedIncorrectly()));
+			if (params.length != 1) {
+				addIncorrectAnnotationParams(failures, trialName);
+			} else {
+  			Class<?> param = params[0];
+  			if ( !Map.class.isAssignableFrom(param)) {
+  			  addIncorrectAnnotationParams(failures, trialName);
+  			}
 			}
-			return true;
 		}
-		return false;
+		if (bt == null || failures.size() != initalFailuresSize) {
+		  return false;
+		}
+		return true;
 	}
+
+  public static void addIncorrectAnnotationParams(List<I_TrialFailure> failures, 
+      String trialName) {
+    I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
+    I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
+
+    failures.add(new TrialFailure(
+    		messages.getBeforeTrialHasWrongParams(),
+    		trialName + messages.getWasAnnotatedIncorrectly()));
+  }
 }
