@@ -1,10 +1,10 @@
 package org.adligo.tests4j.run.discovery;
 
 import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.coverage.PackageCoverage;
-import org.adligo.tests4j.models.shared.coverage.PackageCoverageMutant;
+import org.adligo.tests4j.models.shared.coverage.PackageCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.PackageCoverageBriefMutant;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
 import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
@@ -478,17 +478,7 @@ public class TrialDescription implements I_TrialDescription {
 		}
 		return new UseCaseMetadata(nown, verb);
 	}
-	
-	public I_SourceFileCoverage findSourceFileCoverage(List<I_PackageCoverage> coverages) {
-		I_PackageCoverage cover = findPackageCoverage(coverages);
-		if (cover != null) {
-			Class<?> sourceFileClass = getSourceFileClass();
-			if (sourceFileClass != null) {
-				return cover.getCoverage(sourceFileClass.getSimpleName());
-			}
-		}
-		return null;
-	}
+
 	
 	/**
 	 * this majic method will
@@ -503,7 +493,7 @@ public class TrialDescription implements I_TrialDescription {
 	 * @param coverages
 	 * @return
 	 */
-	public I_PackageCoverage findPackageCoverage(List<I_PackageCoverage> coverages) {
+	public I_PackageCoverageBrief findPackageCoverage(List<I_PackageCoverageBrief> coverages) {
 		String packageName = getPackageName();
 		if (packageName == null) {
 			Class<?> sourceFileClass = getSourceFileClass();
@@ -515,7 +505,7 @@ public class TrialDescription implements I_TrialDescription {
 			throw new IllegalArgumentException("no package coverage for trial " + trialClass_.getName());
 		}
 		
-		for (I_PackageCoverage cover: coverages) {
+		for (I_PackageCoverageBrief cover: coverages) {
 			String coverName = cover.getPackageName();
 			if (coverName.equals(packageName)) {
 				return cover;
@@ -525,11 +515,11 @@ public class TrialDescription implements I_TrialDescription {
 			} 
 		}
 		
-		PackageCoverageMutant pcm = new PackageCoverageMutant();
+		PackageCoverageBriefMutant pcm = new PackageCoverageBriefMutant();
 		pcm.setPackageName(packageName);
 		
 		StringBuilder pkgs = new StringBuilder();
-		for (I_PackageCoverage cover: coverages) {
+		for (I_PackageCoverageBrief cover: coverages) {
 			String coverName = cover.getPackageName();
 			if (coverName.indexOf(packageName) == 0) {
 				pcm.addCoverageUnits(cover.getCoverageUnits());
@@ -538,7 +528,7 @@ public class TrialDescription implements I_TrialDescription {
 				String tokenSpace = coverName.substring(packageName.length() + 1, coverName.length());
 				StringTokenizer st = new StringTokenizer(tokenSpace, ".");
 				String pkgName = packageName;
-				PackageCoverageMutant child = null;
+				PackageCoverageBriefMutant child = null;
 				while (st.hasMoreElements()) {
 					
 					String next = st.nextToken();
@@ -552,11 +542,11 @@ public class TrialDescription implements I_TrialDescription {
 						}
 					} else {
 						if (child == null)  {
-							child = new PackageCoverageMutant();
+							child = new PackageCoverageBriefMutant();
 							pcm.addChild(child);
 							
 						} else {
-							child = new PackageCoverageMutant();
+							child = new PackageCoverageBriefMutant();
 							child.addChild(child);
 						}
 						child.setPackageName(pkgName);
@@ -568,12 +558,12 @@ public class TrialDescription implements I_TrialDescription {
 			pkgs.append(SYS.lineSeperator());
 		}
 		if (pcm.getChildren().size() >= 1) {
-			return new PackageCoverage(pcm);
+			return new PackageCoverageBrief(pcm);
 		}
 		if (sourceFileScope_ != null) {
 			Class<?> srcClass = sourceFileScope_.sourceClass();
 			if (srcClass.isInterface()) {
-				return new PackageCoverage();
+				return new PackageCoverageBrief();
 			}
 		}
 		throw new IllegalArgumentException("no package coverage for trial " + trialClass_.getName() +

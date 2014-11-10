@@ -1,6 +1,6 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
@@ -171,16 +171,16 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	
 
 	private BigDecimal logCoverage(I_TrialRunResult result) {
-		List<I_PackageCoverage> coverage = result.getCoverage();
+		List<I_PackageCoverageBrief> coverage = result.getCoverage();
 		if (coverage.size() >= 1) {
 			logger.log("\t\tPackage Coverage;");
 		}
-		Map<String, I_PackageCoverage> treeMap = new TreeMap<String, I_PackageCoverage>();
-		for (I_PackageCoverage cover: coverage) {
+		Map<String, I_PackageCoverageBrief> treeMap = new TreeMap<String, I_PackageCoverageBrief>();
+		for (I_PackageCoverageBrief cover: coverage) {
 			treeMap.put(cover.getPackageName(), cover);
 		}
-		Collection<I_PackageCoverage> ordered =  treeMap.values();
-		for (I_PackageCoverage cover: ordered) {
+		Collection<I_PackageCoverageBrief> ordered =  treeMap.values();
+		for (I_PackageCoverageBrief cover: ordered) {
 			Set<String> sourceFileNames = cover.getSourceFileNames();
 			//todo bridge formatting with GWT
 			logger.log("\t\t\t+" + cover.getPackageName() + " was covered " + 

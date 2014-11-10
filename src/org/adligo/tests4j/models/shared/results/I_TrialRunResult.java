@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 
 /**
  * the summary result of a trial run
@@ -37,7 +37,7 @@ public interface I_TrialRunResult {
 	 * the code covered by this entire test run.
 	 * @return
 	 */
-	public List<I_PackageCoverage> getCoverage();
+	public List<I_PackageCoverageBrief> getCoverage();
 	
 	/**
 	 * @return true if any coverage was recorded.

@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 
 public class TrialRunResult implements I_TrialRunResult {
 	private TrialRunResultMutant mutant;
@@ -27,7 +27,7 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getRunTimeSecs();
 	}
 
-	public List<I_PackageCoverage> getCoverage() {
+	public List<I_PackageCoverageBrief> getCoverage() {
 		return Collections.unmodifiableList(mutant.getCoverage());
 	}
 

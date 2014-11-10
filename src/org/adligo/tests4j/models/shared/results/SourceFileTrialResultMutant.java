@@ -1,8 +1,8 @@
 package org.adligo.tests4j.models.shared.results;
 
 import org.adligo.tests4j.models.shared.association.I_ClassAssociations;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileProbes;
-import org.adligo.tests4j.models.shared.coverage.SourceFileProbesMutant;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageBriefMutant;
 import org.adligo.tests4j.shared.asserts.reference.I_ClassAttributes;
 
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SourceFileTrialResultMutant extends BaseTrialResultMutant implements I_SourceFileTrialResult {
-	private SourceFileProbesMutant probes;
+	private SourceFileCoverageBriefMutant probes;
 	private String sourceFileName;
 	private I_ClassAssociations dependencies;
 	private Map<String, I_ClassAttributes> references_;
@@ -24,7 +24,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	public SourceFileTrialResultMutant(I_SourceFileTrialResult p, boolean cloneRelations) {
 		super(p, cloneRelations);
 		if (cloneRelations) {
-			probes = new SourceFileProbesMutant(p.getSourceFileProbes());
+			probes = new SourceFileCoverageBriefMutant(p.getSourceFileProbes());
 		}
 		sourceFileName = p.getSourceFileName();
 		setDependencies(p.getDependencies());
@@ -39,12 +39,12 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	}
 	
 	@Override
-	public I_SourceFileProbes getSourceFileProbes() {
+	public I_SourceFileCoverageBrief getSourceFileProbes() {
 		return probes;
 	}
 
-	public void setSourceFileProbes(I_SourceFileProbes p) {
-		this.probes = new SourceFileProbesMutant(p);
+	public void setSourceFileProbes(I_SourceFileCoverageBrief p) {
+		this.probes = new SourceFileCoverageBriefMutant(p);
 	}
 
 	public String getSourceFileName() {

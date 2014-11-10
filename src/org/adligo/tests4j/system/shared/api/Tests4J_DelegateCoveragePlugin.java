@@ -3,6 +3,8 @@ package org.adligo.tests4j.system.shared.api;
 import java.io.IOException;
 
 import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 
@@ -84,6 +86,26 @@ public class Tests4J_DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin 
   public I_Tests4J_CoverageRecorder createRecorder(String threadGroup, String javaFilter) {
     try {
       return delegate.createRecorder(threadGroup, javaFilter);
+    } catch (Exception t) {
+      reporter.onThrowable(t);
+    }
+    return null;
+  }
+
+  @Override
+  public I_SourceFileCoverage analyze(I_SourceFileCoverageBrief sourceFile, boolean instrument) {
+    try {
+      return delegate.analyze(sourceFile, instrument);
+    } catch (Exception t) {
+      reporter.onThrowable(t);
+    }
+    return null;
+  }
+
+  @Override
+  public I_SourceFileCoverage analyze(I_SourceFileCoverageBrief sourceFile) {
+    try {
+      delegate.analyze(sourceFile);
     } catch (Exception t) {
       reporter.onThrowable(t);
     }

@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.coverage;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,12 +7,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @see I_PackageCoverage
+ * @see I_PackageCoverageBrief
  * 
  * @author scott
  *
  */
-public class PackageCoverageMutant extends CoverageUnitContinerMutant implements I_PackageCoverage {
+public class PackageCoverageBriefMutant extends CoverageUnitContinerMutant implements I_PackageCoverageBrief {
 	private Map<String, SourceFileCoverageMutant> sourceFiles_ =
 			new HashMap<String, SourceFileCoverageMutant>();
 	private String packageName_;
@@ -23,16 +22,16 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 	 * regardless of if they were covered at all.
 	 * @return
 	 */
-	private List<PackageCoverageMutant> children_ = new ArrayList<PackageCoverageMutant>();
+	private List<PackageCoverageBriefMutant> children_ = new ArrayList<PackageCoverageBriefMutant>();
 
 	
-	public PackageCoverageMutant() {}
+	public PackageCoverageBriefMutant() {}
 	
-	public PackageCoverageMutant(I_PackageCoverage p) {
+	public PackageCoverageBriefMutant(I_PackageCoverageBrief p) {
 		this(p, true);
 	}
 	
-	public PackageCoverageMutant(I_PackageCoverage p, boolean cloneRelations) {
+	public PackageCoverageBriefMutant(I_PackageCoverageBrief p, boolean cloneRelations) {
 		super(p);
 		packageName_ = p.getPackageName();
 		if (cloneRelations) {
@@ -43,10 +42,10 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 					sourceFiles_.put(name, new SourceFileCoverageMutant(sfc));
 				}
 			}
-			List<I_PackageCoverage> otherChildren =  p.getChildPackageCoverage();
+			List<I_PackageCoverageBrief> otherChildren =  p.getChildPackageCoverage();
 			if (otherChildren != null) {
-				for (I_PackageCoverage coverage: otherChildren) {
-					children_.add(new PackageCoverageMutant(coverage));
+				for (I_PackageCoverageBrief coverage: otherChildren) {
+					children_.add(new PackageCoverageBriefMutant(coverage));
 				}
 			}
 		}
@@ -68,8 +67,8 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 	}
 
 	@Override
-	public List<I_PackageCoverage> getChildPackageCoverage() {
-		List<I_PackageCoverage> toRet = new ArrayList<I_PackageCoverage>();
+	public List<I_PackageCoverageBrief> getChildPackageCoverage() {
+		List<I_PackageCoverageBrief> toRet = new ArrayList<I_PackageCoverageBrief>();
 		toRet.addAll(children_);
 		return toRet;
 	}
@@ -86,7 +85,7 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 		return toString(this);
 	}
 	
-	public String toString(I_PackageCoverage p) {
+	public String toString(I_PackageCoverageBrief p) {
 		return p.getClass().getName() + " [packageName=" + p.getPackageName()
 				+ ", coverage=" + getPercentageCovered() +
 				",child_packages=" + p.getChildPackageCoverage().size() + "]";
@@ -107,22 +106,22 @@ public class PackageCoverageMutant extends CoverageUnitContinerMutant implements
 		}
 	}
 
-	public List<PackageCoverageMutant> getChildren() {
+	public List<PackageCoverageBriefMutant> getChildren() {
 		return children_;
 	}
 
-	public void setChildren(List<PackageCoverageMutant> children) {
+	public void setChildren(List<PackageCoverageBriefMutant> children) {
 		if (children != null) {
 			children_.clear();
 			children_.addAll(children);
 		}
 	}
 
-	public void addChild(I_PackageCoverage child) {
-		children_.add(new PackageCoverageMutant(child));
+	public void addChild(I_PackageCoverageBrief child) {
+		children_.add(new PackageCoverageBriefMutant(child));
 	}
 	
-	public void addChild(PackageCoverageMutant child) {
+	public void addChild(PackageCoverageBriefMutant child) {
 		children_.add(child);
 	}
 }

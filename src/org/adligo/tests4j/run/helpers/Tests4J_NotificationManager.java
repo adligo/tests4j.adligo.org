@@ -14,8 +14,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.coverage.PackageCoverageDelegator;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.PackageCoverageBriefDelegator;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.metadata.SourceInfoMetadataMutant;
 import org.adligo.tests4j.models.shared.metadata.TestMetadataMutant;
@@ -519,11 +519,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 			if (log.isMainLog()) {
 				log.log("main log results");
 			}
-			List<I_PackageCoverage> packageCoverage = allCoverageRecorder.endRecording(testedClasses_);
-			List<I_PackageCoverage> toAdd = new ArrayList<I_PackageCoverage>();
+			List<I_PackageCoverageBrief> packageCoverage = allCoverageRecorder.endRecording(testedClasses_);
+			List<I_PackageCoverageBrief> toAdd = new ArrayList<I_PackageCoverageBrief>();
 			
 			//filter out trial/test code from result
-			for (I_PackageCoverage cover: packageCoverage) {
+			for (I_PackageCoverageBrief cover: packageCoverage) {
 				boolean overlapped = false;
 				String coveragePkgName = cover.getPackageName();
 				for (String trialPackageName: trialPackageNames) {
@@ -536,7 +536,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				}
 				if (!overlapped) {
 					//add it to the results
-					toAdd.add(new PackageCoverageDelegator(cover));
+					toAdd.add(new PackageCoverageBriefDelegator(cover));
 				}
 			}
 			runResult.setCoverage(toAdd);

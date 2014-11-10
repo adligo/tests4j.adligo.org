@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.adligo.tests4j.models.shared.coverage.I_CoverageUnits;
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 
 public class TrialRunResultMutant implements I_TrialRunResult {
 	private long startTime;
 	private long runTime;
-	private List<I_PackageCoverage> coverage = new ArrayList<I_PackageCoverage>();
+	private List<I_PackageCoverageBrief> coverage = new ArrayList<I_PackageCoverageBrief>();
 	private int trials;
 	private int trialsIgnored;
 	private int trialFailures;
@@ -66,11 +66,11 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		return rt;
 	}
 
-	public List<I_PackageCoverage> getCoverage() {
+	public List<I_PackageCoverageBrief> getCoverage() {
 		return coverage;
 	}
 
-	public synchronized void setCoverage(List<I_PackageCoverage> coverage) {
+	public synchronized void setCoverage(List<I_PackageCoverageBrief> coverage) {
 		this.coverage = coverage;
 	}
 
@@ -184,7 +184,7 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		double cus = 0;
 		double covered_cus = 0;
 		
-		for (I_PackageCoverage cover: coverage) {
+		for (I_PackageCoverageBrief cover: coverage) {
 			I_CoverageUnits cu = cover.getCoverageUnits();
 			cus = cus + cu.get();
 			I_CoverageUnits ccu = cover.getCoveredCoverageUnits();

@@ -3,8 +3,8 @@ package org.adligo.tests4j.system.shared.api;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileProbes;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
 
 /**
  * a coverage recorder that 
@@ -28,11 +28,11 @@ public interface I_Tests4J_CoverageRecorder {
 	 * @param the names of the classes for 
 	 *    which coverage info is requested.
 	 */
-	public List<I_PackageCoverage> endRecording(Set<String> classNames);
+	public List<I_PackageCoverageBrief> endRecording(Set<String> classNames);
 	
 	/**
 	 * for source file trials return the probes;
 	 * @return
 	 */
-	public I_SourceFileProbes getSourceFileCoverage();
+	public I_SourceFileCoverageBrief getSourceFileCoverage();
 }

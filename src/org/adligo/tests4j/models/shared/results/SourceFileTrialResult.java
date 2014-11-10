@@ -1,8 +1,8 @@
 package org.adligo.tests4j.models.shared.results;
 
 import org.adligo.tests4j.models.shared.association.I_ClassAssociations;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileProbes;
-import org.adligo.tests4j.models.shared.coverage.SourceFileProbes;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageBrief;
 import org.adligo.tests4j.shared.asserts.reference.I_ClassAttributes;
 
 import java.util.Collections;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class SourceFileTrialResult extends BaseTrialResult implements I_SourceFileTrialResult {
 	private SourceFileTrialResultMutant mutant;
-	private SourceFileProbes probes;
+	private SourceFileCoverageBrief probes;
 	private I_ClassAssociations dependencies;
 	private Map<String, I_ClassAttributes> references_;
 	
@@ -24,7 +24,7 @@ public class SourceFileTrialResult extends BaseTrialResult implements I_SourceFi
 		super(p);
 		mutant = new SourceFileTrialResultMutant(p, false);
 		if (p.hasRecordedCoverage()) {
-			probes = new SourceFileProbes( p.getSourceFileProbes());
+			probes = new SourceFileCoverageBrief( p.getSourceFileProbes());
 		}
 		dependencies = p.getDependencies();
 		if (dependencies != null) {
@@ -39,7 +39,7 @@ public class SourceFileTrialResult extends BaseTrialResult implements I_SourceFi
 		}
 	}
 	
-	public I_SourceFileProbes getSourceFileProbes() {
+	public I_SourceFileCoverageBrief getSourceFileProbes() {
 		return probes;
 	}
 

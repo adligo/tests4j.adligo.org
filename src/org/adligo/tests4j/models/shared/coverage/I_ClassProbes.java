@@ -10,7 +10,7 @@ package org.adligo.tests4j.models.shared.coverage;
  * @author scott
  *
  */
-public interface I_ClassProbes extends I_ProbeCoverageContainer {
+public interface I_ClassProbes extends I_ProbesCoverageContainer {
 	/**
 	 * the name of the class
 	 * @return

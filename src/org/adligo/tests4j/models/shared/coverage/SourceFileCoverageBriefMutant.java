@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class SourceFileProbesMutant extends ClassProbesMutant implements I_SourceFileProbes {
+public class SourceFileCoverageBriefMutant extends ClassProbesMutant implements I_SourceFileCoverageBrief {
   
   /**
    * note the classes in classProbes_ are only for inner classes ie Foo$1.class
@@ -16,9 +16,9 @@ public class SourceFileProbesMutant extends ClassProbesMutant implements I_Sourc
   private int coveredCoverageUnits_;
   private int coverageUnits_;
   
-  public SourceFileProbesMutant() {}
+  public SourceFileCoverageBriefMutant() {}
   
-  public SourceFileProbesMutant(I_SourceFileProbes sourceFileProbes) {
+  public SourceFileCoverageBriefMutant(I_SourceFileCoverageBrief sourceFileProbes) {
     super(sourceFileProbes);
     
     setProbes(sourceFileProbes.getProbes());

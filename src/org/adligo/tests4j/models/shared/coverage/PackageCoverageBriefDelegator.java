@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
-public class PackageCoverageDelegator implements I_PackageCoverage {
-	private I_PackageCoverage delegate;
+public class PackageCoverageBriefDelegator implements I_PackageCoverageBrief {
+	private I_PackageCoverageBrief delegate;
 	
-	public PackageCoverageDelegator() {}
+	public PackageCoverageBriefDelegator() {}
 	
-	public PackageCoverageDelegator(I_PackageCoverage p) {
+	public PackageCoverageBriefDelegator(I_PackageCoverageBrief p) {
 		delegate = p;
 	}
 
@@ -41,7 +41,7 @@ public class PackageCoverageDelegator implements I_PackageCoverage {
 		return delegate.getSourceFileNames();
 	}
 
-	public List<I_PackageCoverage> getChildPackageCoverage() {
+	public List<I_PackageCoverageBrief> getChildPackageCoverage() {
 		return delegate.getChildPackageCoverage();
 	}
 

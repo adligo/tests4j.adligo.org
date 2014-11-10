@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class SourceFileProbes extends ClassProbes implements I_SourceFileProbes {
+public class SourceFileCoverageBrief extends ClassProbes implements I_SourceFileCoverageBrief {
   private int coveredCoverageUnits_;
   private int coverageUnits_;
 
@@ -17,7 +17,7 @@ public class SourceFileProbes extends ClassProbes implements I_SourceFileProbes 
   private List<ClassProbes> classProbes_ = new ArrayList<ClassProbes>();
 
   
-  public SourceFileProbes(I_SourceFileProbes sourceFileProbes) {
+  public SourceFileCoverageBrief(I_SourceFileCoverageBrief sourceFileProbes) {
     super(sourceFileProbes);
     setClassProbes(sourceFileProbes.getClassProbes());
     coverageUnits_ = sourceFileProbes.getCoverageUnits();

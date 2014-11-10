@@ -1,11 +1,11 @@
 package org.adligo.tests4j.models.shared.results;
 
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.coverage.PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.PackageCoverageBrief;
 
 public class ApiTrialResult extends BaseTrialResult implements I_ApiTrialResult {
 	private ApiTrialResultMutant mutant;
-	private I_PackageCoverage packageCoverage;
+	private I_PackageCoverageBrief packageCoverage;
 	
 	public ApiTrialResult() {
 		super();
@@ -16,12 +16,12 @@ public class ApiTrialResult extends BaseTrialResult implements I_ApiTrialResult 
 		super(p);
 		mutant = new ApiTrialResultMutant(p, false);
 		if (p.hasRecordedCoverage()) {
-			packageCoverage = new PackageCoverage(p.getPackageCoverage());
+			packageCoverage = new PackageCoverageBrief(p.getPackageCoverage());
 		}
 		
 	}
 
-	public I_PackageCoverage getPackageCoverage() {
+	public I_PackageCoverageBrief getPackageCoverage() {
 		return packageCoverage;
 	}
 

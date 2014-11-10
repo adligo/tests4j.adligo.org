@@ -18,7 +18,7 @@ import java.util.Set;
  * @author scott
  *
  */
-public interface I_PackageCoverage extends I_CoverageUnitsContainer {
+public interface I_PackageCoverageBrief extends I_CoverageUnitsContainer {
 	/**
 	 * the java package name, of the package
 	 * this instance represents coverage for.
@@ -46,7 +46,7 @@ public interface I_PackageCoverage extends I_CoverageUnitsContainer {
 	 * regardless of if they were covered at all.
 	 * @return
 	 */
-	public List<I_PackageCoverage> getChildPackageCoverage();
+	public List<I_PackageCoverageBrief> getChildPackageCoverage();
 	
 	/**
 	 * a convenience method for determining if there

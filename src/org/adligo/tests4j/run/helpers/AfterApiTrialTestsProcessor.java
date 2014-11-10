@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.results.ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
@@ -38,7 +38,7 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 			I_Tests4J_Log log) {
 		
 		Method clazzMethod = null;
-		List<I_PackageCoverage> coverage;
+		List<I_PackageCoverageBrief> coverage;
 		I_AbstractTrial trial = super.getTrial();
 		Class<? extends I_AbstractTrial> trialClass = trial.getClass();
 		TrialDescription trialDesc = super.getTrialDescription();
@@ -71,7 +71,7 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 				addClasses(subs, classNames);
 				
 				coverage = rec.endRecording(Collections.singleton(packageName));
-				I_PackageCoverage cover = trialDesc.findPackageCoverage(coverage);
+				I_PackageCoverageBrief cover = trialDesc.findPackageCoverage(coverage);
 				if (cover != null) {
 					trialResultMutant.setPackageCoverage(cover);
 				}

@@ -1,10 +1,10 @@
 package org.adligo.tests4j.models.shared.results;
 
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
-import org.adligo.tests4j.models.shared.coverage.PackageCoverageMutant;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.PackageCoverageBriefMutant;
 
 public class ApiTrialResultMutant extends BaseTrialResultMutant implements I_ApiTrialResult {
-	private PackageCoverageMutant packageCoverage;
+	private PackageCoverageBriefMutant packageCoverage;
 	private String packageName;
 	
 	public ApiTrialResultMutant() {}
@@ -17,7 +17,7 @@ public class ApiTrialResultMutant extends BaseTrialResultMutant implements I_Api
 		super(p, cloneRelations);
 		if (cloneRelations) {
 			if (p.hasRecordedCoverage()) {
-				packageCoverage = new PackageCoverageMutant(p.getPackageCoverage()); 
+				packageCoverage = new PackageCoverageBriefMutant(p.getPackageCoverage()); 
 			}
 		}
 		packageName = p.getPackageName();
@@ -32,7 +32,7 @@ public class ApiTrialResultMutant extends BaseTrialResultMutant implements I_Api
 	}
 	
 	@Override
-	public I_PackageCoverage getPackageCoverage() {
+	public I_PackageCoverageBrief getPackageCoverage() {
 		return packageCoverage;
 	}
 	@Override
@@ -41,8 +41,8 @@ public class ApiTrialResultMutant extends BaseTrialResultMutant implements I_Api
 		return packageName;
 	}
 
-	public void setPackageCoverage(I_PackageCoverage p) {
-		packageCoverage = new PackageCoverageMutant(p);
+	public void setPackageCoverage(I_PackageCoverageBrief p) {
+		packageCoverage = new PackageCoverageBriefMutant(p);
 	}
 
 	public void setPackageName(String packageName) {

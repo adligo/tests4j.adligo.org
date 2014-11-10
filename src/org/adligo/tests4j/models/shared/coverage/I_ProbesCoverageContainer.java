@@ -8,7 +8,7 @@ package org.adligo.tests4j.models.shared.coverage;
  * @author scott
  *
  */
-public interface I_ProbeCoverageContainer {
+public interface I_ProbesCoverageContainer {
   /**
    * The number of probes;
    * @return

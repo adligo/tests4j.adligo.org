@@ -9,24 +9,24 @@ import java.util.Map;
 import java.util.Set;
 
 
-public class PackageCoverage implements I_PackageCoverage {
-	private PackageCoverageMutant mutant;
+public class PackageCoverageBrief implements I_PackageCoverageBrief {
+	private PackageCoverageBriefMutant mutant;
 	private Map<String, I_SourceFileCoverage> coverage;
-	private List<I_PackageCoverage> children;
+	private List<I_PackageCoverageBrief> children;
 	
-	public PackageCoverage() {
-		mutant = new PackageCoverageMutant();
+	public PackageCoverageBrief() {
+		mutant = new PackageCoverageBriefMutant();
 		coverage = Collections.emptyMap();
 		children = Collections.emptyList();
 	}
 	
-	public PackageCoverage(I_PackageCoverage p) {
-		List<I_PackageCoverage> otherChildren =  p.getChildPackageCoverage();
+	public PackageCoverageBrief(I_PackageCoverageBrief p) {
+		List<I_PackageCoverageBrief> otherChildren =  p.getChildPackageCoverage();
 		if (otherChildren.size() >= 1) {
-			children = new ArrayList<I_PackageCoverage>();
+			children = new ArrayList<I_PackageCoverageBrief>();
 		}
-		for (I_PackageCoverage other: otherChildren) {
-			children.add(new PackageCoverage(other));
+		for (I_PackageCoverageBrief other: otherChildren) {
+			children.add(new PackageCoverageBrief(other));
 		}
 		Set<String> sourceFileNames = p.getSourceFileNames();
 		if (sourceFileNames.size() >= 1) {
@@ -38,7 +38,7 @@ public class PackageCoverage implements I_PackageCoverage {
 			coverage = Collections.emptyMap();
 		}
 		
-		mutant = new PackageCoverageMutant(p, false);
+		mutant = new PackageCoverageBriefMutant(p, false);
 		
 		
 	}
@@ -67,7 +67,7 @@ public class PackageCoverage implements I_PackageCoverage {
 		return coverage.keySet();
 	}
 
-	public List<I_PackageCoverage> getChildPackageCoverage() {
+	public List<I_PackageCoverageBrief> getChildPackageCoverage() {
 		return children;
 	}
 

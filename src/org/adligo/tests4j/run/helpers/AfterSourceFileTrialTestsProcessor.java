@@ -1,10 +1,10 @@
 package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
-import org.adligo.tests4j.models.shared.coverage.I_PackageCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileProbes;
-import org.adligo.tests4j.models.shared.coverage.SourceFileProbesMutant;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageBriefMutant;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.SourceFileTrialResultMutant;
@@ -80,7 +80,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		I_ClassAssociationsLocal deps =  trialDesc.getSourceClassDependencies();
 		trialResultMutant.setDependencies(deps);
 		
-		List<I_PackageCoverage> coverage;
+		List<I_PackageCoverageBrief> coverage;
 		I_Tests4J_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
 		
 
@@ -92,12 +92,12 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 						" for " + trialResultMutant.getSourceFileName());
 			}
 			Class<?> srcFile = trialDesc.getSourceFileClass();
-			I_SourceFileProbes probes = rec.getSourceFileCoverage();
+			I_SourceFileCoverageBrief probes = rec.getSourceFileCoverage();
 			
 			if (probes != null) {
 				trialResultMutant.setSourceFileProbes(probes);
 			} else if (srcFile != null && srcFile.isInterface()) {
-				trialResultMutant.setSourceFileProbes(new SourceFileProbesMutant());
+				trialResultMutant.setSourceFileProbes(new SourceFileCoverageBriefMutant());
 			} else {
 				log.onThrowable(new IllegalStateException("A internal error"
 						+ " has occured in tests4j, no coverage for class " + 
@@ -169,7 +169,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		super.startDelegatedTest();
 		
 		
-		I_SourceFileProbes sourceProbes =  trialResultMutant.getSourceFileProbes();
+		I_SourceFileCoverageBrief sourceProbes =  trialResultMutant.getSourceFileProbes();
 		if (sourceProbes == null) {
 			testResultMutant.setPassed(false);
 		} else {

@@ -1,5 +1,7 @@
 package org.adligo.tests4j.system.shared.api;
 
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 
 import java.io.IOException;
@@ -65,4 +67,31 @@ public interface I_Tests4J_CoveragePlugin {
    * 
    */
   public I_Tests4J_CoverageRecorder createRecorder(String trialThreadName, String javaFilter);
+  
+  /**
+   * creates a I_SourceFileCoverage to provide detailed information
+   * about what is covered in a source file, either using the 
+   * instrumented classes created from the instrument method in this
+   * interface, or when instrument is true it should instrument the
+   * classes on the fly.
+   * 
+   * @param sourceFile the source file which we need line and branch
+   *    details for.
+   * @param instrument if this is true, and other instrument methods have been called
+   * i.e. I_Tests4J_CoverageTrialInstrumentation instrument(Class<? extends I_AbstractTrial> trial) throws IOException
+   * this method will throw a IllegalStateException, since we don't want 
+   * classes to be instrumented during a trial run.
+   * 
+   * @return a I_SourceFileCoverage which can be used to 
+   *   decorate a .java file when it is displayed in a GUI/IDE
+   *   to show which lines and branches were covered.
+   */
+  public I_SourceFileCoverage analyze(I_SourceFileCoverageBrief sourceFile, boolean instrument);
+  /**
+   * @see #analyze(I_SourceFileCoverageBrief, boolean)
+   * this always passes false to instrument
+   * @param sourceFile
+   * @return
+   */
+  public I_SourceFileCoverage analyze(I_SourceFileCoverageBrief sourceFile);
 }
