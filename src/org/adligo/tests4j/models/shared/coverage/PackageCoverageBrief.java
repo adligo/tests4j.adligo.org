@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class PackageCoverageBrief implements I_PackageCoverageBrief {
 	private PackageCoverageBriefMutant mutant;
-	private Map<String, I_SourceFileCoverage> coverage;
+	private Map<String, I_SourceFileCoverageBrief> coverage;
 	private List<I_PackageCoverageBrief> children;
 	
 	public PackageCoverageBrief() {
@@ -30,9 +30,9 @@ public class PackageCoverageBrief implements I_PackageCoverageBrief {
 		}
 		Set<String> sourceFileNames = p.getSourceFileNames();
 		if (sourceFileNames.size() >= 1) {
-			coverage = new HashMap<String, I_SourceFileCoverage>();
+			coverage = new HashMap<String, I_SourceFileCoverageBrief>();
 			for (String name: sourceFileNames) {
-				coverage.put(name, new SourceFileCoverage(p.getCoverage(name)));
+				coverage.put(name, new SourceFileCoverageBrief(p.getCoverage(name)));
 			}
 		} else {
 			coverage = Collections.emptyMap();
@@ -59,7 +59,7 @@ public class PackageCoverageBrief implements I_PackageCoverageBrief {
 		return mutant.getPackageName();
 	}
 
-	public I_SourceFileCoverage getCoverage(String sourceFileName) {
+	public I_SourceFileCoverageBrief getCoverage(String sourceFileName) {
 		return coverage.get(sourceFileName);
 	}
 

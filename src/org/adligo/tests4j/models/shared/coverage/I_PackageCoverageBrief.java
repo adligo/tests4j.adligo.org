@@ -31,7 +31,7 @@ public interface I_PackageCoverageBrief extends I_CoverageUnitsContainer {
 	 * @param sourceFileName
 	 * @return
 	 */
-	public I_SourceFileCoverage getCoverage(String sourceFileName);
+	public I_SourceFileCoverageBrief getCoverage(String sourceFileName);
 	/**
 	 * return the classes directly in this package
 	 * which pertain to a .java file,

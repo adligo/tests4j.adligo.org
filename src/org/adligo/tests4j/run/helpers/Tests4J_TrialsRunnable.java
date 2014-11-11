@@ -536,8 +536,14 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		TestResult result = new TestResult(forOut);
 		
 		blocking.add(result);
+		
 		if (p.isPassed()) {
-			blocking.notify();
+		  //here is some interesting code, this call to
+	    // blocking.notify() occurs on the test thread
+	    //and throws a IllegalMonitorState exception,
+	    //which seems to help the test thread
+		  //communicate to the trial thread that it is done
+		  blocking.notify();
 		} else {
 			synchronized (blocking) {
 				blocking.notify();

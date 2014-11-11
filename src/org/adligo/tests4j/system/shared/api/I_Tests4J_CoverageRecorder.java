@@ -20,6 +20,7 @@ public interface I_Tests4J_CoverageRecorder {
 	 */
 	public void startRecording();
 	/**
+	 * @deprecated removing this method 
 	 * this ends recording for the context of the current record.
 	 * 
 	 * Note the items in the I_PackageCoverage
@@ -31,8 +32,29 @@ public interface I_Tests4J_CoverageRecorder {
 	public List<I_PackageCoverageBrief> endRecording(Set<String> classNames);
 	
 	/**
-	 * for source file trials return the probes;
+	 * for source file trials return the coverage information;
 	 * @return
 	 */
 	public I_SourceFileCoverageBrief getSourceFileCoverage();
+	
+	 /**
+   * for api trials return the coverage information;
+   * @return
+   */
+  public I_PackageCoverageBrief getPackageCoverage();
+  
+  /**
+   * This will return coverage information for 
+   * the entire run including any package with 
+   * .class files which had any coverage recorded.  
+   * It will include information about all .class/.java file
+   * regardless if there was any interaction.
+   * In other words .java files/classes which
+   * were in packages with any coverage
+   * will included classes/.java files 
+   * with zero coverage.
+   * 
+   * @return
+   */
+  public List<I_PackageCoverageBrief> getAllCoverage();
 }

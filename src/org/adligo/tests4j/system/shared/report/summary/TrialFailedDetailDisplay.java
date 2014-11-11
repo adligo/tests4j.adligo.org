@@ -233,8 +233,8 @@ public class TrialFailedDetailDisplay {
 					" called class " + tf.getCalledClass() + ". ";
 		}
 		
-		DependencyFailureException dfe = 
-				new DependencyFailureException(tf.getFailureMessage() + log.getLineSeperator() +
+		AllowedReferencesFailureException dfe = 
+				new AllowedReferencesFailureException(tf.getFailureMessage() + log.getLineSeperator() +
 						message,
 						stack);
 		log.onThrowable(dfe);
@@ -254,8 +254,8 @@ public class TrialFailedDetailDisplay {
 					classNames.toString() + log.getLineSeperator();
 		
 		
-		DependencyFailureException dfe = 
-				new DependencyFailureException(tf.getFailureMessage() + log.getLineSeperator() +
+		AllowedReferencesFailureException dfe = 
+				new AllowedReferencesFailureException(tf.getFailureMessage() + log.getLineSeperator() +
 						message,
 						stack);
 		log.onThrowable(dfe);

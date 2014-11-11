@@ -13,8 +13,8 @@ import java.util.Set;
  *
  */
 public class PackageCoverageBriefMutant extends CoverageUnitContinerMutant implements I_PackageCoverageBrief {
-	private Map<String, SourceFileCoverageMutant> sourceFiles_ =
-			new HashMap<String, SourceFileCoverageMutant>();
+	private Map<String, SourceFileCoverageBriefMutant> sourceFiles_ =
+			new HashMap<String, SourceFileCoverageBriefMutant>();
 	private String packageName_;
 	/**
 	 * return the child packages if any
@@ -37,9 +37,9 @@ public class PackageCoverageBriefMutant extends CoverageUnitContinerMutant imple
 		if (cloneRelations) {
 			Set<String> sfNames = p.getSourceFileNames();
 			for (String name: sfNames) {
-				I_SourceFileCoverage sfc = p.getCoverage(name);
+				I_SourceFileCoverageBrief sfc = p.getCoverage(name);
 				if (sfc != null) {
-					sourceFiles_.put(name, new SourceFileCoverageMutant(sfc));
+					sourceFiles_.put(name, new SourceFileCoverageBriefMutant(sfc));
 				}
 			}
 			List<I_PackageCoverageBrief> otherChildren =  p.getChildPackageCoverage();
@@ -57,7 +57,7 @@ public class PackageCoverageBriefMutant extends CoverageUnitContinerMutant imple
 	}
 
 	@Override
-	public I_SourceFileCoverage getCoverage(String sourceFileName) {
+	public I_SourceFileCoverageBrief getCoverage(String sourceFileName) {
 		return sourceFiles_.get(sourceFileName);
 	}
 
@@ -95,11 +95,11 @@ public class PackageCoverageBriefMutant extends CoverageUnitContinerMutant imple
 		this.packageName_ = packageName;
 	}
 
-	public Map<String, SourceFileCoverageMutant> getSourceFiles() {
+	public Map<String, SourceFileCoverageBriefMutant> getSourceFiles() {
 		return sourceFiles_;
 	}
 
-	public void setSourceFiles(Map<String, SourceFileCoverageMutant> sourceFiles) {
+	public void setSourceFiles(Map<String, SourceFileCoverageBriefMutant> sourceFiles) {
 		if (sourceFiles != null) {
 			sourceFiles_.clear();
 			sourceFiles_.putAll(sourceFiles);

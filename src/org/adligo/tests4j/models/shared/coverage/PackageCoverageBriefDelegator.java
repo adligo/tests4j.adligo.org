@@ -29,7 +29,7 @@ public class PackageCoverageBriefDelegator implements I_PackageCoverageBrief {
 		return delegate.getPackageName();
 	}
 
-	public I_SourceFileCoverage getCoverage(String sourceFileName) {
+	public I_SourceFileCoverageBrief getCoverage(String sourceFileName) {
 		return delegate.getCoverage(sourceFileName);
 	}
 
