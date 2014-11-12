@@ -43,17 +43,23 @@
 					</documentation>
 				</annotation>
             </element>
-            <element name="passingTrials" type="tns:java_tree_type"
+            <element name="passingTrials" type="tns:trial_group_type"
 				minOccurs="1" maxOccurs="1">
 			</element>
-			<element name="failingTrials" type="tns:java_tree_type"
+			<element name="failingTrials" type="tns:trial_group_type"
 				minOccurs="0" maxOccurs="1">
 			</element>
-			<element name="ignoredTrials" type="tns:java_tree_type"
+			<element name="ignoredTrials" type="tns:trial_group_type"
 				minOccurs="0" maxOccurs="1">
 			</element>
-			<element name="coverage" type="cns:package_coverage_type"
+			<element name="coverage" type="cns:packages_coverage_type"
 				minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>
+						This is the aggregate code coverage 
+						for the entire trial run.
+					</documentation>
+				</annotation>
 			</element>
 		</sequence>
 		<attribute name="asserts" use="required">
@@ -144,7 +150,7 @@
 				</annotation>
 			</element>
 		</sequence>
-		<attribute name="package" type="string" use="required">
+		<attribute name="name" type="string" use="required">
 			<annotation>
 				<documentation>
 					This is a java package and can include either a simple name
@@ -154,4 +160,12 @@
 			</annotation>
 		</attribute>
 	</complexType>
+
+    <element name="results" type="tns:trial_run_results_type"></element>
+
+    <complexType name="trial_group_type">
+    	<sequence>
+    		<element name="package" type="tns:java_tree_type" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
 </schema>

@@ -6,30 +6,31 @@
 //
 
 
-package org.adligo.tests4j.run.xml.io.coverage;
+package org.adligo.tests4j.run.xml.io.trial_run_results;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for source_file_coverage_type complex type.
+ * <p>Java class for java_tree_type complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="source_file_coverage_type"&gt;
+ * &lt;complexType name="java_tree_type"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="classProbes" type="{http://www.adligo.org/tests4j/run/xml/io/coverage}class_coverage_type" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="package" type="{http://www.adligo.org/tests4j/run/xml/io/trial_run_results}java_tree_type" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *         &lt;element name="class" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
- *       &lt;attribute name="data" use="required" type="{http://www.w3.org/2001/XMLSchema}base64Binary" /&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
@@ -38,44 +39,70 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "source_file_coverage_type", propOrder = {
-    "classProbes"
+@XmlType(name = "java_tree_type", propOrder = {
+    "_package",
+    "clazz"
 })
-public class SourceFileCoverageType {
+public class JavaTreeType {
 
-    protected List<ClassCoverageType> classProbes;
+    @XmlElement(name = "package")
+    protected List<JavaTreeType> _package;
+    @XmlElement(name = "class")
+    protected String clazz;
     @XmlAttribute(name = "name", required = true)
     protected String name;
-    @XmlAttribute(name = "data", required = true)
-    protected byte[] data;
 
     /**
-     * Gets the value of the classProbes property.
+     * Gets the value of the package property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the classProbes property.
+     * This is why there is not a <CODE>set</CODE> method for the package property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getClassProbes().add(newItem);
+     *    getPackage().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ClassCoverageType }
+     * {@link JavaTreeType }
      * 
      * 
      */
-    public List<ClassCoverageType> getClassProbes() {
-        if (classProbes == null) {
-            classProbes = new ArrayList<ClassCoverageType>();
+    public List<JavaTreeType> getPackage() {
+        if (_package == null) {
+            _package = new ArrayList<JavaTreeType>();
         }
-        return this.classProbes;
+        return this._package;
+    }
+
+    /**
+     * Gets the value of the clazz property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getClazz() {
+        return clazz;
+    }
+
+    /**
+     * Sets the value of the clazz property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setClazz(String value) {
+        this.clazz = value;
     }
 
     /**
@@ -100,28 +127,6 @@ public class SourceFileCoverageType {
      */
     public void setName(String value) {
         this.name = value;
-    }
-
-    /**
-     * Gets the value of the data property.
-     * 
-     * @return
-     *     possible object is
-     *     byte[]
-     */
-    public byte[] getData() {
-        return data;
-    }
-
-    /**
-     * Sets the value of the data property.
-     * 
-     * @param value
-     *     allowed object is
-     *     byte[]
-     */
-    public void setData(byte[] value) {
-        this.data = value;
     }
 
 }

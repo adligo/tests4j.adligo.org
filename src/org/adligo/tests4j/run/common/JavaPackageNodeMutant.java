@@ -53,11 +53,18 @@ public class JavaPackageNodeMutant implements I_JavaPackageNode {
     return classNames_;
   }
 
-  public void setClassName(Collection<String> classNames) {
+  public void setClassNames(Collection<String> classNames) {
     classNames_.clear();
     if (classNames != null) {
       classNames_.addAll(classNames);
     }
   }
   
+  public int countClasses() {
+    int count = classNames_.size();
+    for (JavaPackageNodeMutant child: childNodes_) {
+      count += child.countClasses();
+    }
+    return count;
+  }
 }

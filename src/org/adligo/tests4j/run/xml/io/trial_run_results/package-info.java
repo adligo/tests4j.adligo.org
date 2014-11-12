@@ -5,5 +5,5 @@
 // Generated on: 2014.11.11 at 10:46:40 PM CST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.adligo.org/tests4j/run/xml/io/coverage", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
-package org.adligo.tests4j.run.xml.io.coverage;
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.adligo.org/tests4j/run/xml/io/trial_run_results", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+package org.adligo.tests4j.run.xml.io.trial_run_results;

@@ -6,7 +6,7 @@
 //
 
 
-package org.adligo.tests4j.run.xml.io.coverage;
+package org.adligo.tests4j.run.xml.io.use_cases;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,16 +15,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for class_coverage_type complex type.
+ * <p>Java class for use_case_brief_type complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="class_coverage_type"&gt;
+ * &lt;complexType name="use_case_brief_type"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;attribute name="className" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
- *       &lt;attribute name="probes" use="required" type="{http://www.w3.org/2001/XMLSchema}base64Binary" /&gt;
+ *       &lt;attribute name="nown" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
+ *       &lt;attribute name="verb" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
@@ -33,58 +33,60 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "class_coverage_type")
-public class ClassCoverageType {
+@XmlType(name = "use_case_brief_type")
+public class UseCaseBriefType {
 
-    @XmlAttribute(name = "className", required = true)
-    protected String className;
-    @XmlAttribute(name = "probes", required = true)
-    protected byte[] probes;
+    @XmlAttribute(name = "nown", required = true)
+    protected String nown;
+    @XmlAttribute(name = "verb", required = true)
+    protected String verb;
 
     /**
-     * Gets the value of the className property.
+     * Gets the value of the nown property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getClassName() {
-        return className;
+    public String getNown() {
+        return nown;
     }
 
     /**
-     * Sets the value of the className property.
+     * Sets the value of the nown property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setClassName(String value) {
-        this.className = value;
+    public void setNown(String value) {
+        this.nown = value;
     }
 
     /**
-     * Gets the value of the probes property.
+     * Gets the value of the verb property.
      * 
      * @return
      *     possible object is
-     *     byte[]
+     *     {@link String }
+     *     
      */
-    public byte[] getProbes() {
-        return probes;
+    public String getVerb() {
+        return verb;
     }
 
     /**
-     * Sets the value of the probes property.
+     * Sets the value of the verb property.
      * 
      * @param value
      *     allowed object is
-     *     byte[]
+     *     {@link String }
+     *     
      */
-    public void setProbes(byte[] value) {
-        this.probes = value;
+    public void setVerb(String value) {
+        this.verb = value;
     }
 
 }

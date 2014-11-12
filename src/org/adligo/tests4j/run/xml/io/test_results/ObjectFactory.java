@@ -6,7 +6,7 @@
 //
 
 
-package org.adligo.tests4j.run.xml.io.coverage;
+package org.adligo.tests4j.run.xml.io.test_results;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the org.adligo.tests4j.run.xml.io.coverage package. 
+ * generated in the org.adligo.tests4j.run.xml.io.test_results package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -30,42 +30,26 @@ public class ObjectFactory {
 
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.adligo.tests4j.run.xml.io.coverage
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.adligo.tests4j.run.xml.io.test_results
      * 
      */
     public ObjectFactory() {
     }
 
     /**
-     * Create an instance of {@link PackageCoverageType }
+     * Create an instance of {@link TestFailureType }
      * 
      */
-    public PackageCoverageType createPackageCoverageType() {
-        return new PackageCoverageType();
+    public TestFailureType createTestFailureType() {
+        return new TestFailureType();
     }
 
     /**
-     * Create an instance of {@link ClassCoverageType }
+     * Create an instance of {@link TestResultType }
      * 
      */
-    public ClassCoverageType createClassCoverageType() {
-        return new ClassCoverageType();
-    }
-
-    /**
-     * Create an instance of {@link SourceFileCoverageType }
-     * 
-     */
-    public SourceFileCoverageType createSourceFileCoverageType() {
-        return new SourceFileCoverageType();
-    }
-
-    /**
-     * Create an instance of {@link PackagesCoverageType }
-     * 
-     */
-    public PackagesCoverageType createPackagesCoverageType() {
-        return new PackagesCoverageType();
+    public TestResultType createTestResultType() {
+        return new TestResultType();
     }
 
 }

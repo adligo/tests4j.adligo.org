@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 /**
@@ -100,7 +101,7 @@ public class JavaTree {
     for (JavaPackageNodeMutant jpnm: nodes) {
       String name = jpnm.getName();
       Set<String> classNames = getPackageClasses(name);
-      jpnm.setClassName(classNames);
+      jpnm.setClassNames(classNames);
       //add the package name to the classes for the getChildren method
       Set<String> packageClasses = new HashSet<String>();
       if (classNames != null) {
@@ -114,8 +115,7 @@ public class JavaTree {
         Collection<JavaPackageNodeMutant> jpnmChildren = childTree.top_.values();
         for (JavaPackageNodeMutant c: jpnmChildren) {
           String pkgName = c.getName();
-          int lastDot = pkgName.lastIndexOf(".");
-          pkgName = pkgName.substring(lastDot + 1, pkgName.length());
+          pkgName = pkgName.substring(name.length() + 1, pkgName.length());
           c.setName(pkgName);
         }
         
@@ -219,5 +219,22 @@ private int getNextLength(int lastLength) {
   }
   public List<I_JavaPackageNode> getNodes() {
     return new ArrayList<I_JavaPackageNode>(top_.values());
+  }
+  
+  public static String reverseJavaName(String topPkg) {
+    StringTokenizer st = new StringTokenizer(topPkg,".");
+    List<String> tokens = new ArrayList<String>();
+    while (st.hasMoreTokens()) {
+      tokens.add(st.nextToken());
+    }
+    StringBuilder sb = new StringBuilder();
+    for (int i = tokens.size() - 1; i >= 0; i--) {
+      String token = tokens.get(i);
+      if (i != tokens.size() - 1) {
+        sb.append(".");
+      }
+      sb.append(token);
+    }
+    return sb.toString();
   }
 }

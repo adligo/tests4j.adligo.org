@@ -9,3 +9,6 @@ Tests4j will not work without modification on JDK 1.6 because of usage
 of jaxb for xml io, if you add jaxb to the ${JAVA_HOME} and
 add it to the tests4j class path it may work when run using some jdk 1.6.
 
+the files under src/org/adligo/tests4j/run/xml/io
+were created by jaxb using this command line command
+xjc.sh src/org/adligo/tests4j/run/xml -d src

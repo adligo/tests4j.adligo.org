@@ -10,4 +10,9 @@ public interface I_JavaPackageNode {
 
   public abstract List<String> getClassNames();
 
+  /**
+   * counts the classes including the child node classes
+   * @return
+   */
+  public int countClasses();
 }

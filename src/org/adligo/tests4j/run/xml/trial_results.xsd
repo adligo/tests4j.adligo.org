@@ -62,8 +62,6 @@
     	<attribute name="name" type="string" use="required"></attribute>
     	<attribute name="passed" type="boolean" use="required"></attribute>
     	<attribute name="type" type="rns:trial_type" use="required"></attribute>
-    	<attribute name="tests" type="int" use="required"></attribute>
-    	<attribute name="failures" type="int" use="optional"></attribute>
     	<attribute name="asserts" type="int" use="required"></attribute>
     	<attribute name="uniqueAsserts" type="int" use="optional"></attribute>
     	<attribute name="run" use="optional">
