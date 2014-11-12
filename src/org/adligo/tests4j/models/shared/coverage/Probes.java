@@ -39,15 +39,6 @@ public class Probes implements I_Probes {
   public boolean[] toArray() {
     return ArrayUtils.copyOf(probes_);
   }
-  
-  @Override
-  public int getCoverageUnits() {
-    return probes_.length;
-  }
-  @Override
-  public int getCoveredCoverageUnits() {
-    return ProbesMutant.getCoveredCoverageUnits(probes_);
-  }
 
   @Override
   public String toString() {

@@ -75,16 +75,7 @@ public class ProbesMutant implements I_Probes {
     }
     return false;
   }
-  
-  @Override
-  public int getCoverageUnits() {
-    return probes_.length;
-  }
-  @Override
-  public int getCoveredCoverageUnits() {
-    return getCoveredCoverageUnits(probes_);
-  }
-  
+
   public static int getCoveredCoverageUnits(boolean [] in) {
     int toRet = 0;
     for (int i = 0; i < in.length; i++) {

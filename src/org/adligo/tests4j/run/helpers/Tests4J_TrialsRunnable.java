@@ -265,6 +265,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		I_TrialType type = trialDescription_.getType();
 		trialResultMutant_.setType(type);
 		trialResultMutant_.setTrialName(trialName);
+		trialResultMutant_.setRunNumber(trialState.getId());
 		runBeforeTrial();
 		
 		testsRunner.setTrial(trial_);

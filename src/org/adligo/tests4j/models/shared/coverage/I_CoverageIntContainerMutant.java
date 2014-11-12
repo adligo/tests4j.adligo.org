@@ -8,15 +8,15 @@ package org.adligo.tests4j.models.shared.coverage;
  * @author scott
  *
  */
-public interface I_ProbesCoverageContainer {
+public interface I_CoverageIntContainerMutant extends I_CoverageIntContainer {
   /**
    * The number of probes;
    * @return
    */
-  public int getCoverageUnits();
+  public void setCoverageUnits(int p);
   /**
    * The number of probes with a true value.
    * @return
    */
-  public int getCoveredCoverageUnits();
+  public void setCoveredCoverageUnits(int p);
 }

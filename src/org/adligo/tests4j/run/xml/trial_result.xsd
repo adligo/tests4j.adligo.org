@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
-	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/trial_results" 
-	xmlns:rns="http://www.adligo.org/tests4j/run/xml/io/trial_results"
-	xmlns:tns="http://www.adligo.org/tests4j/run/xml/io/test_results" 
+	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/trial_result" 
+	xmlns:rns="http://www.adligo.org/tests4j/run/xml/io/trial_result"
+	xmlns:tns="http://www.adligo.org/tests4j/run/xml/io/test_result" 
 	xmlns:cns="http://www.adligo.org/tests4j/run/xml/io/coverage" 
 	elementFormDefault="qualified">
 
-	<import schemaLocation="test_results.xsd" 
-		namespace="http://www.adligo.org/tests4j/run/xml/io/test_results">
+	<import schemaLocation="test_result.xsd" 
+		namespace="http://www.adligo.org/tests4j/run/xml/io/test_result">
 	</import>
 	
 	<import schemaLocation="coverage.xsd" 
@@ -21,7 +21,7 @@
 			<element name="common" type="rns:common_result_type"
 				minOccurs="1" maxOccurs="1">
 			</element>
-			<element name="coverage" type="cns:source_file_coverage_type" minOccurs="0" maxOccurs="1"></element>
+			<element name="coverage" type="rns:inner_source_file_coverage_type" minOccurs="0" maxOccurs="1"></element>
 		</sequence>
 	</complexType>
 
@@ -51,9 +51,6 @@
     		</element>
     		<element name="beforeTrialOutput" type="string"
     			minOccurs="0" maxOccurs="1">
-    		</element>
-    		<element name="output" type="string" minOccurs="0"
-    			maxOccurs="1">
     		</element>
     		<element name="afterTrialOutput" type="string" minOccurs="0"
     			maxOccurs="1">
@@ -85,12 +82,13 @@
     	<attribute name="coverage" type="boolean" use="optional">
     		<annotation>
     			<documentation>
-    				note the default coverage value is true,
-    				but may be set to false, when there is
-    				no coverage (ie UseCaseTrial or no CoveragePlugin was used)
+    				note the default coverage value is true, but may be
+    				set to false, when there is no coverage (ie
+    				UseCaseTrial or no CoveragePlugin was used)
     			</documentation>
     		</annotation>
     	</attribute>
+    	<attribute name="ignored" type="boolean" use="optional"></attribute>
     </complexType>
 
     <simpleType name="trial_type">
@@ -104,6 +102,18 @@
     </complexType>
     
 
+    <complexType name="inner_source_file_coverage_type">
+    	<annotation>
+	    	<documentation>
+	    		This is the same as source_file_coverage_type
+	    		without the name of the class
+	    	</documentation>
+	    </annotation>
+    	<sequence>
+    		<element name="classProbes" type="cns:class_coverage_type" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="data" type="cns:data_type" use="required"/>
+    </complexType>
 
     <complexType name="trial_result_type">
     	<choice>

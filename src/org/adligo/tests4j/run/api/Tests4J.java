@@ -1,8 +1,8 @@
 package org.adligo.tests4j.run.api;
 
 import org.adligo.tests4j.run.common.I_JseSystem;
+import org.adligo.tests4j.run.common.JseSystem;
 import org.adligo.tests4j.run.helpers.DefaultDelegateFactory;
-import org.adligo.tests4j.run.helpers.JseSystem;
 import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.common.MethodBlocker;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;

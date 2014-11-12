@@ -24,7 +24,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	public SourceFileTrialResultMutant(I_SourceFileTrialResult p, boolean cloneRelations) {
 		super(p, cloneRelations);
 		if (cloneRelations) {
-			probes = new SourceFileCoverageBriefMutant(p.getSourceFileProbes());
+			probes = new SourceFileCoverageBriefMutant(p.getSourceFileCoverage());
 		}
 		sourceFileName = p.getSourceFileName();
 		setDependencies(p.getDependencies());
@@ -39,7 +39,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	}
 	
 	@Override
-	public I_SourceFileCoverageBrief getSourceFileProbes() {
+	public I_SourceFileCoverageBrief getSourceFileCoverage() {
 		return probes;
 	}
 

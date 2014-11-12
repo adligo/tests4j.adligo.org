@@ -38,11 +38,4 @@ public class ClassProbes implements I_ClassProbes {
 		return className_;
 	}
 	
-  public int getCoverageUnits() {
-    return probes_.getCoverageUnits();
-  }
-
-  public int getCoveredCoverageUnits() {
-    return probes_.getCoveredCoverageUnits();
-  }
 }

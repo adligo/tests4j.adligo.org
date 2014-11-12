@@ -6,7 +6,7 @@
 //
 
 
-package org.adligo.tests4j.run.xml.io.coverage;
+package org.adligo.tests4j.run.xml.io.trial_result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,21 +14,26 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import org.adligo.tests4j.run.xml.io.coverage.ClassCoverageType;
 
 
 /**
- * <p>Java class for source_file_coverage_type complex type.
+ * 
+ * 	    		This is the same as source_file_coverage_type
+ * 	    		without the name of the class
+ * 	    	
+ * 
+ * <p>Java class for inner_source_file_coverage_type complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="source_file_coverage_type"&gt;
+ * &lt;complexType name="inner_source_file_coverage_type"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="classProbes" type="{http://www.adligo.org/tests4j/run/xml/io/coverage}class_coverage_type" maxOccurs="unbounded" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
- *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *       &lt;attribute name="data" use="required" type="{http://www.adligo.org/tests4j/run/xml/io/coverage}data_type" /&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -38,14 +43,12 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "source_file_coverage_type", propOrder = {
+@XmlType(name = "inner_source_file_coverage_type", propOrder = {
     "classProbes"
 })
-public class SourceFileCoverageType {
+public class InnerSourceFileCoverageType {
 
     protected List<ClassCoverageType> classProbes;
-    @XmlAttribute(name = "name", required = true)
-    protected String name;
     @XmlAttribute(name = "data", required = true)
     protected byte[] data;
 
@@ -76,30 +79,6 @@ public class SourceFileCoverageType {
             classProbes = new ArrayList<ClassCoverageType>();
         }
         return this.classProbes;
-    }
-
-    /**
-     * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setName(String value) {
-        this.name = value;
     }
 
     /**

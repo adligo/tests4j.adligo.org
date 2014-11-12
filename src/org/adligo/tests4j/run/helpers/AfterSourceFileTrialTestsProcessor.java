@@ -169,7 +169,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		super.startDelegatedTest();
 		
 		
-		I_SourceFileCoverageBrief sourceProbes =  trialResultMutant.getSourceFileProbes();
+		I_SourceFileCoverageBrief sourceProbes =  trialResultMutant.getSourceFileCoverage();
 		if (sourceProbes == null) {
 			testResultMutant.setPassed(false);
 		} else {
