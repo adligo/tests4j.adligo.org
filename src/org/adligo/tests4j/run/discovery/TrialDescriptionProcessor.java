@@ -110,7 +110,6 @@ public class TrialDescriptionProcessor {
 		switch (tt) {
 			case UseCaseTrial:
 					UseCaseTrialResultMutant mut = new UseCaseTrialResultMutant(trm);
-					mut.setSystem(desc.getSystemName());
 					mut.setUseCase(desc.getUseCase());
 					toSend = new UseCaseTrialResult(mut);
 				break;

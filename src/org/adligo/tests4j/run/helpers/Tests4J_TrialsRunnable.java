@@ -322,7 +322,6 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			return useCaseTrialResultMutant;
 		}
 		useCaseTrialResultMutant = new UseCaseTrialResultMutant(trialResultMutant_);
-		useCaseTrialResultMutant.setSystem(trialDescription_.getSystemName());
 		useCaseTrialResultMutant.setUseCase(trialDescription_.getUseCase());
 		useCaseTrialResultMutant.setTrialName(trialDescription_.getTrialName());
 		return useCaseTrialResultMutant;

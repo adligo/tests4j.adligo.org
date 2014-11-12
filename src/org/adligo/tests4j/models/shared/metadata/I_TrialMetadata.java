@@ -87,17 +87,12 @@ public interface I_TrialMetadata extends I_XML_Producer {
 	 */
 	public String getTestedPackage();
 
-	/**
-	 * from the UseCaseTrial's annotation
-	 * @return
-	 */
-	public String getSystem();
 
 	/**
 	 * from the @UseCase annotation
 	 * @return
 	 */
-	public I_UseCaseMetadata getUseCase();
+	public I_UseCaseBrief getUseCase();
 	/**
 	 * this pertains to SourceFileTrials only
 	 * for the v0_1 release, but could be

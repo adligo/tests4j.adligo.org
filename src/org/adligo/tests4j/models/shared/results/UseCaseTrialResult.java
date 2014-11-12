@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.results;
 
-import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
+import org.adligo.tests4j.models.shared.metadata.I_UseCaseBrief;
 
 
 public class UseCaseTrialResult extends BaseTrialResult implements I_UseCaseTrialResult {
@@ -15,7 +15,7 @@ public class UseCaseTrialResult extends BaseTrialResult implements I_UseCaseTria
 		mutant = new UseCaseTrialResultMutant(p, false);
 	}
 
-	public I_UseCaseMetadata getUseCase() {
+	public I_UseCaseBrief getUseCase() {
 		return mutant.getUseCase();
 	}
 

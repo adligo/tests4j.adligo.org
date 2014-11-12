@@ -229,7 +229,6 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 						}
 					break;
 				case UseCaseTrial:
-						tmm.setSystem(td.getSystemName());
 						tmm.setUseCase(td.getUseCase());
 					break;
 				default:

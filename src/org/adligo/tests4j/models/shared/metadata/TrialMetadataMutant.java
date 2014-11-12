@@ -22,8 +22,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 	private I_TrialType type;
 	private String testedSourceFile;
 	private String testedPackage;
-	private String system;
-	private I_UseCaseMetadata useCase;
+	private I_UseCaseBrief useCase;
 	private Double minCodeCoverage;
 	
 	public TrialMetadataMutant() {}
@@ -42,57 +41,10 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		}
 		testedSourceFile = p.getTestedSourceFile();
 		testedPackage = p.getTestedPackage();
-		system = p.getSystem();
 		useCase = p.getUseCase();
 		minCodeCoverage = p.getMinimumCodeCoverage();
 	}
 	
-	public TrialMetadataMutant(String xml) {
-		int [] indexes = XML_Parser.getIndexes(xml, I_TrialMetadata.TAG_NAME);
-		if (indexes == null) {
-			throw XML_Parser.getReadError(I_TrialMetadata.TAG_NAME);
-		}
-		xml = xml.substring(indexes[0], indexes[1]);
-		
-		trialName = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TRIAL_NAME_ATTRIBUTE);
-		String timeoutString;
-		timeoutString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TIMEOUT_ATTRIBUTE);
-		if (!StringMethods.isEmpty(timeoutString)) {
-			timeout = new Long(timeoutString);
-		}
-		String ignoredString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.IGNORED_ATTRIBUTE);
-		if (!StringMethods.isEmpty(ignoredString)) {
-			ignored = Boolean.parseBoolean(ignoredString);
-		}
-		beforeTrialMethodName = XML_Parser.getAttributeValue(xml, 
-					I_TrialMetadata.BEFORE_TRIAL_METHOD_NAME_ATTRIBUTE);
-		afterTrialMethodName = XML_Parser.getAttributeValue(xml, 
-					I_TrialMetadata.AFTER_TRIAL_METHOD_NAME_ATTRIBUTE);
-		String typeString = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TYPE_ATTRIBUTE);
-		if (!StringMethods.isEmpty(typeString)) {
-			type = TrialType.valueOf(typeString);
-		}
-		testedSourceFile = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TESTED_SOURCE_FILE_ATTRIBUTE);
-		testedPackage = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TESTED_PACKAGE_ATTRIBUTE);
-		system = XML_Parser.getAttributeValue(xml, I_TrialMetadata.TESTED_SYSTEM_ATTRIBUTE);
-		int[] testsTag = XML_Parser.getIndexes(xml, I_TrialMetadata.TESTS_NESTED_TAG_NAME);
-		if (testsTag != null) {
-			int [] useCaseTags = XML_Parser.getIndexes(xml, I_UseCaseMetadata.TAG_NAME);
-			if (useCaseTags != null) {
-				String useCaseXml = xml.substring(useCaseTags[0], useCaseTags[1]);
-				useCase = new UseCaseMetadata(useCaseXml);
-			}
-			String testsXml = xml;
-			int [] testsTags = XML_Parser.getIndexes(xml, I_TestMetadata.TAG_NAME);
-			while (testsTags != null) {
-				String testXml = testsXml.substring(testsTags[0], testsTags[1]);
-				TestMetadataMutant tmm = new TestMetadataMutant(testXml);
-				tests.add(tmm);
-				testsXml = xml.substring(testsTags[1], testsXml.length());
-				testsTags = XML_Parser.getIndexes(testsXml, I_TestMetadata.TAG_NAME);
-			}
-		}
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.metadata.I_TrialMetadata#getTrialName()
@@ -188,11 +140,8 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		return testedPackage;
 	}
 
-	public String getSystem() {
-		return system;
-	}
 
-	public I_UseCaseMetadata getUseCase() {
+	public I_UseCaseBrief getUseCase() {
 		return useCase;
 	}
 
@@ -212,11 +161,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 		this.testedPackage = testedPackage;
 	}
 
-	public void setSystem(String system) {
-		this.system = system;
-	}
-
-	public void setUseCase(I_UseCaseMetadata useCase) {
+	public void setUseCase(I_UseCaseBrief useCase) {
 		this.useCase = useCase;
 	}
 	
@@ -270,12 +215,7 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 			builder.addAttribute(I_TrialMetadata.TESTED_PACKAGE_ATTRIBUTE, 
 					tm.getTestedPackage());
 		}
-		if (tm.getSystem() != null) {
-			builder.addAttribute(I_TrialMetadata.TESTED_SYSTEM_ATTRIBUTE, 
-					tm.getSystem());
-		}
-		
-		I_UseCaseMetadata useCase = tm.getUseCase();
+		I_UseCaseBrief useCase = tm.getUseCase();
 		List<? extends I_TestMetadata> tests = tm.getTests();
 		if (useCase == null && tests.size() == 0) {
 			builder.append("/>");

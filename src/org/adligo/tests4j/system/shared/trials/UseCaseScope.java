@@ -14,11 +14,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface UseCaseScope {
 	/**
-	 * the software system this use case is testing (ie tests4j.adligo.org)
-	 * @return
-	 */
-	String system();
-	/**
 	 * the verb from the use case (ie 'run' from the 'run trial' use case)
 	 * @return
 	 */

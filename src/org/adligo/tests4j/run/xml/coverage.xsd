@@ -24,7 +24,11 @@
     	</xs:attribute>
     	<xs:attribute name="probes" type="xs:base64Binary" use="required">
 	    	<xs:annotation>
-		    	<xs:documentation>The probes boolean [] encoded as base64Binary</xs:documentation>
+		    	<xs:documentation>
+		    		The number of probes from a java int + probes boolean [] encoded as base64Binary,
+		    		the number of probes needs to be encoded so that the correct 
+		    		number of bits can be read back into a boolean [].
+		    	</xs:documentation>
 	    	</xs:annotation>
     	</xs:attribute>
     </xs:complexType>
@@ -34,6 +38,19 @@
     		<xs:element name="classProbes" type="tns:class_coverage_type" minOccurs="0" maxOccurs="unbounded"></xs:element>
     	</xs:sequence>
     	<xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
-    	<xs:attribute name="probes" type="xs:base64Binary" use="required"></xs:attribute>
+    	<xs:attribute name="data" type="xs:base64Binary" use="required">
+    		<xs:annotation>
+		    	<xs:documentation>
+		    		The following
+		    		java int coveredCoverageUnits
+		    		java int coverageUnits
+		    		java int numberOfProbes
+		    		encoded as base64Binary,
+				    		note the number of probes needs to be encoded so that the correct 
+				    		number of bits can be read back into a boolean [].
+		    	</xs:documentation>
+	    	</xs:annotation>
+    	</xs:attribute>
     </xs:complexType>
+
 </xs:schema>

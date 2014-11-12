@@ -5,8 +5,8 @@ import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageBriefMutant;
-import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
-import org.adligo.tests4j.models.shared.metadata.UseCaseMetadata;
+import org.adligo.tests4j.models.shared.metadata.I_UseCaseBrief;
+import org.adligo.tests4j.models.shared.metadata.UseCaseBrief;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
@@ -237,17 +237,7 @@ public class TrialDescription implements I_TrialDescription {
 							trialName + annonErrors.getWasAnnotatedIncorrectly()));
 					return false;
 				}
-				String system = useCaseScope_.system();
-				if (StringMethods.isEmpty(system)) {
-					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
-					
-					failures_.add(new TrialFailure(
-							annonErrors.getUseCaseScopeEmptySystem()
-							, trialName + annonErrors.getWasAnnotatedIncorrectly()));
-					return false;
-				} 
-				
+
 				String nown = useCaseScope_.nown();
 				if (StringMethods.isEmpty(nown)) {
 					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
@@ -457,14 +447,7 @@ public class TrialDescription implements I_TrialDescription {
 		return packageScope_.packageName();
 	}
 	
-	public String getSystemName() {
-		if (useCaseScope_ == null) {
-			return null;
-		}
-		return useCaseScope_.system();
-	}
-	
-	public I_UseCaseMetadata getUseCase() {
+	public I_UseCaseBrief getUseCase() {
 		if (useCaseScope_ == null) {
 			return null;
 		}
@@ -476,7 +459,7 @@ public class TrialDescription implements I_TrialDescription {
 		if (StringMethods.isEmpty(verb)) {
 			return null;
 		}
-		return new UseCaseMetadata(nown, verb);
+		return new UseCaseBrief(nown, verb);
 	}
 
 	

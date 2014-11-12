@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/trial_results" 
+	xmlns:rns="http://www.adligo.org/tests4j/run/xml/io/trial_results"
+	xmlns:tns="http://www.adligo.org/tests4j/run/xml/io/test_results" 
+	xmlns:cns="http://www.adligo.org/tests4j/run/xml/io/coverage" 
+	elementFormDefault="qualified">
+
+	<import schemaLocation="test_results.xsd" 
+		namespace="http://www.adligo.org/tests4j/run/xml/io/test_results">
+	</import>
+	
+	<import schemaLocation="coverage.xsd" 
+		namespace="http://www.adligo.org/tests4j/run/xml/io/coverage">
+	</import>
+
+
+
+	<complexType name="source_file_trial_result_type">
+		<sequence>
+			<element name="common" type="rns:common_result_type"
+				minOccurs="1" maxOccurs="1">
+			</element>
+			<element name="coverage" type="cns:source_file_coverage_type" minOccurs="0" maxOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="api_trial_result_type">
+		<sequence>
+			<element name="common" type="rns:common_result_type"
+				minOccurs="1" maxOccurs="1">
+			</element>
+			<element name="coverage" type="cns:package_coverage_type" minOccurs="0" maxOccurs="1"></element>
+		</sequence>
+	</complexType>
+
+	<complexType name="use_case_trial_result_type"></complexType>
+
+    <element name="result" type="rns:trial_result_type"></element>
+
+    <complexType name="common_result_type">
+    	<sequence>
+    		<element name="failures" type="tns:test_result_type"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="ignores" type="tns:test_result_type"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="passes" type="tns:test_result_type"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="beforeTrialOutput" type="string"
+    			minOccurs="0" maxOccurs="1">
+    		</element>
+    		<element name="output" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    		<element name="afterTrialOutput" type="string" minOccurs="0"
+    			maxOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="name" type="string" use="required"></attribute>
+    	<attribute name="passed" type="boolean" use="required"></attribute>
+    	<attribute name="type" type="rns:trial_type" use="required"></attribute>
+    	<attribute name="tests" type="int" use="required"></attribute>
+    	<attribute name="failures" type="int" use="optional"></attribute>
+    	<attribute name="asserts" type="int" use="required"></attribute>
+    	<attribute name="uniqueAsserts" type="int" use="optional"></attribute>
+    	<attribute name="run" use="optional">
+    		<annotation>
+    			<documentation>
+    				this is the run number of this trial (because a
+    				trial can be run more than once with tests4j). The
+    				default is 0, and will be added to the file name
+    				when it is one or greater with a underscore i.e.;
+    				AssertTypeTrial_1.common.asserts.shared.tests4j_tests.adligo.org.xml
+    				AssertTypeTrial_2.common.asserts.shared.tests4j_tests.adligo.org.xml
+    				exc.
+    			</documentation>
+    		</annotation>
+    		<simpleType>
+    			<restriction base="int">
+    				<minInclusive value="1"></minInclusive>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="coverage" type="boolean" use="optional">
+    		<annotation>
+    			<documentation>
+    				note the default coverage value is true,
+    				but may be set to false, when there is
+    				no coverage (ie UseCaseTrial or no CoveragePlugin was used)
+    			</documentation>
+    		</annotation>
+    	</attribute>
+    </complexType>
+
+    <simpleType name="trial_type">
+    	<restriction base="string"></restriction>
+    </simpleType>
+
+    <complexType name="result_list_type">
+    	<sequence>
+    		<element name="result" type="tns:test_result_type" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+    
+
+
+    <complexType name="trial_result_type">
+    	<choice>
+    		<element name="souce_file_trial_result" type="rns:source_file_trial_result_type" minOccurs="0" maxOccurs="1"></element>
+    		<element name="api_trial_result" type="rns:api_trial_result_type" minOccurs="0" maxOccurs="1"></element>
+    		<element name="use_case_trial_result" type="rns:use_case_trial_result_type" minOccurs="0" maxOccurs="1"></element>
+    	</choice>
+    </complexType>
+</schema>

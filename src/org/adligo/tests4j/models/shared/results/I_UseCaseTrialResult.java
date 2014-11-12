@@ -1,6 +1,6 @@
 package org.adligo.tests4j.models.shared.results;
 
-import org.adligo.tests4j.models.shared.metadata.I_UseCaseMetadata;
+import org.adligo.tests4j.models.shared.metadata.I_UseCaseBrief;
 import org.adligo.tests4j.system.shared.trials.UseCaseScope;
 
 /**
@@ -14,7 +14,7 @@ public interface I_UseCaseTrialResult extends I_TrialResult {
 	 * @see UseCaseScope#verb()
 	 * @return
 	 */
-	public I_UseCaseMetadata getUseCase();
+	public I_UseCaseBrief getUseCase();
 	/**
 	 * @see UseCaseScope#system()
 	 * @return

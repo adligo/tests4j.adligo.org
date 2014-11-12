@@ -83,11 +83,7 @@ public class TrialMetadata implements I_TrialMetadata {
 		return mutant.getTestedPackage();
 	}
 
-	public String getSystem() {
-		return mutant.getSystem();
-	}
-
-	public I_UseCaseMetadata getUseCase() {
+	public I_UseCaseBrief getUseCase() {
 		return mutant.getUseCase();
 	}
 

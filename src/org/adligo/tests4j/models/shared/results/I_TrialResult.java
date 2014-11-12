@@ -40,8 +40,6 @@ public interface I_TrialResult {
 	public int getAssertionCount();
 	public int getUniqueAssertionCount();
 	public I_TrialResult clone(boolean cloneRelations);
-	public boolean isHadAfterTrialTests();
-	public boolean isRanAfterTrialTests();
 	
 	public abstract boolean hasRecordedCoverage();
 }

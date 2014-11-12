@@ -3,14 +3,19 @@ package org.adligo.tests4j.system.shared.trials;
 import org.adligo.tests4j.shared.asserts.common.I_Asserts;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
+import java.util.Map;
+
 /**
  * classes that implement this class must also contain the
  * @TrialType annotation at some level.
  * 
+ * Note no beforeAllTests
+ * afterAllTests @see TrialRunContext
  * @author scott
  *
  */
 public interface I_AbstractTrial extends I_Asserts {
+  
 	/**
 	 * this method is run before each method
 	 * annotated with @Test.  Override it 

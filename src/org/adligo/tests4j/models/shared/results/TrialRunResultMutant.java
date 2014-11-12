@@ -23,13 +23,16 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 	private long asserts;
 	private long uniqueAsserts;
 	private Set<String> passingTrials = new HashSet<String>();
+	private Set<String> failingTrials = new HashSet<String>();
+	private Set<String> ignoredTrials = new HashSet<String>();
 	
 	public TrialRunResultMutant() {}
 	
 	public TrialRunResultMutant(I_TrialRunResult p) {
 		startTime = p.getStartTime();
 		runTime = p.getRunTime();
-		coverage.addAll(p.getCoverage());
+		
+		setCoverage(p.getCoverage());
 		
 		trials = p.getTrials();
 		trialsIgnored = p.getTrialsIgnored();
@@ -37,11 +40,13 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		
 		tests = p.getTests();
 		testsIgnored = p.getTestsIgnored();
-		testFailures = p.getTestFailures();
+		testFailures = p.getTestsFailed();
 		
 		asserts = p.getAsserts();
 		uniqueAsserts = p.getUniqueAsserts();
-		passingTrials.addAll(p.getPassingTrials());
+		setPassingTrials(p.getPassingTrials());
+		setFailingTrials(p.getFailingTrials());
+		setIgnoredTrials(p.getIgnoredTrials());
 	}
 
 	public long getStartTime() {
@@ -110,7 +115,7 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		this.asserts = asserts + p;
 	}
 	
-	public int getTestFailures() {
+	public int getTestsFailed() {
 		return testFailures;
 	}
 
@@ -203,10 +208,36 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 
 	public void setPassingTrials(Set<String> p) {
 		passingTrials.clear();
-		passingTrials.addAll(p);
+		if (p != null) {
+		  passingTrials.addAll(p);
+		}
 	}
 	
 	public void addPassingTrial(String p) {
 		passingTrials.add(p);
 	}
+
+	public void setFailingTrials(Set<String> p) {
+    failingTrials.clear();
+    if (p != null) {
+      failingTrials.addAll(p);
+    }
+  }
+	
+  @Override
+  public Set<String> getFailingTrials() {
+    return failingTrials;
+  }
+
+  public void setIgnoredTrials(Set<String> p) {
+    ignoredTrials.clear();
+    if (p != null) {
+      ignoredTrials.addAll(p);
+    }
+  }
+  
+  @Override
+  public Set<String> getIgnoredTrials() {
+    return ignoredTrials;
+  }
 }

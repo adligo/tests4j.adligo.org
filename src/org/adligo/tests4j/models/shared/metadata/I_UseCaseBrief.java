@@ -9,7 +9,7 @@ import org.adligo.tests4j.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_UseCaseMetadata extends I_XML_Producer {
+public interface I_UseCaseBrief extends I_XML_Producer {
 	public static final String TAG_NAME = "useCase";
 	public static final String NOWN_ATTRIBUTE = "nown";
 	public static final String VERB_ATTRIBUTE = "verb";

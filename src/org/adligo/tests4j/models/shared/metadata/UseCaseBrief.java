@@ -8,15 +8,15 @@ import org.adligo.tests4j.shared.xml.XML_Parser;
 
 
 /**
- * @see I_UseCaseMetadata
+ * @see I_UseCaseBrief
  * @author scott
  *
  */
-public class UseCaseMetadata implements I_UseCaseMetadata {
+public class UseCaseBrief implements I_UseCaseBrief {
 	private String nown;
 	private String verb;
 	
-	public UseCaseMetadata(String pNown, String pVerb) {
+	public UseCaseBrief(String pNown, String pVerb) {
 		setup(pNown, pVerb);
 	}
 
@@ -33,13 +33,13 @@ public class UseCaseMetadata implements I_UseCaseMetadata {
 		}
 	}
 
-	public UseCaseMetadata(I_UseCaseMetadata p) {
+	public UseCaseBrief(I_UseCaseBrief p) {
 		this(p.getNown(), p.getVerb());
 	}
 	
-	public UseCaseMetadata(String xml) {
-		nown = XML_Parser.getAttributeValue(xml, I_UseCaseMetadata.NOWN_ATTRIBUTE);
-		verb = XML_Parser.getAttributeValue(xml, I_UseCaseMetadata.VERB_ATTRIBUTE);
+	public UseCaseBrief(String xml) {
+		nown = XML_Parser.getAttributeValue(xml, I_UseCaseBrief.NOWN_ATTRIBUTE);
+		verb = XML_Parser.getAttributeValue(xml, I_UseCaseBrief.VERB_ATTRIBUTE);
 		setup(nown, verb);
 	}
 	
@@ -73,7 +73,7 @@ public class UseCaseMetadata implements I_UseCaseMetadata {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UseCaseMetadata other = (UseCaseMetadata) obj;
+		UseCaseBrief other = (UseCaseBrief) obj;
 		if (nown == null) {
 			if (other.nown != null)
 				return false;
@@ -90,9 +90,9 @@ public class UseCaseMetadata implements I_UseCaseMetadata {
 	@Override
 	public void toXml(I_XML_Builder builder) {
 		builder.indent();
-		builder.addStartTag(I_UseCaseMetadata.TAG_NAME);
-		builder.addAttribute(I_UseCaseMetadata.NOWN_ATTRIBUTE, nown);
-		builder.addAttribute(I_UseCaseMetadata.VERB_ATTRIBUTE, verb);
+		builder.addStartTag(I_UseCaseBrief.TAG_NAME);
+		builder.addAttribute(I_UseCaseBrief.NOWN_ATTRIBUTE, nown);
+		builder.addAttribute(I_UseCaseBrief.VERB_ATTRIBUTE, verb);
 		builder.append(" />");
 		builder.endLine();
 	}

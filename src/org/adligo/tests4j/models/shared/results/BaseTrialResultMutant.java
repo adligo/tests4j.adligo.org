@@ -66,8 +66,6 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		beforeTestOutput = p.getBeforeTrialOutput();
 		afterTestOutput = p.getAfterTrialOutput();
 		setFailures(p.getFailures());
-		hadAfterTrialTests = p.isHadAfterTrialTests();
-		ranAfterTrialTests = p.isRanAfterTrialTests();
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestName()

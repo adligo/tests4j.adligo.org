@@ -91,7 +91,7 @@ public interface I_TrialRunResult {
 	 * the number of test failures.
 	 * @return
 	 */
-	public int getTestFailures();
+	public int getTestsFailed();
 	/**
 	 * the number of completed assertX methods.
 	 * @return
@@ -120,5 +120,21 @@ public interface I_TrialRunResult {
 	 */
 	public Set<String> getPassingTrials();
 
-
+  /**
+   * 
+   * @return the names of the failing trials,
+   * so we can make sure all trials were ran for
+   * a specific package.
+   * 
+   */
+  public Set<String> getFailingTrials();
+    
+  /**
+   * 
+   * @return the names of the passing or 
+   * failing trials which have a @IgnoredTrial
+   * or a @IgnoreTest on one of the test methods.
+   * 
+   */
+  public Set<String> getIgnoredTrials();
 }

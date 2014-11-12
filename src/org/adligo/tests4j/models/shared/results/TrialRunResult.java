@@ -43,8 +43,8 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getAsserts();
 	}
 
-	public int getTestFailures() {
-		return mutant.getTestFailures();
+	public int getTestsFailed() {
+		return mutant.getTestsFailed();
 	}
 
 	public int getTrialFailures() {
@@ -82,5 +82,15 @@ public class TrialRunResult implements I_TrialRunResult {
 	public Set<String> getPassingTrials() {
 		return Collections.unmodifiableSet(mutant.getPassingTrials());
 	}
+
+  @Override
+  public Set<String> getFailingTrials() {
+    return Collections.unmodifiableSet(mutant.getFailingTrials());
+  }
+
+  @Override
+  public Set<String> getIgnoredTrials() {
+    return Collections.unmodifiableSet(mutant.getIgnoredTrials());
+  }
 
 }

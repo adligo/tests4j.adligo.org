@@ -30,7 +30,6 @@ public interface I_Tests4J_AnnotationMessages {
 	public String getSourceFileScopeEmptyClass();
 	
 	public String getUseCaseScopeEmptyNown();
-	public String getUseCaseScopeEmptySystem();
 	public String getUseCaseScopeEmptyVerb();
 	public String getWasAnnotatedIncorrectly();
 	public String getTrialTypeMissing();

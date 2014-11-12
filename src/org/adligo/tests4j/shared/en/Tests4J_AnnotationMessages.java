@@ -36,8 +36,6 @@ public class Tests4J_AnnotationMessages implements I_Tests4J_AnnotationMessages 
 	
 	private static final String USE_CASE_TRIALS_MUST_BE_ANNOTATED_WITH_USE_CASE_SCOPE = 
 			"UseCaseTrials must be annotated with @UseCaseScope.";
-	private static final String USE_CASE_SCOPE_EMPTY_SYSTEM = 
-			"@UseCaseScope annotations must contain a non empty system.";
 	private static final String USE_CASE_SCOPE_EMPTY_NOWN = 
 			"@UseCaseScope annotations must contain a non empty nown.";
 	private static final String USE_CASE_SCOPE_EMPTY_VERB = 
@@ -153,10 +151,6 @@ public class Tests4J_AnnotationMessages implements I_Tests4J_AnnotationMessages 
 		return USE_CASE_SCOPE_EMPTY_NOWN;
 	}
 
-	public String getUseCaseScopeEmptySystem() {
-		return USE_CASE_SCOPE_EMPTY_SYSTEM;
-	}
-	
 	public String getUseCaseScopeEmptyVerb() {
 		return USE_CASE_SCOPE_EMPTY_VERB;
 	}
