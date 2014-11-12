@@ -86,4 +86,9 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
 		return delegate.getMethodBlockerRequiresABlockingMethod();
 	}
 
+  @Override
+  public String getAnotherTests4J_InstanceIsRunningHere() {
+    return delegate.getAnotherTests4J_InstanceIsRunningHere();
+  }
+
 }

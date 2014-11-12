@@ -1,7 +1,7 @@
 package org.adligo.tests4j.run.discovery;
 
 import org.adligo.tests4j.run.common.I_JseSystem;
-import org.adligo.tests4j.run.helpers.JseSystem;
+import org.adligo.tests4j.run.common.JseSystem;
 import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformAssertionEvaluator;

@@ -48,11 +48,4 @@ public class ClassProbesMutant implements I_ClassProbesMutant {
 		return probes_.getArray();
 	}
 
-  public int getCoverageUnits() {
-    return probes_.getCoverageUnits();
-  }
-
-  public int getCoveredCoverageUnits() {
-    return probes_.getCoveredCoverageUnits();
-  }
 }

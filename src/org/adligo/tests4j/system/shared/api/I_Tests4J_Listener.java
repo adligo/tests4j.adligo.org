@@ -16,6 +16,14 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
  *
  */
 public interface I_Tests4J_Listener {
+  /**
+   * this gives notification to the listener
+   * that things are starting in tests4j
+   * and was originally added because;
+   *    I was seeing async
+   * file deletes with the new Files 
+   */
+  public void onStartingSetup(I_Tests4J_Params params);
 	/**
 	 * @param metadata
 	 * 

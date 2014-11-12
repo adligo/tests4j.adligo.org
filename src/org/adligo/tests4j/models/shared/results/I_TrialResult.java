@@ -17,6 +17,12 @@ public interface I_TrialResult {
 	 */
 	public abstract String getName();
 	/**
+	 * The run number is the number between []
+	 * in the name
+	 * @return
+	 */
+	public abstract int getRunNumber();
+	/**
 	 * the name of the trial class ie
 	 * org.adligo.tests4j_tests.trials_api.AssertionsFail_Trial
 	 * @return

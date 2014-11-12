@@ -121,6 +121,18 @@ public class Tests4J_ListenerDelegator implements I_Tests4J_Listener {
 		}
 	}
 
+  @Override
+  public void onStartingSetup(I_Tests4J_Params params) {
+    if (delegate == null) {
+      return;
+    }
+    try {
+      delegate.onStartingSetup(params);
+    } catch (Throwable t) {
+      logger.onThrowable(t);
+    }
+  }
+
 	
 	
 }

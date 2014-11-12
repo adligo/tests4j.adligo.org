@@ -24,7 +24,7 @@ public class SourceFileTrialResult extends BaseTrialResult implements I_SourceFi
 		super(p);
 		mutant = new SourceFileTrialResultMutant(p, false);
 		if (p.hasRecordedCoverage()) {
-			probes = new SourceFileCoverageBrief( p.getSourceFileProbes());
+			probes = new SourceFileCoverageBrief( p.getSourceFileCoverage());
 		}
 		dependencies = p.getDependencies();
 		if (dependencies != null) {
@@ -39,7 +39,7 @@ public class SourceFileTrialResult extends BaseTrialResult implements I_SourceFi
 		}
 	}
 	
-	public I_SourceFileCoverageBrief getSourceFileProbes() {
+	public I_SourceFileCoverageBrief getSourceFileCoverage() {
 		return probes;
 	}
 

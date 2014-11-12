@@ -2,21 +2,34 @@ package org.adligo.tests4j.run.xml_bindings;
 
 import org.adligo.tests4j.models.shared.metadata.I_TrialMetadata;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
+import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.I_PhaseState;
+import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
+import org.adligo.tests4j.models.shared.results.I_UseCaseTrialResult;
 import org.adligo.tests4j.run.common.I_JavaPackageNode;
 import org.adligo.tests4j.run.common.I_JseSystem;
 import org.adligo.tests4j.run.common.JavaTree;
-import org.adligo.tests4j.run.helpers.JseSystem;
+import org.adligo.tests4j.run.common.JseSystem;
+import org.adligo.tests4j.run.xml.io.trial_result.TrialResultType;
+import org.adligo.tests4j.run.xml_bindings.conversion.ConvertApiTrialResults;
+import org.adligo.tests4j.run.xml_bindings.conversion.ConvertSourceFileTrialResults;
+import org.adligo.tests4j.run.xml_bindings.conversion.ConvertUseCaseTrialResults;
+import org.adligo.tests4j.run.xml_bindings.io.TrialResultIO;
+import org.adligo.tests4j.shared.common.I_TrialType;
+import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -31,6 +44,7 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
   private AtomicBoolean hasTopPkgs_ = new AtomicBoolean(false);
   private Set<String> topPkgs_ = new HashSet<String>();
   private ConcurrentSkipListSet<String> trialPkgDirs_ = new ConcurrentSkipListSet<String>();
+  private CountDownLatch resultsDirsManipulationLatch_ = new CountDownLatch(1);
   
   private String getResultsDir() {
     File file = system_.newFile(".");
@@ -42,8 +56,20 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
     return abs +  "results";
   }
 
+  public void onStartingSetup(I_Tests4J_Params params) {
+    deleteResults();
+  }
   @Override
   public void onMetadataCalculated(I_TrialRunMetadata metadata) {
+
+    try{ 
+      createResultsDirs(metadata); 
+    } finally {
+      resultsDirsManipulationLatch_.countDown();
+    }
+  }
+
+  public void createResultsDirs(I_TrialRunMetadata metadata) {
     int trials = metadata.getAllTrialsCount();
     if (trials > 100) {
       hasTopPkgs_.set(true);
@@ -56,12 +82,28 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
       }
       JavaTree tree = new JavaTree(trialNames);
       List<I_JavaPackageNode> nodes = tree.getNodes();
+      
+      system_.mkdir(results_);
+      system_.mkdir(trials_);
       findTopPkgs(nodes, new ArrayList<I_JavaPackageNode>(), topPkgs_);
       for (String topPkg: topPkgs_) {
         String rev = JavaTree.reverseJavaName(topPkg);
         trialPkgDirs_.add(rev);
+        system_.mkdir(trials_ + File.separator + rev);
       }
-    } 
+    }
+  }
+
+  public void deleteResults() {
+    File resultsFile = system_.newFile(results_);
+    if (resultsFile.exists()) {
+      try {
+        system_.remove(results_);
+      } catch (IOException x) {
+        throw new RuntimeException("There was a problem deleting the file " + 
+            resultsFile.getAbsolutePath(), x);
+      }
+    }
   }
 
   private void findTopPkgs(List<I_JavaPackageNode> nodes, 
@@ -83,9 +125,15 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
         name = name + "." + node.getName(); 
       }
       if (node.countClasses() > 100) {
-        List<I_JavaPackageNode> parents = new ArrayList<I_JavaPackageNode>(parentNodes);
-        parents.add(node);
-        findTopPkgs(node.getChildNodes(), parents, topPkgs);
+        List<String> classNames = node.getClassNames();
+        if (classNames.size() >= 1) {
+          //there are trial classes in this package, so we can't use sub packages
+          topPkgs.add(name);
+        } else {
+          List<I_JavaPackageNode> parents = new ArrayList<I_JavaPackageNode>(parentNodes);
+          parents.add(node);
+          findTopPkgs(node.getChildNodes(), parents, topPkgs);
+        }
       } else {
         topPkgs.add(name);
       }
@@ -112,6 +160,52 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
 
   @Override
   public void onTrialCompleted(I_TrialResult result) {
+    try {
+      resultsDirsManipulationLatch_.await();
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+    }
+    writeTrialResultFile(result);
+  }
+
+  public void writeTrialResultFile(I_TrialResult result) {
+    String fullFileName = identifyFileNameAndCreateParentDirs(result);
+    I_TrialType tt = result.getType();
+    TrialType type = TrialType.get(tt);
+    switch (type) {
+      case SourceFileTrial:
+        TrialResultType rt = ConvertSourceFileTrialResults.to(
+              (I_SourceFileTrialResult) result);
+        try {
+          TrialResultIO.write(fullFileName, rt);
+        } catch (IOException e) {
+          e.printStackTrace(system_.getOut());
+        }
+        break;
+      case ApiTrial:
+        TrialResultType api = ConvertApiTrialResults.to(
+            (I_ApiTrialResult) result);
+        try {
+          TrialResultIO.write(fullFileName, api);
+        } catch (IOException e) {
+          e.printStackTrace(system_.getOut());
+        }
+        break;
+      case UseCaseTrial:
+        TrialResultType use = ConvertUseCaseTrialResults.to(
+            (I_UseCaseTrialResult) result);
+        try {
+          TrialResultIO.write(fullFileName, use);
+        } catch (IOException e) {
+          e.printStackTrace(system_.getOut());
+        }
+        break;
+      default:
+        //donothing
+    }
+  }
+
+  public String identifyFileNameAndCreateParentDirs(I_TrialResult result) {
     String fileName = result.getName();
     fileName = JavaTree.reverseJavaName(fileName);
     String fullFileName = null;
@@ -124,14 +218,18 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
       Set<String> topDirs = new HashSet<String>(trialPkgDirs_);
       for (String topDir: topDirs) {
         int index = fileName.indexOf(topDir);
-        int fileNameLen = fileName.length() -1;
         if (index != -1) {
-          fullFileName = trials_ + File.separator + topDir + File.separator + fileName  + ".xml";
+          String baseDir = trials_ + File.separator + topDir;
+          
+          fullFileName = baseDir + File.separator + fileName  + ".xml";
           break;
         }
       }
     }
-    system_.println("should write file " + fullFileName);
+    if (fullFileName == null) {
+      new Exception("Unable to identify package for " + fileName).printStackTrace(system_.getOut());
+    }
+    return fullFileName;
   }
 
   @Override

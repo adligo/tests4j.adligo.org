@@ -24,20 +24,21 @@ public class BaseTrialResultMutant implements I_TrialResult {
 			"TrialResultMutant requires a non null type.";
 	public static final String TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME = 
 			"TrialResultMutant requires a non empty trialName.";
-	private String trialName;
+	private String trialName_;
 	private String trialClassName_;
-	private I_TrialType testType;
-	private Map<String, TestResultMutant> results = 
+	private I_TrialType testType_;
+	private Map<String, TestResultMutant> results_ = 
 			new HashMap<String,TestResultMutant> ();
-	private boolean ignored;
+	private boolean ignored_;
 	//skip packageCoverage because there is no PackageCoverageMutant yet
 	//skip classCoverage because there is no ClassCoverageMutant yet
-	private String beforeTestOutput;
-	private String afterTestOutput;
-	private List<I_TrialFailure> failures = Collections.emptyList();
-	private Boolean passed = null;
-	private boolean hadAfterTrialTests = false;
-	private boolean ranAfterTrialTests = false;
+	private String beforeTestOutput_;
+	private String afterTestOutput_;
+	private List<I_TrialFailure> failures_ = Collections.emptyList();
+	private Boolean passed_ = null;
+	private boolean hadAfterTrialTests_ = false;
+	private boolean ranAfterTrialTests_ = false;
+	private int runNumber_;
 	
 	public BaseTrialResultMutant() {}
 	
@@ -46,13 +47,13 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	}
 	
 	public BaseTrialResultMutant(I_TrialResult p, boolean cloneRelations) {
-		trialName = p.getName();
+		trialName_ = p.getName();
 		trialClassName_ = p.getTrialClassName();
 		
-		StringMethods.isEmpty(trialName,
+		StringMethods.isEmpty(trialName_,
 				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_EMPTY_TRIAL_NAME);
-		testType = p.getType();
-		if (testType == null) {
+		testType_ = p.getType();
+		if (testType_ == null) {
 			throw new IllegalArgumentException(
 				TRIAL_RESULT_MUTANT_REQUIRES_A_NON_NULL_TYPE);
 		}
@@ -61,18 +62,19 @@ public class BaseTrialResultMutant implements I_TrialResult {
 			List<I_TestResult> results = p.getResults();
 			setResults(results);
 		}
-		ignored = p.isIgnored();
-		passed = p.isPassed();
-		beforeTestOutput = p.getBeforeTrialOutput();
-		afterTestOutput = p.getAfterTrialOutput();
+		ignored_ = p.isIgnored();
+		passed_ = p.isPassed();
+		beforeTestOutput_ = p.getBeforeTrialOutput();
+		afterTestOutput_ = p.getAfterTrialOutput();
 		setFailures(p.getFailures());
+		runNumber_ = p.getRunNumber();
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getTestName()
 	 */
 	@Override
 	public String getName() {
-		return trialName;
+		return trialName_;
 	}
 	
 
@@ -81,7 +83,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	 */
 	@Override
 	public I_TrialType getType() {
-		return testType;
+		return testType_;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TrialResult#getResults()
@@ -89,7 +91,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	@Override
 	public List<I_TestResult> getResults() {
 		List<I_TestResult> toRet = new ArrayList<I_TestResult>();
-		toRet.addAll(results.values());
+		toRet.addAll(results_.values());
 		return toRet;
 	}
 	/* (non-Javadoc)
@@ -97,47 +99,47 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	 */
 	@Override
 	public boolean isIgnored() {
-		return ignored;
+		return ignored_;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getBeforeTestOutput()
 	 */
 	@Override
 	public String getBeforeTrialOutput() {
-		return beforeTestOutput;
+		return beforeTestOutput_;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.jtests.base.shared.results.I_TestResult#getAfterTestOutput()
 	 */
 	@Override
 	public String getAfterTrialOutput() {
-		return afterTestOutput;
+		return afterTestOutput_;
 	}
 	public void setTrialName(String pTrialName) {
-		this.trialName = pTrialName;
+		this.trialName_ = pTrialName;
 	}
 	public void setType(I_TrialType p) {
-		this.testType = p;
+		this.testType_ = p;
 	}
 	public void setResults(List<I_TestResult> p) {
-		results.clear();
+		results_.clear();
 		for (I_TestResult result: p) {
 			String name = result.getName();
-			results.put(name, new TestResultMutant(result));
+			results_.put(name, new TestResultMutant(result));
 		}
 	}
 	public void addResult(I_TestResult p) {
 		String name = p.getName();
-		results.put(name, new TestResultMutant(p));
+		results_.put(name, new TestResultMutant(p));
 	}
 	public void setIgnored(boolean ignored) {
-		this.ignored = ignored;
+		this.ignored_ = ignored;
 	}
 	public void setBeforeTestOutput(String beforeTestOutput) {
-		this.beforeTestOutput = beforeTestOutput;
+		this.beforeTestOutput_ = beforeTestOutput;
 	}
 	public void setAfterTestOutput(String afterTestOutput) {
-		this.afterTestOutput = afterTestOutput;
+		this.afterTestOutput_ = afterTestOutput;
 	}
 
 	@Override
@@ -169,7 +171,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	}
 
 	public List<I_TrialFailure> getFailures() {
-		return failures;
+		return failures_;
 	}
 
 	public void setFailures(List<I_TrialFailure> pFailures) {
@@ -182,25 +184,25 @@ public class BaseTrialResultMutant implements I_TrialResult {
 
 	public void addFailure(I_TrialFailure tf) {
 		if (tf != null) {
-			if (failures.isEmpty()) {
-				failures = new ArrayList<I_TrialFailure>();
+			if (failures_.isEmpty()) {
+				failures_ = new ArrayList<I_TrialFailure>();
 			}
-			failures.add(tf);
+			failures_.add(tf);
 		}
 	}
 
 
 	public void setPassed(boolean passed) {
-		this.passed = passed;
+		this.passed_ = passed;
 	}
 
 	@Override
 	public boolean isPassed() {
 		//passed my be null
-		if (Boolean.FALSE.equals(passed)) {
+		if (Boolean.FALSE.equals(passed_)) {
 			return false;
 		}
-		if (failures.size() != 0) {
+		if (failures_.size() != 0) {
 			return false;
 		}
 		/**
@@ -208,7 +210,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 		 * so that interface trials can run successfully
 		 * during a run with out the code coverage plug-in.
 		 */
-		for (I_TestResult result: results.values()) {
+		for (I_TestResult result: results_.values()) {
 			if (!result.isIgnored()) {
 				if (!result.isPassed()) {
 					return false;
@@ -222,12 +224,12 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	
 	@Override
 	public int getTestCount() {
-		return results.size();
+		return results_.size();
 	}
 
 	@Override
 	public int getTestFailureCount() {
-		return getTestFailureCount(results.values());
+		return getTestFailureCount(results_.values());
 	}
 	
 	public static int getTestFailureCount(Collection<? extends I_TestResult> p) {
@@ -242,7 +244,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	
 	@Override
 	public int getAssertionCount() {
-		return getAssertionCount(results.values());
+		return getAssertionCount(results_.values());
 	}
 	
 	public static int getAssertionCount(Collection<? extends I_TestResult> p) {
@@ -255,7 +257,7 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	
 	@Override
 	public int getUniqueAssertionCount() {
-		return getUniqueAssertionCount(results.values());
+		return getUniqueAssertionCount(results_.values());
 	}
 	
 	public static int getUniqueAssertionCount(Collection<? extends I_TestResult> p) {
@@ -272,23 +274,23 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	}
 	
 	Boolean getPassed() {
-		return passed;
+		return passed_;
 	}
 
 	public boolean isHadAfterTrialTests() {
-		return hadAfterTrialTests;
+		return hadAfterTrialTests_;
 	}
 
 	public boolean isRanAfterTrialTests() {
-		return ranAfterTrialTests;
+		return ranAfterTrialTests_;
 	}
 
 	public void setHadAfterTrialTests(boolean hadAfterTrialTests) {
-		this.hadAfterTrialTests = hadAfterTrialTests;
+		this.hadAfterTrialTests_ = hadAfterTrialTests;
 	}
 
 	public void setRanAfterTrialTests(boolean ranAfterTrialTests) {
-		this.ranAfterTrialTests = ranAfterTrialTests;
+		this.ranAfterTrialTests_ = ranAfterTrialTests;
 	}
 	@Override
 	public boolean hasRecordedCoverage() {
@@ -302,4 +304,13 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	public void setTrialClassName(String trialClassName) {
 		this.trialClassName_ = trialClassName;
 	}
+
+  public int getRunNumber() {
+    return runNumber_;
+  }
+
+  public void setRunNumber(int runNumber) {
+    this.runNumber_ = runNumber;
+  }
+
 }

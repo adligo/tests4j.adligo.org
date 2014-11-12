@@ -1,8 +1,8 @@
 package org.adligo.tests4j.run.api;
 
 import org.adligo.tests4j.run.common.I_JseSystem;
+import org.adligo.tests4j.run.common.JseSystem;
 import org.adligo.tests4j.run.helpers.DefaultDelegateFactory;
-import org.adligo.tests4j.run.helpers.JseSystem;
 import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.common.MethodBlocker;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
@@ -13,6 +13,8 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_DelegateFactory;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -77,14 +79,14 @@ public class Tests4J {
 	 * @param pParams
 	 * @param pListener
 	 */
-	public static I_Tests4J_Controls run(I_Tests4J_Params pParams, I_Tests4J_Listener pListener) {
-		if (pListener == null) {
+	public static I_Tests4J_Controls run(I_Tests4J_Params params, I_Tests4J_Listener listener) {
+		if (listener == null) {
 			I_Tests4J_Constants messages = Tests4J_Constants.CONSTANTS;
 			throw new IllegalArgumentException(messages.getNullListenerExceptionMessage());
 		}
 		//sets up logging for the run, from the params
 		Tests4J instance = new Tests4J();
-		return instance.instanceRun(pParams, pListener);
+		return instance.instanceRun(params, listener);
 	}
 	
 	/**
@@ -96,9 +98,9 @@ public class Tests4J {
 	 * @param pParams
 	 * 
 	 */
-	public static I_Tests4J_Controls run(I_Tests4J_Params pParams) {
+	public static I_Tests4J_Controls run(I_Tests4J_Params params) {
 		Tests4J instance = new Tests4J();
-		return instance.instanceRun(pParams, null);
+		return instance.instanceRun(params, null);
 	}
 	
 	/**
@@ -122,6 +124,36 @@ public class Tests4J {
 	protected Tests4J() {}
 	
 
+	protected void blockDuplicateRun() {
+	  File dirFile = system_.newFile(".");
+	  String dir = dirFile.getAbsolutePath();
+	  if (dir.charAt(dir.length() -1) == '.') {
+	    dir = dir.substring(0, dir.length() - 1);
+	  }
+	  String file = dir + ".tests4j_run";
+	  File tmpFile = system_.newFile(file);
+	  if (tmpFile.exists()) {
+	    throwAlreadyRunningException(dir, null);
+	  }
+	  try {
+  	  if (!tmpFile.createNewFile()) {
+  	    throwAlreadyRunningException(dir, null);
+  	  }
+	  } catch (IOException x) {
+	    throwAlreadyRunningException(dir, x);
+	  }
+	  tmpFile.deleteOnExit();
+	}
+
+  public void throwAlreadyRunningException(String dir, IOException x) {
+    String val = Tests4J_Constants.CONSTANTS.getAnotherTests4J_InstanceIsRunningHere() +
+        system_.lineSeperator() + dir;
+    if (x != null) {
+      throw new RuntimeException(val, x);
+    } else {
+      throw new RuntimeException(val);
+    }
+  }
 	/**
 	 * not part of the public api,
 	 * but used when test4j tests itself.

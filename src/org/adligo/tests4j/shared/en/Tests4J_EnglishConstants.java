@@ -18,7 +18,9 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
  *
  */
 public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
-	private static final String METHOD_BLOCKER_REQUIRES_A_BLOCKING_METHOD_NAME = "MethodBlocker requires a blocking method name.";
+	private static final String ANOTHER_TESTS4J_IS_RUNNING = "Another instance of tests4j appears to be running in this directory;";
+
+  private static final String METHOD_BLOCKER_REQUIRES_A_BLOCKING_METHOD_NAME = "MethodBlocker requires a blocking method name.";
 
 	private static final String METHOD_BLOCKER_REQUIRES_A_BLOCKING_CLASS = "MethodBlocker requires a blocking class.";
 
@@ -117,6 +119,11 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 		return METHOD_BLOCKER_REQUIRES_A_BLOCKING_METHOD_NAME;
 	}
 	
+	 @Override
+   public String getAnotherTests4J_InstanceIsRunningHere() {
+      return ANOTHER_TESTS4J_IS_RUNNING;
+   }
+	 
 	@Override
 	public I_Tests4J_LineDiffTextDisplayMessages getLineDiffTextDisplayMessages() {
 		return lineDiffTextMessages;
@@ -132,4 +139,5 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 		return reportMessages;
 	}
 
+	
 }

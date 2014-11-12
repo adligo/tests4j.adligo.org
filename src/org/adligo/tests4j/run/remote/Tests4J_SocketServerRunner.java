@@ -19,6 +19,7 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.xml.XML_Builder;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Controls;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_RemoteInfo;
 import org.adligo.tests4j.system.shared.api.Tests4J_Params;
 import org.adligo.tests4j.system.shared.api.Tests4J_RemoteInfo;
@@ -393,6 +394,12 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 		// TODO Auto-generated method stub
 		
 	}
+
+  @Override
+  public void onStartingSetup(I_Tests4J_Params params) {
+    // TODO Auto-generated method stub
+    
+  }
 
 	
 }

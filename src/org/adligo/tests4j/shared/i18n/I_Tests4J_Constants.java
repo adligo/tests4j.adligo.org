@@ -41,5 +41,5 @@ public interface I_Tests4J_Constants {
 	
 	public String getTheMethodCanOnlyBeCalledBy_PartOne();
 	public String getTheMethodCanOnlyBeCalledBy_PartTwo();
-	
+	public String getAnotherTests4J_InstanceIsRunningHere();
 }

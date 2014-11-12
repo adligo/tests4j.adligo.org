@@ -64,15 +64,15 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	 * This method sets up everything for the run,
 	 * assumes all other setters have been called.
 	 *  
-	 * @param pListener
-	 * @param pParams
+	 * @param listener
+	 * @param params
 	 * 
 	 */
-	public boolean setup(I_Tests4J_Listener pListener, I_Tests4J_Params pParams) {
+	public boolean setup(I_Tests4J_Listener listener, I_Tests4J_Params params) {
 		
 
 		
-		reader_ = new Tests4J_ParamsReader(system_,  pParams);
+		reader_ = new Tests4J_ParamsReader(system_,  params);
 		/**
 		 * note this code is a bit confusing,
 		 * the log is single threaded for a short time,
@@ -92,7 +92,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		memory_ = new Tests4J_Memory(log_);
 		memory_.setSystem(system_);
 		
-		List<OutputStream> outs =  pParams.getAdditionalReportOutputStreams();
+		List<OutputStream> outs =  params.getAdditionalReportOutputStreams();
 		if (outs.size() >= 1) {
 			List<I_OutputBuffer> outputBuffers = new ArrayList<I_OutputBuffer>();
 			for (OutputStream ob: outs) {
@@ -102,18 +102,19 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 			PrintStream out = new  JsePrintOutputStream(new ListDelegateOutputBuffer(outputBuffers));
 			
 			SystemWithPrintStreamDelegate sysPs = new SystemWithPrintStreamDelegate(system_, out);
-			log_ = new DefaultLog(sysPs, pParams.getLogStates());
+			log_ = new DefaultLog(sysPs, params.getLogStates());
 		}
 		
 		//use the dynamic log
 		memory_.setReporter(new SummaryReporter(log_));
 		
-		memory_.setListener(pListener);
+		memory_.setListener(listener);
 		
 		if (reader_.isRunnable()) {
 			memory_.initialize(reader_);
 			threadManager_ = memory_.getThreadManager();
 		}
+		memory_.getListener().onStartingSetup(params);
 		controls_ = new Tests4J_Controls(memory_);
 		return reader_.isRunnable();
 	}	

@@ -12,6 +12,7 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
+import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -220,6 +221,12 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 				remoteProcessDisplay.onProccessStateChange(logger, info);
 		}
 	}
+
+  @Override
+  public void onStartingSetup(I_Tests4J_Params params) {
+    // TODO Auto-generated method stub
+    
+  }
 
 
 

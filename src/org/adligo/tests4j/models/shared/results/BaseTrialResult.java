@@ -118,4 +118,9 @@ public class BaseTrialResult implements I_TrialResult {
 	public String getTrialClassName() {
 		return mutant.getTrialClassName();
 	}
+
+  @Override
+  public int getRunNumber() {
+    return mutant.getRunNumber();
+  }
 }
