@@ -60,7 +60,7 @@ public class Tests4J_SchemaLoader implements LSResourceResolver {
           new StreamSource(Tests4J_SchemaLoader.class.getResourceAsStream(TEST_RESULTS_SCHEMA)),
           new StreamSource(Tests4J_SchemaLoader.class.getResourceAsStream(USE_CASES_SCHEMA)),
           new StreamSource(Tests4J_SchemaLoader.class.getResourceAsStream(TRIAL_RESULTS_SCHEMA))
-          
+
       });
     } catch (IOException x) {
       x.printStackTrace();

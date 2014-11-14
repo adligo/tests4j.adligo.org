@@ -39,10 +39,10 @@
 
 	<complexType name="use_case_trial_result_type">
 		<sequence>
-			<element name="common" type="rns:common_result_type"
+            <element name="use_case" type="uns:use_case_brief_type" minOccurs="1" maxOccurs="1"></element>
+            <element name="common" type="rns:common_result_type"
 				minOccurs="1" maxOccurs="1">
 			</element>
-			<element name="use_case" type="uns:use_case_brief_type" minOccurs="1" maxOccurs="1"></element>
 		</sequence>
 	</complexType>
 
