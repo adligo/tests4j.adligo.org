@@ -1,14 +1,11 @@
 package org.adligo.tests4j.run.xml_bindings.conversion;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister.Pack;
-
 import org.adligo.tests4j.models.shared.coverage.I_ClassProbes;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.I_Probes;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
 import org.adligo.tests4j.run.xml.io.coverage.ClassCoverageType;
 import org.adligo.tests4j.run.xml.io.coverage.PackageCoverageType;
-import org.adligo.tests4j.run.xml.io.coverage.PackagesCoverageType;
 import org.adligo.tests4j.run.xml.io.coverage.SourceFileCoverageType;
 import org.adligo.tests4j.run.xml.io.trial_result.InnerSourceFileCoverageType;
 
@@ -69,8 +66,10 @@ public class ConvertCoverage {
     Set<String> names = brief.getSourceFileNames();
     for (String name: names) {
       I_SourceFileCoverageBrief sfBrief = brief.getCoverage(name);
-      SourceFileCoverageType sfCover = to(sfBrief);
-      sfCoverToRet.add(sfCover);
+      if (sfBrief != null) {
+        SourceFileCoverageType sfCover = to(sfBrief);
+        sfCoverToRet.add(sfCover);
+      }
     }
     List<I_PackageCoverageBrief> children = brief.getChildPackageCoverage();
     for (I_PackageCoverageBrief pkg: children) {

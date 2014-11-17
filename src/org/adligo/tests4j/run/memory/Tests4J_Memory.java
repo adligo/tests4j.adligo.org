@@ -415,7 +415,7 @@ public class Tests4J_Memory implements I_Memory {
 		return trialClasses.size();
 	}
 
-	public int getAllTestsCount() {
+	public long getAllTestsCount() {
 		return metadata.getAllTestsCount();
 	}
 

@@ -95,9 +95,9 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 			I_SourceFileCoverageBrief probes = rec.getSourceFileCoverage();
 			
 			if (probes != null) {
-				trialResultMutant.setSourceFileProbes(probes);
+				trialResultMutant.setSourceFileCoverage(probes);
 			} else if (srcFile != null && srcFile.isInterface()) {
-				trialResultMutant.setSourceFileProbes(new SourceFileCoverageBriefMutant());
+				trialResultMutant.setSourceFileCoverage(new SourceFileCoverageBriefMutant());
 			} else {
 				log.onThrowable(new IllegalStateException("A internal error"
 						+ " has occured in tests4j, no coverage for class " + 

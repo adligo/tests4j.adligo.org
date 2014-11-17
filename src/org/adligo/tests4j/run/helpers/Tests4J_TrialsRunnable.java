@@ -84,7 +84,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	private Tests4J_TestRunable testsRunner;
 	private boolean finished = false;
 	private ApiTrialResultMutant apiTrialResultMutant;
-	private SourceFileTrialResultMutant sourceFileTrialResultMutant;
+	private SourceFileTrialResultMutant sourceFileTrialResultMutant_;
 	private UseCaseTrialResultMutant useCaseTrialResultMutant;
 	private TrialBindings bindings;
 	private TrialOutput out = new TrialOutput();
@@ -249,7 +249,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			log_.log("running trial " + trialName);
 		}
 		apiTrialResultMutant = null;
-		sourceFileTrialResultMutant = null;
+		sourceFileTrialResultMutant_ = null;
 		useCaseTrialResultMutant = null;
 		
 		trialName = trialDescription_.getTrialName();
@@ -306,8 +306,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 					result = new ApiTrialResult(apiTrialResultMutant);
 				break;
 			case SourceFileTrial:
-					sourceFileTrialResultMutant = getSourceFileTrialResult();
-					result = new SourceFileTrialResult(sourceFileTrialResultMutant);
+					sourceFileTrialResultMutant_ = getSourceFileTrialResult();
+					result = new SourceFileTrialResult(sourceFileTrialResultMutant_);
 				break;
 			default:
 				result = new BaseTrialResult(trialResultMutant_);
@@ -345,8 +345,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	 * @return
 	 */
 	private SourceFileTrialResultMutant getSourceFileTrialResult() {
-		if (sourceFileTrialResultMutant != null) {
-			return sourceFileTrialResultMutant;
+		if (sourceFileTrialResultMutant_ != null) {
+			return sourceFileTrialResultMutant_;
 		}
 		SourceFileTrialResultMutant sourceFileTrialResultMutant = new SourceFileTrialResultMutant(trialResultMutant_);
 		Class<?> clazz = trialDescription_.getSourceFileClass();
@@ -455,7 +455,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 				afterSouceFileTrialTestsProcessor.reset(trialDescription_, 
 						trialThreadLocalCoverageRecorder, trial_);
 				SourceFileTrialResultMutant result = getSourceFileTrialResult();
-				
+				sourceFileTrialResultMutant_ = result; 
 				//this must be run, in order to calculate code coverage, when there is a 
 				//code coverage plugin
 				TestResultMutant trm = afterSouceFileTrialTestsProcessor.afterSourceFileTrialTests(result);

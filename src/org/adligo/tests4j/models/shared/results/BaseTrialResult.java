@@ -7,63 +7,63 @@ import java.util.List;
 import org.adligo.tests4j.shared.common.I_TrialType;
 
 public class BaseTrialResult implements I_TrialResult {
-	private BaseTrialResultMutant mutant;
-	private List<I_TestResult> results;
+	private BaseTrialResultMutant mutant_;
+	private List<I_TestResult> results_;
 	
 	public BaseTrialResult() {}
 	
 	public BaseTrialResult(I_TrialResult other) {
-		mutant = (BaseTrialResultMutant) other.clone(false);
+		mutant_ = (BaseTrialResultMutant) other.clone(false);
 		List<I_TestResult> otherResults = other.getResults();
 		if (otherResults.size() >= 1) {
-			results = new ArrayList<I_TestResult>();
+			results_ = new ArrayList<I_TestResult>();
 			for (I_TestResult result: otherResults) {
-				results.add(new TestResult(result));
+				results_.add(new TestResult(result));
 			}
-			results = Collections.unmodifiableList(results);
+			results_ = Collections.unmodifiableList(results_);
 		} else {
-			results = Collections.emptyList();
+			results_ = Collections.emptyList();
 		}
 	}
 	public int hashCode() {
-		return mutant.hashCode();
+		return mutant_.hashCode();
 	}
 
 	public String getName() {
-		return mutant.getName();
+		return mutant_.getName();
 	}
 
 	public I_TrialType getType() {
-		return mutant.getType();
+		return mutant_.getType();
 	}
 
 	public List<I_TestResult> getResults() {
-		return results;
+		return results_;
 	}
 
 	public boolean isIgnored() {
-		return mutant.isIgnored();
+		return mutant_.isIgnored();
 	}
 
 	public String getBeforeTrialOutput() {
-		return mutant.getBeforeTrialOutput();
+		return mutant_.getBeforeTrialOutput();
 	}
 
 	public String getAfterTrialOutput() {
-		return mutant.getAfterTrialOutput();
+		return mutant_.getAfterTrialOutput();
 	}
 
 	public boolean equals(Object obj) {
-		return mutant.equals(obj);
+		return mutant_.equals(obj);
 	}
 
 	public List<I_TrialFailure> getFailures() {
-		return mutant.getFailures();
+		return mutant_.getFailures();
 	}
 
 	@Override
 	public boolean isPassed() {
-		if (Boolean.FALSE.equals(mutant.getPassed())) {
+		if (Boolean.FALSE.equals(mutant_.getPassed())) {
 			return false;
 		}
 		/**
@@ -71,7 +71,7 @@ public class BaseTrialResult implements I_TrialResult {
 		 * so that interface trials can run successfully
 		 * during a run with out the code coverage plug-in.
 		 */
-		for (I_TestResult result: results) {
+		for (I_TestResult result: results_) {
 			if (!result.isIgnored()) {
 				if (!result.isPassed()) {
 					return false;
@@ -82,19 +82,19 @@ public class BaseTrialResult implements I_TrialResult {
 	}
 
 	public int getTestCount() {
-		return results.size();
+		return results_.size();
 	}
 
 	public int getTestFailureCount() {
-		return BaseTrialResultMutant.getTestFailureCount(results);
+		return BaseTrialResultMutant.getTestFailureCount(results_);
 	}
 
 	public int getAssertionCount() {
-		return BaseTrialResultMutant.getAssertionCount(results);
+		return BaseTrialResultMutant.getAssertionCount(results_);
 	}
 
 	public int getUniqueAssertionCount() {
-		return BaseTrialResultMutant.getUniqueAssertionCount(results);
+		return BaseTrialResultMutant.getUniqueAssertionCount(results_);
 	}
 	
 
@@ -103,11 +103,11 @@ public class BaseTrialResult implements I_TrialResult {
 	}
 
 	public boolean isHadAfterTrialTests() {
-		return mutant.isHadAfterTrialTests();
+		return mutant_.isHadAfterTrialTests();
 	}
 
 	public boolean isRanAfterTrialTests() {
-		return mutant.isRanAfterTrialTests();
+		return mutant_.isRanAfterTrialTests();
 	}
 
 	@Override
@@ -116,11 +116,16 @@ public class BaseTrialResult implements I_TrialResult {
 	}
 
 	public String getTrialClassName() {
-		return mutant.getTrialClassName();
+		return mutant_.getTrialClassName();
 	}
 
   @Override
   public int getRunNumber() {
-    return mutant.getRunNumber();
+    return mutant_.getRunNumber();
+  }
+
+  @Override
+  public int getTestIgnoredCount() {
+    return BaseTrialResultMutant.getTestIgnoredCount(results_);
   }
 }

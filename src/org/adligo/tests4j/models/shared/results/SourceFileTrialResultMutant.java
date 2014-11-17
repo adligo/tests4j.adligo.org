@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SourceFileTrialResultMutant extends BaseTrialResultMutant implements I_SourceFileTrialResult {
-	private SourceFileCoverageBriefMutant probes;
+	private SourceFileCoverageBriefMutant coverage_;
 	private String sourceFileName;
 	private I_ClassAssociations dependencies;
 	private Map<String, I_ClassAttributes> references_;
@@ -24,7 +24,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	public SourceFileTrialResultMutant(I_SourceFileTrialResult p, boolean cloneRelations) {
 		super(p, cloneRelations);
 		if (cloneRelations) {
-			probes = new SourceFileCoverageBriefMutant(p.getSourceFileCoverage());
+			coverage_ = new SourceFileCoverageBriefMutant(p.getSourceFileCoverage());
 		}
 		sourceFileName = p.getSourceFileName();
 		setDependencies(p.getDependencies());
@@ -40,11 +40,11 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	
 	@Override
 	public I_SourceFileCoverageBrief getSourceFileCoverage() {
-		return probes;
+		return coverage_;
 	}
 
-	public void setSourceFileProbes(I_SourceFileCoverageBrief p) {
-		this.probes = new SourceFileCoverageBriefMutant(p);
+	public void setSourceFileCoverage(I_SourceFileCoverageBrief p) {
+		this.coverage_ = new SourceFileCoverageBriefMutant(p);
 	}
 
 	public String getSourceFileName() {
@@ -60,7 +60,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 		StringBuilder sb = new StringBuilder();
 		toString(this, sb);
 		sb.append(",coverage=");
-		sb.append(probes);
+		sb.append(coverage_);
 		sb.append(",sourceFileName=");
 		sb.append(sourceFileName);
 		sb.append("]");
@@ -69,7 +69,7 @@ public class SourceFileTrialResultMutant extends BaseTrialResultMutant implement
 	
 	@Override
 	public boolean hasRecordedCoverage() {
-		if (probes == null) {
+		if (coverage_ == null) {
 			return false;
 		}
 		return true;

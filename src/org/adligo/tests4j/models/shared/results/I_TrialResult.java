@@ -43,6 +43,7 @@ public interface I_TrialResult {
 	public boolean isPassed();
 	public int getTestCount();
 	public int getTestFailureCount();
+	public int getTestIgnoredCount();
 	public int getAssertionCount();
 	public int getUniqueAssertionCount();
 	public I_TrialResult clone(boolean cloneRelations);

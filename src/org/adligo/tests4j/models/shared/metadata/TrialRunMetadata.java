@@ -35,8 +35,8 @@ public class TrialRunMetadata implements I_TrialRunMetadata {
 	}
 
 	@Override
-	public int getAllTestsCount() {
-		int toRet = 0;
+	public long getAllTestsCount() {
+		long toRet = 0;
 		for (I_TrialMetadata trial: trials) {
 			toRet = toRet + trial.getTestCount();
 		}

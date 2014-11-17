@@ -39,7 +39,7 @@ public interface I_TrialRunMetadata {
 	 * which ran
 	 * @return
 	 */
-	public int getAllTestsCount();
+	public long getAllTestsCount();
 	
 	/**
 	 * returns the source file for .java files name which

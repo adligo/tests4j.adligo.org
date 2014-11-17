@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.results;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -35,15 +36,15 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getTrials();
 	}
 
-	public int getTests() {
+	public long getTests() {
 		return mutant.getTests();
 	}
 
-	public long getAsserts() {
+	public BigInteger getAsserts() {
 		return mutant.getAsserts();
 	}
 
-	public int getTestsFailed() {
+	public long getTestsFailed() {
 		return mutant.getTestsFailed();
 	}
 
@@ -51,7 +52,7 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getTrialFailures();
 	}
 
-	public long getUniqueAsserts() {
+	public BigInteger getUniqueAsserts() {
 		return mutant.getUniqueAsserts();
 	}
 
@@ -59,7 +60,7 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getTrialsPassed();
 	}
 
-	public int getTestsPassed() {
+	public long getTestsPassed() {
 		return mutant.getTestsPassed();
 	}
 
@@ -67,7 +68,7 @@ public class TrialRunResult implements I_TrialRunResult {
 		return mutant.getTrialsIgnored();
 	}
 
-	public int getTestsIgnored() {
+	public long getTestsIgnored() {
 		return mutant.getTestsIgnored();
 	}
 

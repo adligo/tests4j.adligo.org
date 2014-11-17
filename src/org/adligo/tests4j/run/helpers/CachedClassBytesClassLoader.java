@@ -268,7 +268,7 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	public InputStream getCachedBytesStream(String name) {
 		byte[] bytes = bytesCache.get(name);
 		if (bytes == null) {
-			throw new IllegalArgumentException("error obtaining cache for " + name);
+			bytes = new byte[] {};
 		}
 		return new ByteArrayInputStream(bytes);
 	}

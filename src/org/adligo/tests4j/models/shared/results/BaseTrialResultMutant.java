@@ -235,13 +235,28 @@ public class BaseTrialResultMutant implements I_TrialResult {
 	public static int getTestFailureCount(Collection<? extends I_TestResult> p) {
 		int toRet = 0;
 		for (I_TestResult tr: p) {
-			if (!tr.isPassed()) {
+			if (!tr.isPassed() && !tr.isIgnored()) {
 				toRet++;
 			}
 		}
 		return toRet;
 	}
 	
+	@Override
+  public int getTestIgnoredCount() {
+	  return getTestIgnoredCount(results_.values());
+  }
+  
+	public static int getTestIgnoredCount(Collection<? extends I_TestResult> p) {
+    int toRet = 0;
+    for (I_TestResult tr: p) {
+      if (tr.isIgnored()) {
+        toRet++;
+      }
+    }
+    return toRet;
+  }
+  
 	@Override
 	public int getAssertionCount() {
 		return getAssertionCount(results_.values());

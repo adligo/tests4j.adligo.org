@@ -1,19 +1,5 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageBriefDelegator;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
@@ -27,6 +13,7 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
+import org.adligo.tests4j.run.common.AtomicBigInteger;
 import org.adligo.tests4j.run.common.I_ThreadManager;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TestDescription;
@@ -51,6 +38,20 @@ import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 import org.adligo.tests4j.system.shared.trials.MetaTrial;
 import org.adligo.tests4j.system.shared.trials.SourceFileTrial;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * This class handles event notification
  * to the I_TrailRunListener.
@@ -74,10 +75,12 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	private I_Tests4J_Listener reporter;
 	
 	private final AtomicLong startTime = new AtomicLong();
-	private final AtomicLong assertionCount = new AtomicLong();
-	private final AtomicLong uniqueAssertionCount = new AtomicLong();
-	private final AtomicInteger testCount = new AtomicInteger();
-	private final AtomicInteger testFailureCount = new AtomicInteger();
+	private final AtomicBigInteger assertionCount = new AtomicBigInteger();
+	private final AtomicBigInteger uniqueAssertionCount = new AtomicBigInteger();
+	private final AtomicLong testCount = new AtomicLong();
+	private final AtomicLong testFailureCount = new AtomicLong();
+	private final AtomicLong testIgnoreCount = new AtomicLong();
+	
 	private final AtomicInteger trialFailures = new AtomicInteger();
 	private final AtomicInteger trials = new AtomicInteger();
 	private final AtomicInteger trialClassDefFailures = new AtomicInteger();
@@ -384,6 +387,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		uniqueAssertionCount.addAndGet(uAsserts);
 		testCount.addAndGet(tests);
 		testFailureCount.addAndGet(result.getTestFailureCount());
+		testIgnoreCount.addAndGet(result.getTestIgnoredCount());
+		
 		if (!result.isPassed()) {
 			trialFailures.getAndIncrement();
 		} else {
@@ -412,8 +417,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		runResult.setStartTime(startTime.get());
 		runResult.setAsserts(assertionCount.get());
 		runResult.setUniqueAsserts(uniqueAssertionCount.get());
-		runResult.setTestFailures(testFailureCount.get());
+		
+		runResult.setTestsFailed(testFailureCount.get());
+		runResult.setTestsIgnored(testIgnoreCount.get());
 		runResult.setTests(testCount.get());
+		
 		runResult.setTrialFailures(trialFailures.get());
 		runResult.setTrials(trials.get());
 		runResult.setPassingTrials(passingTrialNames);
@@ -456,7 +464,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 										}
 										runResult.setAsserts(assertionCount.get());
 										runResult.setUniqueAsserts(uniqueAssertionCount.get());
-										runResult.setTestFailures(testFailureCount.get());
+										runResult.setTestsFailed(testFailureCount.get());
 										runResult.setTests(testCount.get());
 									}
 								}

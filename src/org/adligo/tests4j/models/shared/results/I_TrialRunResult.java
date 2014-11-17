@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.results;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 
@@ -76,27 +77,27 @@ public interface I_TrialRunResult {
 	 * all of the tests including ignored tests.
 	 * @return
 	 */
-	public int getTests();
+	public long getTests();
 	/**
 	 * the number of tests ignored.
 	 * @return
 	 */
-	public int getTestsIgnored();
+	public long getTestsIgnored();
 	/**
 	 * the number of tests that passed.
 	 * @return
 	 */
-	public int getTestsPassed();
+	public long getTestsPassed();
 	/**
 	 * the number of test failures.
 	 * @return
 	 */
-	public int getTestsFailed();
+	public long getTestsFailed();
 	/**
 	 * the number of completed assertX methods.
 	 * @return
 	 */
-	public long getAsserts();
+	public BigInteger getAsserts();
 	/**
 	 * the number of unique assertions
 	 * where uniqueness is calculated based on
@@ -109,7 +110,7 @@ public interface I_TrialRunResult {
 	 * 
 	 * @return
 	 */
-	public long getUniqueAsserts();
+	public BigInteger getUniqueAsserts();
 	
 	/**
 	 * 

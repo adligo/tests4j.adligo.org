@@ -1,6 +1,7 @@
 package org.adligo.tests4j.models.shared.results;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,11 +18,11 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 	private int trials;
 	private int trialsIgnored;
 	private int trialFailures;
-	private int tests;
-	private int testsIgnored;
-	private int testFailures;
-	private long asserts;
-	private long uniqueAsserts;
+	private long tests;
+	private long testsIgnored;
+	private long testFailures;
+	private BigInteger asserts;
+	private BigInteger uniqueAsserts;
 	private Set<String> passingTrials = new HashSet<String>();
 	private Set<String> failingTrials = new HashSet<String>();
 	private Set<String> ignoredTrials = new HashSet<String>();
@@ -83,11 +84,11 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		return trials;
 	}
 
-	public int getTests() {
+	public long getTests() {
 		return tests;
 	}
 
-	public long getAsserts() {
+	public BigInteger getAsserts() {
 		return asserts;
 	}
 
@@ -99,40 +100,40 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		this.trials = trials + p;
 	}
 	
-	public synchronized void setTests(int tests) {
+	public synchronized void setTests(long tests) {
 		this.tests = tests;
 	}
 
-	public synchronized void addTests(int p) {
+	public synchronized void addTests(long p) {
 		this.tests = tests + p;
 	}
 	
-	public synchronized void setAsserts(long asserts) {
+	public synchronized void setAsserts(BigInteger asserts) {
 		this.asserts = asserts;
 	}
 
 	public synchronized void addAsserts(long p) {
-		this.asserts = asserts + p;
+		asserts = asserts.add(new BigInteger(new Long(p).toString()));
 	}
 	
-	public int getTestsFailed() {
+	public long getTestsFailed() {
 		return testFailures;
 	}
 
-	public synchronized void setTestFailures(int testFailures) {
+	public synchronized void setTestsFailed(long testFailures) {
 		this.testFailures = testFailures;
 	}
 
-	public synchronized void addTestFailures(int p) {
+	public synchronized void addTestFailures(long p) {
 		this.testFailures = testFailures + p;
 	}
 	
 	public int getTrialsPassed() {
-		return trials - trialFailures;
+		return trials - trialFailures - trialsIgnored;
 	}
 	
-	public int getTestsPassed() {
-		return tests - testFailures;
+	public long getTestsPassed() {
+		return tests - testFailures - testsIgnored;
 	}
 	public int getTrialFailures() {
 		return trialFailures;
@@ -146,16 +147,16 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 		this.trialFailures = trialFailures + p;
 	}
 
-	public long getUniqueAsserts() {
+	public BigInteger getUniqueAsserts() {
 		return uniqueAsserts;
 	}
 
-	public synchronized void setUniqueAsserts(long uniqueAsserts) {
+	public synchronized void setUniqueAsserts(BigInteger uniqueAsserts) {
 		this.uniqueAsserts = uniqueAsserts;
 	}
 	
 	public synchronized void addUniqueAsserts(long p) {
-		this.uniqueAsserts = uniqueAsserts + p;
+		uniqueAsserts = uniqueAsserts.add(new BigInteger(new Long(p).toString()));
 	}
 
 	@Override
@@ -164,15 +165,15 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 	}
 
 	@Override
-	public int getTestsIgnored() {
+	public long getTestsIgnored() {
 		return testsIgnored;
 	}
 
-	public void setIgnoredTrials(int trialIgnored) {
+	public void setTrialsIgnored(int trialIgnored) {
 		this.trialsIgnored = trialIgnored;
 	}
 
-	public void setIgnoredTests(int testIgnored) {
+	public void setTestsIgnored(long testIgnored) {
 		this.testsIgnored = testIgnored;
 	}
 

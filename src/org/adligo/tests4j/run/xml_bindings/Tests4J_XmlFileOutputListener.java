@@ -13,9 +13,12 @@ import org.adligo.tests4j.run.common.I_JseSystem;
 import org.adligo.tests4j.run.common.JavaTree;
 import org.adligo.tests4j.run.common.JseSystem;
 import org.adligo.tests4j.run.xml.io.trial_result.TrialResultType;
+import org.adligo.tests4j.run.xml.io.trial_run_result.TrialRunResultType;
 import org.adligo.tests4j.run.xml_bindings.conversion.ConvertApiTrialResults;
+import org.adligo.tests4j.run.xml_bindings.conversion.ConvertRunResults;
 import org.adligo.tests4j.run.xml_bindings.conversion.ConvertSourceFileTrialResults;
 import org.adligo.tests4j.run.xml_bindings.conversion.ConvertUseCaseTrialResults;
+import org.adligo.tests4j.run.xml_bindings.io.RunResultIO;
 import org.adligo.tests4j.run.xml_bindings.io.TrialResultIO;
 import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.TrialType;
@@ -25,9 +28,12 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -45,6 +51,11 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
   private Set<String> topPkgs_ = new HashSet<String>();
   private ConcurrentSkipListSet<String> trialPkgDirs_ = new ConcurrentSkipListSet<String>();
   private CountDownLatch resultsDirsManipulationLatch_ = new CountDownLatch(1);
+  private ConcurrentLinkedQueue<String> passingTrials_ = new ConcurrentLinkedQueue<String>();
+  private ConcurrentLinkedQueue<String> failingTrials_ = new ConcurrentLinkedQueue<String>();
+  private ConcurrentLinkedQueue<String> ignoredTrials_ = new ConcurrentLinkedQueue<String>();
+  private ConcurrentLinkedQueue<String> trialDirs_ = new ConcurrentLinkedQueue<String>();
+  
   
   private String getResultsDir() {
     File file = system_.newFile(".");
@@ -71,7 +82,10 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
 
   public void createResultsDirs(I_TrialRunMetadata metadata) {
     int trials = metadata.getAllTrialsCount();
+    system_.mkdir(results_);
+    system_.mkdir(trials_);
     if (trials > 100) {
+      //create package folders to split up the files into folder
       hasTopPkgs_.set(true);
      
       Set<String> trialNames = new HashSet<String>();
@@ -83,12 +97,11 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
       JavaTree tree = new JavaTree(trialNames);
       List<I_JavaPackageNode> nodes = tree.getNodes();
       
-      system_.mkdir(results_);
-      system_.mkdir(trials_);
       findTopPkgs(nodes, new ArrayList<I_JavaPackageNode>(), topPkgs_);
       for (String topPkg: topPkgs_) {
         String rev = JavaTree.reverseJavaName(topPkg);
         trialPkgDirs_.add(rev);
+        trialDirs_.add(rev);
         system_.mkdir(trials_ + File.separator + rev);
       }
     }
@@ -165,6 +178,14 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
+    String name = result.getName();
+    if (result.isIgnored()) {
+      ignoredTrials_.add(name);
+    } else if (result.isPassed()) {
+      passingTrials_.add(name);
+    } else {
+      failingTrials_.add(name);
+    }
     writeTrialResultFile(result);
   }
 
@@ -234,8 +255,18 @@ public class Tests4J_XmlFileOutputListener implements I_Tests4J_Listener {
 
   @Override
   public void onRunCompleted(I_TrialRunResult result) {
-    // TODO Auto-generated method stub
+    Map<String,Object> extras = new HashMap<String, Object>();
+    extras.put(ConvertRunResults.GROUPS, new ArrayList<String>(trialPkgDirs_));
     
+    extras.put(ConvertRunResults.PASSES, new ArrayList<String>(passingTrials_));
+    extras.put(ConvertRunResults.FAILURES, new ArrayList<String>(failingTrials_));
+    extras.put(ConvertRunResults.IGNORES, new ArrayList<String>(ignoredTrials_));
+    TrialRunResultType runResult = ConvertRunResults.to(result, extras);
+    try {
+      RunResultIO.write(results_ + File.separator + "result.xml", runResult);
+    } catch (IOException e) {
+      e.printStackTrace(system_.getOut());
+    }
   }
 
   @Override

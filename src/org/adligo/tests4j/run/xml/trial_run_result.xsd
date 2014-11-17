@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
-	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/trial_run_results" 
-	xmlns:tns="http://www.adligo.org/tests4j/run/xml/io/trial_run_results"
+	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/trial_run_result" 
+	xmlns:tns="http://www.adligo.org/tests4j/run/xml/io/trial_run_result"
 	xmlns:cns="http://www.adligo.org/tests4j/run/xml/io/coverage" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	elementFormDefault="qualified">
 
 	<import schemaLocation="coverage.xsd" 
 		namespace="http://www.adligo.org/tests4j/run/xml/io/coverage">
 	</import>
 
-	<complexType name="trial_run_results_type">
+	<complexType name="trial_run_result_type">
 		<sequence>
             <element name="resultFolder" type="string" minOccurs="0" maxOccurs="unbounded">
             	<annotation>
@@ -62,13 +63,7 @@
 				</annotation>
 			</element>
 		</sequence>
-		<attribute name="asserts" use="required">
-			<simpleType>
-				<restriction base="int">
-					<minInclusive value="0"></minInclusive>
-				</restriction>
-			</simpleType>
-		</attribute>
+		<attribute name="asserts" use="required" type="integer"/>
 		<attribute name="coveragePercentage" type="float" use="optional"></attribute>
 		<attribute name="trials" use="required">
 			<simpleType>
@@ -101,51 +96,51 @@
 		<attribute name="runTime" type="duration" use="required"></attribute>
 		<attribute name="tests" use="required">
 			<simpleType>
-				<restriction base="int">
+				<restriction base="long">
 					<minInclusive value="1"></minInclusive>
 				</restriction>
 			</simpleType>
 		</attribute>
 		<attribute name="testsPassed" use="required">
 			<simpleType>
-				<restriction base="int">
+				<restriction base="long">
 					<minInclusive value="0"></minInclusive>
 				</restriction>
 			</simpleType>
 		</attribute>
 		<attribute name="testsIgnored" use="optional">
 			<simpleType>
-				<restriction base="int">
+				<restriction base="long">
 					<minInclusive value="0"></minInclusive>
 				</restriction>
 			</simpleType>
 		</attribute>
 		<attribute name="testsFailed" use="required">
 			<simpleType>
-				<restriction base="int">
+				<restriction base="long">
 					<minInclusive value="0"></minInclusive>
 				</restriction>
 			</simpleType>
 		</attribute>
 		<attribute name="uniqueAsserts" use="optional">
 			<simpleType>
-				<restriction base="int">
+				<restriction base="integer">
 					<minInclusive value="0"></minInclusive>
 				</restriction>
 			</simpleType>
 		</attribute>
 	</complexType>
 
-	<complexType name="java_tree_type">
+	<complexType name="trial_tree_type">
 		<sequence>
-			<element name="package" type="tns:java_tree_type"
+			<element name="package" type="tns:trial_tree_type"
 				minOccurs="0" maxOccurs="unbounded">
 			</element>
-			<element name="class" type="string" minOccurs="0" maxOccurs="1">
+			<element name="trial" type="string" minOccurs="0" maxOccurs="unbounded">
 				<annotation>
 					<documentation>
-						This is the java simple name from
-						class.getSimpleName().
+						This is the trial name with it's run number if 
+						it was run more than once.
 					</documentation>
 				</annotation>
 			</element>
@@ -161,11 +156,11 @@
 		</attribute>
 	</complexType>
 
-    <element name="results" type="tns:trial_run_results_type"></element>
+    <element name="trial_run_result" type="tns:trial_run_result_type"></element>
 
     <complexType name="trial_group_type">
     	<sequence>
-    		<element name="package" type="tns:java_tree_type" minOccurs="0" maxOccurs="unbounded"></element>
+    		<element name="package" type="tns:trial_tree_type" minOccurs="0" maxOccurs="unbounded"></element>
     	</sequence>
     </complexType>
 </schema>
