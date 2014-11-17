@@ -1,7 +1,7 @@
 package org.adligo.tests4j.run.xml_bindings.conversion;
 
 import org.adligo.tests4j.run.common.I_JavaPackageNode;
-import org.adligo.tests4j.run.xml.io.trial_run_result.TrialTreeType;
+import org.adligo.tests4j.run.xml.io.trial_run_result.v1_0.TrialTreeType;
 
 import java.util.ArrayList;
 import java.util.List;

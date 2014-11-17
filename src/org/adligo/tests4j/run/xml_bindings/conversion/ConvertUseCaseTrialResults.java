@@ -1,10 +1,10 @@
 package org.adligo.tests4j.run.xml_bindings.conversion;
 
 import org.adligo.tests4j.models.shared.results.I_UseCaseTrialResult;
-import org.adligo.tests4j.run.xml.io.trial_result.CommonResultType;
-import org.adligo.tests4j.run.xml.io.trial_result.TrialResultType;
-import org.adligo.tests4j.run.xml.io.trial_result.UseCaseTrialResultType;
-import org.adligo.tests4j.run.xml.io.use_cases.UseCaseBriefType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.CommonResultType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.TrialResultType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.UseCaseTrialResultType;
+import org.adligo.tests4j.run.xml.io.use_cases.v1_0.UseCaseBriefType;
 
 public class ConvertUseCaseTrialResults {
 

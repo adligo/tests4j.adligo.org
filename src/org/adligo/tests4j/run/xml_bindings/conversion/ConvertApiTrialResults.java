@@ -2,10 +2,10 @@ package org.adligo.tests4j.run.xml_bindings.conversion;
 
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
-import org.adligo.tests4j.run.xml.io.coverage.PackageCoverageType;
-import org.adligo.tests4j.run.xml.io.trial_result.ApiTrialResultType;
-import org.adligo.tests4j.run.xml.io.trial_result.CommonResultType;
-import org.adligo.tests4j.run.xml.io.trial_result.TrialResultType;
+import org.adligo.tests4j.run.xml.io.coverage.v1_0.PackageCoverageType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.ApiTrialResultType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.CommonResultType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.TrialResultType;
 
 public class ConvertApiTrialResults {
 

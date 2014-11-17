@@ -74,7 +74,9 @@ public class ClassesWithSourceFileTrialsCalculator {
 				sourceFileClassesWithTrials_.add(clazzName);
 				srcClassesWithTrial++;
 			}
-			sourceFilesToTrials.put(simpName, trialMeta);
+			if (!"package-info".equals(simpName)) {
+			  sourceFilesToTrials.put(simpName, trialMeta);
+			}
 		}
 		
 		

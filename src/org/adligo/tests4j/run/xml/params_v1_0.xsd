@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/params/v1_0" 
+	xmlns:uns="http://www.adligo.org/tests4j/run/xml/io/params/v1_0"
+	elementFormDefault="qualified">
+
+
+
+    <complexType name="params_type">
+    	<sequence>
+    		<element name="trial" type="string" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    		<element name="selection" type="uns:selection_type"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="log" type="uns:log_state_type" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    		<element name="remote" type="uns:remote_info_type"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    	</sequence>
+    	<attribute name="metaTrial" type="string" use="optional"></attribute>
+    	<attribute name="metaTrialParamsFactory" type="string"
+    		use="optional">
+    	</attribute>
+    	<attribute name="trialParamsFactory" type="string"
+    		use="optional">
+    	</attribute>
+    	<attribute name="coveragePluginFactory" type="string"
+    		use="optional">
+    	</attribute>
+    	<attribute name="recommendedTrialThreads" use="optional">
+    		<simpleType>
+    			<restriction base="int">
+    				<minInclusive value="1"></minInclusive>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="recommendedRemoteThreads" use="optional">
+    		<simpleType>
+    			<restriction base="int">
+    				<minInclusive value="1"></minInclusive>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="recommendedSetupThreads" use="optional">
+    		<simpleType>
+    			<restriction base="int">
+    				<minInclusive value="1"></minInclusive>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="evaluatorLookup" type="string" use="optional"></attribute>
+    </complexType>
+
+    <complexType name="selection_type">
+    	<attribute name="trial" type="string" use="required"></attribute>
+    	<attribute name="test" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="log_state_type">
+    	<attribute name="className" type="string" use="required"></attribute>
+    	<attribute name="state" type="boolean" use="required"></attribute>
+    </complexType>
+
+    <complexType name="remote_info_type">
+    	<sequence>
+    		<element name="params" type="uns:params_type" minOccurs="1" maxOccurs="1"></element>
+    	</sequence>
+    	<attribute name="host" type="string" use="required"></attribute>
+    	<attribute name="port" use="required">
+    		<simpleType>
+    			<restriction base="int">
+    				<minInclusive value="1"></minInclusive>
+    			</restriction>
+    		</simpleType>
+    	</attribute>
+    	<attribute name="authCode" type="string" use="required"></attribute>
+    </complexType>
+</schema>

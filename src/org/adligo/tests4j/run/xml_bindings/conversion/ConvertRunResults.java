@@ -3,9 +3,9 @@ package org.adligo.tests4j.run.xml_bindings.conversion;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.run.common.I_JavaPackageNode;
 import org.adligo.tests4j.run.common.JavaTree;
-import org.adligo.tests4j.run.xml.io.trial_run_result.TrialGroupType;
-import org.adligo.tests4j.run.xml.io.trial_run_result.TrialRunResultType;
-import org.adligo.tests4j.run.xml.io.trial_run_result.TrialTreeType;
+import org.adligo.tests4j.run.xml.io.trial_run_result.v1_0.TrialGroupType;
+import org.adligo.tests4j.run.xml.io.trial_run_result.v1_0.TrialRunResultType;
+import org.adligo.tests4j.run.xml.io.trial_run_result.v1_0.TrialTreeType;
 
 import java.util.List;
 import java.util.Map;

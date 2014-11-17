@@ -2,8 +2,8 @@ package org.adligo.tests4j.run.xml_bindings.conversion;
 
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.run.xml.io.test_result.TestResultType;
-import org.adligo.tests4j.run.xml.io.trial_result.CommonResultType;
+import org.adligo.tests4j.run.xml.io.test_result.v1_0.TestResultType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.CommonResultType;
 
 import java.util.List;
 

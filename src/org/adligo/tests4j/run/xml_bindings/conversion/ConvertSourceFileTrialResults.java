@@ -2,10 +2,10 @@ package org.adligo.tests4j.run.xml_bindings.conversion;
 
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
-import org.adligo.tests4j.run.xml.io.trial_result.CommonResultType;
-import org.adligo.tests4j.run.xml.io.trial_result.InnerSourceFileCoverageType;
-import org.adligo.tests4j.run.xml.io.trial_result.SourceFileTrialResultType;
-import org.adligo.tests4j.run.xml.io.trial_result.TrialResultType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.CommonResultType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.InnerSourceFileCoverageType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.SourceFileTrialResultType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.TrialResultType;
 
 public class ConvertSourceFileTrialResults {
 

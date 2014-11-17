@@ -4,10 +4,10 @@ import org.adligo.tests4j.models.shared.coverage.I_ClassProbes;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.I_Probes;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
-import org.adligo.tests4j.run.xml.io.coverage.ClassCoverageType;
-import org.adligo.tests4j.run.xml.io.coverage.PackageCoverageType;
-import org.adligo.tests4j.run.xml.io.coverage.SourceFileCoverageType;
-import org.adligo.tests4j.run.xml.io.trial_result.InnerSourceFileCoverageType;
+import org.adligo.tests4j.run.xml.io.coverage.v1_0.ClassCoverageType;
+import org.adligo.tests4j.run.xml.io.coverage.v1_0.PackageCoverageType;
+import org.adligo.tests4j.run.xml.io.coverage.v1_0.SourceFileCoverageType;
+import org.adligo.tests4j.run.xml.io.trial_result.v1_0.InnerSourceFileCoverageType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +19,7 @@ public class ConvertCoverage {
   public static InnerSourceFileCoverageType toInner(I_SourceFileCoverageBrief brief) {
     I_Probes probes = brief.getProbes();
     InnerSourceFileCoverageType coverage = new InnerSourceFileCoverageType();
-    byte [] data = ConvertByteArrays.to(
+    byte [] data = ConvertCoverageByteArrays.to(
         brief.getCoveredCoverageUnits(), 
         brief.getCoverageUnits(), 
         probes.toArray());
@@ -41,7 +41,7 @@ public class ConvertCoverage {
     SourceFileCoverageType coverage = new SourceFileCoverageType();
     String className = brief.getClassName();
     coverage.setName(className);
-    byte [] data = ConvertByteArrays.to(
+    byte [] data = ConvertCoverageByteArrays.to(
         brief.getCoveredCoverageUnits(), 
         brief.getCoverageUnits(), 
         probes.toArray());

@@ -20,11 +20,12 @@ import javax.xml.validation.SchemaFactory;
 public class Tests4J_SchemaLoader implements LSResourceResolver {
   public static final Tests4J_SchemaLoader INSTANCE = new Tests4J_SchemaLoader();
   public static final String XML_PACKAGE = "/org/adligo/tests4j/run/xml/";
-  public static final String COVERAGE_SCHEMA = XML_PACKAGE + "coverage.xsd";
-  public static final String RUN_RESULT_SCHEMA = XML_PACKAGE + "trial_run_result.xsd";
-  public static final String TEST_RESULTS_SCHEMA = XML_PACKAGE + "test_result.xsd";
-  public static final String TRIAL_RESULTS_SCHEMA = XML_PACKAGE + "trial_result.xsd";
-  public static final String USE_CASES_SCHEMA = XML_PACKAGE + "use_cases.xsd";
+  public static final String COVERAGE_SCHEMA = XML_PACKAGE + "coverage_v1_0.xsd";
+  public static final String RUN_RESULT_SCHEMA = XML_PACKAGE + "trial_run_result_v1_0.xsd";
+  public static final String TEST_RESULTS_SCHEMA = XML_PACKAGE + "test_result_v1_0.xsd";
+  public static final String TRIAL_RESULTS_SCHEMA = XML_PACKAGE + "trial_result_v1_0.xsd";
+  public static final String USE_CASES_SCHEMA = XML_PACKAGE + "use_cases_v1_0.xsd";
+  public static final String PARAMS_SCHEMA = XML_PACKAGE + "params_v1_0.xsd";
   
   private DOMImplementationRegistry registry;
   private DOMImplementationLS domImplementationLS;
@@ -45,11 +46,12 @@ public class Tests4J_SchemaLoader implements LSResourceResolver {
         e.printStackTrace();
     }
     
-    namespaceToSchema.put(Tests4J_JaxbContexts.COVERAGE_NS, COVERAGE_SCHEMA);
-    namespaceToSchema.put(Tests4J_JaxbContexts.RUN_RESULT_NS, RUN_RESULT_SCHEMA);
-    namespaceToSchema.put(Tests4J_JaxbContexts.TEST_RESULTS_NS, TEST_RESULTS_SCHEMA);
-    namespaceToSchema.put(Tests4J_JaxbContexts.USE_CASES_NS, USE_CASES_SCHEMA);
-    namespaceToSchema.put(Tests4J_JaxbContexts.TRIAL_RESULTS_NS, TRIAL_RESULTS_SCHEMA);
+    namespaceToSchema.put(Tests4J_JaxbContexts.COVERAGE_NS_1_0, COVERAGE_SCHEMA);
+    namespaceToSchema.put(Tests4J_JaxbContexts.RUN_RESULT_NS_1_0, RUN_RESULT_SCHEMA);
+    namespaceToSchema.put(Tests4J_JaxbContexts.TEST_RESULTS_NS_1_0, TEST_RESULTS_SCHEMA);
+    namespaceToSchema.put(Tests4J_JaxbContexts.USE_CASES_NS_1_0, USE_CASES_SCHEMA);
+    namespaceToSchema.put(Tests4J_JaxbContexts.TRIAL_RESULTS_NS_1_0, TRIAL_RESULTS_SCHEMA);
+    namespaceToSchema.put(Tests4J_JaxbContexts.PARAMS_NS_1_0, PARAMS_SCHEMA);
     
     factory.setResourceResolver(this);  
     

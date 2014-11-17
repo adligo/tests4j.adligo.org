@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/trial_run_result/v1_0" 
+	xmlns:tns="http://www.adligo.org/tests4j/run/xml/io/trial_run_result/v1_0"
+	xmlns:cns="http://www.adligo.org/tests4j/run/xml/io/coverage/v1_0" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+	<import schemaLocation="coverage_v1_0.xsd" 
+		namespace="http://www.adligo.org/tests4j/run/xml/io/coverage/v1_0">
+	</import>
+
+	<complexType name="trial_run_result_type">
+		<sequence>
+            <element name="resultFolder" type="string" minOccurs="0" maxOccurs="unbounded">
+            	<annotation>
+					<documentation>
+						By default tests4j will write out trial files
+						in a folder called results which look like;
+						AssertTypeTrial.common.asserts.shared.tests4j_tests.adligo.org.xml
+						However when there are more than 100 trials,
+						it will attempt to create sub folders which contain 
+						fewer than 100 trial result files if possible.
+						I.E.
+						results.xml
+						results
+						  |-asserts.shared.tests4j_tests.adligo.org
+						  |            |-AssertTypeTrial.common.asserts.shared.tests4j_tests.adligo.org.xml
+						  |-trials.shared.tests4j_tests.adligo.org
+						This set of xml nodes simply indicates which folders
+						are created under the results folder.  A trial with 
+						namespace/java package name matching a folder must
+						be in that folder.
+						
+						This is mostly to keep the result directory easier to use, provide
+						less work to the os (I have seen both mac os and windows seems to 
+						stall sometimes on file counts in the directories) 
+						and also allows concurrent reading of the result files when helpful.
+						
+						The namespace of the actual .xml files is reversed so that a command line
+						user can open the correct folder/file using intelli-sence (ctrl-i in bash)
+						to auto type with less keystrokes, similar to the way they would in 
+						a IDE like eclipse.
+					</documentation>
+				</annotation>
+            </element>
+            <element name="passingTrials" type="tns:trial_group_type"
+				minOccurs="1" maxOccurs="1">
+			</element>
+			<element name="failingTrials" type="tns:trial_group_type"
+				minOccurs="0" maxOccurs="1">
+			</element>
+			<element name="ignoredTrials" type="tns:trial_group_type"
+				minOccurs="0" maxOccurs="1">
+			</element>
+			<element name="coverage" type="cns:packages_coverage_type"
+				minOccurs="0" maxOccurs="1">
+				<annotation>
+					<documentation>
+						This is the aggregate code coverage 
+						for the entire trial run.
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="asserts" use="required" type="integer"/>
+		<attribute name="coveragePercentage" type="float" use="optional"></attribute>
+		<attribute name="trials" use="required">
+			<simpleType>
+				<restriction base="int">
+					<minInclusive value="1"></minInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="trialsPassed" use="required">
+			<simpleType>
+				<restriction base="int">
+					<minInclusive value="0"></minInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="trialsIgnored" use="optional">
+			<simpleType>
+				<restriction base="int">
+					<minInclusive value="0"></minInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="trialsFailed" use="required">
+			<simpleType>
+				<restriction base="int">
+					<minInclusive value="0"></minInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="runTime" type="duration" use="required"></attribute>
+		<attribute name="tests" use="required">
+			<simpleType>
+				<restriction base="long">
+					<minInclusive value="1"></minInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="testsPassed" use="required">
+			<simpleType>
+				<restriction base="long">
+					<minInclusive value="0"></minInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="testsIgnored" use="optional">
+			<simpleType>
+				<restriction base="long">
+					<minInclusive value="0"></minInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="testsFailed" use="required">
+			<simpleType>
+				<restriction base="long">
+					<minInclusive value="0"></minInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
+		<attribute name="uniqueAsserts" use="optional">
+			<simpleType>
+				<restriction base="integer">
+					<minInclusive value="0"></minInclusive>
+				</restriction>
+			</simpleType>
+		</attribute>
+	</complexType>
+
+	<complexType name="trial_tree_type">
+		<sequence>
+			<element name="package" type="tns:trial_tree_type"
+				minOccurs="0" maxOccurs="unbounded">
+			</element>
+			<element name="trial" type="string" minOccurs="0" maxOccurs="unbounded">
+				<annotation>
+					<documentation>
+						This is the trial name with it's run number if 
+						it was run more than once.
+					</documentation>
+				</annotation>
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required">
+			<annotation>
+				<documentation>
+					This is a java package and can include either a simple name
+					(i.e. just the domain component 'org'), or can be a long name
+					(i.e. 'org.adligo.tests4j')
+				</documentation>
+			</annotation>
+		</attribute>
+	</complexType>
+
+    <element name="trial_run_result" type="tns:trial_run_result_type"></element>
+
+    <complexType name="trial_group_type">
+    	<sequence>
+    		<element name="package" type="tns:trial_tree_type" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    </complexType>
+</schema>

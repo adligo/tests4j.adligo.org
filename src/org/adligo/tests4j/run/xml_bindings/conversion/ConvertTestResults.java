@@ -1,8 +1,8 @@
 package org.adligo.tests4j.run.xml_bindings.conversion;
 
 import org.adligo.tests4j.models.shared.results.I_TestResult;
-import org.adligo.tests4j.run.xml.io.test_result.TestFailureType;
-import org.adligo.tests4j.run.xml.io.test_result.TestResultType;
+import org.adligo.tests4j.run.xml.io.test_result.v1_0.TestFailureType;
+import org.adligo.tests4j.run.xml.io.test_result.v1_0.TestResultType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailureType;
