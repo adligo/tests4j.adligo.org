@@ -3,8 +3,8 @@ package org.adligo.tests4j.models.shared.results;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseBrief;
 
 public class UseCaseTrialResultMutant extends BaseTrialResultMutant implements I_UseCaseTrialResult {
-	private I_UseCaseBrief useCase;
-	private String system;
+	private I_UseCaseBrief useCase_;
+	private String unit_;
 	
 	public UseCaseTrialResultMutant() {}
 	
@@ -14,8 +14,8 @@ public class UseCaseTrialResultMutant extends BaseTrialResultMutant implements I
 	
 	public UseCaseTrialResultMutant(I_UseCaseTrialResult p, boolean cloneRelaions) {
 		super(p, cloneRelaions);
-		useCase = p.getUseCase();
-		system = p.getSystem();
+		useCase_ = p.getUseCase();
+		unit_ = p.getName();
 	}
 
 	public UseCaseTrialResultMutant(I_TrialResult p) {
@@ -27,19 +27,19 @@ public class UseCaseTrialResultMutant extends BaseTrialResultMutant implements I
 	}
 	
 	public I_UseCaseBrief getUseCase() {
-		return useCase;
+		return useCase_;
 	}
 
-	public String getSystem() {
-		return system;
+	public String getUnit() {
+		return unit_;
 	}
 
 	public void setUseCase(I_UseCaseBrief useCase) {
-		this.useCase = useCase;
+		this.useCase_ = useCase;
 	}
 
-	public void setSystem(String system) {
-		this.system = system;
+	public void setUnit(String unit) {
+		this.unit_ = unit;
 	}
 	
 	

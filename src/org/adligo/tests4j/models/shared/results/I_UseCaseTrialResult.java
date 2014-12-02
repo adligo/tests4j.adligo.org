@@ -8,16 +8,11 @@ import org.adligo.tests4j.system.shared.trials.UseCaseScope;
  * @author scott
  *
  */
-public interface I_UseCaseTrialResult extends I_TrialResult {
+public interface I_UseCaseTrialResult extends I_UnitTrialResult {
 	/**
 	 * @see UseCaseScope#nown()
 	 * @see UseCaseScope#verb()
 	 * @return
 	 */
 	public I_UseCaseBrief getUseCase();
-	/**
-	 * @see UseCaseScope#system()
-	 * @return
-	 */
-	public String getSystem();
 }

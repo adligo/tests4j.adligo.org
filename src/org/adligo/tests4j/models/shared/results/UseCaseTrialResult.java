@@ -19,8 +19,8 @@ public class UseCaseTrialResult extends BaseTrialResult implements I_UseCaseTria
 		return mutant.getUseCase();
 	}
 
-	public String getSystem() {
-		return mutant.getSystem();
+	public String getUnit() {
+		return mutant.getUnit();
 	}
 
 }
