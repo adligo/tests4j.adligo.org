@@ -1,6 +1,5 @@
 package org.adligo.tests4j.models.shared.coverage;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
@@ -41,13 +40,19 @@ public interface I_PackageCoverageBrief extends I_CoverageUnitsContainer {
 	public Set<String> getSourceFileNames();
 	
 	/**
-	 * return the child packages if any
-	 * or a empty list 
-	 * regardless of if they were covered at all.
-	 * @return
+	 * @return the child packages if any
+   * or a empty list 
+   * regardless of if they were covered at all.
 	 */
 	public List<I_PackageCoverageBrief> getChildPackageCoverage();
 	
+	 /**
+	  * This method should return the package with the packageName
+	  * if it is child (grand-child etc) package of the package 
+	  * which this instance represents. 
+   * @return the I_PackageCoverageBreif of the packageName
+   */
+  public I_PackageCoverageBrief getPackageCoverage(String packageName);
 	/**
 	 * a convenience method for determining if there
 	 * are child packages.

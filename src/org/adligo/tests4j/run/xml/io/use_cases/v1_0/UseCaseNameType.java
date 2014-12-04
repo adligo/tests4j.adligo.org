@@ -6,7 +6,7 @@
 //
 
 
-package org.adligo.tests4j.run.xml.io.params.v1_0;
+package org.adligo.tests4j.run.xml.io.use_cases.v1_0;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,16 +15,15 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for log_state_type complex type.
+ * <p>Java class for use_case_name_type complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="log_state_type"&gt;
+ * &lt;complexType name="use_case_name_type"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
- *       &lt;attribute name="className" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
- *       &lt;attribute name="state" use="required" type="{http://www.w3.org/2001/XMLSchema}boolean" /&gt;
+ *       &lt;attribute name="name" use="required" type="{http://www.w3.org/2001/XMLSchema}string" /&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
@@ -33,52 +32,34 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "log_state_type")
-public class LogStateType {
+@XmlType(name = "use_case_name_type")
+public class UseCaseNameType {
 
-    @XmlAttribute(name = "className", required = true)
-    protected String className;
-    @XmlAttribute(name = "state", required = true)
-    protected boolean state;
+    @XmlAttribute(name = "name", required = true)
+    protected String name;
 
     /**
-     * Gets the value of the className property.
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getClassName() {
-        return className;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the className property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setClassName(String value) {
-        this.className = value;
-    }
-
-    /**
-     * Gets the value of the state property.
-     * 
-     */
-    public boolean isState() {
-        return state;
-    }
-
-    /**
-     * Sets the value of the state property.
-     * 
-     */
-    public void setState(boolean value) {
-        this.state = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
 }

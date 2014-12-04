@@ -48,4 +48,8 @@ public class PackageCoverageBriefDelegator implements I_PackageCoverageBrief {
 	public boolean hasChildPackageCoverage() {
 		return delegate.hasChildPackageCoverage();
 	}
+
+  public I_PackageCoverageBrief getPackageCoverage(String packageName) {
+    return delegate.getPackageCoverage(packageName);
+  }
 }

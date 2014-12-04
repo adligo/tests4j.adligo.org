@@ -8,17 +8,14 @@
 
     <complexType name="use_case_type">
     	<sequence>
-    		<element name="brief" type="uns:use_case_brief_type"
-    			minOccurs="1" maxOccurs="1">
-    		</element>
             <element name="actor" type="string" minOccurs="1" maxOccurs="unbounded"></element>
-            <element name="extend" type="uns:use_case_brief_type"
+            <element name="extend" type="uns:use_case_name_type"
     			minOccurs="0" maxOccurs="unbounded">
     		</element>
-    		<element name="include" type="uns:use_case_brief_type"
+    		<element name="include" type="uns:use_case_name_type"
     			minOccurs="0" maxOccurs="unbounded">
     		</element>
-    		<element name="generalize" type="uns:use_case_brief_type"
+    		<element name="generalize" type="uns:use_case_name_type"
     			minOccurs="0" maxOccurs="unbounded">
     		</element>
     		<element name="comments" type="string" minOccurs="0"
@@ -35,31 +32,10 @@
     	<attribute name="name" type="string"></attribute>
     </complexType>
 
-    <complexType name="use_case_brief_type">
-    	<attribute name="nown" type="string" use="required"></attribute>
-    	<attribute name="verb" type="string" use="required"></attribute>
+    <complexType name="use_case_name_type">
+    	<attribute name="name" type="string" use="required"></attribute>
     </complexType>
 
-    <complexType name="system_use_cases_type">
-    	<sequence>
-    		<element name="import" type="string" minOccurs="0"
-    			maxOccurs="unbounded">
-    			<annotation>
-    				<documentation>
-    					This is the name of an additional file in the
-    					same directory as the primary use_cases.xml file
-    					which is added to the set of use cases before
-    					the use cases in this file.
-    				</documentation>
-    			</annotation>
-    		</element>
-    		<element name="case" type="uns:use_case_type" minOccurs="0"
-    			maxOccurs="unbounded">
-    		</element>
-    		<element name="actor" type="string" minOccurs="1" maxOccurs="unbounded"></element>
-    	</sequence>
-    	<attribute name="system" type="string" use="required"></attribute>
-    </complexType>
 
-    <element name="system" type="uns:system_use_cases_type"></element>
+    <element name="use_case" type="uns:use_case_type"></element>
 </schema>

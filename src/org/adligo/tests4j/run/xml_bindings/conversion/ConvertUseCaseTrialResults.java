@@ -4,7 +4,6 @@ import org.adligo.tests4j.models.shared.results.I_UseCaseTrialResult;
 import org.adligo.tests4j.run.xml.io.trial_result.v1_0.CommonResultType;
 import org.adligo.tests4j.run.xml.io.trial_result.v1_0.TrialResultType;
 import org.adligo.tests4j.run.xml.io.trial_result.v1_0.UseCaseTrialResultType;
-import org.adligo.tests4j.run.xml.io.use_cases.v1_0.UseCaseBriefType;
 
 public class ConvertUseCaseTrialResults {
 
@@ -12,8 +11,8 @@ public class ConvertUseCaseTrialResults {
     TrialResultType ret = new TrialResultType();
     UseCaseTrialResultType trial = new UseCaseTrialResultType();
     
-    UseCaseBriefType uc = ConvertUseCases.to(result.getUseCase());
-    trial.setUseCase(uc);
+    //UseCaseBriefType uc = ConvertUseCases.to(result.getUseCase());
+    //trial.setUseCase(uc);
     CommonResultType cr = ConvertCommonTrialResults.to(result);
     trial.setCommon(cr);
     ret.setUseCaseTrialResult(trial);

@@ -5,5 +5,5 @@
 // Generated on: 2014.12.04 at 03:31:14 AM CST 
 //
 
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.adligo.org/tests4j/run/xml/io/use_cases/v1_0", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
-package org.adligo.tests4j.run.xml.io.use_cases.v1_0;
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://www.adligo.org/tests4j/run/xml/io/requirements/v1_0", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+package org.adligo.tests4j.run.xml.io.requirements.v1_0;

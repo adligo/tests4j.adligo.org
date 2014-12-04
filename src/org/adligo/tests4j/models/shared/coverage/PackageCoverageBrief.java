@@ -10,80 +10,94 @@ import java.util.Set;
 
 
 public class PackageCoverageBrief implements I_PackageCoverageBrief {
-	private PackageCoverageBriefMutant mutant;
-	private Map<String, I_SourceFileCoverageBrief> coverage;
-	private List<I_PackageCoverageBrief> children;
+	private PackageCoverageBriefMutant mutant_;
+	private Map<String, I_SourceFileCoverageBrief> coverage_;
+	private List<I_PackageCoverageBrief> children_;
 	
 	public PackageCoverageBrief() {
-		mutant = new PackageCoverageBriefMutant();
-		coverage = Collections.emptyMap();
-		children = Collections.emptyList();
+		mutant_ = new PackageCoverageBriefMutant();
+		coverage_ = Collections.emptyMap();
+		children_ = Collections.emptyList();
 	}
 	
 	public PackageCoverageBrief(I_PackageCoverageBrief p) {
 		List<I_PackageCoverageBrief> otherChildren =  p.getChildPackageCoverage();
 		if (otherChildren.size() >= 1) {
-			children = new ArrayList<I_PackageCoverageBrief>();
+			children_ = new ArrayList<I_PackageCoverageBrief>();
 		}
 		for (I_PackageCoverageBrief other: otherChildren) {
-			children.add(new PackageCoverageBrief(other));
+			children_.add(new PackageCoverageBrief(other));
 		}
 		Set<String> sourceFileNames = p.getSourceFileNames();
 		if (sourceFileNames.size() >= 1) {
-			coverage = new HashMap<String, I_SourceFileCoverageBrief>();
+			coverage_ = new HashMap<String, I_SourceFileCoverageBrief>();
 			for (String name: sourceFileNames) {
-				coverage.put(name, new SourceFileCoverageBrief(p.getCoverage(name)));
+				coverage_.put(name, new SourceFileCoverageBrief(p.getCoverage(name)));
 			}
 		} else {
-			coverage = Collections.emptyMap();
+			coverage_ = Collections.emptyMap();
 		}
 		
-		mutant = new PackageCoverageBriefMutant(p, false);
+		mutant_ = new PackageCoverageBriefMutant(p, false);
 		
 		
 	}
 
 	public I_CoverageUnits getCoverageUnits() {
-		return mutant.getCoverageUnits();
+		return mutant_.getCoverageUnits();
 	}
 
 	public I_CoverageUnits getCoveredCoverageUnits() {
-		return mutant.getCoveredCoverageUnits();
+		return mutant_.getCoveredCoverageUnits();
 	}
 
 	public BigDecimal getPercentageCovered() {
-		return mutant.getPercentageCovered();
+		return mutant_.getPercentageCovered();
 	}
 
 	public String getPackageName() {
-		return mutant.getPackageName();
+		return mutant_.getPackageName();
 	}
 
 	public I_SourceFileCoverageBrief getCoverage(String sourceFileName) {
-		return coverage.get(sourceFileName);
+		return coverage_.get(sourceFileName);
 	}
 
 	public Set<String> getSourceFileNames() {
-		return coverage.keySet();
+		return coverage_.keySet();
 	}
 
 	public List<I_PackageCoverageBrief> getChildPackageCoverage() {
-		return children;
+		return children_;
 	}
 
 	public boolean hasChildPackageCoverage() {
-		return mutant.hasChildPackageCoverage();
+		return mutant_.hasChildPackageCoverage();
 	}
 
 
 
 	public String toString() {
-		return mutant.toString();
+		return mutant_.toString();
 	}
 
 	@Override
 	public double getPercentageCoveredDouble() {
 		return getPercentageCovered().doubleValue();
 	}
-
+	
+  @Override
+  public I_PackageCoverageBrief getPackageCoverage(String packageName) {
+    String myName = mutant_.getPackageName();
+    if (myName.equals(packageName)) {
+      return this;
+    }
+    for (I_PackageCoverageBrief pkg: children_) {
+      String cname = pkg.getPackageName();
+      if (packageName.indexOf(cname) == 0) {
+        return pkg.getPackageCoverage(packageName);
+      }
+    }
+    return null;
+  }
 }

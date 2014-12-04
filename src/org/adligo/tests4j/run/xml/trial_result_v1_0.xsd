@@ -39,7 +39,7 @@
 
 	<complexType name="use_case_trial_result_type">
 		<sequence>
-            <element name="use_case" type="uns:use_case_brief_type" minOccurs="1" maxOccurs="1"></element>
+            <element name="use_case" type="string" minOccurs="1" maxOccurs="unbounded"></element>
             <element name="common" type="rns:common_result_type"
 				minOccurs="1" maxOccurs="1">
 			</element>
@@ -50,7 +50,8 @@
 
     <complexType name="common_result_type">
     	<sequence>
-    		<element name="failed" type="tns:test_result_type"
+            <element name="topic" type="rns:topic_type" minOccurs="0" maxOccurs="1"></element>
+            <element name="failed" type="tns:test_result_type"
     			minOccurs="0" maxOccurs="unbounded">
     		</element>
     		<element name="isIgnored" type="tns:test_result_type"
@@ -131,5 +132,14 @@
     		<element name="api_trial_result" type="rns:api_trial_result_type" minOccurs="0" maxOccurs="1"></element>
     		<element name="use_case_trial_result" type="rns:use_case_trial_result_type" minOccurs="0" maxOccurs="1"></element>
     	</choice>
+    </complexType>
+
+    <complexType name="topic_type">
+        <annotation>
+        	<documentation>See the org.adligo.tests4j.system.shared.trials.Topic annotation.</documentation>
+        </annotation>
+        <attribute name="system" type="string" use="optional"></attribute>
+    	<attribute name="project" type="string" use="optional"></attribute>
+    	<attribute name="partition" type="string" use="optional"></attribute>
     </complexType>
 </schema>

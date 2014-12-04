@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/requirements/v1_0" 
+	xmlns:uns="http://www.adligo.org/tests4j/run/xml/io/requirements/v1_0"
+	elementFormDefault="qualified">
+
+
+
+    <complexType name="requirements_type">
+        <annotation>
+        	<documentation>This is a way to add requirements to tests4j so that the 
+requirements can be compared verses the UseCaseTrials so that
+system/project/product owners know when 
+a requirement was fulfilled.
+
+Note all use case path names in this file and imported requirements
+must be unique.</documentation>
+        </annotation>
+        <sequence>
+            <element name="import" type="uns:imported_requirements_type" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="use_case_path"
+    			type="uns:use_cases_path_type" minOccurs="0" maxOccurs="unbounded">
+    		</element>
+    		<element name="project" type="uns:project_type" minOccurs="0" maxOccurs="unbounded"></element>
+    		<element name="system" type="uns:system_type" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+
+    </complexType>
+
+    <element name="requirements" type="string"></element>
+
+    <complexType name="system_type">
+    	<annotation>
+    		<documentation>
+    			The term system either corresponds to a project that can
+    			be used directly on it's own, or a group of projects
+    			which can be used in conjunction.
+    		</documentation>
+    	</annotation>
+    	<sequence>
+    		<element name="association" type="string" minOccurs="0"
+    			maxOccurs="unbounded">
+    			<annotation>
+    				<documentation>
+    					This is the name of a associated system from the
+    					same organization. I.E. SOAP Customer Directory
+    					is associated to Customer Billing System
+
+    					SOAP Customer Directory is associated to Company
+    					Web Application
+
+    				</documentation>
+    			</annotation>
+    		</element>
+    		<element name="use_cases"
+    			type="uns:use_cases_path_name_type" minOccurs="0"
+    			maxOccurs="unbounded">
+    		</element>
+    		<element name="partition" type="uns:partition_type" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="name" type="string" use="required">
+    		<annotation>
+    			<documentation>
+    				This is the end user (public/marketing name) of a
+    				system. It is intended that system names are unique
+    				with in a organization, sub systems can be appended
+    				to top systems using the parent name. System names
+    				are case sensitive.
+    			</documentation>
+    		</annotation>
+    	</attribute>
+    	<attribute name="parent" type="string" use="optional">
+    		<annotation>
+    			<documentation>
+    				This is the optional name of a parent system. This
+    				is useful when multiple systems are developed as a
+    				larger product. It was added for intelligence4j so
+    				that a tree like structured could exist; Tests4j
+    				Tests4j Eclipse Plugin Tests4j Command Line
+    				Interface (currently a fictional project) Tests4j
+    				NetBeans Plugin (currently a fictional project) The
+    				eventual idea is that tests4j would have a dashboard
+    				with pie charts (authors, use cases) and line charts
+    				(trial history, coverage history) for each system,
+    				and a tree for project direct view. Systems could
+    				drill down into sub system/projects. Projects would
+    				have pie charts for authors, use cases and coverage.
+    			</documentation>
+    		</annotation>
+    	</attribute>
+    </complexType>
+
+    <complexType name="project_type">
+        <annotation>
+        	<documentation>The term project here corresponds to a 
+managed project which can
+be shared (i.e. a git, subversion or cvs project).
+If a project is program which is intended to 
+be executed by itself (on a command line)
+or used directly by itself it may be a 
+system project (project node under a system_type).</documentation>
+        </annotation>
+        <sequence>
+        	<element name="association" type="string" minOccurs="0"
+        		maxOccurs="unbounded">
+        		<annotation>
+        			<documentation>
+        				This is the name of another project, which is
+        				associated (may be used with) the project
+        				corresponding to this node. Associations are
+        				useful to list known complementary projects
+        				which may be used to help a project, but are not
+        				required by that project. I.E.; tests4j_4jacoco
+        				is associated with tests4j since it implements
+        				I_CoveragePlugin and can therefore assist in
+        				running trials.
+
+        				tests4j_4mockito is associated with tests4j
+        				since provides help for development of trials.
+        			</documentation>
+        		</annotation>
+        	</element>
+        	<element name="dependency" type="string" minOccurs="0"
+        		maxOccurs="unbounded">
+        		<annotation>
+        			<documentation>
+        				This is the name of a project which this project
+        				node depends on. Note since this may seem
+        				redundant to build systems (ant, maven,
+        				fabricate). The rational here is to fill out the
+        				requirements xml first, later on there could be
+        				a test to see if the dependency requirements
+        				match the actual requirements of the project as
+        				each build system would need to have it's on
+        				method to test this. This could also be used by
+        				intelligence4j to link intelligence4j servers
+        				back to externally dependent projects.
+        			</documentation>
+        		</annotation>
+        	</element>
+        	<element name="use_cases_path" type="uns:use_cases_path_type"></element>
+        </sequence>
+        <attribute name="name" type="string">
+    		<annotation>
+    			<documentation>This should match with the name in the
+shared versioning system (i.e. tests4j.adligo.org in git).</documentation>
+    		</annotation></attribute>
+    </complexType>
+
+
+    <complexType name="use_cases_path_type">
+        <annotation>
+        	<documentation>
+
+			This is relative path from the requirements.xml file or full resource path using the java resource api (slash as a path separator).  
+			Each use case (including optional use case extensions) is stored as a xml file which has a name attribute.  A use case path includes all sub directories.  
+			Use case names must be unique with in the set of use case paths for projects and systems.  
+			requirements.xml
+			  |-> system: Tests4j
+			  |  |-> use_case_path [name: use_cases, path=use_cases]
+			  |  |-> project: tests4j.adligo.org
+			  | -> project: testsj4.adligo.org
+			  |  |-> use_case_path:  [name: use_cases, path=use_cases]			  | -> project: testsj4_4jacoco.adligo.org
+			     |-> use_case_path:  [name: use_cases, path=use_cases]
+			     |-> use_case_path:  [name: jacoco_use_cases, path=jacoco_use_cases]								
+			use_cases (directory)
+			  | -> test_software.xml
+			          ... use case: test code coverage.  abstract because it can't be done without a implementation.
+			jacoco_use_cases (direcory)
+			  | -> test_code_coverage.xml extends test software 
+
+			 This allows use cases to overlap between
+			 projects and systems, and allows extension
+			of use cases between systems and projects
+			in the current directory structure and between
+			project directory structures.
+			
+			In addition the tests4j_4gwt project can have it's own test project
+			and extend tests4j_tests use cases i.e.;
+			tests4j_tests (project)
+				/src/org/tests4j_tests/use_cases  (directory)
+			           | -> test_software.xml
+			tests4j_4gwt_tests (project)
+				/src/org/tests4j_4gwt_tests/use_cases  (directory)
+			           | -> test_software_in_javascript_interpreter.xml extends test software
+
+			</documentation>
+        </annotation>
+
+        <attribute name="name" type="string" use="optional"></attribute>
+        <attribute name="path" type="string" use="required"></attribute>
+    	<attribute name="parent" type="string" use="optional"></attribute>
+    </complexType>
+
+    <complexType name="use_cases_path_name_type">
+    	<sequence>
+    		<element name="name" type="string"></element>
+    	</sequence>
+    </complexType>
+
+    <complexType name="imported_requirements_type">
+        <annotation>
+        	<documentation>
+			Imported requirements is a link to a requirements.xml in another jar,
+			which has use cases this reqirements.xml wants to extend.  Path is the 
+			full resource path from the jar root for the class, class is the name of a 
+			class in the jar which the current class loader should use to locate the imported 
+			reqirements.xml file.</documentation>
+        </annotation>
+        <attribute name="path" type="string" use="required"></attribute>
+    	<attribute name="class" type="string" use="required"></attribute>
+    </complexType>
+
+    <complexType name="partition_type">
+    	<sequence>
+    		<element name="project" type="string" minOccurs="0" maxOccurs="unbounded"></element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    </complexType>
+</schema>

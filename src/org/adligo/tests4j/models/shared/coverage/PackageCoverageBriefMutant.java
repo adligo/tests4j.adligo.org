@@ -124,4 +124,18 @@ public class PackageCoverageBriefMutant extends CoverageUnitContinerMutant imple
 	public void addChild(PackageCoverageBriefMutant child) {
 		children_.add(child);
 	}
+
+  @Override
+  public I_PackageCoverageBrief getPackageCoverage(String packageName) {
+    if (packageName_.equals(packageName)) {
+      return this;
+    }
+    for (PackageCoverageBriefMutant pkg: children_) {
+      String cname = pkg.getPackageName();
+      if (packageName.indexOf(cname) == 0) {
+        return pkg.getPackageCoverage(packageName);
+      }
+    }
+    return null;
+  }
 }

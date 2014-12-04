@@ -1,6 +1,9 @@
 package org.adligo.tests4j.models.shared.results;
 
+import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.metadata.I_UseCaseBrief;
+
+import java.util.Map;
 
 
 public class UseCaseTrialResult extends BaseTrialResult implements I_UseCaseTrialResult {
@@ -19,8 +22,25 @@ public class UseCaseTrialResult extends BaseTrialResult implements I_UseCaseTria
 		return mutant.getUseCase();
 	}
 
-	public String getUnit() {
-		return mutant.getUnit();
-	}
+  public String getSystem() {
+    return mutant.getSystem();
+  }
+
+  public String getProject() {
+    return mutant.getProject();
+  }
+
+  @Override
+  public Map<String, I_PackageCoverageBrief> getCoverageMap() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public I_PackageCoverageBrief getPackageCoverage(String packageName) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 
 }
