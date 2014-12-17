@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
 	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/requirements/v1_0" 
-	xmlns:uns="http://www.adligo.org/tests4j/run/xml/io/requirements/v1_0"
+	xmlns:rns="http://www.adligo.org/tests4j/run/xml/io/requirements/v1_0"
 	elementFormDefault="qualified">
 
 
@@ -11,23 +11,32 @@
         	<documentation>This is a way to add requirements to tests4j so that the 
 requirements can be compared verses the UseCaseTrials so that
 system/project/product owners know when 
-a requirement was fulfilled.
+a requirement was fulfilled.  Actor is required so that there will
+be at least a description of who (or what) will use it, since
+Actor names will need to match up to the use cases.  
 
 Note all use case path names in this file and imported requirements
 must be unique.</documentation>
         </annotation>
         <sequence>
-            <element name="import" type="uns:imported_requirements_type" minOccurs="0" maxOccurs="unbounded"></element>
-            <element name="use_case_path"
-    			type="uns:use_cases_path_type" minOccurs="0" maxOccurs="unbounded">
-    		</element>
-    		<element name="project" type="uns:project_type" minOccurs="0" maxOccurs="unbounded"></element>
-    		<element name="system" type="uns:system_type" minOccurs="0" maxOccurs="unbounded"></element>
-    	</sequence>
+        	<element name="actor" type="rns:actor_type" minOccurs="1" maxOccurs="unbounded"></element>
+        	<element name="import" type="rns:imported_requirements_type"
+        		minOccurs="0" maxOccurs="unbounded">
+        	</element>
+        	<element name="use_case_path" type="rns:use_cases_path_type"
+        		minOccurs="0" maxOccurs="unbounded">
+        	</element>
+        	<element name="project" type="rns:project_type"
+        		minOccurs="0" maxOccurs="unbounded">
+        	</element>
+        	<element name="system" type="rns:system_type" minOccurs="0"
+        		maxOccurs="unbounded">
+        	</element>
+        </sequence>
 
     </complexType>
 
-    <element name="requirements" type="string"></element>
+    <element name="requirements" type="rns:requirements_type"></element>
 
     <complexType name="system_type">
     	<annotation>
@@ -52,11 +61,14 @@ must be unique.</documentation>
     				</documentation>
     			</annotation>
     		</element>
-    		<element name="use_cases"
-    			type="uns:use_cases_path_name_type" minOccurs="0"
+    		<element name="use_case_path"
+    			type="string" minOccurs="1"
     			maxOccurs="unbounded">
+                <annotation>
+                	<documentation>This is the name of one of the use_case_path's in the parent requirements_type.</documentation>
+                </annotation>
     		</element>
-    		<element name="partition" type="uns:partition_type" minOccurs="0" maxOccurs="unbounded"></element>
+    		<element name="partition" type="rns:partition_type" minOccurs="0" maxOccurs="unbounded"></element>
     	</sequence>
     	<attribute name="name" type="string" use="required">
     		<annotation>
@@ -138,7 +150,11 @@ system project (project node under a system_type).</documentation>
         			</documentation>
         		</annotation>
         	</element>
-        	<element name="use_cases_path" type="uns:use_cases_path_type"></element>
+        	<element name="use_case_path" type="string" minOccurs="1" maxOccurs="unbounded">
+        		<annotation>
+        			<documentation>This is the name of one of the use_case_path's in the parent requirements_type.
+</documentation>
+        		</annotation></element>
         </sequence>
         <attribute name="name" type="string">
     		<annotation>
@@ -153,21 +169,27 @@ shared versioning system (i.e. tests4j.adligo.org in git).</documentation>
         	<documentation>
 
 			This is relative path from the requirements.xml file or full resource path using the java resource api (slash as a path separator).  
-			Each use case (including optional use case extensions) is stored as a xml file which has a name attribute.  A use case path includes all sub directories.  
+			Each use case (including optional use case extensions) is stored as a xml file which has a name attribute.  
+			A use case path includes all sub directories.  
 			Use case names must be unique with in the set of use case paths for projects and systems.  
 			requirements.xml
 			  |-> system: Tests4j
 			  |  |-> use_case_path [name: use_cases, path=use_cases]
 			  |  |-> project: tests4j.adligo.org
 			  | -> project: testsj4.adligo.org
-			  |  |-> use_case_path:  [name: use_cases, path=use_cases]			  | -> project: testsj4_4jacoco.adligo.org
-			     |-> use_case_path:  [name: use_cases, path=use_cases]
-			     |-> use_case_path:  [name: jacoco_use_cases, path=jacoco_use_cases]								
+			  |  |-> use_case_path:  [name: use_cases, path=use_cases]			  
+			  | -> project: testsj4_4jacoco.adligo.org
+			  |       |-> use_case_path:  [name: use_cases, path=use_cases]
+			  |       |-> use_case_path:  [name: jacoco_use_cases, path=jacoco_use_cases]								
 			use_cases (directory)
 			  | -> test_software.xml
 			          ... use case: test code coverage.  abstract because it can't be done without a implementation.
-			jacoco_use_cases (direcory)
-			  | -> test_code_coverage.xml extends test software 
+			jacoco_use_cases (direcory) 
+			  | -> test_software_code_coverage.xml which indicates that it extends test_software.xml,
+			  				although a use case may have other extensions, and may have extensions through 
+			  				means other than this file name linking indicator.  This type of use case
+			  				extension is never required, so that new use cases can always be incorporated.
+			  				
 
 			 This allows use cases to overlap between
 			 projects and systems, and allows extension
@@ -216,5 +238,19 @@ shared versioning system (i.e. tests4j.adligo.org in git).</documentation>
     		<element name="project" type="string" minOccurs="0" maxOccurs="unbounded"></element>
     	</sequence>
     	<attribute name="name" type="string"></attribute>
+    </complexType>
+
+    <complexType name="actor_type">
+    	<sequence>
+    		<element name="description" type="string" minOccurs="1"
+    			maxOccurs="1">
+    		</element>
+    	</sequence>
+    	<attribute name="name" type="string"></attribute>
+    	<attribute name="specializes" type="string" use="optional">
+    		<annotation>
+    			<documentation>This is the name of a generalized actor
+which this actor specializes.</documentation>
+    		</annotation></attribute>
     </complexType>
 </schema>

@@ -8,8 +8,17 @@
 
     <complexType name="use_case_type">
     	<sequence>
-            <element name="actor" type="string" minOccurs="1" maxOccurs="unbounded"></element>
-            <element name="extend" type="uns:use_case_name_type"
+    		<element name="actor" type="string" minOccurs="1"
+    			maxOccurs="unbounded">
+
+    			<annotation>
+    				<documentation>
+    					The name of the actor, must match the name of a
+    					.actor_type[name] in a requirements.xml file.
+    				</documentation>
+    			</annotation>
+    		</element>
+    		<element name="extend" type="uns:use_case_name_type"
     			minOccurs="0" maxOccurs="unbounded">
     		</element>
     		<element name="include" type="uns:use_case_name_type"
@@ -27,9 +36,21 @@
     				</documentation>
     			</annotation>
     		</element>
+    		<element name="step" type="uns:step_type" minOccurs="0" maxOccurs="unbounded"></element>
     	</sequence>
 
     	<attribute name="name" type="string"></attribute>
+    	<attribute name="abstract" type="boolean" use="optional">
+    		<annotation>
+    			<documentation>Abstract means that the use case is vague
+which indicates a single trials tests would 
+not be capable of proving or disproving
+anything useful.  Abstract use cases
+are helpful in identifying common
+steps which can be reused, and branch
+points.  This is just a way of codifying the
+use case variations.</documentation>
+    		</annotation></attribute>
     </complexType>
 
     <complexType name="use_case_name_type">
@@ -38,4 +59,33 @@
 
 
     <element name="use_case" type="uns:use_case_type"></element>
+
+    <complexType name="step_type">
+    	<simpleContent>
+    		<extension base="string">
+    			<attribute name="id" type="uns:version_type"
+    				use="required">
+    			</attribute>
+    			<attribute name="abstract" type="boolean">
+    				<annotation>
+    					<documentation>A abstract step may only be added
+to a abstract use case.  A abstract
+step must be implemented in 
+all extensions of a use case.</documentation>
+    				</annotation></attribute>
+    		</extension>
+    	</simpleContent>
+    </complexType>
+
+    <simpleType name="version_type">
+        <annotation>
+        	<documentation>Note when use in the context of a step,
+this is the branch information.  
+Ie step 1.1 branches step 1.</documentation>
+        </annotation>
+        <restriction base="string">
+        	<!--  original was ^(?:(\d+)\.){0,2}(\*|\d+)$ -->
+    		<pattern value="^(\?:(\d+)\.){0,2}(\*|\d+)$"></pattern>
+    	</restriction>
+    </simpleType>
 </schema>
