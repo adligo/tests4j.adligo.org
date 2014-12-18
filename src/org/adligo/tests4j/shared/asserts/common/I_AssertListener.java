@@ -20,7 +20,7 @@ public interface I_AssertListener {
    * so that the correct name can be linked to.
    * @return
    */
-  public I_AbstractTrial getTrialInstance();
+  public I_Asserts getTrialInstance();
   
 	/**
 	 * this method is called after a successful assertion.

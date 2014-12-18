@@ -21,7 +21,9 @@ public class ConvertTestResults {
       TestFailureType tft = new TestFailureType();
       I_AssertType type = failure.getAssertType();
       
-      tft.setAssertType(type.toString());
+      if (type != null) {
+        tft.setAssertType(type.toString());
+      }
       tft.setDetail(failure.getFailureDetail());
       tft.setMessage(failure.getFailureMessage());
       I_TestFailureType failureType = failure.getType();

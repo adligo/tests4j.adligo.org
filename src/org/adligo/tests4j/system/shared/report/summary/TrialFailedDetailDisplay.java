@@ -283,7 +283,7 @@ public class TrialFailedDetailDisplay {
 			stack = new StackTraceElement[2];
 		} else {
 			//move the stack down so we can add 2 elements at the top
-			StackTraceElement[] stackClone = ArrayUtils.copyOf(stack);
+			StackTraceElement[] stackClone = ArrayUtils.copyOf(stack, new StackTraceElement[stack.length]);
 			for (int i = 0; i < stack.length; i++) {
 				if (i + 2 < stack.length) {
 					StackTraceElement ste = stackClone[i];
@@ -311,7 +311,7 @@ public class TrialFailedDetailDisplay {
 			stack = new StackTraceElement[1];
 		} else {
 			//move the stack down so we can add 2 elements at the top
-			StackTraceElement[] stackClone = ArrayUtils.copyOf(stack);
+			StackTraceElement[] stackClone = ArrayUtils.copyOf(stack, new StackTraceElement[stack.length]);
 			for (int i = 0; i < stack.length; i++) {
 				if (i + 1 < stack.length) {
 					StackTraceElement ste = stackClone[i];
