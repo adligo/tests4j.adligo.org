@@ -13,10 +13,6 @@ public class TestMetadata implements I_TestMetadata {
 		mutant = new TestMetadataMutant(p);
 	}
 
-	public TestMetadata(String xml) {
-		mutant = new TestMetadataMutant(xml);
-	}
-	
 	public String getTestName() {
 		return mutant.getTestName();
 	}
@@ -37,12 +33,12 @@ public class TestMetadata implements I_TestMetadata {
 		return mutant.equals(obj);
 	}
 
-	@Override
-	public void toXml(I_XML_Builder builder) {
-		mutant.toXml(builder);
-	}
-
 	public String toString() {
 		return mutant.toString();
 	}
+
+  @Override
+  public String getUseCaseName() {
+    return mutant.getUseCaseName();
+  }
 }

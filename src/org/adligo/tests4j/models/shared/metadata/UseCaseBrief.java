@@ -13,55 +13,39 @@ import org.adligo.tests4j.shared.xml.XML_Parser;
  *
  */
 public class UseCaseBrief implements I_UseCaseBrief {
-	private String nown;
-	private String verb;
+	private String name_;
 	
-	public UseCaseBrief(String pNown, String pVerb) {
-		setup(pNown, pVerb);
+	public UseCaseBrief(String name) {
+		setup(name);
 	}
 
-	protected void setup(String pNown, String pVerb) {
-		nown = pNown;
-		verb = pVerb;
-		if (StringMethods.isEmpty(nown)) {
+	protected void setup(String name) {
+	  name_ = name;
+		if (StringMethods.isEmpty(name)) {
 			I_Tests4J_AnnotationMessages messages = Tests4J_Constants.CONSTANTS.getAnnotationMessages();
-			throw new IllegalArgumentException(messages.getUseCaseScopeEmptyNown());
-		}
-		if (StringMethods.isEmpty(verb)) {
-			I_Tests4J_AnnotationMessages messages = Tests4J_Constants.CONSTANTS.getAnnotationMessages();
-			throw new IllegalArgumentException(messages.getUseCaseScopeEmptyVerb());
+			throw new IllegalArgumentException(messages.getUseCaseScopeEmptyName());
 		}
 	}
 
 	public UseCaseBrief(I_UseCaseBrief p) {
-		this(p.getNown(), p.getVerb());
+		this(p.getName());
 	}
 	
-	public UseCaseBrief(String xml) {
-		nown = XML_Parser.getAttributeValue(xml, I_UseCaseBrief.NOWN_ATTRIBUTE);
-		verb = XML_Parser.getAttributeValue(xml, I_UseCaseBrief.VERB_ATTRIBUTE);
-		setup(nown, verb);
-	}
 	
-	public String getNown() {
-		return nown;
-	}
-
-	public String getVerb() {
-		return verb;
+	public String getName() {
+		return name_;
 	}
 	
 	@Override
 	public String toString() {
-		return "UseCase [nown=" + nown + ", verb=" + verb + "]";
+		return "UseCase [" + name_ + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((nown == null) ? 0 : nown.hashCode());
-		result = prime * result + ((verb == null) ? 0 : verb.hashCode());
+		result = prime * result + ((name_ == null) ? 0 : name_.hashCode());
 		return result;
 	}
 
@@ -74,26 +58,12 @@ public class UseCaseBrief implements I_UseCaseBrief {
 		if (getClass() != obj.getClass())
 			return false;
 		UseCaseBrief other = (UseCaseBrief) obj;
-		if (nown == null) {
-			if (other.nown != null)
+		if (name_ == null) {
+			if (other.name_ != null)
 				return false;
-		} else if (!nown.equals(other.nown))
-			return false;
-		if (verb == null) {
-			if (other.verb != null)
-				return false;
-		} else if (!verb.equals(other.verb))
+		} else if (!name_.equals(other.name_))
 			return false;
 		return true;
 	}
 
-	@Override
-	public void toXml(I_XML_Builder builder) {
-		builder.indent();
-		builder.addStartTag(I_UseCaseBrief.TAG_NAME);
-		builder.addAttribute(I_UseCaseBrief.NOWN_ATTRIBUTE, nown);
-		builder.addAttribute(I_UseCaseBrief.VERB_ATTRIBUTE, verb);
-		builder.append(" />");
-		builder.endLine();
-	}
 }

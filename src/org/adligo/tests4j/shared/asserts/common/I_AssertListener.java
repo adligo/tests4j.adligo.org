@@ -1,5 +1,7 @@
 package org.adligo.tests4j.shared.asserts.common;
 
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+
 
 /**
  * implementations of this interface are capable
@@ -11,6 +13,15 @@ package org.adligo.tests4j.shared.asserts.common;
  *
  */
 public interface I_AssertListener {
+  
+  /**
+   * This allows the stack trace to get manipulated
+   * based on the instance of the trial,
+   * so that the correct name can be linked to.
+   * @return
+   */
+  public I_AbstractTrial getTrialInstance();
+  
 	/**
 	 * this method is called after a successful assertion.
 	 * @param cmd

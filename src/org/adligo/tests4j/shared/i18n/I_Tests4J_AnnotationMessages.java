@@ -24,13 +24,14 @@ public interface I_Tests4J_AnnotationMessages {
 	
 	public String getNoSourceFileScope();
 	public String getNoPackageScope();
-	
 	public String getNoUseCaseScope();
+	
 	public String getPackageScopeEmptyName();
 	public String getSourceFileScopeEmptyClass();
 	
-	public String getUseCaseScopeEmptyNown();
-	public String getUseCaseScopeEmptyVerb();
+	public String getUseCaseScopeEmptyName();
+	public String getUseCaseScopeNameUnknown();
+	
 	public String getWasAnnotatedIncorrectly();
 	public String getTrialTypeMissing();
 	

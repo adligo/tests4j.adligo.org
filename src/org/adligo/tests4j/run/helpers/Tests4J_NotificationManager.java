@@ -231,10 +231,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 							tmm.addTest(attm);
 						}
 					break;
-				case UseCaseTrial:
-						tmm.setUseCase(td.getUseCase());
-					break;
 				default:
+				  //UseCaseTrial
 					break;
 			}
 			Iterator<TestDescription> atTests =  td.getTestMethods();

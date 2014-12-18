@@ -4,63 +4,48 @@ import org.adligo.tests4j.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.shared.xml.XML_Parser;
 
 public class TestMetadataMutant implements I_TestMetadata {
-	private String testName;
-	private Long timeout;
-	private boolean ignored = false;
+	private String testName_;
+	private String useCaseName_;
+	private Long timeout_;
+	private boolean ignored_ = false;
 	
 	public TestMetadataMutant() {}
 	
 	public TestMetadataMutant(I_TestMetadata p) {
-		testName = p.getTestName();
-		timeout = p.getTimeout();
-		ignored = p.isIgnored();
-	}
-	public TestMetadataMutant(String xml) {
-		int [] indexes = XML_Parser.getIndexes(xml, I_TestMetadata.TAG_NAME);
-		if (indexes == null) {
-			throw XML_Parser.getReadError(I_TestMetadata.TAG_NAME);
-		}
-		String thisTag = xml.substring(indexes[0], indexes[1]);
-		testName = XML_Parser.getAttributeValue(thisTag, I_TestMetadata.NAME_ATTRIBUTE);
-		
-		String timeOutString = XML_Parser.getAttributeValue(thisTag, I_TestMetadata.TIMEOUT_ATTRIBUTE);;
-		if (timeOutString != null) {
-			timeout = Long.parseLong(timeOutString);
-		}
-		String ignoredString = XML_Parser.getAttributeValue(thisTag, I_TestMetadata.IGNORED_ATTRIBUTE);
-		if (ignoredString != null) {
-			ignored = Boolean.parseBoolean(ignoredString);
-		}
+		testName_ = p.getTestName();
+		timeout_ = p.getTimeout();
+		ignored_ = p.isIgnored();
+		useCaseName_ = p.getUseCaseName();
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.metadata.I_TestMetadata#getTestName()
 	 */
 	@Override
 	public String getTestName() {
-		return testName;
+		return testName_;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.metadata.I_TestMetadata#getTimeout()
 	 */
 	@Override
 	public Long getTimeout() {
-		return timeout;
+		return timeout_;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.metadata.I_TestMetadata#isIgnored()
 	 */
 	@Override
 	public boolean isIgnored() {
-		return ignored;
+		return ignored_;
 	}
 	public void setTestName(String testName) {
-		this.testName = testName;
+		this.testName_ = testName;
 	}
 	public void setTimeout(Long timeout) {
-		this.timeout = timeout;
+		this.timeout_ = timeout;
 	}
 	public void setIgnored(boolean pIgnroed) {
-		this.ignored = pIgnroed;
+		this.ignored_ = pIgnroed;
 	}
 
 	@Override
@@ -68,7 +53,7 @@ public class TestMetadataMutant implements I_TestMetadata {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((testName == null) ? 0 : testName.hashCode());
+				+ ((testName_ == null) ? 0 : testName_.hashCode());
 		return result;
 	}
 
@@ -79,36 +64,26 @@ public class TestMetadataMutant implements I_TestMetadata {
 		if (obj == null)
 			return false;
 		I_TestMetadata other = (I_TestMetadata) obj;
-		if (testName == null) {
+		if (testName_ == null) {
 			if (other.getTestName() != null)
 				return false;
-		} else if (!testName.equals(other.getTestName()))
+		} else if (!testName_.equals(other.getTestName()))
 			return false;
 		
 		return true;
 	}
 
 	@Override
-	public void toXml(I_XML_Builder builder) {
-		int origAttrsPerLine = builder.getAttributesPerLine();
-		builder.setAttributesPerLine(4);
-		builder.indent();
-		builder.addStartTag(I_TestMetadata.TAG_NAME);
-		builder.addAttribute(I_TestMetadata.NAME_ATTRIBUTE, testName);
-		if (ignored) {
-			builder.addAttribute(I_TestMetadata.IGNORED_ATTRIBUTE,"" + ignored);
-		}
-		if (timeout != null) {
-			builder.addAttribute(I_TestMetadata.TIMEOUT_ATTRIBUTE,"" + timeout);
-		}
-		builder.append(" />");
-		builder.endLine();
-		builder.setAttributesPerLine(origAttrsPerLine);
+	public String toString() {
+		return testName_;
 	}
 
-	@Override
-	public String toString() {
-		return testName;
-	}
+  public String getUseCaseName() {
+    return useCaseName_;
+  }
+
+  public void setUseCaseName(String useCaseName) {
+    this.useCaseName_ = useCaseName;
+  }
 	
 }

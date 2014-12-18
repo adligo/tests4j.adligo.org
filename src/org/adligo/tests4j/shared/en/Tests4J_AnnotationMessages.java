@@ -34,12 +34,13 @@ public class Tests4J_AnnotationMessages implements I_Tests4J_AnnotationMessages 
 	private static final String SOURCE_FILE_TRIALS_MUST_BE_ANNOTATED_WITH_SOURCE_FILE_SCOPE = 
 			"SourceFileTrials must be annotated with @SourceFileScope.";
 	
-	private static final String USE_CASE_TRIALS_MUST_BE_ANNOTATED_WITH_USE_CASE_SCOPE = 
-			"UseCaseTrials must be annotated with @UseCaseScope.";
-	private static final String USE_CASE_SCOPE_EMPTY_NOWN = 
-			"@UseCaseScope annotations must contain a non empty nown.";
-	private static final String USE_CASE_SCOPE_EMPTY_VERB = 
-			"@UseCaseScope annotations must contain a non empty verb.";
+	private static final String USE_CASE_TRIAL_TESTS_MUST_BE_ANNOTATED_WITH_USE_CASE_SCOPE = 
+			"UseCaseTrial @Test methods must be annotated with @UseCaseScope.";
+	private static final String USE_CASE_SCOPE_EMPTY_NAME = 
+			"@UseCaseScope annotations must contain a non empty name.";
+	private static final String USE_CASE_SCOPE_NAME_UNKNOWN = 
+			"@UseCaseScope annotations must match the name of a use case in a path from a " +
+			"system or project in the requirements xml file.";
 
 	private static final String SOURCE_FILE_SCOPE_EMPTY_CLASS = 
 			"@SourceFileScope annotations must contain a non empty sourceClass.";
@@ -136,7 +137,7 @@ public class Tests4J_AnnotationMessages implements I_Tests4J_AnnotationMessages 
 	
 	@Override
 	public String getNoUseCaseScope() {
-		return USE_CASE_TRIALS_MUST_BE_ANNOTATED_WITH_USE_CASE_SCOPE;
+		return USE_CASE_TRIAL_TESTS_MUST_BE_ANNOTATED_WITH_USE_CASE_SCOPE;
 	}
 	
 	public String getPackageScopeEmptyName() {
@@ -147,12 +148,14 @@ public class Tests4J_AnnotationMessages implements I_Tests4J_AnnotationMessages 
 		return SOURCE_FILE_SCOPE_EMPTY_CLASS;
 	}	
 	
-	public String getUseCaseScopeEmptyNown() {
-		return USE_CASE_SCOPE_EMPTY_NOWN;
+	@Override
+	public String getUseCaseScopeEmptyName() {
+		return USE_CASE_SCOPE_EMPTY_NAME;
 	}
 
-	public String getUseCaseScopeEmptyVerb() {
-		return USE_CASE_SCOPE_EMPTY_VERB;
+	@Override
+	public String getUseCaseScopeNameUnknown() {
+		return USE_CASE_SCOPE_NAME_UNKNOWN;
 	}
 	
 	public String getTrialTypeMissing() {

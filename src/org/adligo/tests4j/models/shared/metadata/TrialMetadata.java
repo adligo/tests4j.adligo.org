@@ -83,14 +83,7 @@ public class TrialMetadata implements I_TrialMetadata {
 		return mutant.getTestedPackage();
 	}
 
-	public I_UseCaseBrief getUseCase() {
-		return mutant.getUseCase();
-	}
 
-	@Override
-	public void toXml(I_XML_Builder builder) {
-		mutant.toXml(builder, this);
-	}
 
 	public Double getMinimumCodeCoverage() {
 		return mutant.getMinimumCodeCoverage();

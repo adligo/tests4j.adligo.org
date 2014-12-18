@@ -76,7 +76,6 @@ public class TrialDescription implements I_TrialDescription {
 	private long timeout_;
 	private I_Tests4J_Log log_;
 	private SourceFileScope sourceFileScope_;
-	private UseCaseScope useCaseScope_;
 	private PackageScope packageScope_;
 	private double minCoverage_ = 100.0;
 	private List<I_TrialFailure> failures_ = new ArrayList<I_TrialFailure>();
@@ -226,41 +225,8 @@ public class TrialDescription implements I_TrialDescription {
 				} 
 				
 				break;
-			case UseCaseTrial:
-				useCaseScope_ = trialClass_.getAnnotation(UseCaseScope.class);
-				if (useCaseScope_ == null) {
-					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
-					
-					failures_.add(new TrialFailure(
-							annonErrors.getNoUseCaseScope(),
-							trialName + annonErrors.getWasAnnotatedIncorrectly()));
-					return false;
-				}
-
-				String nown = useCaseScope_.nown();
-				if (StringMethods.isEmpty(nown)) {
-					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
-					
-					failures_.add(new TrialFailure(
-							annonErrors.getUseCaseScopeEmptyNown(), 
-							trialName + 
-									annonErrors.getWasAnnotatedIncorrectly()));
-					return false;
-				} 
-				
-				String verb = useCaseScope_.verb();
-				if (StringMethods.isEmpty(verb)) {
-					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
-					
-					failures_.add(new TrialFailure(
-							annonErrors.getUseCaseScopeEmptyVerb(),
-							trialName + annonErrors.getWasAnnotatedIncorrectly()));
-					return false;
-				} 
 			default:
+			  //UseCaseTrial
 				//MetaTrial
 		}
 		return true;
@@ -446,21 +412,7 @@ public class TrialDescription implements I_TrialDescription {
 		}
 		return packageScope_.packageName();
 	}
-	
-	public I_UseCaseBrief getUseCase() {
-		if (useCaseScope_ == null) {
-			return null;
-		}
-		String nown = useCaseScope_.nown();
-		String verb = useCaseScope_.verb();
-		if (StringMethods.isEmpty(nown)) {
-			return null;
-		}
-		if (StringMethods.isEmpty(verb)) {
-			return null;
-		}
-		return new UseCaseBrief(nown, verb);
-	}
+
 
 	
 	/**

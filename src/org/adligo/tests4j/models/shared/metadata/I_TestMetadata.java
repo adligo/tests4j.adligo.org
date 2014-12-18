@@ -9,27 +9,31 @@ import org.adligo.tests4j.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_TestMetadata extends I_XML_Producer {
-	public static final String TAG_NAME = "testMetadata";
-	public static final String NAME_ATTRIBUTE = "name";
-	public static final String TIMEOUT_ATTRIBUTE="timeout";
-	public static final String IGNORED_ATTRIBUTE = "ignored";
+public interface I_TestMetadata {
 	/**
 	 * the name of the test method
 	 * @return
 	 */
-	public abstract String getTestName();
+	public String getTestName();
 
 	/**
 	 * the timeout setting
 	 * @return
 	 */
-	public abstract Long getTimeout();
+	public Long getTimeout();
 
 	/**
 	 * if the test has been ignored
 	 * @return
 	 */
-	public abstract boolean isIgnored();
+	public boolean isIgnored();
+	
+	/**
+	 * The name of the use case from the @UseCaseScope 
+	 * annotation, if this is a use case trial.
+	 * 
+	 * @return
+	 */
+	public String getUseCaseName();
 
 }

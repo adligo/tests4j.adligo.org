@@ -9,18 +9,16 @@ import org.adligo.tests4j.shared.xml.I_XML_Producer;
  * @author scott
  *
  */
-public interface I_UseCaseBrief extends I_XML_Producer {
+public interface I_UseCaseBrief {
 	public static final String TAG_NAME = "useCase";
-	public static final String NOWN_ATTRIBUTE = "nown";
-	public static final String VERB_ATTRIBUTE = "verb";
+	public static final String NAME_ATTRIBUTE = "name";
 	/**
-	 * the nown ie food
+	 * The unique name of the use case
+	 * which must match the name of a use case
+	 * in a use case path which is part of
+	 * a system or project in requirements.xml
+	 * 
 	 * @return
 	 */
-	public String getNown();
-	/**
-	 * the verb ie eat
-	 * @return
-	 */
-	public String getVerb();
+	public String getName();
 }

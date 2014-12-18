@@ -168,4 +168,9 @@ public class Tests4J_TestRunable implements Runnable, I_AssertListener {
 		this.out = out;
 	}
 
+  @Override
+  public I_AbstractTrial getTrialInstance() {
+    return trial;
+  }
+
 }

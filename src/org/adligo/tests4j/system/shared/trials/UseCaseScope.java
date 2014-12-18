@@ -6,21 +6,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * helps computers read the use case trial.
+ * This helps tests4j read the use case trial,
+ * and match it up to a use case using the 
+ * use case xml files defined in requirements.xml
+ * file.  
+ * 
  * @author scott
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target(ElementType.METHOD)
 public @interface UseCaseScope {
 	/**
-	 * the verb from the use case (ie 'run' from the 'run trial' use case)
+	 * This is the unique name from the 
+	 * use cases in the use case paths 
+	 * defined in requirements.xml.
 	 * @return
 	 */
-	String verb();
-	/**
-	 * the nown from the use case (ie 'trial' from the 'run trial' use case)
-	 * @return
-	 */
-	String nown();
+	String name();
 }

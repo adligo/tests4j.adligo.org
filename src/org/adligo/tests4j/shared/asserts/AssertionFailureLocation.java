@@ -1,5 +1,8 @@
 package org.adligo.tests4j.shared.asserts;
 
+import org.adligo.tests4j.shared.asserts.common.I_Asserts;
+import org.adligo.tests4j.shared.common.ClassMethods;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,17 +24,30 @@ public class AssertionFailureLocation extends Exception {
 	private static final long serialVersionUID = 1L;
 	private static final Set<String> NON_LOCATION_STACK_CLASSES = getNonLocationStackClasses();
 	
-	public AssertionFailureLocation() {
+	public AssertionFailureLocation(I_Asserts trialInstance) {
 		Exception stack = new Exception();
 		stack.fillInStackTrace();
 		StackTraceElement [] elements = stack.getStackTrace();
 		List<StackTraceElement> forStack = new ArrayList<StackTraceElement>();
+		
+		String trialInstanceName = "";
+		if (trialInstance != null) {
+		  trialInstanceName = trialInstance.getClass().getName();
+		}
+		boolean hadTrialClassInStack = false;
 		for(StackTraceElement e: elements) {
-			if (!NON_LOCATION_STACK_CLASSES.contains(e.getClassName())) {
+		  String cn = e.getClassName();
+			if (!NON_LOCATION_STACK_CLASSES.contains(cn)) {
+			  if (trialInstanceName.equals(cn))  {
+			    hadTrialClassInStack = true;
+			  }
 				forStack.add(e);
 			}
 		}
-		
+		if (!hadTrialClassInStack && trialInstanceName.length() > 1) {
+		  forStack.add(0, new StackTraceElement(trialInstanceName, "init", 
+		      trialInstance.getClass().getSimpleName() + ".java", 1));
+		}
 		StackTraceElement [] stackTrace = forStack.toArray(new StackTraceElement[forStack.size()]);
 		super.setStackTrace(stackTrace);
 	}

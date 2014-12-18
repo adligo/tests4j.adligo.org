@@ -23,6 +23,7 @@ import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrialInputData;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrialParamsAware;
@@ -34,6 +35,7 @@ public class MetaTrialProcessor implements I_AssertListener {
 	private static final String AFTER_NON_META_TRIALS_RUN_METHOD = 
 			"afterNonMetaTrialsRun(TrialRunResultMutant p)";
 
+	private I_MetaTrial trial_;
 	private Tests4J_Memory memory;
 	private BaseTrialResultMutant trialResultMutant;
 	private TestResultMutant metaTrialTestResultMutant;
@@ -57,6 +59,7 @@ public class MetaTrialProcessor implements I_AssertListener {
 	 * @return
 	 */
 	public I_TrialResult runMetaTrialMethods(I_MetaTrial trial, I_TrialRunResult runResultMutant) {
+	  trial_ = trial;
 		trial.setBindings(bindings);
 		try {
 			I_MetaTrialParamsAware<? extends I_MetaTrialInputData> tpa = 
@@ -166,4 +169,9 @@ public class MetaTrialProcessor implements I_AssertListener {
 			trm.incrementAssertionCount(it.next());
 		}
 	}
+
+  @Override
+  public I_AbstractTrial getTrialInstance() {
+    return trial_;
+  }
 }

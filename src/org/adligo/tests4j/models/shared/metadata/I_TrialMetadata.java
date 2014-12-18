@@ -6,19 +6,7 @@ import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.xml.I_XML_Consumer;
 import org.adligo.tests4j.shared.xml.I_XML_Producer;
 
-public interface I_TrialMetadata extends I_XML_Producer {
-	public static final String TAG_NAME = "trialMetadata";
-	public static final String TRIAL_NAME_ATTRIBUTE = "name";
-	public static final String TIMEOUT_ATTRIBUTE = "timeout";
-	public static final String IGNORED_ATTRIBUTE = "ignored";
-	public static final String MIN_CODE_COVERAGE_ATTRIBUTE = "minCodeCoverage";
-	public static final String BEFORE_TRIAL_METHOD_NAME_ATTRIBUTE = "beforeTrial";
-	public static final String AFTER_TRIAL_METHOD_NAME_ATTRIBUTE = "afterTrial";
-	public static final String TESTS_NESTED_TAG_NAME = "tests";
-	public static final String TYPE_ATTRIBUTE = "type";
-	public static final String TESTED_SOURCE_FILE_ATTRIBUTE = "testedSourceFile";
-	public static final String TESTED_PACKAGE_ATTRIBUTE = "testedPackage";
-	public static final String TESTED_SYSTEM_ATTRIBUTE = "testedSystem";
+public interface I_TrialMetadata {
 	
 	/**
 	 * the class name of the trial
@@ -87,12 +75,6 @@ public interface I_TrialMetadata extends I_XML_Producer {
 	 */
 	public String getTestedPackage();
 
-
-	/**
-	 * from the @UseCase annotation
-	 * @return
-	 */
-	public I_UseCaseBrief getUseCase();
 	/**
 	 * this pertains to SourceFileTrials only
 	 * for the v0_1 release, but could be

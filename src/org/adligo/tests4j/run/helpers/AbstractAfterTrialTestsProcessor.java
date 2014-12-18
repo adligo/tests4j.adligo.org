@@ -135,4 +135,8 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 		return assertions;
 	}
 	
+  @Override
+  public I_AbstractTrial getTrialInstance() {
+    return trial;
+  }
 }
