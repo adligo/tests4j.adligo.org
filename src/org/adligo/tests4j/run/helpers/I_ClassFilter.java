@@ -1,4 +1,4 @@
-package org.adligo.tests4j.models.shared.association;
+package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.shared.common.ClassMethods;
 
