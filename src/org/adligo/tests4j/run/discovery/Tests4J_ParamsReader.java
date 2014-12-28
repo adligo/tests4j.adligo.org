@@ -301,7 +301,7 @@ public class Tests4J_ParamsReader {
 		Map<String,Object> runtimeParams = new HashMap<String, Object>();
 		runtimeParams.put(I_Tests4J_CoveragePluginFactory.LOG, logger);
     runtimeParams.put(I_Tests4J_CoveragePluginFactory.SYSTEM, system_);
-		I_Tests4J_CoveragePlugin plugin = factory.create(coverageParams, runtimeParams);
+		I_Tests4J_CoveragePlugin plugin = factory.create(null, coverageParams, runtimeParams);
 		
 		return plugin;
 	}

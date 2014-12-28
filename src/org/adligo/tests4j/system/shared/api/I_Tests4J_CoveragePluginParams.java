@@ -10,7 +10,7 @@ import org.adligo.tests4j.system.shared.trials.SourceFileScope;
  * @author scott
  *
  */
-public interface I_Tests4J_CoveragePluginParams extends I_XML_Producer {
+public interface I_Tests4J_CoveragePluginParams {
 	/**
 	 * if true a new I_Tests4J_CoverageRecorder
 	 * is created for each trial/test thread combination

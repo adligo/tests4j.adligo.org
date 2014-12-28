@@ -27,5 +27,5 @@ public interface I_Tests4J_CoveragePluginFactory {
    *    Note this map is also used to avoid the File import for GWT compiling.
    * @return
    */
-	public I_Tests4J_CoveragePlugin create(I_Tests4J_CoveragePluginParams params, Map<String,Object> runtimeParams);
+	public I_Tests4J_CoveragePlugin create(I_Tests4J_Params params, I_Tests4J_CoveragePluginParams pluginParams, Map<String,Object> runtimeParams);
 }

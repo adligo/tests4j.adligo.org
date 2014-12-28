@@ -22,21 +22,7 @@ import org.adligo.tests4j.system.shared.trials.I_TrialParamsFactory;
  * @author scott
  *
  */
-public interface I_Tests4J_Params extends I_XML_Producer {
-	public static final String TAG_NAME = "tests4j_Params";
-	public static final String COVERAGE_PLUGIN_FACTORY_ATTRIBUTE= "coveragePluginFactory";
-	public static final String EVALUATOR_LOOKUP_ATTRIBUTE = "evaluatorLookup";
-	public static final String META_TRIAL_ATTRIBUTE = "metaTrial";
-	public static final String RECOMENDED_REMOTE_THREADS_ATTRIBUTE = "recomendedRemoteThreads";
-	public static final String RECOMENDED_SETUP_THREADS_ATTRIBUTE = "recomendedSetupThreads";
-	public static final String RECOMENDED_TRIAL_THREADS_ATTRIBUTE = "recomendedThreadThreads";
-	
-	public static final String TRIAL_TAG_NAME = "trial";
-	public static final String TRIALS_TAG_NAME = "trials";
-	
-	public static final String TEST_TAG_NAME = "test";
-	public static final String TESTS_TAG_NAME = "tests";
-	
+public interface I_Tests4J_Params {
 	public static final String LOG_CLASSESS_TAG_NAME = "logClasses";
 	public static final String CLASS_NAME_TAG_NAME = "className";
 	
@@ -104,6 +90,14 @@ public interface I_Tests4J_Params extends I_XML_Producer {
 	 */
 	public I_Tests4J_CoveragePluginParams getCoverageParams();
 
+	/**
+	 * This is a list of partial package names 
+	 * that should not be instrumented during the trial run.
+	 * i.e. "com.google.gwt." if you use gwt but
+	 * don't want to instrument the gwt classes for coverage.
+	 * @return
+	 */
+	public List<String> getAdditionalNonInstrumentedPackages();
 	/**
 	 * a recommendation for the number of TrailThreads for
 	 * environments that allow multi threading (like JSE, but not GWT).

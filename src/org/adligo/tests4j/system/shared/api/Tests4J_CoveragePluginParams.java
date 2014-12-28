@@ -16,10 +16,7 @@ public class Tests4J_CoveragePluginParams implements I_Tests4J_CoveragePluginPar
 		instrumentedClassOutputFolder = pParams.getInstrumentedClassOutputFolder();
 		concurrentRecording = pParams.isConcurrentRecording();
 	}
-	@Override
-	public void toXml(I_XML_Builder builder) {
-		throw new RuntimeException("todo");
-	}
+
 
 	@Override
 	public boolean isCanThreadLocalGroupRecord() {

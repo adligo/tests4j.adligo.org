@@ -97,7 +97,7 @@ public class Tests4J_RemoteRunner implements Runnable {
 						state = RemoteRunnerStateEnum.CONNECTED;
 						XML_Builder builder = new XML_Builder(
 								XML_Chars.TAB, XML_Chars.NEW_LINE_UNIX);
-						params.toXml(builder);
+						//params.toXml(builder);
 						String xml = builder.toXmlString();
 						transportMessage(new Tests4J_SocketMessage(Tests4J_Commands.RUN,authCode,
 								xml));

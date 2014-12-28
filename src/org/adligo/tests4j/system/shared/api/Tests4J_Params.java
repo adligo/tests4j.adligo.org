@@ -2,8 +2,6 @@ package org.adligo.tests4j.system.shared.api;
 
 import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
-import org.adligo.tests4j.shared.common.ClassMethods;
-import org.adligo.tests4j.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.system.shared.trials.I_Trial;
@@ -26,29 +24,30 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	/**
 	 * @see I_Tests4J_Params#getTrials()
 	 */
-	private List<Class<? extends I_Trial>> trials = 
+	private List<Class<? extends I_Trial>> trials_ = 
 				new ArrayList<Class<? extends I_Trial>>();
 	/**
 	 * @see I_Tests4J_Params#getMetaTrialClass()
 	 */
-	private Class<? extends I_MetaTrial>  metaTrialClass;
+	private Class<? extends I_MetaTrial>  metaTrialClass_;
 	private I_MetaTrialParams<?> metaTrialParams_;
 	private I_TrialParamsFactory trialParamsQueue_;
 	
 	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
 	
-	private Integer recommendedTrialThreadCount;
-	private Integer recommendedRemoteThreadCount;
+	private Integer recommendedTrialThreadCount_;
+	private Integer recommendedRemoteThreadCount_;
 	//there is a deadlock problem in setup, so run it single threaded, unless your improving
-	private Integer recommendedSetupThreadCount = 1;
+	private Integer recommendedSetupThreadCount_ = 1;
 	private I_Tests4J_ProgressParams progressParams_ = new Tests4J_DefaultProgressParams();
-	private I_Tests4J_SourceInfoParams sourceInfoParams = new Tests4J_SourceInfoParams();
+	private I_Tests4J_SourceInfoParams sourceInfoParams_ = new Tests4J_SourceInfoParams();
+	private List<String> additionalNonInstrumentedPackages_ = new ArrayList<String>();
 	
 	/**
 	 * OutputStreams are not passed between jvms of course.
 	 * 
 	 */
-	private transient List<OutputStream> additionalReportOutputStreams = new ArrayList<OutputStream>();
+	private transient List<OutputStream> additionalReportOutputStreams_ = new ArrayList<OutputStream>();
 	
 	/**
 	 * All coverage is always recorded if there is a plugin,
@@ -57,37 +56,37 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	 * is null or true, and if recordTestCoverage is 
 	 * null or true.
 	 */
-	private Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginFactoryClass;
-	private I_Tests4J_CoveragePluginParams coverageParams = new Tests4J_CoveragePluginParams();
+	private Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginFactoryClass_;
+	private I_Tests4J_CoveragePluginParams coverageParams_ = new Tests4J_CoveragePluginParams();
 	/**
 	 * these classes get reporting turned on or off,
 	 * the defaults are in the Tests4J_ParamsReader
 	 */
-	private Map<Class<?>, Boolean> logStates = new HashMap<Class<?>, Boolean>();
-	private Map<I_Tests4J_RemoteInfo, I_Tests4J_Params> remoteParams = 
+	private Map<Class<?>, Boolean> logStates_ = new HashMap<Class<?>, Boolean>();
+	private Map<I_Tests4J_RemoteInfo, I_Tests4J_Params> remoteParams_ = 
 			new HashMap<I_Tests4J_RemoteInfo, I_Tests4J_Params>();
 			
-	private Class<? extends I_EvaluatorLookup> evaluatorLookup = EvaluatorLookup.DEFAULT_LOOKUP.getClass();
+	private Class<? extends I_EvaluatorLookup> evaluatorLookup_ = EvaluatorLookup.DEFAULT_LOOKUP.getClass();
 	
 	public Tests4J_Params() {}
 	
 	public Tests4J_Params(I_Tests4J_Params p) {
-		trials.addAll(p.getTrials());
-		metaTrialClass = p.getMetaTrialClass();
+		trials_.addAll(p.getTrials());
+		metaTrialClass_ = p.getMetaTrialClass();
 		tests.addAll(p.getTests());
-		coveragePluginFactoryClass = p.getCoveragePluginFactoryClass();
-		recommendedTrialThreadCount = p.getRecommendedTrialThreadCount();
-		recommendedSetupThreadCount = p.getRecommendedSetupThreadCount();
-		recommendedRemoteThreadCount = p.getRecommendedRemoteThreadCount();
-		sourceInfoParams = p.getSourceInfoParams();
+		coveragePluginFactoryClass_ = p.getCoveragePluginFactoryClass();
+		recommendedTrialThreadCount_ = p.getRecommendedTrialThreadCount();
+		recommendedSetupThreadCount_ = p.getRecommendedSetupThreadCount();
+		recommendedRemoteThreadCount_ = p.getRecommendedRemoteThreadCount();
+		sourceInfoParams_ = p.getSourceInfoParams();
 		
 		Map<Class<?>, Boolean> otherSettings = p.getLogStates();
 		if (otherSettings != null) {
-			logStates.putAll(otherSettings);
+			logStates_.putAll(otherSettings);
 		}
 		Collection<I_Tests4J_RemoteInfo> remotes = p.getRemoteInfo();
 		for (I_Tests4J_RemoteInfo remote: remotes){
-			remoteParams.put(remote, p.getRemoteParams(remote));
+			remoteParams_.put(remote, p.getRemoteParams(remote));
 		}
 	}
 	
@@ -167,24 +166,24 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 	
 	public List<Class<? extends I_Trial>> getTrials() {
-		return trials;
+		return trials_;
 	}
 	public void setTrials(List<Class<? extends I_Trial>> p) {
-		trials.clear();
-		trials.addAll(p);
+		trials_.clear();
+		trials_.addAll(p);
 	}
 	public void addTrial(Class<? extends I_Trial> p) {
-		trials.add(p);
+		trials_.add(p);
 	}
 	
 	public Class<? extends I_Tests4J_CoveragePluginFactory> getCoveragePluginFactory() {
-		return coveragePluginFactoryClass;
+		return coveragePluginFactoryClass_;
 	}
 	
 
 	
 	public void addTrials(I_Tests4J_TrialList p) {
-		trials.addAll(p.getTrials());
+		trials_.addAll(p.getTrials());
 	}
 
 	public Set<I_Tests4J_Selection> getTests() {
@@ -205,155 +204,107 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 
 	public Map<Class<?>, Boolean> getLogStates() {
-		return Collections.unmodifiableMap(logStates);
+		return Collections.unmodifiableMap(logStates_);
 	}
 
 	public void setLogState(Class<?> p, boolean on) {
-		logStates.put(p, on);
+		logStates_.put(p, on);
 	}
 
 
-	public void toXml(I_XML_Builder builder) {
-		builder.indent();
-		builder.addStartTag(I_Tests4J_Params.TAG_NAME);
-		
-		if (coveragePluginFactoryClass != null) {
-			builder.addAttribute(I_Tests4J_Params.COVERAGE_PLUGIN_FACTORY_ATTRIBUTE, 
-					coveragePluginFactoryClass.getName());
-		}
-		if (evaluatorLookup != null) {
-			builder.addAttribute(I_Tests4J_Params.EVALUATOR_LOOKUP_ATTRIBUTE, 
-					evaluatorLookup.getName());
-		}
-		if (metaTrialClass != null) {
-			builder.addAttribute(I_Tests4J_Params.META_TRIAL_ATTRIBUTE, 
-					metaTrialClass.getName());
-		}
-		
-		if (recommendedRemoteThreadCount != null) {
-			builder.addAttribute(I_Tests4J_Params.RECOMENDED_REMOTE_THREADS_ATTRIBUTE, 
-					"" + recommendedRemoteThreadCount);
-		}
-		
-		if (recommendedTrialThreadCount != null) {
-			builder.addAttribute(I_Tests4J_Params.RECOMENDED_TRIAL_THREADS_ATTRIBUTE, 
-					"" + recommendedTrialThreadCount);
-		}
-		
-		if (recommendedSetupThreadCount != null) {
-			builder.addAttribute(I_Tests4J_Params.RECOMENDED_SETUP_THREADS_ATTRIBUTE, 
-					"" + recommendedSetupThreadCount);
-		}
-		
-		builder.append(">");
-		builder.endLine();
-		List<String> trialNames = ClassMethods.toNames(trials);
-		builder.addCollection(trialNames, I_Tests4J_Params.TRIALS_TAG_NAME, I_Tests4J_Params.TRIAL_TAG_NAME);
-		
-		//builder.addCollection(tests, I_Tests4J_Params.TESTS_TAG_NAME, I_Tests4J_Params.TEST_TAG_NAME);
-		
-		/*
-		List<String> logClassesNames = ClassMethods.toNames(loggingStates);
-		builder.addCollection(logClassesNames, I_Tests4J_Params.LOG_CLASSESS_TAG_NAME, I_Tests4J_Params.CLASS_NAME_TAG_NAME);
-		*/
-	}
-
-	
-
-	
 
 	public void setCoveragePluginFactoryClass(
 			Class<? extends I_Tests4J_CoveragePluginFactory> coveragePluginConfiguratorClass) {
-		coveragePluginFactoryClass = coveragePluginConfiguratorClass;
+		coveragePluginFactoryClass_ = coveragePluginConfiguratorClass;
 	}
 
 	public Class<? extends I_MetaTrial> getMetaTrialClass() {
-		return metaTrialClass;
+		return metaTrialClass_;
 	}
 
 	public void setMetaTrialClass(Class<? extends I_MetaTrial> metaTrialClass) {
-		this.metaTrialClass = metaTrialClass;
+		this.metaTrialClass_ = metaTrialClass;
 	}
 
 	
 
 	@Override
 	public Collection<I_Tests4J_RemoteInfo> getRemoteInfo() {
-		return remoteParams.keySet();
+		return remoteParams_.keySet();
 	}
 
 	@Override
 	public I_Tests4J_Params getRemoteParams(I_Tests4J_RemoteInfo p) {
-		return remoteParams.get(p);
+		return remoteParams_.get(p);
 	}
 	
 	public void putRemoteParams(I_Tests4J_RemoteInfo info,I_Tests4J_Params p) {
-		remoteParams.put(info, p);
+		remoteParams_.put(info, p);
 	}
 
 	public Class<? extends I_EvaluatorLookup> getEvaluatorLookup() {
-		return evaluatorLookup;
+		return evaluatorLookup_;
 	}
 
 	public void setEvaluatorLookup( Class<? extends I_EvaluatorLookup> evaluatorLookup) {
-		this.evaluatorLookup = evaluatorLookup;
+		this.evaluatorLookup_ = evaluatorLookup;
 	}
 
 	@Override
 	public Class<? extends I_Tests4J_CoveragePluginFactory> getCoveragePluginFactoryClass() {
-		return coveragePluginFactoryClass;
+		return coveragePluginFactoryClass_;
 	}
 
 	@Override
 	public Integer getRecommendedTrialThreadCount() {
-		return recommendedTrialThreadCount;
+		return recommendedTrialThreadCount_;
 	}
 	
 	public void setRecommendedTrialThreadCount(Integer p) {
-		recommendedTrialThreadCount = p;
+		recommendedTrialThreadCount_ = p;
 	}
 
 	@Override
 	public Integer getRecommendedRemoteThreadCount() {
-		return recommendedRemoteThreadCount;
+		return recommendedRemoteThreadCount_;
 	}
 
 	@Override
 	public Integer getRecommendedSetupThreadCount() {
-		return recommendedSetupThreadCount;
+		return recommendedSetupThreadCount_;
 	}
 
 	@Override
 	public I_Tests4J_CoveragePluginParams getCoverageParams() {
-		return coverageParams;
+		return coverageParams_;
 	}
 
 	public void setCoverageParams(I_Tests4J_CoveragePluginParams coverageParams) {
-		this.coverageParams = coverageParams;
+		this.coverageParams_ = coverageParams;
 	}
 
 	public void setRecommendedRemoteThreadCount(Integer recommendedRemoteThreadCount) {
-		this.recommendedRemoteThreadCount = recommendedRemoteThreadCount;
+		this.recommendedRemoteThreadCount_ = recommendedRemoteThreadCount;
 	}
 
 	public void setRecommendedSetupThreadCount(Integer recommendedSetupThreadCount) {
-		this.recommendedSetupThreadCount = recommendedSetupThreadCount;
+		this.recommendedSetupThreadCount_ = recommendedSetupThreadCount;
 	}
 
 	@Override
 	public List<OutputStream> getAdditionalReportOutputStreams() {
-		return additionalReportOutputStreams;
+		return additionalReportOutputStreams_;
 	}
 
 	@Override
 	public void setAdditionalReportOutputStreams(Collection<OutputStream> out) {
-		additionalReportOutputStreams.clear();
-		additionalReportOutputStreams.addAll(out);
+		additionalReportOutputStreams_.clear();
+		additionalReportOutputStreams_.addAll(out);
 	}
 
 	@Override
 	public void addAdditionalReportOutputStreams(OutputStream out) {
-		additionalReportOutputStreams.add(out);
+		additionalReportOutputStreams_.add(out);
 	}
 	
 
@@ -385,24 +336,36 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	}
 	
 	public boolean hasCodeCoverageFactory() {
-		if (coveragePluginFactoryClass != null) {
+		if (coveragePluginFactoryClass_ != null) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean hasMetaTrial() {
-		if (metaTrialClass != null) {
+		if (metaTrialClass_ != null) {
 			return true;
 		}
 		return false;
 	}
 
 	public I_Tests4J_SourceInfoParams getSourceInfoParams() {
-		return sourceInfoParams;
+		return sourceInfoParams_;
 	}
 
 	public void setSourceInfoParams(I_Tests4J_SourceInfoParams sourceInfoParams) {
-		this.sourceInfoParams = sourceInfoParams;
+		this.sourceInfoParams_ = sourceInfoParams;
 	}
+
+  public List<String> getAdditionalNonInstrumentedPackages() {
+    return additionalNonInstrumentedPackages_;
+  }
+
+  public void setAdditionalNonInstrumentedPackages(Collection<String> additionalNonInstrumentedPackages) {
+    additionalNonInstrumentedPackages_.clear();
+    if (additionalNonInstrumentedPackages != null) {
+      additionalNonInstrumentedPackages.remove(null);
+      additionalNonInstrumentedPackages_.addAll(additionalNonInstrumentedPackages);
+    }
+  }
 }
