@@ -4,7 +4,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class is a ThreadLocal which 
- * obtains it's initial value from a a factory
+ * obtains it's initial value from a a factory.
+ * 
  * @author scott
  *
  * @param <T>
