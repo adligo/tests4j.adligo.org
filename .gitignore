@@ -1,5 +1,7 @@
-/bin
-tests4j*.jar
-/classes
-/classes_e
+/bin/
 /build/
+/classes/
+/classes_e/
+tests4j*.jar
+
+
