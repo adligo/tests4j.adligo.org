@@ -8,6 +8,8 @@ import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.run.output.ConcurrentOutputDelegateor;
 import org.adligo.tests4j.run.output.JsePrintOutputStream;
+import org.adligo.tests4j.shared.asserts.reference.AllowedReferences;
+import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.common.JavaAPIVersion;
 import org.adligo.tests4j.shared.common.LegacyAPI_Issues;
 import org.adligo.tests4j.shared.common.SystemWithPrintStreamDelegate;
@@ -26,7 +28,9 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_Delegate;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
 import org.adligo.tests4j.system.shared.report.summary.SummaryReporter;
+import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -166,7 +170,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		//Tests4J_ProcessInfo remoteProcessInfo = memory.getTrialProcessInfo();
 		try {
 			startRecordingAllTrialsRun();
-			
+			instrumentAllowedReferences();
 			submitSetupRunnables(setupProcessInfo);
 			notifier_.onSetupDone();
 			
@@ -370,6 +374,32 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		}
 		//todo add remotes
 		return false;
+	}
+	
+	private void instrumentAllowedReferences() {
+	  I_Tests4J_CoveragePlugin coveragePlugin = memory_.getCoveragePlugin();
+	  if (coveragePlugin != null) {
+	    List<Class<? extends I_AbstractTrial>> trials = 
+	          new ArrayList<Class<? extends I_AbstractTrial>>();
+	    trials.addAll(memory_.getTrialClasses());
+	    for (Class<? extends I_AbstractTrial> trial: trials) {
+	      AllowedReferences refs = trial.getAnnotation(AllowedReferences.class);
+	      if (refs != null) {
+	        Class<? extends I_ReferenceGroup> [] groups = refs.groups();
+	        if (groups != null) {
+	          for (int i = 0; i < groups.length; i++) {
+	            Class<? extends I_ReferenceGroup> group = groups[i];
+	            try {
+                coveragePlugin.instrument(group);
+              } catch (IOException e) {
+                throw new RuntimeException(e);
+              }
+            }
+	        }
+	        
+	      }
+	    }
+	  }
 	}
 	/**
 	 * TODO

@@ -13,6 +13,7 @@ import org.adligo.tests4j.models.shared.results.ApiTrialResultMutant;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.run.common.I_Memory;
+import org.adligo.tests4j.run.discovery.I_PackageDiscovery;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TrialDescription;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -64,10 +65,10 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 		I_Tests4J_CoverageRecorder rec = super.getTrialThreadLocalCoverageRecorder();
 		if (rec != null) {
 			try {
-				PackageDiscovery pg = new PackageDiscovery(packageName);
+				I_PackageDiscovery pg = new PackageDiscovery(packageName);
 				Set<String> classNames = new HashSet<String>();
 				classNames.addAll(pg.getClassNames());
-				List<PackageDiscovery> subs =  pg.getSubPackages();
+				List<I_PackageDiscovery> subs =  pg.getSubPackages();
 				addClasses(subs, classNames);
 				
 				coverage = rec.endRecording(Collections.singleton(packageName));
@@ -102,10 +103,10 @@ public class AfterApiTrialTestsProcessor extends AbstractAfterTrialTestsProcesso
 		return afterTrialTestsResultMutant;
 	}
 	
-	public void addClasses(List<PackageDiscovery> pgs, Set<String> classNames) {
-		for (PackageDiscovery pg: pgs) {
+	public void addClasses(List<I_PackageDiscovery> pgs, Set<String> classNames) {
+		for (I_PackageDiscovery pg: pgs) {
 			classNames.addAll(pg.getClassNames());
-			List<PackageDiscovery> subs = pg.getSubPackages();
+			List<I_PackageDiscovery> subs = pg.getSubPackages();
 			addClasses(subs, classNames);
 		}
 	}

@@ -15,6 +15,7 @@ import org.adligo.tests4j.models.shared.results.TrialRunResult;
 import org.adligo.tests4j.models.shared.results.TrialRunResultMutant;
 import org.adligo.tests4j.run.common.AtomicBigInteger;
 import org.adligo.tests4j.run.common.I_ThreadManager;
+import org.adligo.tests4j.run.discovery.I_PackageDiscovery;
 import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.TestDescription;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -257,7 +258,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		}
 		for (String packageName: packages_) {
 			try {
-				PackageDiscovery classDiscovery = new PackageDiscovery(packageName);
+				I_PackageDiscovery classDiscovery = new PackageDiscovery(packageName);
 				addClasses(trmm, classDiscovery, siParams);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -278,7 +279,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	}
 
 	private void addClasses(TrialRunMetadataMutant trmm,
-			PackageDiscovery classDiscovery, I_Tests4J_SourceInfoParams siParams) {
+			I_PackageDiscovery classDiscovery, I_Tests4J_SourceInfoParams siParams) {
 		List<String> classes = classDiscovery.getClassNames();
 		
 		for (String clazz: classes) {
@@ -305,8 +306,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				}
 			}
 		}
-		List<PackageDiscovery> subs =  classDiscovery.getSubPackages();
-		for (PackageDiscovery sub: subs) {
+		List<I_PackageDiscovery> subs =  classDiscovery.getSubPackages();
+		for (I_PackageDiscovery sub: subs) {
 			addClasses(trmm, sub, siParams);
 		}
 	}
@@ -521,18 +522,23 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		I_Tests4J_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
 		if (allCoverageRecorder != null) {
 			//
-			if (log.isMainLog()) {
-				log.log("main log results");
-			}
-			List<I_PackageCoverageBrief> packageCoverage = allCoverageRecorder.endRecording(testedClasses_);
+		  if (log.isMainLog()) {
+        log.log("testedClasses_ are " + testedClasses_);
+      }
+		  
+			List<I_PackageCoverageBrief> packageCoverage = allCoverageRecorder.getAllCoverage();
 			List<I_PackageCoverageBrief> toAdd = new ArrayList<I_PackageCoverageBrief>();
-			
+			if (log.isMainLog()) {
+        log.log("There are " + packageCoverage.size() + " packages covered.");
+      }
 			//filter out trial/test code from result
 			for (I_PackageCoverageBrief cover: packageCoverage) {
 				boolean overlapped = false;
 				String coveragePkgName = cover.getPackageName();
 				for (String trialPackageName: trialPackageNames) {
-					
+				  if (log.isMainLog()) {
+		        log.log("checking " + trialPackageName);
+		      }
 					if (trialPackageName.contains(coveragePkgName) ||
 							coveragePkgName.contains(trialPackageName)) {
 						overlapped = true;

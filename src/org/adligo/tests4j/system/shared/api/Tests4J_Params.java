@@ -42,6 +42,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private I_Tests4J_ProgressParams progressParams_ = new Tests4J_DefaultProgressParams();
 	private I_Tests4J_SourceInfoParams sourceInfoParams_ = new Tests4J_SourceInfoParams();
 	private List<String> additionalNonInstrumentedPackages_ = new ArrayList<String>();
+	private List<String> additionalNonResultPackages_ = new ArrayList<String>();
 	
 	/**
 	 * OutputStreams are not passed between jvms of course.
@@ -366,6 +367,18 @@ public class Tests4J_Params implements I_Tests4J_Params {
     if (additionalNonInstrumentedPackages != null) {
       additionalNonInstrumentedPackages.remove(null);
       additionalNonInstrumentedPackages_.addAll(additionalNonInstrumentedPackages);
+    }
+  }
+  
+  public List<String> getAdditionalNonResultPackages() {
+    return additionalNonResultPackages_;
+  }
+
+  public void setAdditionalNonResultPackages(Collection<String> additionalNonResultPackages) {
+    additionalNonResultPackages_.clear();
+    if (additionalNonResultPackages != null) {
+      additionalNonResultPackages.remove(null);
+      additionalNonResultPackages_.addAll(additionalNonResultPackages);
     }
   }
 }

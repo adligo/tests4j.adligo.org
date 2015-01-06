@@ -147,7 +147,7 @@ public class ClassesWithSourceFileTrialsCalculator {
 	}
 	
 	public Set<String> getSourceFileTrialNames(String testedPackageName) throws IOException {
-		PackageDiscovery discovery = new PackageDiscovery(testedPackageName);
+		I_PackageDiscovery discovery = new PackageDiscovery(testedPackageName);
 		Collection<String> allClasses = discovery.getClassNames();
 		
 		Set<String> trialNames = new HashSet<String>();

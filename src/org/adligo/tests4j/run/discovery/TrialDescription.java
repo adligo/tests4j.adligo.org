@@ -493,12 +493,12 @@ public class TrialDescription implements I_TrialDescription {
 			pkgs.append(SYS.lineSeperator());
 		}
 		if (pcm.getChildren().size() >= 1) {
-			return new PackageCoverageBrief(pcm);
+			return new PackageCoverageBriefMutant(pcm);
 		}
 		if (sourceFileScope_ != null) {
 			Class<?> srcClass = sourceFileScope_.sourceClass();
 			if (srcClass.isInterface()) {
-				return new PackageCoverageBrief();
+				return new PackageCoverageBriefMutant();
 			}
 		}
 		throw new IllegalArgumentException("no package coverage for trial " + trialClass_.getName() +

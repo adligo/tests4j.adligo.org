@@ -215,4 +215,11 @@ public interface I_Tests4J_Params {
 	 */
 	public I_Tests4J_SourceInfoParams getSourceInfoParams();
 	
+	/**
+	 * The packages which could be instrumented,
+	 * but are not wanted as part of the final 
+	 * package coverage result.
+	 * @return
+	 */
+	public List<String> getAdditionalNonResultPackages();
 }

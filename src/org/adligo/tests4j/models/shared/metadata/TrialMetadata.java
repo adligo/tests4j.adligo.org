@@ -88,4 +88,9 @@ public class TrialMetadata implements I_TrialMetadata {
 	public Double getMinimumCodeCoverage() {
 		return mutant.getMinimumCodeCoverage();
 	}
+	
+	@Override
+	public String toString() {
+	  return TrialMetadataMutant.toString(this);
+	}
 }

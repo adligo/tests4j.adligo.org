@@ -1,5 +1,6 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
+import org.adligo.tests4j.models.shared.coverage.I_CoverageUnits;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.I_PhaseState;
@@ -183,14 +184,32 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		Collection<I_PackageCoverageBrief> ordered =  treeMap.values();
 		for (I_PackageCoverageBrief cover: ordered) {
 			Set<String> sourceFileNames = cover.getSourceFileNames();
-			//todo bridge formatting with GWT
-			logger.log("\t\t\t+" + cover.getPackageName() + " was covered " + 
-						PercentFormat.format(cover.getPercentageCovered().doubleValue(), 2) + "% with " +
-						sourceFileNames.size() + " source files, " +
-						cover.getChildPackageCoverage().size() + " child packages and " +
-						cover.getCoveredCoverageUnits().get() + "/" +
-						cover.getCoverageUnits().get() + " coverage units.");
-			
+			String packageName = cover.getPackageName();
+			List<I_PackageCoverageBrief> childPackageCoverage = cover.getChildPackageCoverage();
+			int childPackages = 0;
+			if (childPackageCoverage != null) {
+			  childPackages = childPackageCoverage.size();
+			}
+			I_CoverageUnits coverageUnits = cover.getCoverageUnits();
+			I_CoverageUnits coveredCoverageUnits = cover.getCoveredCoverageUnits();
+			try {
+  			//todo bridge formatting with GWT
+  			logger.log("\t\t\t+" + cover.getPackageName() + " was covered " + 
+  						PercentFormat.format(cover.getPercentageCovered().doubleValue(), 2) + "% with " +
+  						sourceFileNames.size() + " source files, " +
+  						childPackages + " child packages and " +
+  						coveredCoverageUnits.get() + "/" +
+  						coverageUnits.get() + " coverage units.");
+			} catch (Exception x) {
+			  throw new IllegalStateException("Error with package coverage for package " + packageName + 
+			      System.lineSeparator() + " childPackageCoverage " + System.lineSeparator() + 
+			      childPackageCoverage + System.lineSeparator() +
+			      " coveredCoverageUnits " + System.lineSeparator() +
+			      coveredCoverageUnits + System.lineSeparator() + 
+			      " coverageUnits " + System.lineSeparator() + 
+			      coverageUnits
+			      ,x);
+			}
 		}
 		return new BigDecimal(result.getCoveragePercentage()).round(new MathContext(2));
 	}

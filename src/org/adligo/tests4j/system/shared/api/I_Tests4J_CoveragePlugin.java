@@ -17,11 +17,20 @@ import java.io.IOException;
  */
 public interface I_Tests4J_CoveragePlugin {
 
+  /**
+   * instrument an arbitrary class,
+   * this was added so that @AllowedReferences
+   * could be normalized and done on a single thread.
+   * @param clazz
+   * @throws IOException
+   */
+  public void instrument(Class<?> clazz) throws IOException;
+  
 	/**
 	 * This method should be executable by multiple threads, 
 	 * so that each thread is instrumenting classes, to a shared classloader.
 	 */
-	public I_Tests4J_CoverageTrialInstrumentation instrument(Class<? extends I_AbstractTrial> trial) throws IOException;
+	public I_Tests4J_CoverageTrialInstrumentation instrumentTrial(Class<? extends I_AbstractTrial> trial) throws IOException;
 	
 	/**
 	 * @param trial

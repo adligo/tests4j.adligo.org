@@ -96,7 +96,7 @@ public class Tests4J_SetupRunnable implements Runnable, I_Tests4J_Runnable {
 							//instrument the classes first, so that 
 							// they are loaded before the TrialDescrpion processing code
 							currentTrial = trialClazz;
-							instrumention = plugin.instrument(trialClazz);
+							instrumention = plugin.instrumentTrial(trialClazz);
 							trialDescription = trialDescriptionProcessor.createAndRemberNotRunnableTrials(instrumention);
 							states.setDescApprovedForRun(trialDescription);
 						}

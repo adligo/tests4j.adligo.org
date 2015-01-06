@@ -39,8 +39,14 @@ public class PackageCoverageBrief implements I_PackageCoverageBrief {
 		}
 		
 		mutant_ = new PackageCoverageBriefMutant(p, false);
-		
-		
+		/*
+		if (mutant_.getCoverageUnits() == null) {
+		  throw new IllegalArgumentException(PackageCoverageBrief.class.getSimpleName() + " requires coverage units.");
+		}
+		if (mutant_.getCoveredCoverageUnits() == null) {
+      throw new IllegalArgumentException(PackageCoverageBrief.class.getSimpleName() + " requires covered coverage units.");
+    }
+    */
 	}
 
 	public I_CoverageUnits getCoverageUnits() {

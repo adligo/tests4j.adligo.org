@@ -25,14 +25,14 @@ import org.adligo.tests4j.run.helpers.I_CachedClassBytesClassLoader;
  * @author scott
  *
  */
-public class PackageDiscovery  {
+public class PackageDiscovery implements I_PackageDiscovery  {
 	private String packageName;
 	/**
 	 * the full class name including the package
 	 * includes all of the $1, $2 inner classes.
 	 */
 	private List<String> classNames = new ArrayList<String>();
-	private List<PackageDiscovery> subpackages = new ArrayList<PackageDiscovery>();
+	private List<I_PackageDiscovery> subpackages = new ArrayList<I_PackageDiscovery>();
 	private ClassLoader classLoader;
 	/**
 	 * either loading from a jar or the file system
@@ -41,7 +41,7 @@ public class PackageDiscovery  {
 	
 	public PackageDiscovery() {}
 	
-	public PackageDiscovery(PackageDiscovery pkg) {
+	public PackageDiscovery(I_PackageDiscovery pkg) {
 		setPackageName(pkg.getPackageName());
 		setClassNames(pkg.getClassNames());
 		setSubpackages(pkg.getSubPackages());
@@ -55,7 +55,7 @@ public class PackageDiscovery  {
 		
 	}
 	/**
-	 * this should never be using the cached class laoder
+	 * this should never be using the cached class loader
 	 * @param cl
 	 * @return
 	 */
@@ -208,16 +208,25 @@ public class PackageDiscovery  {
 		}
 	}
     
-	public String getPackageName() {
+	/* (non-Javadoc)
+   * @see org.adligo.tests4j.run.discovery.I_PackageDiscovery#getPackageName()
+   */
+	@Override
+  public String getPackageName() {
 		return packageName;
 	}
-	/**
-	 * the full class name including the package
-	 */
-	public List<String> getClassNames() {
+	/* (non-Javadoc)
+   * @see org.adligo.tests4j.run.discovery.I_PackageDiscovery#getClassNames()
+   */
+	@Override
+  public List<String> getClassNames() {
 		return classNames;
 	}
-	public List<PackageDiscovery> getSubPackages() {
+	/* (non-Javadoc)
+   * @see org.adligo.tests4j.run.discovery.I_PackageDiscovery#getSubPackages()
+   */
+	@Override
+  public List<I_PackageDiscovery> getSubPackages() {
 		return subpackages;
 	}
 	private void setPackageName(String name) {
@@ -228,9 +237,9 @@ public class PackageDiscovery  {
 		classNames.addAll(p);
 	}
 	
-	private void setSubpackages(List<? extends PackageDiscovery> p) {
+	private void setSubpackages(List<? extends I_PackageDiscovery> p) {
 		subpackages.clear();
-		for (PackageDiscovery pkg: p) {
+		for (I_PackageDiscovery pkg: p) {
 			subpackages.add(new PackageDiscovery(pkg));
 		}
 	}
@@ -264,13 +273,13 @@ public class PackageDiscovery  {
 		return jar;
 	}
 	
-	/**
-	 * recurses into sub packages
-	 * @return
-	 */
-	public int getClassCount() {
+	/* (non-Javadoc)
+   * @see org.adligo.tests4j.run.discovery.I_PackageDiscovery#getClassCount()
+   */
+	@Override
+  public int getClassCount() {
 		int toRet = 0;
-		for (PackageDiscovery pd: subpackages) {
+		for (I_PackageDiscovery pd: subpackages) {
 			toRet = toRet + pd.getClassCount();
 		}
 		toRet = toRet + classNames.size();

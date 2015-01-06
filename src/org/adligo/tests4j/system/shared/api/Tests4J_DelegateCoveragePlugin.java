@@ -34,10 +34,10 @@ public class Tests4J_DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin 
 	}
 	
 	@Override
-	public I_Tests4J_CoverageTrialInstrumentation instrument(
+	public I_Tests4J_CoverageTrialInstrumentation instrumentTrial(
 			Class<? extends I_AbstractTrial> trial)  throws IOException {
 		try {
-			return delegate.instrument(trial);
+			return delegate.instrumentTrial(trial);
 		} catch (IOException x) {
 			throw x;
 		} catch (Exception t) {
@@ -110,6 +110,15 @@ public class Tests4J_DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin 
       reporter.onThrowable(t);
     }
     return null;
+  }
+
+  @Override
+  public void instrument(Class<?> clazz) throws IOException {
+    try {
+      delegate.instrument(clazz);
+    } catch (Exception t) {
+      reporter.onThrowable(t);
+    }
   }
 
 }

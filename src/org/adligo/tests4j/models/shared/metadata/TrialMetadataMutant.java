@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class TrialMetadataMutant implements I_TrialMetadata {
-	private static final String TRIAL_METADATA_MUTANT_REQUIRES_A_NON_NULL_TYPE = "TrialMetadataMutant requires a non null type.";
+  private static final String TRIAL_METADATA_MUTANT_REQUIRES_A_NON_NULL_TYPE = "TrialMetadataMutant requires a non null type.";
 	private String trialName;
 	private Long timeout;
 	private boolean ignored = false;
@@ -156,5 +156,14 @@ public class TrialMetadataMutant implements I_TrialMetadata {
 	
 	public void setMinimumCodeCoverage(Double p) {
 		minCodeCoverage = p;
+	}
+	
+  public static String toString(I_TrialMetadata metadata) {
+    return metadata.getClass().getSimpleName() + " [trialName=" + metadata.getTrialName() + "]";
+  }
+	
+	@Override
+	public String toString() {
+	  return toString(this);
 	}
 }
