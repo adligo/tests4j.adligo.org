@@ -107,4 +107,14 @@ public class JseSystem implements I_JseSystem {
     FileUtils.removeRecursive(new File(path).toPath());;
   }
 
+  @Override
+  public String getCurrentThreadGroupName() {
+    Thread t = Thread.currentThread();
+    ThreadGroup tg = t.getThreadGroup();
+    if (tg == null) {
+      return "UnknownGroup";
+    }
+    return tg.getName();
+  }
+
 }

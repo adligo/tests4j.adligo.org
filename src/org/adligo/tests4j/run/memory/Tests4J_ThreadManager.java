@@ -1,5 +1,11 @@
 package org.adligo.tests4j.run.memory;
 
+import org.adligo.tests4j.run.common.I_RemoteRunner;
+import org.adligo.tests4j.run.common.I_ThreadManager;
+import org.adligo.tests4j.run.remote.RemoteRunnerStateEnum;
+import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,15 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-
-import org.adligo.tests4j.models.shared.results.I_PhaseState;
-import org.adligo.tests4j.run.common.I_RemoteRunner;
-import org.adligo.tests4j.run.common.I_ThreadManager;
-import org.adligo.tests4j.run.helpers.ThreadLogMessageBuilder;
-import org.adligo.tests4j.run.remote.RemoteRunnerStateEnum;
-import org.adligo.tests4j.run.remote.Tests4J_RemoteRunner;
-import org.adligo.tests4j.shared.common.I_System;
-import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
  * This class manages all child threads 
@@ -88,7 +85,7 @@ public class Tests4J_ThreadManager implements I_ThreadManager {
 	
 	public void shutdown() {
 		if (log_.isLogEnabled(Tests4J_ThreadManager.class)) {
-			log_.log("Tests4J_Manager.shutdown on " + ThreadLogMessageBuilder.getThreadWithGroupNameForLog());
+			log_.log("Tests4J_Manager.shutdown on " + log_.getThreadWithGroupNameMessage());
 		}
 		
 		if (remoteService_ != null) {

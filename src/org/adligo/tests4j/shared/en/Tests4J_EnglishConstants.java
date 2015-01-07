@@ -5,6 +5,7 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_LogMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
@@ -38,25 +39,27 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	private static final String CLASSES_WHICH_IMPLEMENT_I_ABSTRACT_TRIAL_MUST_HAVE_A_ZERO_ARGUMENT_CONSTRUCTOR = 
 			"Classes which implement I_AbstractTrial must have a zero argument constructor.";
 	
-	private Tests4J_AnnotationMessages annotationErrors = new Tests4J_AnnotationMessages();
-	private I_Tests4J_AssertionInputMessages assertionInputMessages =
+	private Tests4J_AnnotationMessages annotationErrors_ = new Tests4J_AnnotationMessages();
+	private I_Tests4J_AssertionInputMessages assertionInputMessages_ =
 			new Tests4J_AssertionInputMessages();
-	private I_Tests4J_ResultMessages assertionResultMessages =
+	private I_Tests4J_ResultMessages assertionResultMessages_ =
 			new Tests4J_ResultMessages();
 	
-	private I_Tests4J_EclipseErrors eclipseErrors = null;
+	private I_Tests4J_EclipseErrors eclipseErrors_ = null;
 
-	private I_Tests4J_LineDiffTextDisplayMessages lineDiffTextMessages = 
+	private I_Tests4J_LineDiffTextDisplayMessages lineDiffTextMessages_ = 
 			new Tests4J_LineDiffTextDisplayMessages();
-	private I_Tests4J_ParamsReaderMessages paramReaderConstants = 
+	private I_Tests4J_LogMessages logMessages_ = 
+      new Tests4J_LogMessages();
+	private I_Tests4J_ParamsReaderMessages paramReaderConstants_ = 
 			new Tests4J_ParamsReaderMessages();
-	private Tests4J_ReportMessages reportMessages = new Tests4J_ReportMessages();
+	private Tests4J_ReportMessages reportMessages_ = new Tests4J_ReportMessages();
 	
 	private Tests4J_EnglishConstants() {}
 	
 	@Override
 	public I_Tests4J_AnnotationMessages getAnnotationMessages() {
-		return annotationErrors;
+		return annotationErrors_;
 	}
 
 
@@ -67,20 +70,20 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	
 	@Override
 	public I_Tests4J_EclipseErrors getEclipseErrors() {
-		if (eclipseErrors == null) {
-			eclipseErrors = new Tests4J_EclipseErrors();
+		if (eclipseErrors_ == null) {
+			eclipseErrors_ = new Tests4J_EclipseErrors();
 		}
-		return eclipseErrors;
+		return eclipseErrors_;
 	}
 
 	@Override
 	public I_Tests4J_AssertionInputMessages getAssertionInputMessages() {
-		return assertionInputMessages;
+		return assertionInputMessages_;
 	}
 
 	@Override
 	public I_Tests4J_ResultMessages getResultMessages() {
-		return assertionResultMessages;
+		return assertionResultMessages_;
 	}
 
 	@Override
@@ -126,18 +129,23 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
 	 
 	@Override
 	public I_Tests4J_LineDiffTextDisplayMessages getLineDiffTextDisplayMessages() {
-		return lineDiffTextMessages;
+		return lineDiffTextMessages_;
 	}
 
 	@Override
 	public I_Tests4J_ParamsReaderMessages getParamReaderMessages() {
-		return paramReaderConstants;
+		return paramReaderConstants_;
 	}
 
 	@Override
 	public I_Tests4J_ReportMessages getReportMessages() {
-		return reportMessages;
+		return reportMessages_;
 	}
+
+  @Override
+  public I_Tests4J_LogMessages getLogMessages() {
+    return logMessages_;
+  }
 
 	
 }

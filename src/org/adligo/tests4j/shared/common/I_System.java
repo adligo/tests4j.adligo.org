@@ -38,6 +38,7 @@ public interface I_System extends I_Time {
 	 * @return
 	 */
 	public String getCurrentThreadName();
+	public String getCurrentThreadGroupName();
 	
 	/**
 	 * the result of System.getProperty("java.version", "");

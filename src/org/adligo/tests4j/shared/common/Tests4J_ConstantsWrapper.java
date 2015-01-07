@@ -5,12 +5,17 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_LogMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 
 public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
-	private I_Tests4J_Constants delegate;
+	public I_Tests4J_LogMessages getLogMessages() {
+    return delegate.getLogMessages();
+  }
+
+  private I_Tests4J_Constants delegate;
 	
 	public Tests4J_ConstantsWrapper(I_Tests4J_Constants p) {
 		delegate = p;

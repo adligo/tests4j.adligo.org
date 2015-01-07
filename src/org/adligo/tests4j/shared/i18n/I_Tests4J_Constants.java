@@ -28,6 +28,7 @@ public interface I_Tests4J_Constants {
 	public I_Tests4J_ResultMessages getResultMessages();
 	public I_Tests4J_EclipseErrors getEclipseErrors();
 	public I_Tests4J_LineDiffTextDisplayMessages getLineDiffTextDisplayMessages();
+	public I_Tests4J_LogMessages getLogMessages();
 	public I_Tests4J_ParamsReaderMessages getParamReaderMessages();
 	public I_Tests4J_ReportMessages getReportMessages();
 	

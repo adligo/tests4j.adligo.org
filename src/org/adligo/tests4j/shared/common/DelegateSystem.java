@@ -13,7 +13,11 @@ import java.util.List;
  *
  */
 public class DelegateSystem implements I_System {
-	private I_System delegate;
+	public String getCurrentThreadGroupName() {
+    return delegate.getCurrentThreadGroupName();
+  }
+
+  private I_System delegate;
 	private final MethodBlocker methodBlocker = getMethodBlocker();
 	
 	private MethodBlocker getMethodBlocker() {

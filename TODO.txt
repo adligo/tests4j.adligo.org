@@ -38,6 +38,8 @@ Long term list;
    assertSize(int size, Collection)
    assertEmpty(Collection)
    
+   assertClassNamesEqual(Object, Object);
+   
 Code in the tests4j project that needs to be implemented 
 at some point.
 

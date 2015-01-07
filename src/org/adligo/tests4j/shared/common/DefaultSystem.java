@@ -6,6 +6,7 @@ import org.adligo.tests4j.shared.common.I_System;
 
 public class DefaultSystem implements I_System {
 	public static final String DEFAULT_THREAD_NAME = "main";
+	public static final String DEFAULT_THREAD_GROUP_NAME = "UnknownThreadGroup";
 	/**
 	 * capture the initial System.out PrintStream
 	 * at class load time, so it can never be changed.
@@ -53,4 +54,9 @@ public class DefaultSystem implements I_System {
 	public boolean isMainSystem() {
 		return false;
 	}
+
+  @Override
+  public String getCurrentThreadGroupName() {
+    return DEFAULT_THREAD_GROUP_NAME;
+  }
 }

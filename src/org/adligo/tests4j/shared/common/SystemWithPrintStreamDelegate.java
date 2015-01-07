@@ -13,7 +13,11 @@ import java.util.List;
  *
  */
 public class SystemWithPrintStreamDelegate implements I_System {
-	private I_System delegate;
+	public String getCurrentThreadGroupName() {
+    return delegate.getCurrentThreadGroupName();
+  }
+
+  private I_System delegate;
 	private PrintStream out;
 	/**
 	 * only for Tests4J_System

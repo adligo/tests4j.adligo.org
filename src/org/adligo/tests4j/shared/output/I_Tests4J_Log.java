@@ -61,5 +61,16 @@ public interface I_Tests4J_Log {
 	 * @return
 	 */
 	public String getLineSeperator();
-
+	
+	/**
+	 * @return something like;<br/>
+	 * Thread/Group; main~~~~main-group
+	 */
+  public String getThreadWithGroupNameMessage();
+  
+  /**
+   * @return something like;<br/>
+   * Thread; main
+   */
+  public String getThreadMessage();
 }

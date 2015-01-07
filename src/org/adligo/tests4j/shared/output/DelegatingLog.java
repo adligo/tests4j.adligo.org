@@ -119,6 +119,18 @@ public class DelegatingLog implements I_Tests4J_Log {
 				system_.getCurrentThreadName());
 	}
 
+  @Override
+  public String getThreadWithGroupNameMessage() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getThreadMessage() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 
 
 }

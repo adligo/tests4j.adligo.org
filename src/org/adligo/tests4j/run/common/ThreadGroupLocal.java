@@ -10,12 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @param <T>
  */
-public class ThreadGroupLocal<T> extends ThreadLocal<Holder<T>>{
+public class ThreadGroupLocal<T> extends ThreadLocal<Holder<T>> implements I_ThreadGroupLocal<T>{
 	private final ConcurrentHashMap<String, Holder<T>> threadGroupLocalMap_ = new ConcurrentHashMap<String, Holder<T>>();
-	private final ThreadGroupFilter filter_;
+	private final I_ThreadGroupFilter filter_;
 	private final I_InitalValueFactory<T> factory_;
 	
-	public ThreadGroupLocal(ThreadGroupFilter filter, I_InitalValueFactory<T> factory) {
+	public ThreadGroupLocal(I_ThreadGroupFilter filter, I_InitalValueFactory<T> factory) {
 	  if (filter == null) {
 	    throw new NullPointerException();
 	  }
@@ -42,6 +42,10 @@ public class ThreadGroupLocal<T> extends ThreadLocal<Holder<T>>{
   	return holder;
   }
 
+  /* (non-Javadoc)
+   * @see org.adligo.tests4j.run.common.I_ThreadGroupLocal#getValue()
+   */
+  @Override
   public T getValue() { 
   	Holder<T> holder = super.get();
   	if (holder == null) {
