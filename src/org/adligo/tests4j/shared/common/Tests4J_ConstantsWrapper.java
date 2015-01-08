@@ -10,17 +10,29 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 
-public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
-	public I_Tests4J_LogMessages getLogMessages() {
-    return delegate.getLogMessages();
-  }
+import java.util.Collections;
 
+public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
   private I_Tests4J_Constants delegate;
 	
 	public Tests4J_ConstantsWrapper(I_Tests4J_Constants p) {
 		delegate = p;
 	}
 
+	public I_Tests4J_Constants getDelegate() {
+	  return delegate;
+	}
+	
+	@SuppressWarnings("unused")
+  public synchronized void setDelegate(I_Tests4J_Constants constants) {
+	  new MethodBlocker(Tests4J_ConstantsWrapper.class, "setDelegate", 
+	      Collections.singletonList("org.adligo.tests4j_tests.system.shared.mocks.Tests4J_ConstantsMock"));
+	  if (constants == null) {
+	    throw new NullPointerException();
+	  }
+    delegate = constants;
+  }
+	
 	public I_Tests4J_EclipseErrors getEclipseErrors() {
 		return delegate.getEclipseErrors();
 	}
@@ -94,6 +106,22 @@ public class Tests4J_ConstantsWrapper implements I_Tests4J_Constants {
   @Override
   public String getAnotherTests4J_InstanceIsRunningHere() {
     return delegate.getAnotherTests4J_InstanceIsRunningHere();
+  }
+
+  public boolean isLeftToRight() {
+    return delegate.isLeftToRight();
+  }
+
+  public String getPrefix() {
+    return delegate.getPrefix();
+  }
+
+  public String getHeader() {
+    return delegate.getHeader();
+  }
+
+  public I_Tests4J_LogMessages getLogMessages() {
+    return delegate.getLogMessages();
   }
 
 }

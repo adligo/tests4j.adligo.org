@@ -15,6 +15,11 @@ public class ThreadGroupLocal<T> extends ThreadLocal<Holder<T>> implements I_Thr
 	private final I_ThreadGroupFilter filter_;
 	private final I_InitalValueFactory<T> factory_;
 	
+	/**
+	 * 
+	 * @param filter 
+	 * @param factory
+	 */
 	public ThreadGroupLocal(I_ThreadGroupFilter filter, I_InitalValueFactory<T> factory) {
 	  if (filter == null) {
 	    throw new NullPointerException();

@@ -3,9 +3,11 @@ package org.adligo.tests4j.system.shared.report.summary;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class TestDisplay {
+  private static final I_Tests4J_Constants CONSTANTS = Tests4J_Constants.CONSTANTS;
 	public static final String TEST = "Test: ";
 	public static final String FAILED = "Failed!";
 	public static final String PASSED = "Passed!";
@@ -27,8 +29,8 @@ public class TestDisplay {
 			if (threadDisplay.isOn()) {
 				thread = logger.getLineSeperator() +  threadDisplay.getThreadInfo();
 			}
-			logger.log(I_Tests4J_Constants.PREFIX + 
-					messages.getStartingTest() + trialName + "." + testName + thread);
+			logger.log(DefaultLog.orderLine(CONSTANTS.getPrefix(), messages.getStartingTest(),
+			    trialName, ".", testName) + thread);
 		}
 	}
 	
@@ -40,8 +42,8 @@ public class TestDisplay {
 		} else if (logger.isLogEnabled(TestDisplay.class)) {
 			I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getReportMessages();
 			logger.log(
-					I_Tests4J_Constants.PREFIX + messages.getTestHeading() + 
-					trialName + "." + testName + messages.getPassedEOS());
+			    DefaultLog.orderLine(CONSTANTS.getPrefix(), messages.getTestHeading(),  
+					trialName, ".", testName, messages.getPassedEOS()));
 		}
 	}
 }

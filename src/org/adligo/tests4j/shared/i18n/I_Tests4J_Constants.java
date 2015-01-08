@@ -17,9 +17,16 @@ package org.adligo.tests4j.shared.i18n;
  *
  */
 public interface I_Tests4J_Constants {
-	public static final String PREFIX = "Tests4J";
-	public static final String HEADER = ": ";
-	public static final String PREFIX_HEADER = PREFIX + HEADER;
+
+	
+	/**
+	 * The order in which the language is formatted,
+	 * left to right or right to left (Hebrew and Arabic)
+	 * @return
+	 */
+	public boolean isLeftToRight();
+	public String getPrefix();
+	public String getHeader();
 	
 	public I_Tests4J_AnnotationMessages getAnnotationMessages();
 	

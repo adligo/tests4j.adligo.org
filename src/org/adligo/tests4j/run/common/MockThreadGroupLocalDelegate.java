@@ -1,5 +1,7 @@
 package org.adligo.tests4j.run.common;
 
+import org.adligo.tests4j.run.memory.Tests4J_ThreadFactory;
+
 /**
  * This class provides a correct way to mock out
  * constants (using the guarded (MethodBlock) delegate pattern)
@@ -78,7 +80,8 @@ public class MockThreadGroupLocalDelegate<T> {
     if (t == null) {
       throw new NullPointerException();
     }
-    delegates = new ThreadGroupLocal<T>(new ThreadGroupFilter("tests4j-trial-"), new I_InitalValueFactory<T>() {
+    
+    delegates = new ThreadGroupLocal<T>(new ThreadGroupFilter(Tests4J_ThreadFactory.TRIAL_THREAD_GROUP_PREFIX), new I_InitalValueFactory<T>() {
 
       @Override
       public T createNew() {

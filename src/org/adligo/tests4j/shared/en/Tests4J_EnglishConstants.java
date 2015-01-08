@@ -19,7 +19,9 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
  *
  */
 public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
-	private static final String ANOTHER_TESTS4J_IS_RUNNING = "Another instance of tests4j appears to be running in this directory;";
+  private static final String PREFIX = "Tests4J";
+  private static final String HEADER = "Tests4J: ";
+  private static final String ANOTHER_TESTS4J_IS_RUNNING = "Another instance of tests4j appears to be running in this directory;";
 
   private static final String METHOD_BLOCKER_REQUIRES_A_BLOCKING_METHOD_NAME = "MethodBlocker requires a blocking method name.";
 
@@ -145,6 +147,22 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
   @Override
   public I_Tests4J_LogMessages getLogMessages() {
     return logMessages_;
+  }
+
+  @Override
+  public boolean isLeftToRight() {
+    return true;
+  }
+
+  @Override
+  public String getPrefix() {
+    // TODO Auto-generated method stub
+    return PREFIX;
+  }
+
+  @Override
+  public String getHeader() {
+    return HEADER;
   }
 
 	

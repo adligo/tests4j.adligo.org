@@ -6,6 +6,7 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -28,6 +29,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 	private boolean mainLog_;
 	private I_OutputBuffer out_;
 	private I_System system_;
+	private DefaultLog log_ = new DefaultLog();
 	/**
 	 * create a DefaultReporter, this should be able to handle
 	 * any sort of error/exception from the I_Tests4J_Params 
@@ -41,6 +43,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 			throw new IllegalArgumentException(DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM);
 		}
 		system_ = pSystem;
+		log_ = new DefaultLog(pSystem, logsOn);
 		mainLog_ = pSystem.isMainSystem();
 		out_ = pOut;
 		if (logsOn != null) {
@@ -64,6 +67,12 @@ public class DelegatingLog implements I_Tests4J_Log {
 		out_.add(p);
 	}
 
+	@Override
+  public void logLine(String ... p) {
+    String message = DefaultLog.orderLine(p);
+    out_.add(message);
+  }
+	
 	@Override
 	public void onThrowable(Throwable p) {
 		logThrowable("\t", p);
@@ -121,14 +130,22 @@ public class DelegatingLog implements I_Tests4J_Log {
 
   @Override
   public String getThreadWithGroupNameMessage() {
-    // TODO Auto-generated method stub
-    return null;
+    return log_.getThreadWithGroupNameMessage();
   }
 
   @Override
   public String getThreadMessage() {
-    // TODO Auto-generated method stub
-    return null;
+    return log_.getThreadMessage();
+  }
+
+  @Override
+  public void appendLine(StringBuilder sb, String line, String indent) {
+    log_.appendLine(sb, line, indent);
+  }
+
+  @Override
+  public void appendLines(StringBuilder sb, List<String> lines, String indent) {
+    log_.appendLines(sb, lines, indent);
   }
 
 

@@ -6,9 +6,11 @@ import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class TrialDisplay {
+  private static final I_Tests4J_Constants CONSTANTS = Tests4J_Constants.CONSTANTS;
 	private I_Tests4J_Log logger;
 	private TrialFailedDisplay failuresReporter;
 	private ThreadDisplay theadDisplay;
@@ -22,9 +24,9 @@ public class TrialDisplay {
 	public void onStartingTrial(String trialName) {
 		if (logger.isLogEnabled(TrialDisplay.class)) {
 			I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
-			String message = I_Tests4J_Constants.PREFIX + messages.getStartingTrial() + trialName; 
+			String message = DefaultLog.orderLine(CONSTANTS.getPrefix(),  messages.getStartingTrial(), trialName); 
 			if (theadDisplay.isOn()) {
-				message = message + " " +theadDisplay.getThreadInfo();
+				message = DefaultLog.orderLine(message, " ", theadDisplay.getThreadInfo());
 			}
 			logger.log(message);
 		}
@@ -37,8 +39,8 @@ public class TrialDisplay {
 			if (logger.isLogEnabled(TrialDisplay.class)) {
 				I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
 				
-				String message =I_Tests4J_Constants.PREFIX + messages.getTrialHeading() + result.getName() + 
-						messages.getPassedEOS();
+				String message = DefaultLog.orderLine(CONSTANTS.getPrefix(),  messages.getTrialHeading(), result.getName(),
+						messages.getPassedEOS());
 				logger.log(message);
 			}
 		}

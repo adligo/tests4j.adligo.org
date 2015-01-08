@@ -18,20 +18,15 @@ import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
-	private boolean snare = false;
-	private boolean redirect = true;
-	private Set<String> enabledLogClasses = new HashSet<String>();
+  private static final I_Tests4J_Constants CONSTANTS = Tests4J_Constants.CONSTANTS;
 	
-	private I_Tests4J_Log logger;
-	private boolean listRelevantClassesWithoutTrials = false;
-	private I_TrialRunMetadata metadata;
+	private I_Tests4J_Log log_;
 	private TestDisplay testsReporter;
 	private TrialDisplay trialsReporter;
 	/**
@@ -55,7 +50,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	}
 	
 	public SummaryReporter(I_Tests4J_Log p) {
-		logger = p;
+		log_ = p;
 		threadDisplay = new ThreadDisplay(p, new DefaultSystem());
 		testsReporter = new TestDisplay(p, threadDisplay);
 		trialsReporter = new TrialDisplay(p, threadDisplay);
@@ -66,12 +61,10 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	public synchronized  void onMetadataCalculated(I_TrialRunMetadata p) {
 		I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
 		
-		logger.log(I_Tests4J_Constants.PREFIX +  messages.getMetadataCalculatedHeading() + logger.getLineSeperator() +
-				I_Tests4J_Constants.PREFIX + messages.getTrialsHeading() + p.getAllTrialsCount() + logger.getLineSeperator() +
-			 	I_Tests4J_Constants.PREFIX + messages.getTestsHeading() + p.getAllTestsCount()
-			 	+  logger.getLineSeperator());
+		log_.log(DefaultLog.orderLine(CONSTANTS.getPrefix(),  messages.getMetadataCalculatedHeading()) + log_.getLineSeperator() +
+		    DefaultLog.orderLine(CONSTANTS.getPrefix(),  messages.getTrialsHeading(), "" + p.getAllTrialsCount()) + log_.getLineSeperator() +
+			 	DefaultLog.orderLine(CONSTANTS.getPrefix(),   messages.getTestsHeading(), "" + p.getAllTestsCount()) + log_.getLineSeperator());
 			
-		metadata = p;
 	}
 
 	@Override
@@ -97,8 +90,8 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 
 	@Override
 	public synchronized void onRunCompleted(I_TrialRunResult result) {
-		logger.log("------------------------Test Results-------------------------");
-		logger.log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds.");
+		log_.log("------------------------Test Results-------------------------");
+		log_.log("\t\tTests completed in " + result.getRunTimeSecs() + " seconds.");
 		//DecimalFormat formatter = new DecimalFormat("###.##");
 		
 		/*
@@ -115,16 +108,15 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 		}
 		*/
 		
-		BigDecimal pct = null;
 		if (result.hasCoverage()) {
 			logCoverage(result );
 		}
 		
 		
 		if (result.getTrialsPassed() == result.getTrials()) {
-			logger.log("\t\tTests: " + result.getTestsPassed() + "/" +
+			log_.log("\t\tTests: " + result.getTestsPassed() + "/" +
 					result.getTests());
-			logger.log("\t\tUnique/Assertions: " + 
+			log_.log("\t\tUnique/Assertions: " + 
 					result.getUniqueAsserts() + "/" +
 					result.getAsserts());
 			StringBuilder sb = new StringBuilder();
@@ -133,10 +125,10 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 			if (result.hasCoverage()) {
 				sb.append(" with " + PercentFormat.format(result.getCoveragePercentage(), 2) + "% coverage;");
 			}
-			logger.log(sb.toString());
-			logger.log("");
-			logger.log("\t\t\tPassed!");
-			logger.log("");
+			log_.log(sb.toString());
+			log_.log("");
+			log_.log("\t\t\tPassed!");
+			log_.log("");
 		} else {
 			List<I_TrialResult> failedTrials = trialsReporter.getFailedTrials();
 			if (failedTrials.size() >= trialFailuresDetailDisplayCount) {
@@ -149,9 +141,9 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 					trialFailedDetail.logTrialFailure(tr);
 				}
 			}
-			logger.log("\t\tTests: " + result.getTestsPassed() + "/" +
+			log_.log("\t\tTests: " + result.getTestsPassed() + "/" +
 					result.getTests());
-			logger.log("\t\tUnique/Assertions: " + 
+			log_.log("\t\tUnique/Assertions: " + 
 					result.getUniqueAsserts() + "/" +
 					result.getAsserts());
 			StringBuilder sb = new StringBuilder();
@@ -160,14 +152,14 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 			if (result.hasCoverage()) {
 				sb.append(" with " + PercentFormat.format(result.getCoveragePercentage(), 2) + "% coverage;");
 			}
-			logger.log(sb.toString());
-			logger.log("");
-			logger.log("\t\t\tFAILED!");
-			logger.log("");
+			log_.log(sb.toString());
+			log_.log("");
+			log_.log("\t\t\tFAILED!");
+			log_.log("");
 			
 		}
 		
-		logger.log("------------------------Test Results End---------------------");
+		log_.log("------------------------Test Results End---------------------");
 	}
 
 	
@@ -175,7 +167,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	private BigDecimal logCoverage(I_TrialRunResult result) {
 		List<I_PackageCoverageBrief> coverage = result.getCoverage();
 		if (coverage.size() >= 1) {
-			logger.log("\t\tPackage Coverage;");
+			log_.log("\t\tPackage Coverage;");
 		}
 		Map<String, I_PackageCoverageBrief> treeMap = new TreeMap<String, I_PackageCoverageBrief>();
 		for (I_PackageCoverageBrief cover: coverage) {
@@ -194,7 +186,7 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 			I_CoverageUnits coveredCoverageUnits = cover.getCoveredCoverageUnits();
 			try {
   			//todo bridge formatting with GWT
-  			logger.log("\t\t\t+" + cover.getPackageName() + " was covered " + 
+  			log_.log("\t\t\t+" + cover.getPackageName() + " was covered " + 
   						PercentFormat.format(cover.getPercentageCovered().doubleValue(), 2) + "% with " +
   						sourceFileNames.size() + " source files, " +
   						childPackages + " child packages and " +
@@ -221,11 +213,11 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	public synchronized void onProgress(I_PhaseState info) {
 		String processName = info.getProcessName();
 		if  (I_PhaseState.SETUP.equals(processName)) {
-					setupProgressDisplay.onProgress(logger, info);
+					setupProgressDisplay.onProgress(log_, info);
 		} else if (I_PhaseState.TRIALS.equals(processName)) {
-				trialsProgressDisplay.onProgress(logger, info);
+				trialsProgressDisplay.onProgress(log_, info);
 		} else {
-				remoteProgressDisplay.onProgress(logger, info);
+				remoteProgressDisplay.onProgress(log_, info);
 		}
 	}
 
@@ -233,11 +225,11 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	public void onProccessStateChange(I_PhaseState info) {
 		String processName = info.getProcessName();
 		if  (I_PhaseState.SETUP.equals(processName)) {
-					setupProcessDisplay.onProccessStateChange(logger, info);
+					setupProcessDisplay.onProccessStateChange(log_, info);
 		} else if (I_PhaseState.TRIALS.equals(processName)) {
-				trialsProcessDisplay.onProccessStateChange(logger, info);
+				trialsProcessDisplay.onProccessStateChange(log_, info);
 		} else {
-				remoteProcessDisplay.onProccessStateChange(logger, info);
+				remoteProcessDisplay.onProccessStateChange(log_, info);
 		}
 	}
 

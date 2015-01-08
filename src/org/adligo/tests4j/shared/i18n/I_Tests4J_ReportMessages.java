@@ -2,29 +2,29 @@ package org.adligo.tests4j.shared.i18n;
 
 public interface I_Tests4J_ReportMessages {
 
-	public abstract String getDoneEOS();
+	public String getDoneEOS();
 
-	public abstract String getPctComplete();
+	public String getPctComplete();
 
-	public abstract String getPassedEOS();
+	public String getPassedEOS();
 
-	public abstract String getFailedEOS();
+	public String getFailedEOS();
 
-	public abstract String getTestsHeading();
+	public String getTestsHeading();
 
-	public abstract String getTrialsHeading();
+	public String getTrialsHeading();
 
-	public abstract String getMetadataCalculatedHeading();
+	public String getMetadataCalculatedHeading();
 
-	public abstract String getTestHeading();
+	public String getTestHeading();
 
-	public abstract String getTrialHeading();
+	public String getTrialHeading();
 	
-	public abstract String getFailedFlag();
+	public String getFailedFlag();
 
-	public abstract String getPassedFlag();
+	public String getPassedFlag();
 
-	public abstract String getIndent();
+	public String getIndent();
 	
 	public String getStartingTrial();
 	

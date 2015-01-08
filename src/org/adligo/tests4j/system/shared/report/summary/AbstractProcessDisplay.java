@@ -5,6 +5,7 @@ import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.system.shared.trials.I_Progress;
@@ -21,6 +22,7 @@ import java.util.List;
  *
  */
 public abstract class AbstractProcessDisplay {
+  private static final I_Tests4J_Constants CONSTANTS = Tests4J_Constants.CONSTANTS;
 	private String pct = "";
 	private int timesAtPct;
 	
@@ -33,7 +35,7 @@ public abstract class AbstractProcessDisplay {
 				String message = messages.getStartingProcessXWithYThreads();
 				message = message.replace("<X/>",processInfo.getProcessName());
 				message = message.replace("<Y/>", "" +processInfo.getThreadCount());
-				log.log(I_Tests4J_Constants.PREFIX_HEADER + message);
+				log.logLine(CONSTANTS.getHeader(), message);
 			} else {
 				getTimesAtThisPct(processInfo);
 				String message = messages.getProcessVhasXRunnablesRunningAndYZdone();
@@ -53,46 +55,56 @@ public abstract class AbstractProcessDisplay {
 				message = message.replace("<Z/>", z);
 				message = addCurrentRunningInfoToStalledProcess(log,
 						processInfo, message);
-				log.log(I_Tests4J_Constants.PREFIX_HEADER + message);
+				log.logLine(CONSTANTS.getHeader(), message);
 			}
 		}
 	}
 
 	protected String addCurrentRunningInfoToStalledProcess(I_Tests4J_Log log,
 			I_PhaseState processInfo, String message) {
-		StringBuilder sb = new StringBuilder();
+	  
+	  StringBuilder sb = new StringBuilder();
+	  sb.append(message);
 		if (timesAtPct >= 2) {
-			
-			sb.append(message);
+		  I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
+			List<String> lines = new ArrayList<String>();
+			lines.add(message);
 			List<I_Tests4J_TrialProgress> states =  processInfo.getTrials();
 			
 			List<String> trials = new ArrayList<String>();
 			for (I_Tests4J_TrialProgress state: states) {
-				sb.append(log.getLineSeperator());
+			  List<String> line = new ArrayList<String>();
 				String doneLine = state.getTrialName();
-				sb.append(doneLine);
+				line.add(doneLine);
+				line.add(" ");
 				trials.add(doneLine);
 				
 				I_Progress sub = state.getSubProgress();
-				String subProgress = null;
+				boolean subProgress = false;
 				if (sub != null) {
 					double pct = sub.getPctDone();
 					if (pct > 0.0) {
-						subProgress = "....." + sub.getName() + " " + 
-								PercentFormat.format(sub.getPctDone(), 2) + "%.";
-						sb.append(subProgress);
+					  line.add(".....");
+					  line.add(sub.getName());
+					  line.add(" ");
+					  line.add(PercentFormat.format(sub.getPctDone(), 2));
+					  line.add(messages.getPctComplete());
+					  subProgress = true;
 					} 
 				} 
 				
-				if (subProgress == null){
-					String line = " " + PercentFormat.format(state.getPctDone(), 2) + "%.";
-					sb.append(line);
+				if (!subProgress){
+				  line.add(" ");
+          line.add(PercentFormat.format(state.getPctDone(), 2));
+          line.add(messages.getPctComplete());
 				}
+				String [] lineParts = line.toArray(new String[line.size()]);
+				String lineMessage = DefaultLog.orderLine(lineParts);
+				sb.append(System.lineSeparator());
+				sb.append(lineMessage);
 			}
-			sb.append(log.getLineSeperator());
-			message = sb.toString();
 		} 
-		return message;
+		return sb.toString();
 	}
 
 	protected void getTimesAtThisPct(I_PhaseState processInfo) {
@@ -114,15 +126,14 @@ public abstract class AbstractProcessDisplay {
 			String message = "";
 			if (processInfo.getPercentDone() >= 100.0) {
 				if (processInfo.hasFinishedAll()) {
-					message =  messages.getDoneEOS() +log.getLineSeperator();
+					message =  messages.getDoneEOS();
 				}
 			} else {
-				message = PercentFormat.format(processInfo.getPercentDone(), 2) + messages.getPctComplete();
+				message = DefaultLog.orderLine(PercentFormat.format(processInfo.getPercentDone(), 2), messages.getPctComplete());
 			}
 			String stalled = addCurrentRunningInfoToStalledProcess(log,processInfo, message);
 			if ( !StringMethods.isEmpty(stalled)) {
-				message = I_Tests4J_Constants.PREFIX_HEADER +processInfo.getProcessName() + " " + stalled;
-				log.log( message);
+				log.logLine(CONSTANTS.getHeader(), processInfo.getProcessName(), " ", stalled);
 			}
 		}
 	}

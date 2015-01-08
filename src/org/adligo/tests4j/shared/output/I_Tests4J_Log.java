@@ -1,5 +1,7 @@
 package org.adligo.tests4j.shared.output;
 
+import java.util.List;
+
 
 
 /**
@@ -14,13 +16,39 @@ package org.adligo.tests4j.shared.output;
  */
 public interface I_Tests4J_Log {
 	/**
-	 * log a message out to the main test run location.
+	 * This methods logs a message out to the main test run location.<br/>
+	 * Multiple line log messages should be formatted into a single<br/>
+	 * string before calling this method.  
 	 * @param p
 	 */
 	public void log(String p);
-
+	/**
+   * This methods logs a message out to the main test run location.<br/>
+   * This method allows<br/>
+   * for a variable number of String parameters to assist in<br/>
+   * right to left and left to right logic for i18n.<br/>
+   * Note if the I_Tests4J_Constants isLeftToRight<br/>
+   * then the array is left to right, otherwise<br/>
+   * 0 is at the right, <br/>
+   * 1 is left of 0<br/>
+   * 2 is left of 1 etc.<br/>
+   * This also appends a new line character to the string after it is ordered,<br/>
+   * since new lines would always be at the right, regardless of the order of the <br/>
+   * characters on the line.<br/>
+   * @param p
+   */
+	public void logLine(String ... p);
+	
 	/**
 	 * Log a Throwable including it's stack trace.
+	 * Note the implementation should format the 
+	 * stack trace into a multiple line string 
+	 * before passing it to the log(String) method
+	 * so that all lines are kept together in the console/log file.
+	 * Note for now the stack trace is always left to right,
+	 * I am not sure if they would be click-able in IDEs
+	 * like eclipse if they were formated right to left.
+	 * 
 	 * @param p
 	 */
 	public void onThrowable(Throwable p);
@@ -63,6 +91,7 @@ public interface I_Tests4J_Log {
 	public String getLineSeperator();
 	
 	/**
+	 * 
 	 * @return something like;<br/>
 	 * Thread/Group; main~~~~main-group
 	 */
@@ -73,4 +102,25 @@ public interface I_Tests4J_Log {
    * Thread; main
    */
   public String getThreadMessage();
+  /**
+   * This method uses the Tests4J_Constants.isLeftToRight() setting
+   * to determine which side the indent
+   * should go on, and appends it to the StringBuilder
+   * accordingly.
+   * @param sb
+   * @param line
+   * @param indent
+   */
+  public void appendLine(StringBuilder sb, String line, String indent);
+  /**
+   * This method uses the Tests4J_Constants.isLeftToRight() setting
+   * to determine which side the indent
+   * should go on, and appends each line to the StringBuilder
+   * accordingly.
+   * @param sb
+   * @param line
+   * @param indent
+   */
+  public void appendLines(StringBuilder sb, List<String> lines, String indent);
+  
 }
