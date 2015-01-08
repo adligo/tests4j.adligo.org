@@ -522,10 +522,11 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		I_Tests4J_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
 		if (allCoverageRecorder != null) {
 			//
-		  if (log.isMainLog()) {
-        log.log("testedClasses_ are " + testedClasses_);
-      }
-		  
+		  if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
+  		  if (log.isMainLog()) {
+          log.log("There are " + testedClasses_.size() + " tested classes.");
+        }
+		  }
 			List<I_PackageCoverageBrief> packageCoverage = allCoverageRecorder.getAllCoverage();
 			List<I_PackageCoverageBrief> toAdd = new ArrayList<I_PackageCoverageBrief>();
 			if (log.isMainLog()) {
@@ -536,9 +537,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 				boolean overlapped = false;
 				String coveragePkgName = cover.getPackageName();
 				for (String trialPackageName: trialPackageNames) {
-				  if (log.isMainLog()) {
-		        log.log("checking " + trialPackageName);
-		      }
+				  
 					if (trialPackageName.contains(coveragePkgName) ||
 							coveragePkgName.contains(trialPackageName)) {
 						overlapped = true;
