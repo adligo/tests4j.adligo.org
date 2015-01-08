@@ -1,10 +1,12 @@
 package org.adligo.tests4j.system.shared.api;
 
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
+import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
+import org.adligo.tests4j.run.memory.Tests4J_ThreadFactory;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * a pluggable interface for a this integrating testing api 
@@ -26,6 +28,25 @@ public interface I_Tests4J_CoveragePlugin {
    */
   public void instrument(Class<?> clazz) throws IOException;
   
+  /**
+   * @param clazz
+   * @return true if this class has already been instrumented,
+   * false if it has NOT.
+   */
+  public boolean isInstrumented(String className);
+  
+  /**
+   * Return a set of java package names
+   * which have been identified as top packages
+   * where a top package is a PackageScope
+   * or package from a sourceFileScope.
+   * Also these packages have the child packages
+   * filtered out so you will not get 
+   * (org.adligo.test4j and org.adligo.tests4j.shared) 
+   * in the result as the shared package will be removed.
+   * @return
+   */
+  public Set<String> getTopPackageScopes();
 	/**
 	 * This method should be executable by multiple threads, 
 	 * so that each thread is instrumenting classes, to a shared classloader.

@@ -4,6 +4,8 @@ import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.run.api.Tests4J_UncaughtExceptionHandler;
 import org.adligo.tests4j.run.common.I_JseSystem;
 import org.adligo.tests4j.run.common.I_ThreadManager;
+import org.adligo.tests4j.run.discovery.I_PackageDiscovery;
+import org.adligo.tests4j.run.discovery.PackageDiscovery;
 import org.adligo.tests4j.run.discovery.Tests4J_ParamsReader;
 import org.adligo.tests4j.run.memory.Tests4J_Memory;
 import org.adligo.tests4j.run.output.ConcurrentOutputDelegateor;
@@ -36,6 +38,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
@@ -263,8 +266,44 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		}
 		//@diagram_sync with Overview.seq on 8/20/2014
 		monitorSetup();
-
+		instrumentExtraClasses();
 	}
+	
+	/**
+	 * In order to get a full picture
+	 * of all code that could be covered,
+	 * add all classes in packages referenced by 
+	 * PackageScope or sourceClass.
+	 */
+  private void instrumentExtraClasses() {
+		I_Tests4J_CoveragePlugin coverPlugin = memory_.getCoveragePlugin();
+		if (coverPlugin != null) {
+		  Set<String> tops = coverPlugin.getTopPackageScopes();
+		  for (String top: tops) {
+		    try {
+          I_PackageDiscovery pd = new PackageDiscovery(top);
+          instrumentNonReferencedClassesInReferencedPackages(coverPlugin, pd);
+        } catch (IOException | ClassNotFoundException e) {
+          throw new RuntimeException(e);
+        }
+		  }
+		}
+  }
+  private void instrumentNonReferencedClassesInReferencedPackages(
+      I_Tests4J_CoveragePlugin coverPlugin, I_PackageDiscovery pd) throws IOException,
+      ClassNotFoundException {
+    List<String> names = pd.getClassNames();
+    for (String name: names) {
+      if (!coverPlugin.isInstrumented(name)) {
+        coverPlugin.instrument(Class.forName(name));
+      }
+    }
+    List<I_PackageDiscovery> subs = pd.getSubPackages();
+    for (I_PackageDiscovery sub: subs) {
+      instrumentNonReferencedClassesInReferencedPackages(coverPlugin, sub);
+    }
+  }
+  
 	protected void runSetupRunnable(Tests4J_PhaseOverseer info,
 			ExecutorService runService) {
 		Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory_, notifier_); 

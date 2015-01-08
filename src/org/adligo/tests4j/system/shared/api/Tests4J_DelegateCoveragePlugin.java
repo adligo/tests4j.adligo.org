@@ -1,6 +1,8 @@
 package org.adligo.tests4j.system.shared.api;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
@@ -119,6 +121,26 @@ public class Tests4J_DelegateCoveragePlugin implements I_Tests4J_CoveragePlugin 
     } catch (Exception t) {
       reporter.onThrowable(t);
     }
+  }
+
+  @Override
+  public boolean isInstrumented(String className) {
+    try {
+      return delegate.isInstrumented(className);
+    } catch (Exception t) {
+      reporter.onThrowable(t);
+    }
+    return false;
+  }
+
+  @Override
+  public Set<String> getTopPackageScopes() {
+    try {
+      return delegate.getTopPackageScopes();
+    } catch (Exception t) {
+      reporter.onThrowable(t);
+    }
+    return Collections.emptySet();
   }
 
 }

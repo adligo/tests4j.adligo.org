@@ -185,13 +185,19 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 			I_CoverageUnits coverageUnits = cover.getCoverageUnits();
 			I_CoverageUnits coveredCoverageUnits = cover.getCoveredCoverageUnits();
 			try {
+			  StringBuilder sb = new StringBuilder();
+			  sb.append("\t\t\t+" + cover.getPackageName() + " was covered " + 
+              PercentFormat.format(cover.getPercentageCovered().doubleValue(), 2) + "% with " +
+              sourceFileNames.size() + " source files");
+			  if (childPackages != 0) {
+			    sb.append(", " + childPackages + " child packages and ");
+			  } else {
+			    sb.append(" and ");
+			  }
+			  sb.append(coveredCoverageUnits.get() + "/" +
+            coverageUnits.get() + " coverage units.");
   			//todo bridge formatting with GWT
-  			log_.log("\t\t\t+" + cover.getPackageName() + " was covered " + 
-  						PercentFormat.format(cover.getPercentageCovered().doubleValue(), 2) + "% with " +
-  						sourceFileNames.size() + " source files, " +
-  						childPackages + " child packages and " +
-  						coveredCoverageUnits.get() + "/" +
-  						coverageUnits.get() + " coverage units.");
+  			log_.log(sb.toString());
 			} catch (Exception x) {
 			  throw new IllegalStateException("Error with package coverage for package " + packageName + 
 			      System.lineSeparator() + " childPackageCoverage " + System.lineSeparator() + 

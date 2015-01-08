@@ -7,6 +7,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
@@ -26,6 +27,28 @@ import org.adligo.tests4j.run.helpers.I_CachedClassBytesClassLoader;
  *
  */
 public class PackageDiscovery implements I_PackageDiscovery  {
+  public static Set<String> findTopPackages(Set<String> names) {
+    Set<String> toRet = new HashSet<String>(names);
+    
+    Iterator<String> it = toRet.iterator();
+    while (it.hasNext()) {
+      String name = it.next();
+      Set<String> copies = new HashSet<String>(names);
+      boolean remove = false;
+      for (String cn: copies) {
+        if (!name.equals(cn)) {
+          if (name.indexOf(cn + ".") == 0 ) {
+            //cn is top, remove name
+            remove = true;
+          }
+        }
+      }
+      if (remove) {
+        it.remove();
+      }
+    }
+    return toRet;
+  }
 	private String packageName;
 	/**
 	 * the full class name including the package
