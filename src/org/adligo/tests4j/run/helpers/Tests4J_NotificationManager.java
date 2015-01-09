@@ -57,6 +57,8 @@ import java.util.concurrent.atomic.AtomicLong;
  * This class handles event notification
  * to the I_TrailRunListener.
  * 
+ * @diagram_sync on 1/8/2015 with Overview.seq
+ * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
  * @author scott
  *
  */
@@ -96,6 +98,10 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	private volatile I_TrialRunMetadata metadata = null;
 	private MetaTrialProcessor metaProcessor;
 	
+	/**
+	 * @diagram_sync on 1/8/2015 with Overview.seq 
+	 * @param pMem
+	 */
 	public Tests4J_NotificationManager(Tests4J_Memory pMem) {
 		memory = pMem;
 		trialQueueDecisionTree = pMem.getTrialQueueDecisionTree();
@@ -112,7 +118,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 
 
 	/**
-	 * @diagram_sync on 8/20/2014 with Overview.seq 
+	 * @diagram_sync on 1/8/2014 with Overview.seq 
 	 */
 	public synchronized void onSetupDone() {
 		doneDescribeingTrials.set(true);
@@ -120,6 +126,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
 			log.log("onTrialDefinitionsDone()");
 		}
+		//@diagram_sync on 1/8/2014 with Overview.seq
 		sendMetadata();
 		
 		I_Tests4J_CoveragePlugin plugin =  memory.getCoveragePlugin();
@@ -272,8 +279,9 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 					+ " TrialDescription " + metadata.getAllTestsCount() + " tests."
 					+ "\n total tests " + totalTests);
 		}
-		// @diagram_sync on 5/26/2014 with Overview.seq
-		memory.setMetaTrialData(metadata);
+		// @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+		memory.setTrialMetadata(metadata);
+ 	  // @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 		listener.onMetadataCalculated(metadata);
 		reporter.onMetadataCalculated(metadata);
 	}
@@ -406,7 +414,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	 * All the trials are finished running,
 	 * so notify the listener and cleanup.
 	 * 
-	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 * @diagram_sync on 1/8/2015 with Overview.seq
 	 */
 	public synchronized void onDoneRunningNonMetaTrials() {
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
@@ -445,26 +453,9 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 									ranMetaTrial.set(true);
 									I_AbstractTrial trial = (I_AbstractTrial) desc.getTrial();
 									if (trial instanceof I_MetaTrial) {
-										if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-											log.log("calling MetaTrailProcessor.runMetaTrialMethods");
-										}
-										I_TrialResult result = metaProcessor.runMetaTrialMethods(
-												(I_MetaTrial) trial, new TrialRunResult(runResult));
-										if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
-											log.log("called MetaTrailProcessor.runMetaTrialMethods");
-										}
-										called = true;
-										
-										runResult.setTrials(trials.get());
-										if (result.isPassed()) {
-											passingTrialNames.add(trial.getClass().getName());
-										} else {
-											runResult.setTrialFailures(trialFailures.get());
-										}
-										runResult.setAsserts(assertionCount.get());
-										runResult.setUniqueAsserts(uniqueAssertionCount.get());
-										runResult.setTestsFailed(testFailureCount.get());
-										runResult.setTests(testCount.get());
+									  //@diagram_sync on 1/8/2015 with Overview.seq
+									  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
+										called = runMetaTrial(runResult, trial);
 									}
 								}
 							}
@@ -483,6 +474,39 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		onAllTrialsDone(new TrialRunResult(runResult));
 		
 	}
+
+
+  /**
+   * Run the meta trial
+   * @diagram_sync on 1/8/2015 with Overview.seq
+   * @param runResult
+   * @param trial
+   * @return
+   */
+  private boolean runMetaTrial(TrialRunResultMutant runResult, I_AbstractTrial trial) {
+    boolean called;
+    if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
+    	log.log("calling MetaTrailProcessor.runMetaTrialMethods");
+    }
+    I_TrialResult result = metaProcessor.runMetaTrialMethods(
+    		(I_MetaTrial) trial, new TrialRunResult(runResult));
+    if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
+    	log.log("called MetaTrailProcessor.runMetaTrialMethods");
+    }
+    called = true;
+    
+    runResult.setTrials(trials.get());
+    if (result.isPassed()) {
+    	passingTrialNames.add(trial.getClass().getName());
+    } else {
+    	runResult.setTrialFailures(trialFailures.get());
+    }
+    runResult.setAsserts(assertionCount.get());
+    runResult.setUniqueAsserts(uniqueAssertionCount.get());
+    runResult.setTestsFailed(testFailureCount.get());
+    runResult.setTests(testCount.get());
+    return called;
+  }
 	
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.run.helpers.I_Tests4J_NotificationManager#onAllTrialsDone(org.adligo.tests4j.models.shared.results.I_TrialRunResult)
@@ -512,13 +536,13 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 	}
 
 	/**
-	 * @diagram_sync on 5/8/2014 to Overview.seq 
 	 * @param runResult
 	 */
 	private void stopRecordingTrialsRun(TrialRunResultMutant runResult) {
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
 			log.log("stopRecordingTrialsRun(TrialRunResultMutant runResult)");
 		}
+		//@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 		I_Tests4J_CoverageRecorder allCoverageRecorder = memory.getMainRecorder();
 		if (allCoverageRecorder != null) {
 			//
@@ -527,6 +551,7 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
           log.log("There are " + testedClasses_.size() + " tested classes.");
         }
 		  }
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			List<I_PackageCoverageBrief> packageCoverage = allCoverageRecorder.getAllCoverage(trialPackageNames);
 			runResult.setCoverage(packageCoverage);
 		}
@@ -557,6 +582,9 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		return doneDescribeingTrials.get();
 	}
 
+	/**
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	 */
 	@Override
 	public void onProgress(I_PhaseState info) {
 		if (info.getPercentDone() <= 100.0) {

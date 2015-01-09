@@ -34,6 +34,7 @@ import java.util.List;
  *    How do the author java doc's compare to the people who actually checked it in?
  * 
  * 
+ * @diagram_sync on 1/8/2015 with Overview.seq
  * 
  * @author scott
  *
@@ -74,7 +75,7 @@ public class Tests4J {
 	/**
 	 * Run the trials/tests, using the public endorsed test4j api.
 	 * 
-	 * @diagram_sync with Overview.seq on 7/21/2014
+	 * @diagram_sync on 1/8/2015 with Overview.seq
 	 *   see left most activation bar  (listener is optional)
 	 * @param pParams
 	 * @param pListener
@@ -93,7 +94,7 @@ public class Tests4J {
 	 * 
 	 * Run the trials/tests, using the public endorsed test4j api.
 	 * 
-	 * @diagram_sync with Overview.seq on 7/21/2014
+	 * @diagram_sync on 1/8/2015 with Overview.seq
 	 *   see left most activation bar  (listener is optional)
 	 * @param pParams
 	 * 
@@ -158,7 +159,7 @@ public class Tests4J {
 	 * not part of the public api,
 	 * but used when test4j tests itself.
 	 * 
-	 * @diagram_sync with Overview.seq on 7/21/2014
+	 * @diagram_sync on 1/8/2015 with Overview.seq
 	 *   see upper left note
 	 * @param pParmas
 	 * @param pListener
@@ -173,15 +174,15 @@ public class Tests4J {
 		}
 		
 		I_Tests4J_DelegateFactory factory = getFactory();
-		//@diagram_sync with Overview.seq on 8/22/2014
+		//@diagram_sync on 1/8/2015 with Overview.seq
 		I_Tests4J_Delegate delegate =  factory.create(system_);
 
-		//@diagram_sync with Overview.seq on 7/21/2014
+		//@diagram_sync on 1/8/2015 with Overview.seq
 		if (delegate.setup(pListener,pParams)) {
-			//@diagram_sync with Overview.seq on 8/20/2014
+			//@diagram_sync on 1/8/2015 with Overview.seq
 			delegate.runOnAnotherThreadIfAble();
 		}
-		//@diagram_sync with Overview.seq on 7/21/2014
+		//@diagram_sync on 1/8/2015 with Overview.seq
 		return delegate.getControls();
 	}
 

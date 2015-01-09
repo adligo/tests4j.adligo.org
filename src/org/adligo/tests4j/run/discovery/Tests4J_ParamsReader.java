@@ -37,7 +37,6 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @diagram_sync with Overview.seq on 8/20/2014
  * 
  * since anyone can re implement 
  * I_Tests4J_Params and pass it in, 
@@ -49,6 +48,7 @@ import java.util.Set;
  * each method call is wrapped in 
  * try { call impl } catch (Throwable t) { useDefault and log exception)
  * 
+ * @diagram_sync on 1/8/2015 with Overview.seq
  * @author scott
  *
  */
@@ -85,7 +85,7 @@ public class Tests4J_ParamsReader {
 	private Map<Tests4J_RemoteInfo,Tests4J_ParamsReader> remotes = new HashMap<Tests4J_RemoteInfo, Tests4J_ParamsReader>();
 	
 	/**
-	 * @diagram_sync with Overview.seq on 8/20/2014
+	 * @diagram_sync on 1/8/2015 with Overview.seq
 	 * 
 	 * assumes non null parameters
 	 * @param pParams
@@ -310,6 +310,10 @@ public class Tests4J_ParamsReader {
 		return coveragePlugin;
 	}
 
+	/**
+	 * @diagram_sync on 1/8/2015 with Overview.seq
+	 * @return
+	 */
 	public boolean isRunnable() {
 		return runnable;
 	}

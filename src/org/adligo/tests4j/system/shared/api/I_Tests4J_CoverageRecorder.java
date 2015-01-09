@@ -19,6 +19,7 @@ public interface I_Tests4J_CoverageRecorder {
 	 * this start recording for the context of the current recorder
 	 */
 	public void startRecording();
+  
 	/**
 	 * @deprecated removing this method 
 	 * this ends recording for the context of the current record.
@@ -54,6 +55,7 @@ public interface I_Tests4J_CoverageRecorder {
    * will included classes/.java files <br/>
    * with zero coverage. <br/>
    * <br/>
+   * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
    * @param trialPackages, theses are the packages <br/>
    * with trials that ran, which generally don't  <br/>
    * trigger coverage to be returned here, <br/>

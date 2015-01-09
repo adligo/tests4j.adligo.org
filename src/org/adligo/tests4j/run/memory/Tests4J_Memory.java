@@ -42,6 +42,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * on the framework and need to share some objects
  * put them in here.
  * 
+ * @diagram_sync on 1/8/2015 with Overview.seq
  * @author scott
  *
  */
@@ -106,12 +107,16 @@ public class Tests4J_Memory implements I_Memory {
 	 * 
 	 * @param params
 	 * 
-	 * @diagram sync on 7/21/2014 with Overview.seq 
+	 * @diagram_sync on 1/8/2015 with Overview.seq 
 	 */
 	public Tests4J_Memory(I_Tests4J_Log logIn) {
 		log = logIn;
 	}
 	
+	/**
+	 * @diagram_sync on 1/8/2015 with Overview.seq 
+	 * @param p
+	 */
 	public synchronized void initialize(Tests4J_ParamsReader p) {
 		
 		
@@ -172,6 +177,7 @@ public class Tests4J_Memory implements I_Memory {
 		tests = new CopyOnWriteArraySet<I_Tests4J_Selection>(p.getTests());
 		
 		evaluationLookup = p.getEvaluatorLookup();
+		//@diagram_sync on 1/8/2015 with Overview.seq 
 		notifier = new Tests4J_NotificationManager(this);
 		metaTrialParams_ = p.getMetaTrialParams();
 		
@@ -182,7 +188,8 @@ public class Tests4J_Memory implements I_Memory {
 	}
 	
 	/**
-	 * note this is called after the main thread start execution
+	 * note this is called after the main thread starts execution
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 */
 	public void initalizeExecutors() {
 	  threadManager.setupSetupProcess(setupThreads_);
@@ -194,7 +201,7 @@ public class Tests4J_Memory implements I_Memory {
 	 * @return the trial classes which have been request to be run,
 	 * stored in a ConcurrentLinkedQueue for thread collaboration.
 	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 */
 	public Class<? extends I_AbstractTrial> pollTrialClasses() {
 		return trialClasses.poll();
@@ -228,7 +235,7 @@ public class Tests4J_Memory implements I_Memory {
 	 * 
 	 * @return the coverage plugin, may be null.
 	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
+	 * @diagram_sync on 5/1/2014 with Coverage_Overview.seq 
 	 */
 	public I_Tests4J_CoveragePlugin getCoveragePlugin() {
 		return coveragePlugin;
@@ -239,7 +246,7 @@ public class Tests4J_Memory implements I_Memory {
 	 * @param p
 	 * @param recorder
 	 * 
-	 * @diagram Overview.seq sync on 7/5/2014
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 */
 	public synchronized void setMainRecorder(I_Tests4J_CoverageRecorder recorder) {
 		mainRecorder = recorder;
@@ -250,7 +257,7 @@ public class Tests4J_Memory implements I_Memory {
 	 * @return the recorder that is recording all of the coverage
 	 * for the various trials/tests.
 	 * 
-	 * @diagram Overview.seq sync on 5/26/2014
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 */
 	public I_Tests4J_CoverageRecorder getMainRecorder() {
 		return mainRecorder;
@@ -297,16 +304,15 @@ public class Tests4J_Memory implements I_Memory {
 	}
 
 	/**
-	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 * @param md
 	 */
-	public synchronized void setMetaTrialData(I_TrialRunMetadata md) {
+	public synchronized void setTrialMetadata(I_TrialRunMetadata md) {
 		metadata = md;
 		metaTrialDataBlock.add(md);
 		
 	}
 	/**
-	 * @diagram_sync on 5/26/2014 with Overview.seq
 	 * @param md
 	 */
 	public I_TrialRunMetadata takeMetaTrialData() throws InterruptedException {
@@ -314,7 +320,7 @@ public class Tests4J_Memory implements I_Memory {
 	}
 	
 	/**
-	 * @diagram_sync on 5/26/2014 with Overview.seq
+	 * @diagram_sync on 5/26/2014 with Coverage_Overview.seq
 	 */
 	public boolean hasMetaTrial() {
 		return metaTrial.get();

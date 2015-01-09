@@ -61,7 +61,7 @@ public interface I_CachedClassBytesClassLoader {
 	 * 
 	 * Implementations should close the input stream when
 	 * their done with it.
-	 * @diagram_sync with tests4j_4jacoco/InstrumentationOverview on 8/14/2014
+	 * @diagram_sync on 8/14/2014 with tests4j_4jacoco.adligo.org/InstrumentationOverview .seq
 	 * 
 	 * @param in the input stream to read from
 	 * @param name
@@ -73,7 +73,7 @@ public interface I_CachedClassBytesClassLoader {
 	
 	/**
 	 * @see #addCache(Class, byte[])
-	 * @diagram_sync with tests4j_4jacoco/DiscoveryOverview.seq on 8/18
+	 * @diagram_sync on 8/18/2014 with tests4j_4jacoco.adligo.org/DiscoveryOverview.seq 
 	 * 
 	 * @param in
 	 * @param clazz
@@ -88,7 +88,7 @@ public interface I_CachedClassBytesClassLoader {
 	 * if the byte [] of the class file has 
 	 * been cached return true.
 	 * 
-	 * @diagram_sync with tests4j_4jacoco/InstrumentationOverview on 8/14/2014
+	 * @diagram_sync on 8/14/2014 with tests4j_4jacoco.adligo.org/InstrumentationOverview.seq
 	 * 
 	 * @param name
 	 * @return
@@ -123,7 +123,7 @@ public interface I_CachedClassBytesClassLoader {
 	 */
 	public  List<String> getAllCachedClasses();
 	/**
-	 * @diagram_sync with tests4j_4jacoco/InstrumentationOverview on 8/14/2014
+	 * @diagram_sync on 8/14/2014 with tests4j_4jacoco.adligo.org/InstrumentationOverview.seq 
 	 * 
 	 * @return a InputStream for the 
 	 * cached class byte[] in Memory.  Throws a illegal argument exception

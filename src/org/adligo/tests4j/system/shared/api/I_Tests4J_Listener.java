@@ -7,10 +7,14 @@ import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 
 /**
  * This is the main interface which can be passed into the 
- * Tests4J framework's run method so that results can be aggregated
- * (for something other than the console and xml reporters)
- * or displayed (eclipse plugin).
- * Methods are expected to be Thread Safe.
+ * Tests4J framework's run method so that results can be aggregated.
+ * It is used internally by Tests4J for the following;
+ *  1) passing messages to the console (org.adligo.tests4j.system.shared.report.summary)
+ *  2) passing data for xml output files (org.adligo.tests4j.run.xml)
+ *  3) passing data for the tests4j remote protocol
+ *     (socket streams (org.adligo.tests4j.run.xml))
+ * It can also be used implemented for custom tests4j runners (fabricate4_tests4j)
+ * Methods are expected to be Thread Safe. 
  * 
  * @author scott
  *

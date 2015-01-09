@@ -13,6 +13,11 @@ import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
 import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
+/**
+ * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+ * @author scott
+ *
+ */
 public class TrialQueueDecisionTree {
 	private final int trialCount_;
 	private final AtomicInteger trialsAdded_ = new AtomicInteger(0);
@@ -50,6 +55,11 @@ public class TrialQueueDecisionTree {
 		coveragePlugin_ = coveragePluginIn;
 	}
 	
+	/**
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	 * @param state
+	 * @return
+	 */
 	public synchronized boolean addTrial(TrialState state) {
 		trialsAdded_.addAndGet(1);
 		String trialName = state.getTrialName();

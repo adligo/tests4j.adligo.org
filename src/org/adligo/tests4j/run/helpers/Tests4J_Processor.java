@@ -48,6 +48,9 @@ import java.util.concurrent.RejectedExecutionException;
  * 1) put all the test classes in memory
  * 2) start the thread pool
  * 
+ * @diagram_sync on 1/8/2015 with Overview.seq
+ * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+ * 
  * @author scott
  *
  */
@@ -64,13 +67,20 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	private Tests4J_Controls controls_;
 	private ConcurrentOutputDelegateor cod_;
 	
-	public Tests4J_Processor(I_JseSystem systemIn) {
-		system_ = systemIn;
+	/**
+	 * @diagram_sync on 1/8/2014 with Overview.seq
+	 * 
+	 * @param systemIn
+	 */
+	public Tests4J_Processor(I_JseSystem system) {
+		system_ = system;
 	}
+	
 	/**
 	 * This method sets up everything for the run,
 	 * assumes all other setters have been called.
-	 *  
+	 * 
+	 * @diagram_sync on 1/8/2015 with Overview.seq
 	 * @param listener
 	 * @param params
 	 * 
@@ -78,7 +88,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	public boolean setup(I_Tests4J_Listener listener, I_Tests4J_Params params) {
 		
 
-		
+		//@diagram_sync on 1/8/2015 with Overview.seq
 		reader_ = new Tests4J_ParamsReader(system_,  params);
 		/**
 		 * note this code is a bit confusing,
@@ -95,7 +105,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		//pass the concurrent log back to the reader
 		//to set up the CoveragePluginFactory
 		reader_.read(log_);
-		
+		//@diagram_sync on 1/8/2014 with Overview.seq
 		memory_ = new Tests4J_Memory(log_);
 		memory_.setSystem(system_);
 		
@@ -117,7 +127,9 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		
 		memory_.setListener(listener);
 		
+		//@diagram_sync on 1/8/2015 with Overview.seq
 		if (reader_.isRunnable()) {
+		  //@diagram_sync on 1/8/2015 with Overview.seq
 			memory_.initialize(reader_);
 			threadManager_ = memory_.getThreadManager();
 		}
@@ -149,7 +161,8 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	 * @param params
 	 * @param pListener
 	 * 
-	 * @diagram Overview.seq sync on 7/21/2014
+	 * @diagram_sync on on 7/21/2014 with Overview.seq
+	 *   calls this run() through the ExecutorService
 	 * 
 	 */
 	public void runOnAnotherThreadIfAble() {
@@ -157,33 +170,51 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		service.submit(this);
 	}
 	
+	/**
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	 */
 	public void run() {
+	  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	  memory_.initalizeExecutors();
 		Thread.setDefaultUncaughtExceptionHandler(new Tests4J_UncaughtExceptionHandler());
 		memory_.setSystem(system_);
 		long time = system_.getTime();
 		memory_.setStartTime(time);
 		
-		
+	  //@diagram_sync on 1/8/2015 with Overview.seq
 		notifier_ = memory_.getNotifier();
 		
 		
 		Tests4J_PhaseOverseer setupProcessInfo = memory_.getSetupPhaseOverseer();
 		Tests4J_PhaseOverseer trialProcessInfo = memory_.getTrialPhaseOverseer();
-		//Tests4J_ProcessInfo remoteProcessInfo = memory.getTrialProcessInfo();
+		Tests4J_PhaseOverseer remoteProcessInfo = memory_.getRemotePhaseOverseer();
+		
+		
 		try {
+		  //@diagram_sync on 1/8/2015 with Overview.seq
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			startRecordingAllTrialsRun();
 			instrumentAllowedReferences();
+		  //@diagram_sync on 1/8/2015 with Overview.seq
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			submitSetupRunnables(setupProcessInfo);
 			notifier_.onSetupDone();
 			
+		  //@diagram_sync on 1/8/2015 with Overview.seq
+			submitRemoteRunnables(remoteProcessInfo);
+		  //@diagram_sync on 1/8/2015 with Overview.seq
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			submitTrialsRunnables(trialProcessInfo);
-			//@diagram_sync with Overview.seq on 8/20/2014
+		  //@diagram_sync on 1/8/2015 with Overview.seq
 			if (isTrialsOrRemotesRunning()) {
+			  //@diagram_sync on 1/8/2015 with Overview.seq
+			  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 				monitorTrials();
+			  //@diagram_sync on 1/8/2015 with Overview.seq
 				monitorRemotes();
 			}
-			
+		  //@diagram_sync on 1/8/2015 with Overview.seq
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			notifier_.onDoneRunningNonMetaTrials();
 			
 			printLogs();
@@ -194,7 +225,9 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		}
 		
 		controls_.notifyFinished();
-		//should call system.exit in main runs
+		
+		//@diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	  //this usually calls system.exit in main runs
 		threadManager_.shutdown();
 		try {
 			Thread.currentThread().join();
@@ -219,17 +252,18 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	}
 	
 	/**
-	 * @adligo.diagram_sync with Overview.seq on 7/5/2014
+	 * @diagram_sync with Overview.seq on 1/8/2015
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 * @param plugin
 	 */
 	private void startRecordingAllTrialsRun() {
 		I_Tests4J_CoveragePlugin coveragePlugin = memory_.getCoveragePlugin();
 		if (coveragePlugin != null) {
-			//@adligo.diagram_sync with Overview.seq on 7/5/2014
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			I_Tests4J_CoverageRecorder allCoverageRecorder = coveragePlugin.createRecorder();
-			//@adligo.diagram_sync with Overview.seq on 7/5/2014
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			allCoverageRecorder.startRecording();
-			//@adligo.diagram_sync with Overview.seq on 7/5/2014
+			//@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			memory_.setMainRecorder(allCoverageRecorder);
 		}
 		
@@ -238,14 +272,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	/**
 	 * 
 	 * @diagram_sync with Overview.seq on 7/24/2014
-	 * 
-	 * please keep these stats
-	 *    7/24/2014  
-	 *    		AllTrialsRunn with 75 trials 522 tests
-	 *    
-	 *    			12.5 seconds when one thread runs Tests4J_SetupRunnable
-	 *                9.2 seconds with 8 threads
-	 *                8.7 seconds with 16 threads
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 */
 	private void submitSetupRunnables(Tests4J_PhaseOverseer info) {
 	  I_PhaseState initial = info.getIntialPhaseState();
@@ -259,16 +286,26 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		
 		if (setupThreadCount > 1) {
 			for (int i = 0; i < setupThreadCount; i++) {
+			  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 				runSetupRunnable(info, runService);
 			}
 		} else {
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			runSetupRunnable(info, runService);
 		}
 		//@diagram_sync with Overview.seq on 8/20/2014
+		//@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 		monitorSetup();
 		instrumentExtraClasses();
 	}
 	
+	/**
+	 * @diagram_sync with Overview.seq on 1/8/2015
+	 * @param info
+	 */
+	private void submitRemoteRunnables(Tests4J_PhaseOverseer info) {
+	  
+	}
 	/**
 	 * In order to get a full picture
 	 * of all code that could be covered,
@@ -304,8 +341,14 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
     }
   }
   
+  /**
+   * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+   * @param info
+   * @param runService
+   */
 	protected void runSetupRunnable(Tests4J_PhaseOverseer info,
 			ExecutorService runService) {
+	  // @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 		Tests4J_SetupRunnable sr = new Tests4J_SetupRunnable(memory_, notifier_); 
 		info.addRunnable(sr);
 		
@@ -318,6 +361,10 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		}
 	}
 	
+	/**
+	 * @diagram_sync on 1/8/2015 with Overview.seq
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	 */
 	@SuppressWarnings("boxing")
   private void monitorSetup() {
 		Tests4J_PhaseOverseer setupPhaseOverseer = memory_.getSetupPhaseOverseer();
@@ -333,6 +380,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		} catch (InterruptedException x) {
 		  throw new RuntimeException(x);
 		}
+		//@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 		notifier_.onProgress(state);
 
 		long now = memory_.getTime();
@@ -344,7 +392,11 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		}
 		printLogs();
 	}
-	
+	/**
+	 * @diagram_sync on 1/8/2015 with Overview.seq
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	 * @param info
+	 */
 	private void submitTrialsRunnables(Tests4J_PhaseOverseer info) {
 		I_PhaseState initial = info.getIntialPhaseState();
 		notifier_.onProcessStateChange(initial);
@@ -357,18 +409,29 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		
 		if (trialThreadCount > 1) {
 			for (int i = 0; i < trialThreadCount; i++) {
+			  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 				runTrialRunnable(info, cod_, runService);
 			}
 		} else {
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 			runTrialRunnable(info, cod_, runService);
 		}
 	}
+	
+	/**
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	 * @param info
+	 * @param od
+	 * @param runService
+	 */
 	protected void runTrialRunnable(Tests4J_PhaseOverseer info,
 			I_ConcurrentOutputDelegator od, ExecutorService runService) {
+	  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq 
 		Tests4J_TrialsRunnable tip = new Tests4J_TrialsRunnable(memory_, notifier_); 
 		info.addRunnable(tip);
 		tip.setOutputDelegator(od);
 		try {
+		  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq run()
 			Future<?> future = runService.submit(tip);
 			threadManager_.addTrialFuture(future);
 		} catch (RejectedExecutionException x) {
@@ -377,21 +440,29 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		}
 	}
 	
+	/**
+	 * @diagram_sync on 1/8/2015 with Overview.seq
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	 */
 	@SuppressWarnings("boxing")
   private void monitorTrials() {
 		Tests4J_PhaseOverseer trialPhaseOverseer = memory_.getTrialPhaseOverseer();
 		
 		I_PhaseState state = null;
     try {
+      //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
       state = trialPhaseOverseer.pollPhaseState();
       while (!trialPhaseOverseer.isCountDoneCountMatch()) {
+        //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
         notifier_.onProgress(state);
         printLogs();
+        //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
         state = trialPhaseOverseer.pollPhaseState();
       }
     } catch (InterruptedException x) {
       throw new RuntimeException(x);
     }
+    //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 		notifier_.onProgress(state);
 		long now = system_.getTime();
 		memory_.setTrialEndTime(now);
@@ -407,6 +478,10 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		}
 	}
 	
+	/**
+	 * @diagram_sync on 1/8/2015 with Overview.seq
+	 * @return
+	 */
 	private boolean isTrialsOrRemotesRunning() {
 		if (!notifier_.isDoneRunningTrials()) {
 			return true;
@@ -441,14 +516,16 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	  }
 	}
 	/**
-	 * TODO
-	 * @param cod_
+	 * @diagram_sync on 1/8/2015 with Overview.seq
 	 */
 	private void monitorRemotes() {
 		
 	}
 	
 
+	/**
+	 * @diagram_sync on 1/8/2015 with Overview.seq
+	 */
 	@Override
 	public I_Tests4J_Controls getControls() {
 		return controls_;

@@ -50,6 +50,7 @@ public interface I_Tests4J_CoveragePlugin {
 	/**
 	 * This method should be executable by multiple threads, 
 	 * so that each thread is instrumenting classes, to a shared classloader.
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 */
 	public I_Tests4J_CoverageTrialInstrumentation instrumentTrial(Class<? extends I_AbstractTrial> trial) throws IOException;
 	
@@ -76,7 +77,7 @@ public interface I_Tests4J_CoveragePlugin {
 	 * Create a new recorder.
 	 * This should only be used to create the main recorder.
 	 * @return
-	 * @diagram Overview.seq sync on 5/1/2014
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 */
 	public I_Tests4J_CoverageRecorder createRecorder();
 	
@@ -84,6 +85,7 @@ public interface I_Tests4J_CoveragePlugin {
    * Create a new recorder.
    * This should be used to create the thread local
    * recorders.
+   * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
    * @param trialThreadName the name of the trial thread @see {@link Tests4J_ThreadFactory}
    *  that is used to determine if a probe hit should modify the ThreadLocal probes
    *  that pertain to the current Trial/Test threads.  As child

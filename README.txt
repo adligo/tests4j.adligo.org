@@ -12,3 +12,17 @@ Check-in procedure;
 2) Run tests4j_4gwt (Compile it into javascript) and run it on a few browsers (Firefox, Chrome, and Safari or IE) at least 3x
 
 
+@diagram_sync should be in the following format
+@diagram_sync on (date) with (optional other project name)/diagram.(type i.e. seq)
+Also each diagram sequence arrow should point have at least
+two comments in the code;
+1) The call
+2) The method that got called
+and if there is a interface add;
+3) The interface that was passed through
+Also all @diagram_sync comments should be copied and pasted for a particular
+diagram when you synchronize it, so you can search for the comment later.
+
+Also the bottom right hand of each diagram 
+should contain info about when it was last 
+synchronized with the java code.

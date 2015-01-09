@@ -107,7 +107,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	 * @param pNotificationManager
 	 * @param pReporter
 	 * 
-	 * @diagram Overview.seq sync on 5/1/2014
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 */
 	public Tests4J_TrialsRunnable(Tests4J_Memory p, 
 			I_Tests4J_NotificationManager pNotificationManager) {
@@ -136,7 +136,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	}
 
 	/**
-	 * 
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 * 
 	 */
 	@Override
@@ -159,8 +159,6 @@ public class Tests4J_TrialsRunnable implements Runnable,
 							I_Tests4J_CoveragePlugin plugin = memory_.getCoveragePlugin();
 							if (plugin != null) {
 								if (plugin.isCanThreadGroupLocalRecord()) {
-									//@diagram sync on 11/8/2014
-									// for Basic_Overview.seq 
 								  Thread thread = threads_.currentThread();
 								  String threadName = thread.getName();
 								  String filter = null;
@@ -176,7 +174,9 @@ public class Tests4J_TrialsRunnable implements Runnable,
                       break;
 								    default: //donothing
 								  }
+								  //@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 									trialThreadLocalCoverageRecorder = plugin.createRecorder(threadName, filter);
+									//@diagram_sync on 1/8/2015 with Coverage_Overview.seq
 									trialThreadLocalCoverageRecorder.startRecording();
 								}
 							}

@@ -18,6 +18,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+ * @author scott
+ *
+ */
 public class Tests4J_PhaseOverseer {
 	private String processName_;
 	private int threadCount_;
@@ -48,6 +53,9 @@ public class Tests4J_PhaseOverseer {
 	}
 	
 
+	/**
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	 */
 	public void addDone() {
 		doneCount_.incrementAndGet();
 		if (doneCount_.get() == count_) {

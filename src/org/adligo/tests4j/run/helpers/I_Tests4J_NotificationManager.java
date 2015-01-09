@@ -2,21 +2,30 @@ package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
-import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
+/**
+ * @diagram_sync on 1/8/2015 with Overview.seq
+ * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+ * @author scott
+ *
+ */
 public interface I_Tests4J_NotificationManager {
 
 	/**
-	 * @diagram_sync on 8/20/2014 with Overview.seq 
+	 * @diagram_sync on 1/8/2015 with Overview.seq 
 	 */
 	public void onSetupDone();
 	
 	/**
-	 * @diagram_sync on 8/20/2014 with Overview.seq 
+	 * @diagram_sync on 1/8/2015 with Overview.seq
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
 	 */
 	public void onDoneRunningNonMetaTrials();
 	
+	/**
+	 * @diagram_sync on 1/8/2015 with Coverage_Overview.seq
+	 * @param info
+	 */
 	public void onProgress(I_PhaseState info);
 	
 	public abstract void startingTrial(String name);
