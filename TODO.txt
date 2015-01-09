@@ -16,6 +16,13 @@ Make TrialRunContext work correctly  so that load testing can occur
 
 Long term list;
    
+   Javadoc cleanup;
+      Add <br/>s
+      Makes sure comments for simple methods that return data 
+      are after @return.
+      @links
+      @see 
+      etc.
 1) tests4j_4gwt (target tests4j_v0_2) 
 			This will contain some abstract code that will help
         run tests4j tests in a web browser from a javascript runtime.

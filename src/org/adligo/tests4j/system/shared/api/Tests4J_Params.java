@@ -17,10 +17,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
+/**
+ * @see I_Tests4J_Params
+ * @author scott
+ *
+ */
 public class Tests4J_Params implements I_Tests4J_Params {
 
-	
+  private List<String> additionalNonInstrumentedClasses_ = new ArrayList<String>();
+  private List<String> additionalNonInstrumentedPackages_ = new ArrayList<String>();
+  
+  private List<String> additionalNonResultPackages_ = new ArrayList<String>();
 	/**
 	 * @see I_Tests4J_Params#getTrials()
 	 */
@@ -36,13 +43,11 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private Set<I_Tests4J_Selection> tests = new HashSet<I_Tests4J_Selection>();
 	
 	private Integer recommendedTrialThreadCount_;
-	private Integer recommendedRemoteThreadCount_;
-	//there is a deadlock problem in setup, so run it single threaded, unless your improving
-	private Integer recommendedSetupThreadCount_ = 1;
+  private Integer recommendedSetupThreadCount_;
 	private I_Tests4J_ProgressParams progressParams_ = new Tests4J_DefaultProgressParams();
 	private I_Tests4J_SourceInfoParams sourceInfoParams_ = new Tests4J_SourceInfoParams();
-	private List<String> additionalNonInstrumentedPackages_ = new ArrayList<String>();
-	private List<String> additionalNonResultPackages_ = new ArrayList<String>();
+
+	
 	
 	/**
 	 * OutputStreams are not passed between jvms of course.
@@ -78,7 +83,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		coveragePluginFactoryClass_ = p.getCoveragePluginFactoryClass();
 		recommendedTrialThreadCount_ = p.getRecommendedTrialThreadCount();
 		recommendedSetupThreadCount_ = p.getRecommendedSetupThreadCount();
-		recommendedRemoteThreadCount_ = p.getRecommendedRemoteThreadCount();
 		sourceInfoParams_ = p.getSourceInfoParams();
 		
 		Map<Class<?>, Boolean> otherSettings = p.getLogStates();
@@ -91,81 +95,42 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		}
 	}
 	
-	public Tests4J_Params(String p) {
-		fromXml(p);
-	}
-
-	public void fromXml(String p) {
-		/** TODO
-		int start =  p.indexOf(XML_START);
-		int tagEnd = p.indexOf(">", start);
-		String tag = p.substring(start, tagEnd);
-		
-		int threadCountIndex = tag.indexOf(THREAD_COUNT_XML_KEY);
-		if (threadCountIndex != -1) {
-			threadCountIndex = threadCountIndex + THREAD_COUNT_XML_KEY.length();
-			int end = tag.indexOf("\"", threadCountIndex);
-			String clazz = tag.substring(threadCountIndex, end);
-			
-		}
-		
-		int coveragePluginIndex = tag.indexOf(COVERAGE_PLUGIN_XML_KEY);
-		if (coveragePluginIndex != -1) {
-			coveragePluginIndex = coveragePluginIndex + COVERAGE_PLUGIN_XML_KEY.length();
-			int end = tag.indexOf("\"", coveragePluginIndex);
-			String clazz = tag.substring(coveragePluginIndex,end);
-			
-		}
-		int metaTrialStart = p.indexOf(META_TRIAL_XML_START);
-		int metaTrialEnd = p.indexOf(META_TRIAL_XML_END);
-		if (metaTrialStart != -1 && metaTrialEnd != -1) {
-			String metaTrial = p.substring(metaTrialStart + META_TRIAL_XML_START.length(),
-					metaTrialEnd);
-			try {
-				Class<? extends I_MetaTrial> trialClazz = (Class<? extends I_MetaTrial>) Class.forName(metaTrial);
-				metaTrialClass = trialClazz;
-			} catch (ClassNotFoundException x) {
-				throw new IllegalArgumentException(x);
-			}
-		}
-		
-		int trialsStart = p.indexOf(TRIALS_XML_START);
-		int trialsEnd = p.indexOf(TRIALS_XML_END);
-		if (trialsStart != -1 && trialsEnd != -1) {
-			String trialsPart = p.substring(trialsStart, trialsEnd);
-			int trialIndex = trialsPart.indexOf(TRIAL_XML_START);
-			while (trialIndex != -1) {
-				int trialEnd = trialsPart.indexOf(TRIAL_XML_END, trialIndex);
-				String trial = trialsPart.substring(trialIndex + TRIAL_XML_START.length(),
-						trialEnd);
-				try {
-					Class<? extends I_Trial> trialClazz = (Class<? extends I_Trial>) Class.forName(trial);
-					trials.add(trialClazz);
-				} catch (ClassNotFoundException x) {
-					throw new IllegalArgumentException(x);
-				}
-				trialsPart = trialsPart.substring(trialEnd, trialsPart.length());
-				trialIndex = trialsPart.indexOf(TRIAL_XML_START);
-			}
-		}
-		
-		int testsStart = p.indexOf(TESTS_XML_START);
-		int testsEnd = p.indexOf(TESTS_XML_END);
-		if (testsStart != -1 && testsEnd != -1) {
-			String testsPart = p.substring(testsStart, testsEnd);
-			int testIndex = testsPart.indexOf(TEST_XML_START);
-			while (testIndex != -1) {
-				int testEnd = testsPart.indexOf(TEST_XML_END, testIndex);
-				String test = testsPart.substring(testIndex + TRIAL_XML_START.length(),
-						testEnd);
-				tests.add(test);
-				testsPart = testsPart.substring(testEnd, testsPart.length());
-				testIndex = testsPart.indexOf(TEST_XML_START);
-			}
-		}
-		*/
+	public void addAdditionalNonInstrumentedClass(String className) {
+    if (className != null) {
+      additionalNonInstrumentedClasses_.add(className);
+    }
+  }
+	
+	public void addAdditionalNonInstrumentedPackage(String packageName) {
+    if (packageName != null) {
+      additionalNonInstrumentedPackages_.add(packageName);
+    }
+  }
+	
+	public void addAdditionalReportOutputStreams(OutputStream out) {
+	  if (out != null) {
+	     additionalReportOutputStreams_.add(out);
+	  }
 	}
 	
+	public void addTest(I_Tests4J_Selection p) {
+	  if (p != null) {
+	    tests.add(p);
+	  }
+	}
+	 
+  public void addTrial(Class<? extends I_Trial> p) {
+    if (p != null) {
+      trials_.add(p);
+    }
+  }
+  
+  public void addTrials(I_Tests4J_TrialList p) {
+    if (p != null) {
+      trials_.addAll(p.getTrials());
+    }
+  }
+  
 	public List<Class<? extends I_Trial>> getTrials() {
 		return trials_;
 	}
@@ -173,18 +138,10 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		trials_.clear();
 		trials_.addAll(p);
 	}
-	public void addTrial(Class<? extends I_Trial> p) {
-		trials_.add(p);
-	}
+
 	
 	public Class<? extends I_Tests4J_CoveragePluginFactory> getCoveragePluginFactory() {
 		return coveragePluginFactoryClass_;
-	}
-	
-
-	
-	public void addTrials(I_Tests4J_TrialList p) {
-		trials_.addAll(p.getTrials());
 	}
 
 	public Set<I_Tests4J_Selection> getTests() {
@@ -196,9 +153,7 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		tests.addAll(p);
 	}
 	
-	public void addTest(I_Tests4J_Selection p) {
-		tests.add(p);
-	}
+
 	
 	public void removeTest(String p) {
 		tests.remove(p);
@@ -208,7 +163,8 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		return Collections.unmodifiableMap(logStates_);
 	}
 
-	public void setLogState(Class<?> p, boolean on) {
+	@SuppressWarnings("boxing")
+  public void setLogState(Class<?> p, boolean on) {
 		logStates_.put(p, on);
 	}
 
@@ -265,10 +221,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		recommendedTrialThreadCount_ = p;
 	}
 
-	@Override
-	public Integer getRecommendedRemoteThreadCount() {
-		return recommendedRemoteThreadCount_;
-	}
 
 	@Override
 	public Integer getRecommendedSetupThreadCount() {
@@ -284,9 +236,6 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		this.coverageParams_ = coverageParams;
 	}
 
-	public void setRecommendedRemoteThreadCount(Integer recommendedRemoteThreadCount) {
-		this.recommendedRemoteThreadCount_ = recommendedRemoteThreadCount;
-	}
 
 	public void setRecommendedSetupThreadCount(Integer recommendedSetupThreadCount) {
 		this.recommendedSetupThreadCount_ = recommendedSetupThreadCount;
@@ -297,20 +246,16 @@ public class Tests4J_Params implements I_Tests4J_Params {
 		return additionalReportOutputStreams_;
 	}
 
-	@Override
 	public void setAdditionalReportOutputStreams(Collection<OutputStream> out) {
 		additionalReportOutputStreams_.clear();
-		additionalReportOutputStreams_.addAll(out);
+		if (out != null) {
+		  additionalReportOutputStreams_.addAll(out);
+		  additionalReportOutputStreams_.remove(null);
+		}
 	}
 
 	@Override
-	public void addAdditionalReportOutputStreams(OutputStream out) {
-		additionalReportOutputStreams_.add(out);
-	}
-	
-
-	@Override
-	public I_Tests4J_ProgressParams getProgressMonitor() {
+	public I_Tests4J_ProgressParams getProgressParams() {
 		return progressParams_;
 	}
 
@@ -381,4 +326,18 @@ public class Tests4J_Params implements I_Tests4J_Params {
       additionalNonResultPackages_.addAll(additionalNonResultPackages);
     }
   }
+
+  public List<String> getAdditionalNonInstrumentedClasses() {
+    return additionalNonInstrumentedClasses_;
+  }
+
+  public void setAdditionalNonInstrumentedClasses(Collection<String> additionalWhiteListClasses) {
+    additionalNonInstrumentedClasses_.clear();
+    if (additionalWhiteListClasses != null) {
+      additionalNonInstrumentedClasses_.addAll(additionalWhiteListClasses);
+      additionalNonInstrumentedClasses_.remove(null);
+    }
+  }
+  
+  
 }

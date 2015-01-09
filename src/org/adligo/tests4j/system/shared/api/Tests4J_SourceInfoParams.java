@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A reuseable implementation of I_Tests4J_SourceInfoParams
- * 
+ * A re-usable implementation of I_Tests4J_SourceInfoParams.
+ * @see I_Tests4J_SourceInfoParams;
  * @author scott
  *
  */

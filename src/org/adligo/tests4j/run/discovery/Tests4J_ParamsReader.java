@@ -75,7 +75,7 @@ public class Tests4J_ParamsReader {
 	private I_MetaTrialParams<? extends I_MetaTrialInputData> metaTrialParams_;
 	private I_TrialParamsFactory trialParamsQueue_;
 	private I_Tests4J_SourceInfoParams sourceInfoParams_;
-	private I_Tests4J_ProgressParams progressMonitor_;
+	private I_Tests4J_ProgressParams progressParams_;
 
 	/**
 	 * turn into local instances to block further propagation of issues
@@ -209,7 +209,7 @@ public class Tests4J_ParamsReader {
 			runnable = false;
 			return;
 		}
-		progressMonitor_ = params_.getProgressMonitor();
+		progressParams_ = params_.getProgressParams();
 		sourceInfoParams_ = params_.getSourceInfoParams();
 	}
 
@@ -371,7 +371,7 @@ public class Tests4J_ParamsReader {
 		return sourceInfoParams_;
 	}
 
-  public I_Tests4J_ProgressParams getProgressMonitor() {
-    return progressMonitor_;
+  public I_Tests4J_ProgressParams getProgressParams() {
+    return progressParams_;
   }
 }

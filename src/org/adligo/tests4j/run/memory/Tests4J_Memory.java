@@ -123,7 +123,7 @@ public class Tests4J_Memory implements I_Memory {
 		List<Class<? extends I_AbstractTrial>> trials = p.getTrials();
 		
 		allTrialCount = trials.size();
-		I_Tests4J_ProgressParams progressMonitor = p.getProgressMonitor();
+		I_Tests4J_ProgressParams progressMonitor = p.getProgressParams();
 		long notificationInterval = progressMonitor.getNotificationInterval();
 		
 		Tests4J_PhaseInfoParamsMutant trialPhaseInfo = new Tests4J_PhaseInfoParamsMutant();

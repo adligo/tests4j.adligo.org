@@ -5,9 +5,10 @@ import java.util.List;
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 
 /**
- * implementations of this interface allow
- * information about what is getting tested by 
- * the trial run to be passed in to the tests4j trial run.
+ * Implementations of this interface provide information about what is getting tested by 
+ * the trial run to be passed in to the tests4j trial run. This can be useful when
+ * users of Tests4J decide not to use the Adligo convention of keeping tests in a
+ * different package than the source code.  
  * 
  * @author scott
  *

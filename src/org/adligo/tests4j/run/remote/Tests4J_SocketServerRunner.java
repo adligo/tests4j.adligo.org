@@ -309,7 +309,6 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 					case RUN:
 						String xml = message.getPayload();
 						Tests4J_Params params = new Tests4J_Params();
-						params.fromXml(xml);
 						//params.setReporter(reporter);
 						controlls = Tests4J.run(params);
 						send(new Tests4J_SocketMessage(
