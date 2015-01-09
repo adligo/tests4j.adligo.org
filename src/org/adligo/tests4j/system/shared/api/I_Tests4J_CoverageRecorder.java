@@ -44,17 +44,28 @@ public interface I_Tests4J_CoverageRecorder {
   public I_PackageCoverageBrief getPackageCoverage();
   
   /**
-   * This will return coverage information for 
-   * the entire run including any package with 
-   * .class files which had any coverage recorded.  
-   * It will include information about all .class/.java file
-   * regardless if there was any interaction.
-   * In other words .java files/classes which
-   * were in packages with any coverage
-   * will included classes/.java files 
-   * with zero coverage.
-   * 
+   * This will return coverage information for  <br/>
+   * the entire run including any package with <br/>
+   * .class files which had any coverage recorded.  <br/>
+   * It will include information about all .class/.java file <br/>
+   * regardless if there was any interaction. <br/>
+   * In other words .java files/classes which <br/>
+   * were in packages with any coverage <br/>
+   * will included classes/.java files <br/>
+   * with zero coverage. <br/>
+   * <br/>
+   * @param trialPackages, theses are the packages <br/>
+   * with trials that ran, which generally don't  <br/>
+   * trigger coverage to be returned here, <br/>
+   * however there were a few cases when <br/>
+   * tests4j trials would have a annotation <br/>
+   * to a sourceClass in the trial package in order to <br/>
+   * assert things about class references(dependencies).  In these <br/>
+   * case although the trial had sourceClass pointed <br/>
+   * at something it was actually testing something else <br/>
+   * (the reference/dependency code);  <br/>
+   * @see tests4j_tests.adligo.org/src_jdk_1_8/*.UseTrial for some examples of this special case. <br/>
    * @return
    */
-  public List<I_PackageCoverageBrief> getAllCoverage();
+  public List<I_PackageCoverageBrief> getAllCoverage(Set<String> trialPackages);
 }

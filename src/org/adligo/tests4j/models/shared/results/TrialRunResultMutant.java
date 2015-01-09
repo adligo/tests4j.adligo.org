@@ -77,7 +77,10 @@ public class TrialRunResultMutant implements I_TrialRunResult {
 	}
 
 	public synchronized void setCoverage(List<I_PackageCoverageBrief> coverage) {
-		this.coverage = coverage;
+	  this.coverage.clear();
+	  if (coverage != null) {
+	    this.coverage.addAll(coverage);
+	  }
 	}
 
 	public int getTrials() {

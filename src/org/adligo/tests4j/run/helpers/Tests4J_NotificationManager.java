@@ -527,29 +527,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
           log.log("There are " + testedClasses_.size() + " tested classes.");
         }
 		  }
-			List<I_PackageCoverageBrief> packageCoverage = allCoverageRecorder.getAllCoverage();
-			List<I_PackageCoverageBrief> toAdd = new ArrayList<I_PackageCoverageBrief>();
-			if (log.isMainLog()) {
-        log.log("There are " + packageCoverage.size() + " packages covered.");
-      }
-			//filter out trial/test code from result
-			for (I_PackageCoverageBrief cover: packageCoverage) {
-				boolean overlapped = false;
-				String coveragePkgName = cover.getPackageName();
-				for (String trialPackageName: trialPackageNames) {
-				  
-					if (trialPackageName.contains(coveragePkgName) ||
-							coveragePkgName.contains(trialPackageName)) {
-						overlapped = true;
-						break;
-					}
-				}
-				if (!overlapped) {
-					//add it to the results
-					toAdd.add(new PackageCoverageBriefDelegator(cover));
-				}
-			}
-			runResult.setCoverage(toAdd);
+			List<I_PackageCoverageBrief> packageCoverage = allCoverageRecorder.getAllCoverage(trialPackageNames);
+			runResult.setCoverage(packageCoverage);
 		}
 		runResult.setPassingTrials(passingTrialNames);
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
