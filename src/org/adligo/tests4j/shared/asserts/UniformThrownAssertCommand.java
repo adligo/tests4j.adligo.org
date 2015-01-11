@@ -3,8 +3,10 @@ package org.adligo.tests4j.shared.asserts;
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrownData;
+import org.adligo.tests4j.shared.asserts.common.I_MatchType;
 import org.adligo.tests4j.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.shared.asserts.common.I_ThrownAssertionData;
+import org.adligo.tests4j.shared.asserts.common.MatchType;
 import org.adligo.tests4j.shared.asserts.uniform.I_Evaluation;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformThrownAssertionCommand;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformThrownAssertionEvaluator;
@@ -43,17 +45,37 @@ public class UniformThrownAssertCommand extends AbstractAssertCommand
 	public UniformThrownAssertCommand(String failureMessage, I_ExpectedThrownData pData,  
 			I_UniformThrownAssertionEvaluator<I_ThrownAssertionData> pEvaluator) {
 		super(AssertType.AssertThrownUniform, failureMessage);
-		expected = pData;
-		if (expected == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
-			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
+		if (pData == null) {
+      I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+      throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
+    }
+		if (!isAnyEqualsOrNull(pData)) {
+		  I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+		  throw new IllegalArgumentException(messages.getThrownUniformExpectedThrownDataMustBeMatchTypeAnyEqualsOrNull());
 		}
+		expected = pData;
+		
 		if (pEvaluator == null) {
 			throw new IllegalArgumentException(UNIFORM_THROWN_ASSERT_COMMAND_REQUIRES_A_EVALUATOR);
 		}
 		evaluator = pEvaluator;
 	}
 
+	public boolean isAnyEqualsOrNull(I_ExpectedThrownData data) {
+	  I_MatchType type = data.getMatchType();
+	  MatchType mt = MatchType.get(type);
+	  switch(mt) {
+	    case CONTAINS:
+	      return false;
+	    default:
+	  }
+	  I_ExpectedThrownData cause = data.getExpectedCause();
+	  if (cause == null) {
+	    return true;
+	  } else {
+	    return isAnyEqualsOrNull(cause);
+	  }
+	}
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionCommand#evaluate(org.adligo.tests4j.models.shared.asserts.uniform.I_UniformAssertionEvaluator)
 	 */

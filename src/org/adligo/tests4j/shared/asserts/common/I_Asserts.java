@@ -2,6 +2,7 @@ package org.adligo.tests4j.shared.asserts.common;
 
 import java.util.Collection;
 
+import org.adligo.tests4j.shared.asserts.uniform.StringUniformEvaluator;
 import org.adligo.tests4j.shared.common.I_PlatformContainer;
 
 public interface I_Asserts extends I_PlatformContainer {
@@ -57,7 +58,24 @@ public interface I_Asserts extends I_PlatformContainer {
 	public void assertThrownUniform(I_ExpectedThrownData p, I_Thrower thrower);
 	public void assertThrownUniform(String message, I_ExpectedThrownData p, I_Thrower thrower);	
 	
+	/**
+	 * This method is may be backed by a custom implementation.
+	 * The default for String's is {@link StringUniformEvaluator#isUniform(I_CompareAssertionData)}
+	 * which compares the text of two strings, normalizing new lines
+	 * (dos and unix line seperators will match).
+	 * @param p
+	 * @param a
+	 */
 	public void assertUniform(Object p, Object a);
+	/**
+	 * This method is may be backed by a custom implementation.
+   * The default for String's is {@link ThrownUniformEvaluator#isUniform(I_CompareAssertionData)}
+   * which compares the text of the Throwable messages, normalizing new lines 
+   * (dos and unix line seperators will match).
+	 * @param message
+	 * @param p
+	 * @param a
+	 */
 	public void assertUniform(String message, Object p, Object a);	
 
 	

@@ -8,4 +8,6 @@ public interface I_Tests4J_AssertionInputMessages {
 	public String getTheActualClassIsNotAssignableFromTheExpectedClass();
 	public String getIThrowerIsRequired();
 	public String getTheUniformThrownEvaluatorIsNull();
+	public String getThrownUniformExpectedThrownDataMustBeMatchTypeAnyEqualsOrNull();
+	public String getExpectedThrownDataWithEqualsOrContainMatchTypesRequireAMessage();
 }

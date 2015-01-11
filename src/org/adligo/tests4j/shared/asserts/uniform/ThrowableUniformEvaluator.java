@@ -7,6 +7,11 @@ import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 
+/**
+ * This class compares two Throwables to see if they are uniform.
+ * @author scott
+ *
+ */
 public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Throwable, I_TextLinesCompareResult> {
 	@Override
 	public Class<Throwable> getType() {

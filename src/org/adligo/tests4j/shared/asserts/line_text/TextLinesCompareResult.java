@@ -70,6 +70,7 @@ public class TextLinesCompareResult implements I_TextLinesCompareResult {
 		return actual;
 	}
 	
+	@Override
 	public boolean hasErrorMessage() {
 		if (errorMessage == null) {
 			return false;
@@ -77,6 +78,7 @@ public class TextLinesCompareResult implements I_TextLinesCompareResult {
 		return true;
 	}
 	
+	@Override
 	public String getErrorMessage() {
 		return errorMessage;
 	}

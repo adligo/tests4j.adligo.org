@@ -29,6 +29,10 @@ public class TextLinesCompare  {
 	
 	
 	public I_TextLinesCompareResult compare(String example, String actual, boolean normalizeLineFeeds) {
+	  if (example == null) {
+      I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+      return new TextLinesCompareResult(messages.getTheExpectedValueShouldNeverBeNull());
+    }
 		if (actual == null) {
 			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 			return new TextLinesCompareResult(messages.getTheActualValueIsNull());

@@ -17,4 +17,15 @@ public interface I_TextLinesCompareResult {
 
 	public abstract I_TextLines getActualLines();
 
+	/**
+	 * @return
+	 * This method returns true if there was a error comparing the text lines.
+	 */
+	public boolean hasErrorMessage();
+  
+	/**
+	 * @return
+	 * This method returns a error message if there was one or null.
+	 */
+  public String getErrorMessage();
 }

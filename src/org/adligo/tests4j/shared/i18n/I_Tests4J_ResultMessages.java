@@ -19,7 +19,7 @@ public interface I_Tests4J_ResultMessages {
 	public String getTheTextWasUniform();
 	public String getNothingWasThrown();
 	public String getThrowableClassMismatch();
-	public String getThrowableMessageNotEquals();
+	public String getThrowableMessagesMismatch();
 	public String getThrowableMessageNotUniform();
 	public String getTheExpectedThrowableDidNotMatch();
 	public String getAnUnexpectedExceptionWasThrown();

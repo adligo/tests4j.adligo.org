@@ -2,38 +2,48 @@ package org.adligo.tests4j.shared.asserts.common;
 
 
 /**
- * a interface which represents expected thrown 
- * scenario @see {@link ExpectedThrownData}
+ * This interface represents a expected Throwable. 
+ * @see {@link ExpectedThrownData}
  * @author scott
  *
  */
 public interface I_ExpectedThrownData {
 
 	/**
-	 * the expected message that the throwable
-	 * should contain
+	 * 
 	 * @return
+	 * This method returns the expected message that the throwable
+   * should match against {@link #getMatchType()}.
 	 */
 	public abstract String getMessage();
 
 	/**
-	 * the expected class of the throwable 
-	 * which is expected to be thrown.
+	 * 
 	 * @return
+	 * This method returns the expected class of the throwable 
+   * which is expected to be thrown.
 	 */
 	public abstract Class<? extends Throwable> getThrowableClass();
 	
 	/**
-	 * The actual instance of the throwable.
+	 * 
 	 * @return
+	 * This method returns the actual instance of the throwable or null.
 	 */
 	public Throwable getInstance();
 	
 	/**
-	 * allow infinite recursive testing of Throwable
-	 * causation chain.
+	 * 
 	 * @return
+	 * This method returns the expected cause of the 
+	 * Throwable to allow infinite recursive testing of Throwable
+   * causation chain.
 	 */
 	public I_ExpectedThrownData getExpectedCause();
 
+	/**
+	 * @return
+	 * This method returns the type of message matching to use.
+	 */
+	public I_MatchType getMatchType();
 }

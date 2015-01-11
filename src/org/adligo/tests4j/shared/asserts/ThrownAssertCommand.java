@@ -5,9 +5,11 @@ import org.adligo.tests4j.shared.asserts.common.AssertThrownFailureMutant;
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrownData;
+import org.adligo.tests4j.shared.asserts.common.I_MatchType;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
 import org.adligo.tests4j.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.shared.asserts.common.I_ThrownAssertCommand;
+import org.adligo.tests4j.shared.asserts.common.MatchType;
 import org.adligo.tests4j.shared.asserts.common.ThrowableInfo;
 import org.adligo.tests4j.shared.asserts.common.ThrownAssertionData;
 import org.adligo.tests4j.shared.asserts.common.ThrownAssertionDataMutant;
@@ -54,14 +56,10 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 
 	@Override
 	public boolean evaluate(I_Thrower thrower) {
-		if (thrower == null) {
+	  if (thrower == null) {
 			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
 			throw new IllegalArgumentException(messages.getIThrowerIsRequired());
 		}
-		Class<? extends Throwable> throwableClazz = 
-				expected.getThrowableClass();
-		String expected_message = 
-				expected.getMessage();
 		
 		failureThrowable = 1;
 		try {
@@ -69,74 +67,13 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		} catch (Throwable x) {
 			caught = x;
 		}
+		I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
 		if (caught == null) {
-			I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
 			failureReason = messages.getNothingWasThrown();
 			return false;
 		}
-		if ( !throwableClazz.equals(caught.getClass())) {
-			I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
-			failureReason = messages.getThrowableClassMismatch();
-			return false;
-		}
-		String caughtMessage = caught.getMessage();
-		if (expected_message == null) {
-			if (caughtMessage != null) {
-				I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
-				failureReason = messages.getThrowableMessageNotEquals();
-				return false;
-			}
-		} else if (caughtMessage == null) {
-			I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
-			failureReason = messages.getThrowableMessageNotEquals();
-			return false;
-		} else {
-			if ( !expected_message.equals(caughtMessage)) {
-				I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
-				failureReason = messages.getThrowableMessageNotEquals();
-				return false;
-			}
-		}
-		
-		Throwable cause = caught.getCause();
-		I_ExpectedThrownData ec = expected.getExpectedCause();
-		while (ec != null) {
-			failureThrowable++;
-			Class<? extends Throwable> expectedCauseClass = ec.getThrowableClass();
-			if (cause == null) {
-				I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
-				failureReason = messages.getThrowableClassMismatch();
-				return false;
-			}
-			
-			if (!cause.getClass().equals(expectedCauseClass)) {
-				I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
-				failureReason = messages.getThrowableClassMismatch();
-				return false;
-			}
-			String expectedMessage = ec.getMessage();
-			String message = cause.getMessage();
-			if (expectedMessage == null) {
-				if (message != null) {
-					I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
-					failureReason = messages.getThrowableMessageNotEquals();
-					return false;
-				}
-			} else if (message == null) {
-				I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
-				failureReason = messages.getThrowableMessageNotEquals();
-				return false;
-			} else {
-				if ( !expectedMessage.equals(message)) {
-					I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
-					failureReason = messages.getThrowableMessageNotEquals();
-					return false;
-				}
-			}
-			ec = ec.getExpectedCause();
-			cause = cause.getCause();
-		}
-		return true;
+
+		return evaluateMessageAndCause(expected, caught, 1);
 	}
 
 	@Override
@@ -190,5 +127,76 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 
 	public String getFailureReason() {
 		return failureReason;
+	}
+	
+	private boolean evaluateMessageAndCause(I_ExpectedThrownData expected, Throwable caught, int throwable) {
+	  I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
+	  if (expected == null) {
+	    return true;
+	  }
+	  if (caught == null) {
+	    failureThrowable = throwable;
+	    failureReason = messages.getThrowableClassMismatch();
+      return false;
+	  }
+	  Class<?> clazz = expected.getThrowableClass();
+	  if (!clazz.getName().equals(caught.getClass().getName())) {
+	    failureThrowable = throwable;
+      failureReason = messages.getThrowableClassMismatch();
+      return false;
+	  }
+    String expectedMessage = expected.getMessage();
+    I_MatchType matchType = expected.getMatchType();
+    MatchType mt = MatchType.get(matchType);
+    String caughtMessage = caught.getMessage();
+    
+    switch (mt) {
+      case ANY:
+          //don't compare the messages
+        break;
+      case CONTAINS:
+          if (expectedMessage == null) {
+            failureThrowable = throwable;
+            failureReason = messages.getThrowableMessagesMismatch();
+            return false;
+          }
+          if (caughtMessage == null) {
+            failureThrowable = throwable;
+            failureReason = messages.getThrowableMessagesMismatch();
+            return false;
+          }
+          String caughtLower = caughtMessage.toLowerCase();
+          String expectedLower = expectedMessage.toLowerCase();
+          if (caughtLower.indexOf(expectedLower) == -1) {
+            failureThrowable = throwable;
+            failureReason = messages.getThrowableMessagesMismatch();
+            return false;
+          }
+        break;
+      case EQUALS:
+        if (expectedMessage == null) {
+          failureThrowable = throwable;
+          failureReason = messages.getThrowableMessagesMismatch();
+          return false;
+        }
+        if (!expectedMessage.equals(caughtMessage)) {
+          failureThrowable = throwable;
+          failureReason = messages.getThrowableMessagesMismatch();
+          return false;
+        }
+        break;
+      case NULL:
+      default:
+        if (caughtMessage != null) {
+          failureThrowable = throwable;
+          failureReason = messages.getThrowableMessagesMismatch();
+          return false;
+        }
+    }
+    I_ExpectedThrownData expectedCause = expected.getExpectedCause();
+    if (expectedCause == null) {
+      return true;
+    }
+    return evaluateMessageAndCause(expectedCause, caught.getCause(), throwable + 1);
 	}
 }

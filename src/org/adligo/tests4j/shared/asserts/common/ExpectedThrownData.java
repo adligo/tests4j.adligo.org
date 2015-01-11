@@ -12,15 +12,15 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
  *
  */
 public class ExpectedThrownData implements I_ExpectedThrownData {
-	private String message;
-	private Class<? extends Throwable> throwableClass;
-	private Throwable instance;
-	private ExpectedThrownData expectedCause;
-	
-	public ExpectedThrownData() {}
+	private String message_;
+	private I_MatchType matchType_;
+	private Class<? extends Throwable> throwableClass_;
+	private Throwable instance_;
+	private ExpectedThrownData expectedCause_;
 	
 	public ExpectedThrownData(I_ExpectedThrownData p) {
 		Throwable inst = p.getInstance();
+		matchType_ = p.getMatchType();
 		if (inst == null) {
 			setupThrowableClass(p.getThrowableClass());
 		} else {
@@ -29,91 +29,128 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 	}
 	
 	/**
-	 * assert only the throwable class matches
-	 * @param clazz
+	 * This constructor should be used for matching with 
+	 * Throwable's that have any message. 
+	 * @param clazz 
 	 */
 	public ExpectedThrownData(Class<? extends Throwable> clazz) {
-		setupThrowableClass(clazz);
+	  this(clazz, MatchType.ANY);
 	}
 
-	public ExpectedThrownData(Class<? extends Throwable> clazz, I_ExpectedThrownData p) {
-		setupThrowableClass(clazz);
-		setupCausationChain(p);
-	}
+	/**
+	 * 
+	 * @param clazz the throwable class.
+	 * @param matchType the message matching type.
+	 */
+	public ExpectedThrownData(Class<? extends Throwable> clazz, MatchType matchType) {
+	  if (matchType == null) {
+	    matchType_ = MatchType.ANY;
+	  } else {
+	    matchType_ = matchType;
+	  }
+    setupThrowableClass(clazz);
+  }
 	
 	/**
-	 * assert only the throwable class and it's message matches
-	 * @param clazz
-	 */
-	private void setupThrowableClass(Class<? extends Throwable> clazz) {
-		if (clazz == null) {
-			I_Tests4J_AssertionInputMessages messages = 
-					Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
-			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
-		}
-		throwableClass = clazz;
+   * This constructor should be used for matching with 
+   * Throwable's that have any message. 
+   * @param clazz 
+   * @param the 
+   */
+	public ExpectedThrownData(Class<? extends Throwable> clazz, I_ExpectedThrownData expectedCause) {
+	  this(clazz, MatchType.ANY, expectedCause);
 	}
 	
+	public ExpectedThrownData(Class<? extends Throwable> clazz, MatchType matchType, I_ExpectedThrownData expectedCause) {
+    if (matchType == null) {
+      matchType_ = MatchType.ANY;
+    } else {
+      matchType_ = matchType;
+    }
+    setupThrowableClass(clazz);
+    setupCausationChain(expectedCause);
+  }
+	
+	
+	
 	/**
-	 * assert the throwable class and messages match
-	 * @param t
-	 */
+   * This constructor should be used for matching
+   * the Throwable class and message.
+   * @param clazz
+   */
 	public ExpectedThrownData(Throwable t) {
-		setupInstance(t);
+	  this(t, MatchType.EQUALS);
 	}
+	
+	 /**
+   * This constructor should be used for matching
+   * the Throwable class and message.
+   * @param clazz
+   */
+  public ExpectedThrownData(Throwable t, MatchType matchType) {
+    if (matchType == null) {
+      matchType_ = MatchType.EQUALS;
+    } else {
+      matchType_ = matchType;
+    }
+    setupInstance(t);
+  }
+  
+	/**
+   * This constructor should be used for matching
+   * the Throwable class and message.
+   * @param clazz
+   */
 	public ExpectedThrownData(Throwable t, I_ExpectedThrownData p) {
-		setupInstance(t);
-		setupCausationChain(p);
+	  this(t, MatchType.EQUALS, p);
 	}
 
-	protected void setupCausationChain(I_ExpectedThrownData p) {
-		//expect non null input
-		expectedCause = new ExpectedThrownData(p);
-		I_ExpectedThrownData dec = p.getExpectedCause();
-		if (dec != null) {
-			expectedCause.expectedCause = new ExpectedThrownData(dec);
-		}
-	}
-	private void setupInstance(Throwable t) {
-		if (t == null) {
-			I_Tests4J_AssertionInputMessages messages = 
-					Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
-			throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
-		}
-		instance = t;
-		throwableClass = t.getClass();
-		message = t.getMessage();
-	}
+	 /**
+   * This constructor should be used for matching
+   * the Throwable class and message.
+   * @param clazz
+   */
+  public ExpectedThrownData(Throwable t, MatchType matchType, I_ExpectedThrownData p) {
+    if (matchType == null) {
+      matchType_ = MatchType.EQUALS;
+    } else {
+      matchType_ = matchType;
+    }
+    setupInstance(t);
+    setupCausationChain(p);
+  }
+
 	
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.asserts.I_ExpectedThrownData#getMessage()
 	 */
 	@Override
 	public String getMessage() {
-		return message;
+		return message_;
 	}
 	/* (non-Javadoc)
 	 * @see org.adligo.tests4j.models.shared.asserts.I_ExpectedThrownData#getThrowableClass()
 	 */
 	@Override
 	public Class<? extends Throwable> getThrowableClass() {
-		return throwableClass;
+		return throwableClass_;
 	}
 
 	@Override
 	public Throwable getInstance() {
-		return instance;
+		return instance_;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((message == null) ? 0 : message.hashCode());
+		result = prime * result + ((message_ == null) ? 0 : message_.hashCode());
+		result = prime * result + matchType_.hashCode();
 		result = prime * result
-				+ ((throwableClass == null) ? 0 : throwableClass.getName().hashCode());
+				+ ((throwableClass_ == null) ? 0 : throwableClass_.getName().hashCode());
 		result = prime * result
-				+ ((expectedCause == null) ? 0 : expectedCause.hashCode());
+				+ ((expectedCause_ == null) ? 0 : expectedCause_.hashCode());
 		return result;
 	}
 
@@ -125,20 +162,23 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 			return false;
 		try {
 			I_ExpectedThrownData other = (I_ExpectedThrownData) obj;
-			if (message == null) {
+			if (message_ == null) {
 				if (other.getMessage() != null)
 					return false;
-			} else if (!message.equals(other.getMessage()))
+			} else if (!message_.equals(other.getMessage()))
 				return false;
-			if (throwableClass == null) {
+			if (!matchType_.equals(other.getMatchType())) {
+			  return false;
+			}
+			if (throwableClass_ == null) {
 				if (other.getThrowableClass() != null)
 					return false;
-			} else if (!throwableClass.equals(other.getThrowableClass()))
+			} else if (!throwableClass_.equals(other.getThrowableClass()))
 				return false;
-			if (expectedCause == null) {
+			if (expectedCause_ == null) {
 				if (other.getExpectedCause() != null)
 					return false;
-			} else if (!expectedCause.equals(other.getExpectedCause()))
+			} else if (!expectedCause_.equals(other.getExpectedCause()))
 				return false;
 		} catch (ClassCastException x) {
 			//do nothing 
@@ -148,7 +188,60 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 
 	@Override
 	public I_ExpectedThrownData getExpectedCause() {
-		return expectedCause;
+		return expectedCause_;
 	}
+
+	@Override
+  public I_MatchType getMatchType() {
+    return matchType_;
+  }
 	
+	protected void setupCausationChain(I_ExpectedThrownData p) {
+    //expect non null input
+    expectedCause_ = new ExpectedThrownData(p);
+    I_ExpectedThrownData dec = p.getExpectedCause();
+    if (dec != null) {
+      expectedCause_.expectedCause_ = new ExpectedThrownData(dec);
+    }
+	}
+	  
+	private void setupInstance(Throwable t) {
+    if (t == null) {
+      I_Tests4J_AssertionInputMessages messages = 
+          Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+      throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
+    }
+    instance_ = t;
+    throwableClass_ = t.getClass();
+    message_ = t.getMessage();
+    if (message_ == null) {
+      MatchType type = MatchType.get(matchType_);
+      switch (type) {
+        case EQUALS:
+        case CONTAINS:
+          I_Tests4J_AssertionInputMessages messages = 
+            Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+          throw new IllegalArgumentException(messages.getExpectedThrownDataWithEqualsOrContainMatchTypesRequireAMessage());
+        default:
+      }
+    }
+  }
+	  
+	private void setupThrowableClass(Class<? extends Throwable> clazz) {
+    if (clazz == null) {
+      I_Tests4J_AssertionInputMessages messages = 
+          Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+      throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
+    }
+    throwableClass_ = clazz;
+    MatchType type = MatchType.get(matchType_);
+    switch (type) {
+      case EQUALS:
+      case CONTAINS:
+          I_Tests4J_AssertionInputMessages messages = 
+            Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+          throw new IllegalArgumentException(messages.getExpectedThrownDataWithEqualsOrContainMatchTypesRequireAMessage());
+      default:
+    }
+  }
 }

@@ -9,8 +9,8 @@ public class Tests4J_ResultMessages implements I_Tests4J_ResultMessages {
 	private static final String THE_TEST_TIMED_OUT = "The test timed out.";
 	private static final String THE_TRIAL_TIMED_OUT = "The trial timed out.";
 	
-	private static final String THE_EXPECTED_THROWABLE_DID_NOT_MATCH_THE_ACTUAL_THROWABLE_OR_NOTHING_WAS_THROWN = "The expected throwable did not match the actual throwable, or nothing was thrown.";
-	private static final String THE_EXPECTED_THROWABLE_MESSAGE_WAS_NOT_EQUAL_WITH_THE_ACTUAL = "The expected throwable message was NOT equals to the actual thrown message.";
+	private static final String THE_EXPECTED_THROWABLE_DID_NOT_MATCH_THE_ACTUAL_THROWABLE = "The expected throwable did not match the actual throwable.";
+	private static final String THE_EXPECTED_THROWABLE_MESSAGE_DID_NOT_MATCH_WITH_THE_ACTUAL = "The expected throwable message did NOT match to the actual thrown message.";
 	private static final String THE_EXPECTED_THROWABLE_MESSAGE_WAS_NOT_UNIFORM_WITH_THE_ACTUAL = "The expected throwable message was NOT uniform with the actual thrown message.";
 	
 	private static final String THE_EXPECTED_THROWN_CLASS_DID_NOT_MATCH_THE_ACTUAL_THROWN_CLASS = "The expected thrown class did NOT match the actual thrown class.";
@@ -19,7 +19,7 @@ public class Tests4J_ResultMessages implements I_Tests4J_ResultMessages {
 	private static final String THE_TEXT_WAS_UNIFORM = "The text was uniform.";
 	private static final String THE_TEXT_WAS_NOT_UNIFORM = "The text was NOT uniform.";
 	
-	private static final String THE_EXPECTED_THROWABLE_DATA_WAS_NOT_UNIFORM_WITH_THE_ACTUAL = "Either no throwable was thrown or the expected throwable was NOT uniform with the actual throwable.";
+	private static final String THE_EXPECTED_THROWABLE_DATA_WAS_NOT_UNIFORM_WITH_THE_ACTUAL = "The expected throwable was NOT uniform with the actual throwable.";
 	
 	private static final String THE_COLLECTION_SHOULD_CONTAIN_THE_VALUE = "The collection should contain the value.";
 	private static final String THE_ACTUAL_SHOULD_BE_GREATER_THAN_OR_EQUAL_TO_THE_EXPECTED_VALUE = "The actual value should be greater than OR equal to the expected value.";
@@ -95,13 +95,14 @@ public class Tests4J_ResultMessages implements I_Tests4J_ResultMessages {
 		return THE_EXPECTED_THROWN_CLASS_DID_NOT_MATCH_THE_ACTUAL_THROWN_CLASS;
 	}
 	
-	public String getThrowableMessageNotEquals() {
-		return THE_EXPECTED_THROWABLE_MESSAGE_WAS_NOT_EQUAL_WITH_THE_ACTUAL;
+	public String getThrowableMessagesMismatch() {
+		return THE_EXPECTED_THROWABLE_MESSAGE_DID_NOT_MATCH_WITH_THE_ACTUAL;
 	}
 	
 	public String getTheExpectedThrowableDidNotMatch() {
-		return THE_EXPECTED_THROWABLE_DID_NOT_MATCH_THE_ACTUAL_THROWABLE_OR_NOTHING_WAS_THROWN;
+		return THE_EXPECTED_THROWABLE_DID_NOT_MATCH_THE_ACTUAL_THROWABLE;
 	}
+	
 	public String getAnUnexpectedExceptionWasThrown() {
 		return AN_UNEXPECTED_EXCEPTION_WAS_THROWN;
 	}
