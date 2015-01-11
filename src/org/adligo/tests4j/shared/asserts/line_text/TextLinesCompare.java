@@ -28,7 +28,8 @@ public class TextLinesCompare  {
 	private TreeSet<Integer> actualLinesWithoutMatch = new TreeSet<Integer>();
 	
 	
-	public I_TextLinesCompareResult compare(String example, String actual, boolean normalizeLineFeeds) {
+	@SuppressWarnings("boxing")
+  public I_TextLinesCompareResult compare(String example, String actual, boolean normalizeLineFeeds) {
 	  if (example == null) {
       I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
       return new TextLinesCompareResult(messages.getTheExpectedValueShouldNeverBeNull());
@@ -74,7 +75,8 @@ public class TextLinesCompare  {
 	}
 
 
-	private void addMissingActualLines() {
+	@SuppressWarnings("boxing")
+  private void addMissingActualLines() {
 		Iterator<Integer> it = actualLinesWithoutMatch.iterator();
 		while (it.hasNext()) {
 			Integer lineNbr = it.next();
@@ -108,7 +110,8 @@ public class TextLinesCompare  {
 	}
 
 
-	private void addMissingExampleLines() {
+	@SuppressWarnings("boxing")
+  private void addMissingExampleLines() {
 		Iterator<Integer> it = exampleLinesWithoutMatch.iterator();
 		while (it.hasNext()) {
 			Integer lineNbr = it.next();
@@ -172,13 +175,14 @@ public class TextLinesCompare  {
 	 * at the end if there are expected lines after a's [expected line nbr]
 	 *    check for partial matches in actual
 	 */
+	@SuppressWarnings("boxing")
 	private void compareLineChars() {
 		
 		Iterator<Integer> it = exampleLinesWithoutMatch.iterator();
 		while (it.hasNext()) {
 			Integer expLineNbr = it.next();
 			boolean removedThisIt = false;
-			int previousDiffCounter = expLineNbr - 1;
+      int previousDiffCounter = expLineNbr - 1;
 			I_LineDiff beforeDiff = null;
 			while (beforeDiff == null && previousDiffCounter >= 0) {
 				beforeDiff = expectedToDiffs.get(previousDiffCounter--);
@@ -267,7 +271,8 @@ public class TextLinesCompare  {
 	}
 
 
-	private boolean addIfPartialMatch(int i, String expected, int j, String actual) {
+	@SuppressWarnings("boxing")
+  private boolean addIfPartialMatch(int i, String expected, int j, String actual) {
 		DiffIndexesPair dip = new DiffIndexesPair(expected, actual);
 		I_DiffIndexes example = dip.getExpected();
 		if (example != null) {
@@ -288,9 +293,8 @@ public class TextLinesCompare  {
 		return false;
 	}
 
-	
-
-	private void findMatches(I_TextLines exampleLT, I_TextLines actualLT) {
+	@SuppressWarnings("boxing")
+  private void findMatches(I_TextLines exampleLT, I_TextLines actualLT) {
 		int minActualLineMatch = 0;
 		int j = 0;
 		for (int i = 0; i < exampleLT.getLines(); i++) {

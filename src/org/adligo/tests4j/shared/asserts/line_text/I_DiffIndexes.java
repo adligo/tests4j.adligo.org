@@ -1,9 +1,10 @@
 package org.adligo.tests4j.shared.asserts.line_text;
 
 /**
- * a interface for holding information about a 
+ * This is a  interface for holding information about a 
  * line of text, when it is compared with another 
  * line of text and also allows passing data between class loaders.
+ * All indexes are left based starting at zero and ascending to the right.
  * 
  * If the left to right index is less than the right to left index then;
  *    The chars between the indexes matches with the other line of text.

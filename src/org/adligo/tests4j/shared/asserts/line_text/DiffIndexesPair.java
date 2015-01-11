@@ -2,8 +2,6 @@ package org.adligo.tests4j.shared.asserts.line_text;
 
 import java.io.IOException;
 
-import org.adligo.tests4j.shared.common.I_System;
-
 
 
 /**
@@ -15,19 +13,21 @@ import org.adligo.tests4j.shared.common.I_System;
  */
 public class DiffIndexesPair implements I_DiffIndexesPair {
 	public static final String NOTHING_DIFFERENT_FOUND = "Nothing different found.";
-	private I_DiffIndexes expected;
-	private I_DiffIndexes actual;
+	private I_DiffIndexes expected_;
+	private I_DiffIndexes actual_;
 	
-	private Integer expectedLeftToRightMatch;
-	private Integer expectedLeftToRightDiff;
-	private Integer actualLeftToRightMatch;
-	private Integer actualLeftToRightDiff;
+	private Integer expectedLeftToRightMatch_;
+	private Integer expectedLeftToRightDiff_;
+	private Integer actualLeftToRightMatch_;
+	private Integer actualLeftToRightDiff_;
 	
-	private Integer expectedRightToLeftMatch;
-	private Integer expectedRightToLeftDiff;
-	private Integer actualRightToLeftMatch;
-	private Integer actualRightToLeftDiff;
+	private Integer expectedRightToLeftMatch_;
+	private Integer expectedRightToLeftDiff_;
+	private Integer actualRightToLeftMatch_;
+	private Integer actualRightToLeftDiff_;
 
+	private Integer expectedLen_;
+	private Integer actualLen_;
 	/**
 	 * threadsafe method to compare two lines of text
 	 * assumes line feeds have been pulled out and that 
@@ -38,20 +38,21 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 	 * @return null when there is no overlap
 	 * @throws IOException when the expectedLine and actualLine have no matching values
 	 */
-	public DiffIndexesPair(String expectedLine, String actualLine) {
+	@SuppressWarnings("boxing")
+  public DiffIndexesPair(String expectedLine, String actualLine) {
 		if (expectedLine.equals(actualLine)) {
 			throw new IllegalArgumentException("There is no difference expectedLine.equals(actualLine).");
 		}
-		int actualLength = actualLine.length();
-		if (actualLength == 0) {
+		actualLen_ = actualLine.length();
+		if (actualLen_ == 0) {
 			createExpectedAllDifferent(expectedLine);
-			actual = new DiffIndexes();
+			actual_ = new DiffIndexes();
 			return;
 		}
-		int expectedLength = expectedLine.length();
-		if (expectedLength == 0) {
+		expectedLen_ = expectedLine.length();
+		if (expectedLen_ == 0) {
 			createActualAllDifferent(actualLine);
-			expected = new DiffIndexes();
+			expected_ = new DiffIndexes();
 			return;
 		}
 		if (expectedLine.length() == actualLine.length()) {
@@ -70,16 +71,18 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 			if (actualInExpectd == -1) {
 				//expected in actual, but actual not in expected
 				createExpectedAllMatch(expectedLine);
+				
+
 				//expected in actual exists
 				if (expectedInActual == 0) {
 					//at left
-					actual = new DiffIndexes(expectedLine.length(), actualLine.length() -1, 0, expectedLine.length() -1);
+					actual_ = new DiffIndexes(expectedLine.length(), actualLine.length() -1, 0, expectedLine.length() -1);
 				} else if (actualLine.length() == expectedInActual + expectedLine.length()){
 					//at right
-					actual = new DiffIndexes(0, expectedInActual - 1, expectedInActual, actualLine.length() -1);
+					actual_ = new DiffIndexes(0, expectedInActual - 1, expectedInActual, actualLine.length() -1);
 				} else {
 					//in middle
-					actual = new DiffIndexes(0, expectedLine.length(), expectedInActual, expectedInActual + actualLine.length());
+				  actual_ = new DiffIndexes(0, expectedInActual + expectedLen_, expectedInActual, expectedInActual + expectedLen_ -1);
 				}				
 			} else {
 	
@@ -89,13 +92,13 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 				//actual in expected exists,
 				if (actualInExpectd == 0) {
 					//at left
-					expected = new DiffIndexes( actualLine.length() , expectedLine.length() - 1, 0, actualLine.length() - 1);
+					expected_ = new DiffIndexes( actualLine.length() , expectedLine.length() - 1, 0, actualLine.length() - 1);
 				} else if (expectedLine.length() == actualInExpectd + actualLine.length()){
 					//at right
-					expected = new DiffIndexes(0, actualInExpectd - 1, actualInExpectd, expectedLine.length() -1);
+					expected_ = new DiffIndexes(0, actualInExpectd - 1, actualInExpectd, expectedLine.length() -1);
 				} else {
 					//in middle
-					expected = new DiffIndexes(0, expectedLine.length() -1, actualInExpectd, actualInExpectd + actualLine.length() -1);
+					expected_ = new DiffIndexes(0, expectedLine.length() -1, actualInExpectd, actualInExpectd + actualLen_ -1);
 				}
 			}
 		}
@@ -110,80 +113,81 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 		findRightToLeftDiffAndMatch(expectedChars, actualChars);
 		
 		
-		DiffIndexesMutant dim = new DiffIndexesMutant(expectedLeftToRightDiff, expectedRightToLeftDiff, 
-				expectedLeftToRightMatch, expectedRightToLeftMatch);
+		DiffIndexesMutant dim = new DiffIndexesMutant(expectedLeftToRightDiff_, expectedRightToLeftDiff_, 
+				expectedLeftToRightMatch_, expectedRightToLeftMatch_);
 		dim.rejustify(expectedLine);
-		expectedLeftToRightDiff = dim.getDiffLeftToRight();
-		expectedRightToLeftDiff = dim.getDiffRightToLeft();
-		expectedLeftToRightMatch = dim.getMatchLeftToRight();
-		expectedRightToLeftMatch =  dim.getMatchRightToLeft();
+		expectedLeftToRightDiff_ = dim.getDiffLeftToRight();
+		expectedRightToLeftDiff_ = dim.getDiffRightToLeft();
+		expectedLeftToRightMatch_ = dim.getMatchLeftToRight();
+		expectedRightToLeftMatch_ =  dim.getMatchRightToLeft();
 		
-		dim = new DiffIndexesMutant(actualLeftToRightDiff, actualRightToLeftDiff, 
-				actualLeftToRightMatch, actualRightToLeftMatch);
+		dim = new DiffIndexesMutant(actualLeftToRightDiff_, actualRightToLeftDiff_, 
+				actualLeftToRightMatch_, actualRightToLeftMatch_);
 		dim.rejustify(actualLine);
-		actualLeftToRightDiff = dim.getDiffLeftToRight();
-		actualRightToLeftDiff = dim.getDiffRightToLeft();
-		actualLeftToRightMatch = dim.getMatchLeftToRight();
-		actualRightToLeftMatch =  dim.getMatchRightToLeft();
+		actualLeftToRightDiff_ = dim.getDiffLeftToRight();
+		actualRightToLeftDiff_ = dim.getDiffRightToLeft();
+		actualLeftToRightMatch_ = dim.getMatchLeftToRight();
+		actualRightToLeftMatch_ =  dim.getMatchRightToLeft();
 		
 		fixInconsitentMatch(expectedLine, actualLine);
 		
-		expected = new DiffIndexes(expectedLeftToRightDiff, expectedRightToLeftDiff, 
-				expectedLeftToRightMatch, expectedRightToLeftMatch);
-		actual =  new DiffIndexes(actualLeftToRightDiff, actualRightToLeftDiff, 
-				actualLeftToRightMatch, actualRightToLeftMatch);
+		expected_ = new DiffIndexes(expectedLeftToRightDiff_, expectedRightToLeftDiff_, 
+				expectedLeftToRightMatch_, expectedRightToLeftMatch_);
+		actual_ =  new DiffIndexes(actualLeftToRightDiff_, actualRightToLeftDiff_, 
+				actualLeftToRightMatch_, actualRightToLeftMatch_);
 	}
 
 
 	
 
 
-	private void fixInconsitentMatch(String expectedLine, String actualLine) {
+	@SuppressWarnings("boxing")
+  private void fixInconsitentMatch(String expectedLine, String actualLine) {
 		
 		
 		String expectedMiddleMatch = null;
 		String actualMiddleMatch = null;
 		// fix matches on the inside, that are false positives
 		//which only have the end chars matching (not a sequence of chars)
-		if (expectedLeftToRightDiff != null && expectedRightToLeftDiff != null) {
-			if (expectedLeftToRightMatch != null && expectedRightToLeftMatch != null) {
+		if (expectedLeftToRightDiff_ != null && expectedRightToLeftDiff_ != null) {
+			if (expectedLeftToRightMatch_ != null && expectedRightToLeftMatch_ != null) {
 				int expectedLineLength = expectedLine.length();
-				if (expectedLeftToRightDiff.intValue() == 0 && expectedRightToLeftDiff.intValue() == expectedLine.length() - 1) {
+				if (expectedLeftToRightDiff_.intValue() == 0 && expectedRightToLeftDiff_.intValue() == expectedLineLength - 1) {
 					//the match text is in the middle
 					//the diffs bound the lines, so there may be internal matches
-					expectedMiddleMatch = expectedLine.substring(expectedLeftToRightMatch, expectedRightToLeftMatch + 1);
+					expectedMiddleMatch = expectedLine.substring(expectedLeftToRightMatch_, expectedRightToLeftMatch_ + 1);
 				} 
 			} 
 		}
 		
-		if (actualLeftToRightDiff != null && actualRightToLeftDiff != null) {
-			if (actualLeftToRightMatch != null && actualRightToLeftMatch != null) {
-				if (actualLeftToRightDiff.intValue() == 0 && actualRightToLeftDiff.intValue() == actualLine.length() - 1) {
+		if (actualLeftToRightDiff_ != null && actualRightToLeftDiff_ != null) {
+			if (actualLeftToRightMatch_ != null && actualRightToLeftMatch_ != null) {
+				if (actualLeftToRightDiff_.intValue() == 0 && actualRightToLeftDiff_.intValue() == actualLine.length() - 1) {
 				//the match text is in the middle
 				//the diffs bound the lines, so there may be internal matches
-					actualMiddleMatch = actualLine.substring(actualLeftToRightMatch, actualRightToLeftMatch + 1);
+					actualMiddleMatch = actualLine.substring(actualLeftToRightMatch_, actualRightToLeftMatch_ + 1);
 				} 
 			}
 		}
 		if (expectedMiddleMatch != null) {
 			if (!expectedMiddleMatch.equals(actualMiddleMatch)) {
 				//it is a false positive, move rightToLeftMatches to the leftToRightMatchs
-				expectedRightToLeftMatch = expectedLeftToRightMatch;
-				actualRightToLeftMatch = actualLeftToRightMatch;
+				expectedRightToLeftMatch_ = expectedLeftToRightMatch_;
+				actualRightToLeftMatch_ = actualLeftToRightMatch_;
 				return;
 			}
 		}
 		if (expectedMiddleMatch == null && expectedMiddleMatch == null) {
-			if (expectedLeftToRightMatch != null && actualLeftToRightMatch != null) {
-				if (expectedLeftToRightMatch.intValue() == 0 && actualLeftToRightMatch.intValue() == 0) {
+			if (expectedLeftToRightMatch_ != null && actualLeftToRightMatch_ != null) {
+				if (expectedLeftToRightMatch_.intValue() == 0 && actualLeftToRightMatch_.intValue() == 0) {
 					//the left side matched
-					if (expectedRightToLeftDiff != null && actualRightToLeftDiff != null) {
+					if (expectedRightToLeftDiff_ != null && actualRightToLeftDiff_ != null) {
 						//the right to left had a diff,
-						if (expectedLine.length() - 1 == expectedRightToLeftDiff.intValue() && 
-								actualLine.length() - 1 == actualRightToLeftDiff.intValue()) {
+						if (expectedLine.length() - 1 == expectedRightToLeftDiff_.intValue() && 
+								actualLine.length() - 1 == actualRightToLeftDiff_.intValue()) {
 								//its a left only diff
-								expectedRightToLeftMatch = expectedLeftToRightDiff - 1;
-								actualRightToLeftMatch = actualLeftToRightDiff - 1;
+								expectedRightToLeftMatch_ = expectedLeftToRightDiff_ - 1;
+								actualRightToLeftMatch_ = actualLeftToRightDiff_ - 1;
 						}
 					}
 				}
@@ -192,15 +196,16 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 	}
 
 
-	private void findLeftToRightDiffAndMatch(char[] expectedChars,
+	@SuppressWarnings("boxing")
+  private void findLeftToRightDiffAndMatch(char[] expectedChars,
 			char[] actualChars) {
 		
 		char e = expectedChars[0];
 		char a = actualChars[0];
 		if (e == a) {
 			
-			expectedLeftToRightMatch = 0;
-			actualLeftToRightMatch = 0;
+			expectedLeftToRightMatch_ = 0;
+			actualLeftToRightMatch_ = 0;
 			//find left to right diffs, as match chars must proceed
 			if (actualChars.length <= expectedChars.length) {
 				for (int i = 0; i < expectedChars.length; i++) {
@@ -210,16 +215,16 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 					e = expectedChars[i];
 					a = actualChars[i];
 					if (e != a) {
-						expectedLeftToRightDiff = i;
-						actualLeftToRightDiff = i;
+						expectedLeftToRightDiff_ = i;
+						actualLeftToRightDiff_ = i;
 						return;
 					}
 				}
-				if (expectedLeftToRightDiff == -1) {
-					expectedLeftToRightDiff = expectedChars.length;
+				if (expectedLeftToRightDiff_ == -1) {
+					expectedLeftToRightDiff_ = expectedChars.length;
 					//yes actual = expected here, since the actual diff 
 					//is where the expected chars end.
-					actualLeftToRightDiff = expectedChars.length;
+					actualLeftToRightDiff_ = expectedChars.length;
 				}
 			} else {
 				for (int i = 0; i < actualChars.length; i++) {
@@ -229,30 +234,30 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 					e = expectedChars[i];
 					a = actualChars[i];
 					if (e != a) {
-						expectedLeftToRightDiff = i;
-						actualLeftToRightDiff = i;
+						expectedLeftToRightDiff_ = i;
+						actualLeftToRightDiff_ = i;
 						return;
 					}
 				}
-				if (expectedLeftToRightDiff == -1) {
+				if (expectedLeftToRightDiff_ == -1) {
 					
 					//yes expected = actual here, since the expected diff 
 					//is where the actual chars end.
-					expectedLeftToRightDiff = actualChars.length;
-					actualLeftToRightDiff = actualChars.length;
+					expectedLeftToRightDiff_ = actualChars.length;
+					actualLeftToRightDiff_ = actualChars.length;
 				}
 			}
 			return;
 		} else {
 			//first char is different 
-			expectedLeftToRightDiff = 0;
-			actualLeftToRightDiff = 0;
+			expectedLeftToRightDiff_ = 0;
+			actualLeftToRightDiff_ = 0;
 			
 			Integer firstMatchI = null;
 			Integer firstMatchJ = null;
 			for (int i = 0; i < expectedChars.length; i++) {
 				e = expectedChars[i];
-				if (expectedLeftToRightMatch == null) {
+				if (expectedLeftToRightMatch_ == null) {
 					for (int j = 0; j < actualChars.length; j++) {
 						a = actualChars[j];
 						if (e == a) {
@@ -269,15 +274,15 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 							String aRight = ac.substring(j, ac.length());
 							if (eRight.equals(aRight)) {
 								//its a simple right left match
-								expectedLeftToRightMatch = i;
-								actualLeftToRightMatch = j;
+								expectedLeftToRightMatch_ = i;
+								actualLeftToRightMatch_ = j;
 								break;
 							} else if (eRight.length() > aRight.length()){
 								int idx = eRight.indexOf(aRight);
 								if (idx != -1) {
 									//its a complex right side match
-									expectedLeftToRightMatch = expectedChars.length  - aRight.length();
-									actualLeftToRightMatch = actualChars.length - aRight.length();
+									expectedLeftToRightMatch_ = expectedChars.length  - aRight.length();
+									actualLeftToRightMatch_ = actualChars.length - aRight.length();
 									break;
 								}
 							} else {
@@ -285,8 +290,8 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 									int idx = aRight.indexOf(eRight);
 									if (idx != -1) {
 										//its a complex right side match
-										expectedLeftToRightMatch = expectedChars.length  - eRight.length();
-										actualLeftToRightMatch = actualChars.length - eRight.length();
+										expectedLeftToRightMatch_ = expectedChars.length  - eRight.length();
+										actualLeftToRightMatch_ = actualChars.length - eRight.length();
 										break;
 									}
 								}
@@ -296,17 +301,18 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 					}
 				}
 			}
-			if (actualLeftToRightMatch == null) {
+			if (actualLeftToRightMatch_ == null) {
 				if (firstMatchI != null && firstMatchJ != null) {
 					//its a complex middle match
-					expectedLeftToRightMatch = firstMatchI;
-					actualLeftToRightMatch = firstMatchJ;
+					expectedLeftToRightMatch_ = firstMatchI;
+					actualLeftToRightMatch_ = firstMatchJ;
 				}
 			}
 		}
 	}
 	
-	private void findRightToLeftDiffAndMatch(char[] expectedChars,
+	@SuppressWarnings("boxing")
+  private void findRightToLeftDiffAndMatch(char[] expectedChars,
 			char[] actualChars) {
 		
 		char [] expectedCharsReversed = new char[expectedChars.length];
@@ -325,8 +331,8 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 		char a = actualCharsReversed[0];
 		if (e == a) {
 			
-			expectedRightToLeftMatch = expectedChars.length -1;
-			actualRightToLeftMatch = actualChars.length -1;
+			expectedRightToLeftMatch_ = expectedChars.length -1;
+			actualRightToLeftMatch_ = actualChars.length -1;
 			
 			//find right to left diffs, as match chars must proceed to the right
 			if (actualChars.length <= expectedChars.length) {
@@ -337,15 +343,15 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 					e = expectedCharsReversed[i];
 					a = actualCharsReversed[i];
 					if (e != a) {
-						expectedRightToLeftDiff = expectedChars.length - 1 - i;
-						actualRightToLeftDiff = actualChars.length - 1 -i;
+						expectedRightToLeftDiff_ = expectedChars.length - 1 - i;
+						actualRightToLeftDiff_ = actualChars.length - 1 -i;
 						return;
 					}
 				}
-				if (expectedRightToLeftDiff == -1) {
+				if (expectedRightToLeftDiff_ == -1) {
 					//the actual line is shorter, but matches from right to left
-					expectedRightToLeftDiff = expectedChars.length - actualChars.length - 1;
-					actualRightToLeftDiff = 0;
+					expectedRightToLeftDiff_ = expectedChars.length - actualChars.length - 1;
+					actualRightToLeftDiff_ = 0;
 				}
 			} else {
 				for (int i = 1; i < actualCharsReversed.length; i++) {
@@ -355,29 +361,29 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 					e = expectedCharsReversed[i];
 					a = actualCharsReversed[i];
 					if (e != a) {
-						expectedRightToLeftDiff = expectedChars.length-i -1;
-						actualRightToLeftDiff = actualChars.length -i -1;
+						expectedRightToLeftDiff_ = expectedChars.length-i -1;
+						actualRightToLeftDiff_ = actualChars.length -i -1;
 						return;
 					}
 				}
-				if (expectedRightToLeftDiff == -1) {
+				if (expectedRightToLeftDiff_ == -1) {
 					//the actual line is longer than the expected but they match
-					expectedRightToLeftDiff = 0;
-					actualRightToLeftDiff = actualChars.length - expectedChars.length - 1;
+					expectedRightToLeftDiff_ = 0;
+					actualRightToLeftDiff_ = actualChars.length - expectedChars.length - 1;
 				}
 			}
 		} else {
 			//the left most chars are different
-			expectedRightToLeftDiff = expectedChars.length  -1;
-			actualRightToLeftDiff = actualChars.length -1;
+			expectedRightToLeftDiff_ = expectedChars.length  -1;
+			actualRightToLeftDiff_ = actualChars.length -1;
 			for (int i = 0; i < expectedCharsReversed.length; i++) {
 				e = expectedCharsReversed[i];
-				if (expectedRightToLeftMatch == null) {
+				if (expectedRightToLeftMatch_ == null) {
 					for (int j = 0; j < actualCharsReversed.length; j++) {
 						a = actualCharsReversed[j];
 						if (e == a) {
-							expectedRightToLeftMatch = expectedChars.length  -1 - i;
-							actualRightToLeftMatch = actualChars.length -1 - j;
+							expectedRightToLeftMatch_ = expectedChars.length  -1 - i;
+							actualRightToLeftMatch_ = actualChars.length -1 - j;
 							break;
 						}
 					}
@@ -387,33 +393,37 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 	}
 	
 	
-	private void createActualAllDifferent(String actualLine) {
+	@SuppressWarnings("boxing")
+  private void createActualAllDifferent(String actualLine) {
 		if (actualLine.length() == 0) {
-			actual = new DiffIndexes();
+			actual_ = new DiffIndexes();
 		} else {
-			actual = new DiffIndexes(0, actualLine.length(), null, null);
+			actual_ = new DiffIndexes(0, actualLine.length(), null, null);
 		}
 	}
 
-	private void createActualAllMatch(String actualLine) {
-		actual = new DiffIndexes(null, null, 0, actualLine.length() -1);
+	@SuppressWarnings("boxing")
+  private void createActualAllMatch(String actualLine) {
+		actual_ = new DiffIndexes(null, null, 0, actualLine.length() -1);
 	}
 	
-	private void createExpectedAllDifferent(String expectedLine) {
+	@SuppressWarnings("boxing")
+  private void createExpectedAllDifferent(String expectedLine) {
 		if (expectedLine.length() == 0 ) {
-			expected = new DiffIndexes();
+			expected_ = new DiffIndexes();
 		} else {
-			expected = new DiffIndexes(0, expectedLine.length(), null, null);
+			expected_ = new DiffIndexes(0, expectedLine.length(), null, null);
 		}
 	}
 
-	private void createExpectedAllMatch(String expectedLine) {
-		expected = new DiffIndexes(null, null, 0, expectedLine.length() - 1);
+	@SuppressWarnings("boxing")
+  private void createExpectedAllMatch(String expectedLine) {
+		expected_ = new DiffIndexes(null, null, 0, expectedLine.length() - 1);
 	}
 	
 	public DiffIndexesPair(final I_DiffIndexes pExpected, final I_DiffIndexes pActual) {
-		expected = pExpected;
-		actual = pActual;
+		expected_ = pExpected;
+		actual_ = pActual;
 	}
 
 	
@@ -423,7 +433,7 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 	 */
 	@Override
 	public I_DiffIndexes getExpected() {
-		return expected;
+		return expected_;
 	}
 
 	/* (non-Javadoc)
@@ -431,6 +441,6 @@ public class DiffIndexesPair implements I_DiffIndexesPair {
 	 */
 	@Override
 	public I_DiffIndexes getActual() {
-		return actual;
+		return actual_;
 	}
 }

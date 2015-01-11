@@ -54,7 +54,8 @@ public class DiffIndexes implements I_DiffIndexes {
 	//yea all indexes are null
 	public DiffIndexes() {}
 	
-	public DiffIndexes(final Integer pDiffLeftToRight, final Integer pDiffRightToLeft,
+	@SuppressWarnings("boxing")
+  public DiffIndexes(final Integer pDiffLeftToRight, final Integer pDiffRightToLeft,
 			final Integer pMatchLeftToRight, final Integer pMatchRightToLeft) {
 		if (pDiffLeftToRight != null) {
 			if (pDiffLeftToRight < 0) {
@@ -171,7 +172,8 @@ public class DiffIndexes implements I_DiffIndexes {
 		return matchRightToLeft;
 	}
 	
-	@Override
+	@SuppressWarnings("boxing")
+  @Override
 	public String[] getDifferences(String line) {
 		if (diffLeftToRight == null || StringMethods.isEmpty(line)) {
 			return EMPTY_STRING_ARRAY;
@@ -189,7 +191,8 @@ public class DiffIndexes implements I_DiffIndexes {
 		}
 	}
 	
-	@Override
+	@SuppressWarnings("boxing")
+  @Override
 	public String[] getMatches(String line) {
 		if (matchLeftToRight == null  || StringMethods.isEmpty(line)) {
 			return EMPTY_STRING_ARRAY;

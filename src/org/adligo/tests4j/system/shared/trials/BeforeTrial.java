@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * annotate a static method in your trial class to run
  * before the trial instance is created.
- * It must take a Map<String,Object> parameters parameter
+ * It must take a Map&lt;String,Object&gt; parameters parameter
  * and use the provided thread factory for new
  * threads, if code coverage collection is expected on those
  * threads.
