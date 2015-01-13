@@ -1,10 +1,5 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.adligo.tests4j.models.shared.metadata.I_TrialRunMetadata;
 import org.adligo.tests4j.models.shared.results.BaseTrialResult;
 import org.adligo.tests4j.models.shared.results.BaseTrialResultMutant;
@@ -20,8 +15,8 @@ import org.adligo.tests4j.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.shared.common.Platform;
 import org.adligo.tests4j.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.shared.common.StringMethods;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.common.TrialType;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
@@ -29,12 +24,18 @@ import org.adligo.tests4j.system.shared.trials.I_MetaTrialInputData;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrialParamsAware;
 import org.adligo.tests4j.system.shared.trials.TrialBindings;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 public class MetaTrialProcessor implements I_AssertListener {
 	private static final String AFTER_METADATA_CALCULATED_METHOD = 
 			"afterMetadataCalculated(I_TrialRunMetadata p)";
 	private static final String AFTER_NON_META_TRIALS_RUN_METHOD = 
 			"afterNonMetaTrialsRun(TrialRunResultMutant p)";
 
+	private I_Tests4J_Constants constants_;
 	private I_MetaTrial trial_;
 	private Tests4J_Memory memory;
 	private BaseTrialResultMutant trialResultMutant;
@@ -46,7 +47,8 @@ public class MetaTrialProcessor implements I_AssertListener {
 	
 	public MetaTrialProcessor(Tests4J_Memory pMemory, I_Tests4J_NotificationManager pNotifier) {
 		memory = pMemory;
-		bindings = new TrialBindings(Platform.JSE, 
+		constants_ = memory.getConstants();
+		bindings = new TrialBindings(Platform.JSE, constants_,
 				memory.getEvaluationLookup(), memory.getLog());
 		bindings.setAssertListener(this);
 		notifier = pNotifier;
@@ -139,7 +141,7 @@ public class MetaTrialProcessor implements I_AssertListener {
 		tfm.setFailureDetail(stack);
 		String message = x.getMessage();
 		if (StringMethods.isEmpty(message)) {
-			I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
+			I_Tests4J_ResultMessages messages =  constants_.getResultMessages();
 			
 			tfm.setFailureMessage(messages.getAnUnexpectedExceptionWasThrown());
 		} else {

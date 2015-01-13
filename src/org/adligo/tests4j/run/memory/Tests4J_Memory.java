@@ -15,6 +15,8 @@ import org.adligo.tests4j.run.helpers.Tests4J_PhaseOverseer;
 import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.en.Tests4J_EnglishConstants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoveragePlugin;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageRecorder;
@@ -61,6 +63,7 @@ public class Tests4J_Memory implements I_Memory {
 	 */
 	private ConcurrentHashMap<String,TrialDescription> trialDescriptions = new ConcurrentHashMap<String,TrialDescription>();
 
+	private I_Tests4J_Constants constants_ = Tests4J_EnglishConstants.ENGLISH;
 	private I_MetaTrialParams<?> metaTrialParams_;
 	private I_Tests4J_CoverageRecorder mainRecorder;
 	
@@ -464,6 +467,11 @@ public class Tests4J_Memory implements I_Memory {
 	public I_Tests4J_SourceInfoParams getSourceInfoParams() {
 		return sourceInfoParamsDelegate_;
 	}
+
+  @Override
+  public I_Tests4J_Constants getConstants() {
+    return constants_;
+  }
 
 
 }

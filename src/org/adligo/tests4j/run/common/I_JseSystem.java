@@ -2,6 +2,8 @@ package org.adligo.tests4j.run.common;
 
 import org.adligo.tests4j.shared.common.I_System;
 
+import java.util.Locale;
+
 /**
  * This class was added to 
  * create a aggregate of some
@@ -13,5 +15,10 @@ import org.adligo.tests4j.shared.common.I_System;
  *
  */
 public interface I_JseSystem extends I_System, I_Files {
-
+  /**
+   * Locale local = Locale.getDefault();
+    String language = local.getLanguage();
+   * @return
+   */
+  public String getLanguage();
 }

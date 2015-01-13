@@ -1,6 +1,7 @@
 package org.adligo.tests4j.system.shared.api;
 
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.system.shared.trials.I_Trial;
@@ -220,4 +221,10 @@ public interface I_Tests4J_Params {
 	 */
 	public List<String> getAdditionalNonResultPackages();
 
+	/**
+	 * Allows users to set the constants to change the 
+	 * English or other language text if the want.
+	 * @return
+	 */
+	public I_Tests4J_Constants getConstants();
 }

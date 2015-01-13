@@ -2,7 +2,7 @@ package org.adligo.tests4j.shared.asserts;
 
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertionData;
-import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrownData;
+import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrowable;
 import org.adligo.tests4j.shared.asserts.common.I_MatchType;
 import org.adligo.tests4j.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.shared.asserts.common.I_ThrownAssertionData;
@@ -10,8 +10,8 @@ import org.adligo.tests4j.shared.asserts.common.MatchType;
 import org.adligo.tests4j.shared.asserts.uniform.I_Evaluation;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformThrownAssertionCommand;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformThrownAssertionEvaluator;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 
 /**
  * A class to represent a assertThrownUniform 
@@ -28,7 +28,8 @@ public class UniformThrownAssertCommand extends AbstractAssertCommand
 	
 	public static final String UNIFORM_THROWN_ASSERT_COMMAND_REQUIRES_A_EVALUATOR = 
 			"UniformThrownAssertCommand requires a evaluator.";
-	private I_ExpectedThrownData expected;
+	private I_Tests4J_Constants constants_;
+	private I_ExpectedThrowable expected;
 	private I_UniformThrownAssertionEvaluator<I_ThrownAssertionData> evaluator;
 	private I_Evaluation<I_ThrownAssertionData> result;
 	private Throwable actual;
@@ -42,15 +43,15 @@ public class UniformThrownAssertCommand extends AbstractAssertCommand
 	 */
 	private String failureReason;
 	
-	public UniformThrownAssertCommand(String failureMessage, I_ExpectedThrownData pData,  
+	public UniformThrownAssertCommand(I_Tests4J_Constants constants, String failureMessage, I_ExpectedThrowable pData,  
 			I_UniformThrownAssertionEvaluator<I_ThrownAssertionData> pEvaluator) {
 		super(AssertType.AssertThrownUniform, failureMessage);
 		if (pData == null) {
-      I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+      I_Tests4J_AssertionInputMessages messages = constants.getAssertionInputMessages();
       throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
     }
 		if (!isAnyEqualsOrNull(pData)) {
-		  I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+		  I_Tests4J_AssertionInputMessages messages = constants.getAssertionInputMessages();
 		  throw new IllegalArgumentException(messages.getThrownUniformExpectedThrownDataMustBeMatchTypeAnyEqualsOrNull());
 		}
 		expected = pData;
@@ -61,7 +62,7 @@ public class UniformThrownAssertCommand extends AbstractAssertCommand
 		evaluator = pEvaluator;
 	}
 
-	public boolean isAnyEqualsOrNull(I_ExpectedThrownData data) {
+	public boolean isAnyEqualsOrNull(I_ExpectedThrowable data) {
 	  I_MatchType type = data.getMatchType();
 	  MatchType mt = MatchType.get(type);
 	  switch(mt) {
@@ -69,7 +70,7 @@ public class UniformThrownAssertCommand extends AbstractAssertCommand
 	      return false;
 	    default:
 	  }
-	  I_ExpectedThrownData cause = data.getExpectedCause();
+	  I_ExpectedThrowable cause = data.getExpectedCause();
 	  if (cause == null) {
 	    return true;
 	  } else {
@@ -82,7 +83,7 @@ public class UniformThrownAssertCommand extends AbstractAssertCommand
 	@Override
 	public boolean evaluate(I_Thrower thrower) {
 		if (thrower == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			throw new IllegalArgumentException(messages.getIThrowerIsRequired());
 		}
 		try {

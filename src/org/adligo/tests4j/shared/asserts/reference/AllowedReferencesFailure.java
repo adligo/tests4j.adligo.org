@@ -6,14 +6,15 @@ import java.util.List;
 import org.adligo.tests4j.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailureType;
 import org.adligo.tests4j.shared.asserts.common.SourceTestFailure;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 
 public class AllowedReferencesFailure extends SourceTestFailure 
 	implements I_AllowedReferencesFailure {
 	private AllowedReferencesFailureMutant mutant_;
 	private List<String> groupNames_;
 	
-	public AllowedReferencesFailure() {
-		mutant_ = new AllowedReferencesFailureMutant();
+	public AllowedReferencesFailure(I_Tests4J_Constants constants) {
+		mutant_ = new AllowedReferencesFailureMutant(constants);
 		groupNames_ = Collections.emptyList();
 	}
 	public AllowedReferencesFailure(I_AllowedReferencesFailure failure) {

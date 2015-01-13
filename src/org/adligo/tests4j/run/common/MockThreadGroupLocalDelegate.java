@@ -74,14 +74,15 @@ import org.adligo.tests4j.run.memory.Tests4J_ThreadFactory;
 public class MockThreadGroupLocalDelegate<T> {
  
 
-  private ThreadGroupLocal<T> delegates;
+  private ThreadGroupLocal<T> delegates_;
+  private T defaultValue_;
   
   public MockThreadGroupLocalDelegate(T t) {
     if (t == null) {
       throw new NullPointerException();
     }
-    
-    delegates = new ThreadGroupLocal<T>(new ThreadGroupFilter(Tests4J_ThreadFactory.TRIAL_THREAD_GROUP_PREFIX), new I_InitalValueFactory<T>() {
+    defaultValue_ = t;
+    delegates_ = new ThreadGroupLocal<T>(new ThreadGroupFilter(Tests4J_ThreadFactory.TRIAL_THREAD_GROUP_PREFIX), new I_InitalValueFactory<T>() {
 
       @Override
       public T createNew() {
@@ -92,13 +93,17 @@ public class MockThreadGroupLocalDelegate<T> {
   }
   
   public T getValue() {
-    return delegates.getValue();
+    T toRet = delegates_.getValue();
+    if (toRet == null) {
+      return defaultValue_;
+    }
+    return toRet;
   }
 
 
   public void set(T value) {
     Holder<T> h = new Holder<T>();
     h.setHeld(value);
-    delegates.set(h);
+    delegates_.set(h);
   }
 }

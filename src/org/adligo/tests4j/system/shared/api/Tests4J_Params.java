@@ -2,6 +2,8 @@ package org.adligo.tests4j.system.shared.api;
 
 import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
+import org.adligo.tests4j.shared.en.Tests4J_EnglishConstants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrial;
 import org.adligo.tests4j.system.shared.trials.I_MetaTrialParams;
 import org.adligo.tests4j.system.shared.trials.I_Trial;
@@ -72,28 +74,47 @@ public class Tests4J_Params implements I_Tests4J_Params {
 	private Map<I_Tests4J_RemoteInfo, I_Tests4J_Params> remoteParams_ = 
 			new HashMap<I_Tests4J_RemoteInfo, I_Tests4J_Params>();
 			
-	private Class<? extends I_EvaluatorLookup> evaluatorLookup_ = EvaluatorLookup.DEFAULT_LOOKUP.getClass();
-	
+	private Class<? extends I_EvaluatorLookup> evaluatorLookup_;
+	/**
+	 * note setting this field will override 
+	 * any i18n.
+	 */
+	private I_Tests4J_Constants constants_;
+
 	public Tests4J_Params() {}
 	
+	
 	public Tests4J_Params(I_Tests4J_Params p) {
-		trials_.addAll(p.getTrials());
-		metaTrialClass_ = p.getMetaTrialClass();
-		tests.addAll(p.getTests());
-		coveragePluginFactoryClass_ = p.getCoveragePluginFactoryClass();
-		recommendedTrialThreadCount_ = p.getRecommendedTrialThreadCount();
-		recommendedSetupThreadCount_ = p.getRecommendedSetupThreadCount();
-		sourceInfoParams_ = p.getSourceInfoParams();
+	  setAdditionalNonInstrumentedClasses(p.getAdditionalNonInstrumentedClasses());
+	  setAdditionalNonInstrumentedPackages(p.getAdditionalNonInstrumentedPackages());
+	  setAdditionalNonResultPackages(p.getAdditionalNonResultPackages());
+	  setAdditionalReportOutputStreams(p.getAdditionalReportOutputStreams());
+	  setConstants(p.getConstants());
+	  //don't copy the plugin itself
+	  setCoveragePluginFactoryClass(p.getCoveragePluginFactoryClass());
+	  setEvaluatorLookup(p.getEvaluatorLookup());
+	  setLogStates(p.getLogStates());
+	  setMetaTrialClass(p.getMetaTrialClass());
+	  setMetaTrialParams(p.getMetaTrialParams());
+	  setRecommendedSetupThreadCount(p.getRecommendedSetupThreadCount());
+	  setRecommendedTrialThreadCount(p.getRecommendedTrialThreadCount());
+	  setSourceInfoParams(p.getSourceInfoParams());
+	  setTests(p.getTests());
+	  setTrials(p.getTrials());
 		
-		Map<Class<?>, Boolean> otherSettings = p.getLogStates();
-		if (otherSettings != null) {
-			logStates_.putAll(otherSettings);
-		}
 		Collection<I_Tests4J_RemoteInfo> remotes = p.getRemoteInfo();
 		for (I_Tests4J_RemoteInfo remote: remotes){
 			remoteParams_.put(remote, p.getRemoteParams(remote));
 		}
 	}
+
+
+  public void setLogStates(Map<Class<?>, Boolean> otherSettings) {
+    logStates_.clear();
+    if (otherSettings != null) {
+			logStates_.putAll(otherSettings);
+		}
+  }
 	
 	public void addAdditionalNonInstrumentedClass(String className) {
     if (className != null) {
@@ -338,6 +359,15 @@ public class Tests4J_Params implements I_Tests4J_Params {
       additionalNonInstrumentedClasses_.remove(null);
     }
   }
-  
+
+
+  public I_Tests4J_Constants getConstants() {
+    return constants_;
+  }
+
+
+  public void setConstants(I_Tests4J_Constants constants) {
+    this.constants_ = constants;
+  }
   
 }

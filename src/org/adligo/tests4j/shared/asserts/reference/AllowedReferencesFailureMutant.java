@@ -1,15 +1,15 @@
 package org.adligo.tests4j.shared.asserts.reference;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailureType;
 import org.adligo.tests4j.shared.asserts.common.SourceTestFailureMutant;
 import org.adligo.tests4j.shared.asserts.common.TestFailureType;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class AllowedReferencesFailureMutant extends SourceTestFailureMutant 
 	implements I_AllowedReferencesFailure {
@@ -17,10 +17,10 @@ public class AllowedReferencesFailureMutant extends SourceTestFailureMutant
 	private String calledClass;
 	private I_FieldSignature field;
 	private I_MethodSignature method;
-	private String message = Tests4J_Constants.CONSTANTS
-				.getResultMessages().getCalledMethodOrFieldsOutsideOfAllowedDepenencies();
+	private String message;
 	
-	public AllowedReferencesFailureMutant() {
+	public AllowedReferencesFailureMutant(I_Tests4J_Constants constants) {
+	  message = constants.getResultMessages().getCalledMethodOrFieldsOutsideOfAllowedDepenencies();
 	}
 	
 	public AllowedReferencesFailureMutant(I_AllowedReferencesFailure other){
@@ -29,6 +29,7 @@ public class AllowedReferencesFailureMutant extends SourceTestFailureMutant
 		calledClass = other.getCalledClass();
 		field = other.getField();
 		method = other.getMethod();
+		message = other.getFailureMessage();
 	}
 	
 	/* (non-Javadoc)

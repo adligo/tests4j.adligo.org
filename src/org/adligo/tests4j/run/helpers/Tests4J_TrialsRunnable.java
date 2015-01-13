@@ -27,8 +27,8 @@ import org.adligo.tests4j.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.Platform;
 import org.adligo.tests4j.shared.common.StackTraceBuilder;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.common.TrialType;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -70,6 +70,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 			"Unexpected exception thrown from ";
 	
 	private Tests4J_Memory memory_;
+	private I_Tests4J_Constants constants_;
 	private I_ThreadManager threadManager_;
 	private Map<String,Object> beforeTrialParams_;
 	private I_Tests4J_NotificationManager notifier_;
@@ -112,6 +113,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 	public Tests4J_TrialsRunnable(Tests4J_Memory p, 
 			I_Tests4J_NotificationManager pNotificationManager) {
 		memory_ = p;
+		constants_ = memory_.getConstants();
 		trialQueueDecisionTree = p.getTrialQueueDecisionTree();
 		processInfo = p.getTrialPhaseOverseer();
 		notifier_ = pNotificationManager;
@@ -123,7 +125,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		testsRunner.setListener(this);
 		
 		
-		bindings = new TrialBindings(Platform.JSE, p.getEvaluationLookup(), log_);
+		bindings = new TrialBindings(Platform.JSE, constants_, p.getEvaluationLookup(), log_);
 		bindings.setAssertListener(testsRunner);
 		
 		afterSouceFileTrialTestsProcessor = new AfterSourceFileTrialTestsProcessor(memory_);
@@ -427,7 +429,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 					} else {
 						TestResultMutant trm = new TestResultMutant(
 								testsRunner.getTestResult());
-						I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
+						I_Tests4J_ResultMessages messages = constants_.getResultMessages();
 						
 						TestFailureMutant tfm = new TestFailureMutant();
 						tfm.setFailureMessage(messages.getTestTimedOut());

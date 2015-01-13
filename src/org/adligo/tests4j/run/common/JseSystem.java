@@ -10,6 +10,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileAttribute;
+import java.util.Locale;
 
 public class JseSystem implements I_JseSystem {
 	/**
@@ -115,6 +116,12 @@ public class JseSystem implements I_JseSystem {
       return "UnknownGroup";
     }
     return tg.getName();
+  }
+
+  @Override
+  public String getLanguage() {
+    Locale locale = Locale.getDefault();
+    return locale.getLanguage();
   }
 
 }

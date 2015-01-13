@@ -13,6 +13,10 @@ import java.util.Map;
  */
 public interface I_Tests4J_CoveragePluginFactory {
   /**
+   * key to the value in the runtimeParams map for a I_Tests4J_Constants.
+   */
+  public static final String CONSTANTS = "constants";
+  /**
    * key to the value in the runtimeParams map for a I_TestsJ_Log.
    */
   public static final String LOG = "log";

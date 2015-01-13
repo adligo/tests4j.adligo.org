@@ -52,11 +52,11 @@ public interface I_Asserts extends I_PlatformContainer {
 	public void assertTrue(String message, boolean p);
 
 	
-	public void assertThrown(I_ExpectedThrownData p, I_Thrower thrower);
-	public void assertThrown(String message, I_ExpectedThrownData p, I_Thrower thrower);	
+	public void assertThrown(I_ExpectedThrowable p, I_Thrower thrower);
+	public void assertThrown(String message, I_ExpectedThrowable p, I_Thrower thrower);	
 	
-	public void assertThrownUniform(I_ExpectedThrownData p, I_Thrower thrower);
-	public void assertThrownUniform(String message, I_ExpectedThrownData p, I_Thrower thrower);	
+	public void assertThrownUniform(I_ExpectedThrowable p, I_Thrower thrower);
+	public void assertThrownUniform(String message, I_ExpectedThrowable p, I_Thrower thrower);	
 	
 	/**
 	 * This method is may be backed by a custom implementation.

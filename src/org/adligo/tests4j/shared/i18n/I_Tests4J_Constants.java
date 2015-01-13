@@ -13,6 +13,13 @@ package org.adligo.tests4j.shared.i18n;
  * in the interfaces returned.   Try to keep this nice and simple.
  * 
  * Also all interfaces must have at least 3 methods, to keep the .java files down.
+ * 
+ * This package will eventually contain the property files for 
+ * other languages, also this package will contain
+ * extension classes for Gwt (i.e. I_Tests4J_ConstantsGwt) in the 
+ * tests4j_4gwt project which extend the Gwt Constants class.
+ * This should allow JSE and GWT to share the property files for 
+ * all languages.  
  * @author scott
  *
  */

@@ -7,7 +7,6 @@ import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.shared.common.DefaultSystem;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.DefaultLog;
@@ -24,9 +23,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class SummaryReporter implements I_Tests4J_Listener  {
-  private static final I_Tests4J_Constants CONSTANTS = Tests4J_Constants.CONSTANTS;
-	
-	private I_Tests4J_Log log_;
+  private final I_Tests4J_Constants constants_;
+	private final I_Tests4J_Log log_;
 	private TestDisplay testsReporter;
 	private TrialDisplay trialsReporter;
 	/**
@@ -37,33 +35,43 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	private int trialFailuresDetailDisplayCount = 3;
 	private TrialFailedDetailDisplay trialFailedDetail;
 	private ThreadDisplay threadDisplay;
-	private SetupProcessDisplay setupProcessDisplay = new SetupProcessDisplay();
-	private TrialsProcessDisplay trialsProcessDisplay = new TrialsProcessDisplay();
-	private RemoteProcessDisplay remoteProcessDisplay = new RemoteProcessDisplay();
+	private SetupProcessDisplay setupProcessDisplay;
+	private TrialsProcessDisplay trialsProcessDisplay;
+	private RemoteProcessDisplay remoteProcessDisplay;
 	
-	private SetupProgressDisplay setupProgressDisplay = new SetupProgressDisplay();
-	private TrialsProgressDisplay trialsProgressDisplay = new TrialsProgressDisplay();
-	private RemoteProgressDisplay remoteProgressDisplay = new RemoteProgressDisplay();
+	private SetupProgressDisplay setupProgressDisplay;
+	private TrialsProgressDisplay trialsProgressDisplay;
+	private RemoteProgressDisplay remoteProgressDisplay;
 	
-	public SummaryReporter() {
-		this(new DefaultLog());
-	}
+
 	
-	public SummaryReporter(I_Tests4J_Log p) {
-		log_ = p;
-		threadDisplay = new ThreadDisplay(p, new DefaultSystem());
-		testsReporter = new TestDisplay(p, threadDisplay);
-		trialsReporter = new TrialDisplay(p, threadDisplay);
-		trialFailedDetail = new TrialFailedDetailDisplay(p);
+	public SummaryReporter(I_Tests4J_Constants constants, I_Tests4J_Log log) {
+	  constants_ = constants;
+	  setupProcessDisplay = new SetupProcessDisplay(constants_);
+	  trialsProcessDisplay = new TrialsProcessDisplay(constants_);
+	  remoteProcessDisplay = new RemoteProcessDisplay(constants_);
+	  
+	  setupProgressDisplay = new SetupProgressDisplay(constants_);
+	  trialsProgressDisplay = new TrialsProgressDisplay(constants_);
+	  remoteProgressDisplay = new RemoteProgressDisplay(constants_);
+	  
+		log_ = log;
+		threadDisplay = new ThreadDisplay(log, new DefaultSystem());
+		testsReporter = new TestDisplay(constants, log, threadDisplay);
+		trialsReporter = new TrialDisplay(constants, log, threadDisplay);
+		trialFailedDetail = new TrialFailedDetailDisplay(constants, log);
 	}
 	
 	@Override
 	public synchronized  void onMetadataCalculated(I_TrialRunMetadata p) {
-		I_Tests4J_ReportMessages messages =  Tests4J_Constants.CONSTANTS.getReportMessages();
+		I_Tests4J_ReportMessages messages =  constants_.getReportMessages();
 		
-		log_.log(DefaultLog.orderLine(CONSTANTS.getPrefix(),  messages.getMetadataCalculatedHeading()) + log_.getLineSeperator() +
-		    DefaultLog.orderLine(CONSTANTS.getPrefix(),  messages.getTrialsHeading(), "" + p.getAllTrialsCount()) + log_.getLineSeperator() +
-			 	DefaultLog.orderLine(CONSTANTS.getPrefix(),   messages.getTestsHeading(), "" + p.getAllTestsCount()) + log_.getLineSeperator());
+		log_.log(DefaultLog.orderLine(constants_.isLeftToRight(),
+		      constants_.getPrefix(),  messages.getMetadataCalculatedHeading()) + log_.getLineSeperator() +
+		    DefaultLog.orderLine(constants_.isLeftToRight(),
+		        constants_.getPrefix(),  messages.getTrialsHeading(), "" + p.getAllTrialsCount()) + log_.getLineSeperator() +
+			 	DefaultLog.orderLine(constants_.isLeftToRight(),
+			 	    constants_.getPrefix(),   messages.getTestsHeading(), "" + p.getAllTestsCount()) + log_.getLineSeperator());
 			
 	}
 

@@ -6,8 +6,8 @@ import org.adligo.tests4j.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.shared.asserts.common.I_SimpleCompareAssertCommand;
 import org.adligo.tests4j.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.shared.asserts.line_text.TextLinesCompare;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 
 
 /**
@@ -22,13 +22,15 @@ public class IdenticalStringAssertCommand extends AbstractCompareAssertCommand
 	implements I_SimpleCompareAssertCommand {
 	public static final String BAD_TYPE = 
 			"IdenticalStringAssertCommand requires it's type to be one of AssertType.EQUAL_TYPES";
+	private I_Tests4J_Constants constants_;
 	private CompareAssertionData<String> data;
 	private I_TextLinesCompareResult result;
 	
-	public IdenticalStringAssertCommand(String failureMessage, CompareAssertionData<String> pData) {
+	public IdenticalStringAssertCommand(I_Tests4J_Constants constants, String failureMessage, CompareAssertionData<String> pData) {
 		super(failureMessage, pData);
+		constants_ = constants;
 		if (pData.getExpected() == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants.getAssertionInputMessages();
 			
 			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}
@@ -47,7 +49,7 @@ public class IdenticalStringAssertCommand extends AbstractCompareAssertCommand
 		String actual = data.getActual();
 		
 		TextLinesCompare tlc = new TextLinesCompare();
-		result = tlc.compare(expected, actual, false);
+		result = tlc.compare(constants_, expected, actual, false);
 		
 		//classloader issues
 		AssertType type = AssertType.getType(super.getType());

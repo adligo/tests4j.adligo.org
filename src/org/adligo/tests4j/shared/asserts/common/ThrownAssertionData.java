@@ -40,7 +40,7 @@ public class ThrownAssertionData implements I_ThrownAssertionData {
 		return mutant.toString(this);
 	}
 
-	public I_ExpectedThrownData getExpected() {
+	public I_ExpectedThrowable getExpected() {
 		return mutant.getExpected();
 	}
 

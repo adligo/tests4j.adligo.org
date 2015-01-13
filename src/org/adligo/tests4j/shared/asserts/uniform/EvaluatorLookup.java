@@ -1,5 +1,7 @@
 package org.adligo.tests4j.shared.asserts.uniform;
 
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.AnnotationFormatError;
@@ -20,10 +22,6 @@ import java.util.TooManyListenersException;
  *
  */
 public class EvaluatorLookup implements I_EvaluatorLookup {
-	/**
-	 * @see getDefault()
-	 */
-	public static final I_EvaluatorLookup DEFAULT_LOOKUP = getDefault();
 	
 	/**
 	 * Note the default evaluators must know about each implementation class
@@ -33,10 +31,10 @@ public class EvaluatorLookup implements I_EvaluatorLookup {
 	 * 
 	 * @return
 	 */
-	private static final I_EvaluatorLookup getDefault() {
-		EvaluatorLookupMutant mut = new EvaluatorLookupMutant();
+	public static final I_EvaluatorLookup getDefault(I_Tests4J_Constants constants) {
+		EvaluatorLookupMutant mut = new EvaluatorLookupMutant(constants);
 		
-		ThrowableUniformEvaluator tue = new ThrowableUniformEvaluator();
+		ThrowableUniformEvaluator tue = new ThrowableUniformEvaluator(constants);
 		mut.setEvaluator(Throwable.class, tue);
 		
 		mut.setEvaluator(Error.class, tue);
@@ -68,7 +66,7 @@ public class EvaluatorLookup implements I_EvaluatorLookup {
 		mut.setEvaluator(NoSuchElementException.class, tue);
 		mut.setEvaluator(TooManyListenersException.class, tue);
 		
-		mut.setEvaluator(String.class, new StringUniformEvaluator());
+		mut.setEvaluator(String.class, new StringUniformEvaluator(constants));
 		return new EvaluatorLookup(mut);
 	}
 	
@@ -80,9 +78,9 @@ public class EvaluatorLookup implements I_EvaluatorLookup {
 	private I_UniformThrownAssertionEvaluator<?> thrownEvaluator;
 	
 	@SuppressWarnings("unchecked")
-	public EvaluatorLookup() {
+	public EvaluatorLookup(I_Tests4J_Constants constants) {
 		lookup = Collections.EMPTY_MAP;
-		thrownEvaluator = new UniformThrownAssertionEvaluator();
+		thrownEvaluator = new UniformThrownAssertionEvaluator(constants);
 	}
 	
 	public EvaluatorLookup(I_EvaluatorLookup other) {

@@ -1,15 +1,14 @@
 package org.adligo.tests4j.run.discovery;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Collection;
-
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.trials.AfterTrial;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
 
 /**
  * audits a method to see if it conforms to @AfterTrial
@@ -25,23 +24,21 @@ public class AfterTrialAuditor {
 	 * @param method
 	 * @return true if the method is annotated with AfterTrial
 	 */
-	public static boolean audit(I_TrialDescription trialDescription, 
+	public static boolean audit(I_Tests4J_Constants constants, I_TrialDescription trialDescription, 
 			Collection<I_TrialFailure> verificationFailures, Method method) {
 		AfterTrial at = method.getAnnotation(AfterTrial.class);
 		String trialName = trialDescription.getTrialName();
 		if (at != null) {
 			
 			if (!Modifier.isStatic(method.getModifiers())) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 				
 				verificationFailures.add(new TrialFailure(
 						messages.getAfterTrialNotStatic(),
 						trialName + messages.getWasAnnotatedIncorrectly()));
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 				
 				verificationFailures.add(new TrialFailure(
 						messages.getAfterTrialNotPublic(),
@@ -49,8 +46,7 @@ public class AfterTrialAuditor {
 			}
 			Class<?> [] params = method.getParameterTypes();
 			if (params.length != 0) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 				
 				verificationFailures.add(new TrialFailure(
 								messages.getAfterTrialHasParams(),

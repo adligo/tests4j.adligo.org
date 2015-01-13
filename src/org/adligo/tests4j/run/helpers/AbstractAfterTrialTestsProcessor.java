@@ -1,10 +1,5 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.run.common.I_Memory;
 import org.adligo.tests4j.run.discovery.TrialDescription;
@@ -16,11 +11,16 @@ import org.adligo.tests4j.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.shared.common.Platform;
 import org.adligo.tests4j.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.shared.common.StringMethods;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageRecorder;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.TrialBindings;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * a abstract class to help keep the TrialInstancesProcessor
@@ -35,6 +35,7 @@ import org.adligo.tests4j.system.shared.trials.TrialBindings;
  */
 public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListener {
 	public static final String AFTER_TRIAL_TESTS = "afterTrialTests";
+	private I_Tests4J_Constants constants_;
 	private TrialBindings bindings;
 	private TrialDescription trialDescription;
 
@@ -45,7 +46,8 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 	private int assertions = 0;
 	
 	public AbstractAfterTrialTestsProcessor(I_Memory memory) {
-		bindings = new TrialBindings(Platform.JSE, memory.getEvaluationLookup(), memory.getLog());
+	  constants_ = memory.getConstants();
+		bindings = new TrialBindings(Platform.JSE, constants_, memory.getEvaluationLookup(), memory.getLog());
 		bindings.setAssertListener(this);
 	}
 
@@ -121,7 +123,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 		tfm.setFailureDetail(stack);
 		String message = x.getMessage();
 		if (StringMethods.isEmpty(message)) {
-			I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
+			I_Tests4J_ResultMessages messages = constants_.getResultMessages();
 			tfm.setFailureMessage(messages.getAnUnexpectedExceptionWasThrown());
 		} else {
 			tfm.setFailureMessage(message);

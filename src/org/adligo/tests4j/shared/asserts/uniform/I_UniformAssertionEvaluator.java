@@ -2,6 +2,7 @@ package org.adligo.tests4j.shared.asserts.uniform;
 
 import org.adligo.tests4j.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.shared.asserts.line_text.I_TextLinesCompareResult;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 
 
 /**
@@ -37,4 +38,5 @@ public interface I_UniformAssertionEvaluator<T,D> {
 	 * @return
 	 */
 	public I_Evaluation<D> isNotUniform(I_CompareAssertionData<T> p);
+	
 }

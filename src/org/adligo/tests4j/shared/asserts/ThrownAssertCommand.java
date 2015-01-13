@@ -1,21 +1,17 @@
 package org.adligo.tests4j.shared.asserts;
 
-import org.adligo.tests4j.shared.asserts.common.AssertThrownFailure;
-import org.adligo.tests4j.shared.asserts.common.AssertThrownFailureMutant;
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertionData;
-import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrownData;
+import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrowable;
 import org.adligo.tests4j.shared.asserts.common.I_MatchType;
-import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
 import org.adligo.tests4j.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.shared.asserts.common.I_ThrownAssertCommand;
 import org.adligo.tests4j.shared.asserts.common.MatchType;
-import org.adligo.tests4j.shared.asserts.common.ThrowableInfo;
 import org.adligo.tests4j.shared.asserts.common.ThrownAssertionData;
 import org.adligo.tests4j.shared.asserts.common.ThrownAssertionDataMutant;
 import org.adligo.tests4j.shared.common.I_Immutable;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 
 /**
@@ -28,7 +24,8 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 public class ThrownAssertCommand extends AbstractAssertCommand 
 	implements I_Immutable, I_ThrownAssertCommand {
 
-	private I_ExpectedThrownData expected;
+  private I_Tests4J_Constants constants_;
+	private I_ExpectedThrowable expected;
 	private Throwable caught;
 	/**
 	 * which exception in the chain 
@@ -44,11 +41,12 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		super(AssertType.AssertThrown, pFailureMessage);
 	}
 	
-	public ThrownAssertCommand(String pFailureMessage, I_ExpectedThrownData pExpected) {
+	public ThrownAssertCommand(I_Tests4J_Constants contants, String pFailureMessage, I_ExpectedThrowable pExpected) {
 		super(AssertType.AssertThrown, pFailureMessage);
+		constants_ = contants;
 		expected = pExpected;
 		if (expected == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = contants.getAssertionInputMessages();
 			
 			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}
@@ -57,7 +55,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 	@Override
 	public boolean evaluate(I_Thrower thrower) {
 	  if (thrower == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			throw new IllegalArgumentException(messages.getIThrowerIsRequired());
 		}
 		
@@ -67,7 +65,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		} catch (Throwable x) {
 			caught = x;
 		}
-		I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
+		I_Tests4J_ResultMessages messages =  constants_.getResultMessages();
 		if (caught == null) {
 			failureReason = messages.getNothingWasThrown();
 			return false;
@@ -129,8 +127,8 @@ public class ThrownAssertCommand extends AbstractAssertCommand
 		return failureReason;
 	}
 	
-	private boolean evaluateMessageAndCause(I_ExpectedThrownData expected, Throwable caught, int throwable) {
-	  I_Tests4J_ResultMessages messages =  Tests4J_Constants.CONSTANTS.getResultMessages();
+	private boolean evaluateMessageAndCause(I_ExpectedThrowable expected, Throwable caught, int throwable) {
+	  I_Tests4J_ResultMessages messages = constants_.getResultMessages();
 	  if (expected == null) {
 	    return true;
 	  }
@@ -193,7 +191,7 @@ public class ThrownAssertCommand extends AbstractAssertCommand
           return false;
         }
     }
-    I_ExpectedThrownData expectedCause = expected.getExpectedCause();
+    I_ExpectedThrowable expectedCause = expected.getExpectedCause();
     if (expectedCause == null) {
       return true;
     }

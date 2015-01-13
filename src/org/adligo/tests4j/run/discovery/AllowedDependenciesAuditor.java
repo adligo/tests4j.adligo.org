@@ -1,19 +1,19 @@
 package org.adligo.tests4j.run.discovery;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.run.common.I_Memory;
 import org.adligo.tests4j.shared.asserts.reference.AllowedReferences;
 import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.asserts.reference.ReferenceGroupAggregate;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AllowedDependenciesAuditor {
 
@@ -48,8 +48,8 @@ public class AllowedDependenciesAuditor {
 									dep = (I_ReferenceGroup) field.get(null);
 								}
 							} catch (NoSuchFieldException e) {
-								
-								I_Tests4J_AnnotationMessages messages = Tests4J_Constants.CONSTANTS.getAnnotationMessages();
+								I_Tests4J_Constants constants = memory.getConstants();
+								I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 								log.onThrowable(new MemoryWarning(
 										messages.getAllowedDependenciesIsNotASingletonWarning() +
 										log.getLineSeperator() + 

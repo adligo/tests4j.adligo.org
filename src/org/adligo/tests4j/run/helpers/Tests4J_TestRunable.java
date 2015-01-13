@@ -1,11 +1,5 @@
 package org.adligo.tests4j.run.helpers;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.adligo.tests4j.models.shared.results.TestResult;
 import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.run.common.I_Memory;
@@ -17,12 +11,18 @@ import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
 import org.adligo.tests4j.shared.asserts.common.TestFailure;
 import org.adligo.tests4j.shared.asserts.common.TestFailureMutant;
 import org.adligo.tests4j.shared.common.StackTraceBuilder;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_TestFinishedListener;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * runs a single test in a thread,
@@ -32,7 +32,7 @@ import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
  *
  */
 public class Tests4J_TestRunable implements Runnable, I_AssertListener {
-
+  private I_Tests4J_Constants constants_;
 	private Method testMethod;
 	private I_AbstractTrial trial;
 	private I_Tests4J_TestFinishedListener listener;
@@ -43,8 +43,9 @@ public class Tests4J_TestRunable implements Runnable, I_AssertListener {
 	private I_ConcurrentOutputDelegator cod;
 	private TrialOutput out;
 	
-	public Tests4J_TestRunable(I_Memory pMemory) {
-		reporter = pMemory.getLog();
+	public Tests4J_TestRunable(I_Memory memory) {
+		reporter = memory.getLog();
+		constants_ = memory.getConstants();
 	}
 	
 	@Override
@@ -89,8 +90,7 @@ public class Tests4J_TestRunable implements Runnable, I_AssertListener {
 			String trace = StackTraceBuilder.toString(unexpected, true);
 			
 			failure.setFailureDetail(trace);
-			I_Tests4J_ResultMessages messages = 
-						Tests4J_Constants.CONSTANTS.getResultMessages();
+			I_Tests4J_ResultMessages messages = constants_.getResultMessages();
 			failure.setFailureMessage(messages.getAnUnexpectedExceptionWasThrown());
 			TestFailure immutable = new TestFailure(failure);
 			testResultMutant.setFailure(immutable);

@@ -1,16 +1,15 @@
 package org.adligo.tests4j.run.discovery;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.List;
-
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.trials.IgnoreTest;
 import org.adligo.tests4j.system.shared.trials.Test;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.List;
 
 /**
  * audits a method to make sure it conforms to the @Test annotation.
@@ -30,7 +29,7 @@ public class TestAuditor {
 	 * @param method
 	 * @return
 	 */
-	public static TestDescription audit(I_TrialDescription trialDesc,
+	public static TestDescription audit(I_Tests4J_Constants constants, I_TrialDescription trialDesc,
 			List<I_TrialFailure> failures,
 			Method method) {
 		Test test = method.getAnnotation(Test.class);
@@ -38,8 +37,7 @@ public class TestAuditor {
 			String trialName = trialDesc.getTrialName();
 			Class<?> [] params = method.getParameterTypes();
 			if (params.length != 0) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages errors = constants.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getHasParams(),
@@ -47,8 +45,7 @@ public class TestAuditor {
 								errors.getWasAnnotatedIncorrectly()));
 			}
 			if (Modifier.isAbstract(method.getModifiers())) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages errors = constants.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getIsAbstract(),
@@ -56,8 +53,7 @@ public class TestAuditor {
 								errors.getWasAnnotatedIncorrectly()));
 			}
 			if (Modifier.isStatic(method.getModifiers())) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages errors = constants.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getIsStatic(),
@@ -65,8 +61,7 @@ public class TestAuditor {
 								errors.getWasAnnotatedIncorrectly()));
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages errors = constants.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getIsNotPublic(),
@@ -75,8 +70,7 @@ public class TestAuditor {
 			}
 			long timeout = test.timeout();
 			if (timeout < 0) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages errors = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages errors = constants.getAnnotationMessages();
 				
 				failures.add(new TrialFailure(
 						errors.getHasNegativeTimeout(),

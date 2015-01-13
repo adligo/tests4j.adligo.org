@@ -2,7 +2,7 @@ package org.adligo.tests4j.shared.output;
 
 import org.adligo.tests4j.shared.common.DefaultSystem;
 import org.adligo.tests4j.shared.common.I_System;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.en.Tests4J_EnglishConstants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_LogMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
@@ -29,8 +29,7 @@ import java.util.Set;
 public class DefaultLog implements I_Tests4J_Log {
 	
   public static final String DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM = "DefaultReporter requires a non null I_System.";
-  private static final I_Tests4J_Constants CONSTANTS = Tests4J_Constants.CONSTANTS;
-  
+ 
   /**
    * This method orders lines for left to right (English) <br/>
    * and right to left (Arabic) languages, when a <br/>
@@ -56,12 +55,12 @@ public class DefaultLog implements I_Tests4J_Log {
    * @param p
    * @return
    */
-  public static String orderLine(String ... p) {
+  public static String orderLine(boolean leftToRight, String ... p) {
     if (p.length == 1) {
       return p[0];
     }
     StringBuilder sb = new StringBuilder();
-    if (CONSTANTS.isLeftToRight()) {
+    if (leftToRight) {
       for (int i = 0; i < p.length; i++) {
         sb.append(p[i]);
       }
@@ -74,11 +73,11 @@ public class DefaultLog implements I_Tests4J_Log {
   }
   
   private Map<String, Boolean>  logs = new HashMap<String,Boolean>();
-	
+	private final I_Tests4J_Constants constants_;
 	protected I_System system;
 	
 	public DefaultLog() {
-		this(new DefaultSystem(), null);
+		this(new DefaultSystem(), Tests4J_EnglishConstants.ENGLISH, null);
 	}
 	
 	/**
@@ -89,12 +88,16 @@ public class DefaultLog implements I_Tests4J_Log {
 	 * @param pSystem
 	 * @param params
 	 */
-	public DefaultLog(I_System pSystem, Map<Class<?>, Boolean> logsOn) {
+	public DefaultLog(I_System pSystem, I_Tests4J_Constants constants, Map<Class<?>, Boolean> logsOn) {
+	  
 		if (pSystem == null) {
 			throw new IllegalArgumentException(DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM);
 		}
 		system = pSystem;
-		
+		if (constants == null) {
+		  throw new NullPointerException();
+		}
+		constants_ = constants;
 		if (logsOn != null) {
 			Set<Entry<Class<?>,Boolean>> entries = logsOn.entrySet();
 			logs = new HashMap<String, Boolean>();
@@ -118,7 +121,7 @@ public class DefaultLog implements I_Tests4J_Log {
 
 	@Override
   public void logLine(String ... p) {
-    String message = orderLine(p);
+    String message = orderLine(constants_.isLeftToRight(), p);
     log(message + system.lineSeperator());
   }
 	
@@ -170,8 +173,7 @@ public class DefaultLog implements I_Tests4J_Log {
 
 	@Override
 	public String getCurrentThreadName() {
-		I_Tests4J_ReportMessages reportMessages = 
-				Tests4J_Constants.CONSTANTS.getReportMessages();
+		I_Tests4J_ReportMessages reportMessages = constants_.getReportMessages();
 		
 		return reportMessages.getOnThreadZ().replaceAll("<Z/>", 
 				system.getCurrentThreadName());
@@ -179,36 +181,22 @@ public class DefaultLog implements I_Tests4J_Log {
 
   @Override
   public String getThreadWithGroupNameMessage() {
-    I_Tests4J_LogMessages logMessages = CONSTANTS.getLogMessages();
-    if (CONSTANTS.isLeftToRight()) {
-      return logMessages.getThreadSlashThreadGroup() + system.getCurrentThreadName() + 
-          "~~~" + system.getCurrentThreadGroupName();
-    } else {
-      return  system.getCurrentThreadGroupName() + "~~~" + system.getCurrentThreadName() + 
-          logMessages.getThreadSlashThreadGroup();
-    }
-    
+    I_Tests4J_LogMessages logMessages = constants_.getLogMessages();
+    return orderLine(constants_.isLeftToRight(), logMessages.getThreadSlashThreadGroup(), system.getCurrentThreadName(), 
+          "~~~", system.getCurrentThreadGroupName());
   }
 
   @Override
   public String getThreadMessage() {
-    I_Tests4J_LogMessages logMessages = CONSTANTS.getLogMessages();
-    if (CONSTANTS.isLeftToRight()) {
-      return logMessages.getThread() + system.getCurrentThreadName();
-    } else {
-      return system.getCurrentThreadName() + logMessages.getThread();
-    }
+    I_Tests4J_LogMessages logMessages = constants_.getLogMessages();
+    return orderLine(constants_.isLeftToRight(), logMessages.getThread(), system.getCurrentThreadName());
+    
   }
 
   @Override
   public void appendLine(StringBuilder sb, String line, String indent) {
-    if (CONSTANTS.isLeftToRight()) {
-      sb.append(indent);
-      sb.append(line);
-    } else {
-      sb.append(line);
-      sb.append(indent);
-    }
+    String message = orderLine(constants_.isLeftToRight(), indent, line);
+    sb.append(message);
   }
 
   @Override

@@ -10,7 +10,7 @@ package org.adligo.tests4j.shared.asserts.common;
  */
 public class ThrownAssertionDataMutant implements I_ThrownAssertionData {
 	
-	private I_ExpectedThrownData expected;
+	private I_ExpectedThrowable expected;
 	private Throwable actual;
 	private String failureReason;
 	/**
@@ -31,7 +31,7 @@ public class ThrownAssertionDataMutant implements I_ThrownAssertionData {
 		type = p.getType();
 	}
 
-	public I_ExpectedThrownData getExpected() {
+	public I_ExpectedThrowable getExpected() {
 		return expected;
 	}
 
@@ -47,7 +47,7 @@ public class ThrownAssertionDataMutant implements I_ThrownAssertionData {
 		return failureThrowable;
 	}
 
-	public void setExpected(I_ExpectedThrownData expected) {
+	public void setExpected(I_ExpectedThrowable expected) {
 		this.expected = expected;
 	}
 

@@ -2,11 +2,7 @@ package org.adligo.tests4j.run.discovery;
 
 import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
-import org.adligo.tests4j.models.shared.coverage.PackageCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.PackageCoverageBriefMutant;
-import org.adligo.tests4j.models.shared.metadata.I_UseCaseBrief;
-import org.adligo.tests4j.models.shared.metadata.UseCaseBrief;
 import org.adligo.tests4j.models.shared.results.I_ApiTrialResult;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
@@ -20,7 +16,6 @@ import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.common.I_TrialType;
 import org.adligo.tests4j.shared.common.StackTraceBuilder;
 import org.adligo.tests4j.shared.common.StringMethods;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
@@ -33,7 +28,6 @@ import org.adligo.tests4j.system.shared.trials.PackageScope;
 import org.adligo.tests4j.system.shared.trials.SourceFileScope;
 import org.adligo.tests4j.system.shared.trials.SuppressOutput;
 import org.adligo.tests4j.system.shared.trials.TrialTimeout;
-import org.adligo.tests4j.system.shared.trials.UseCaseScope;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -64,6 +58,7 @@ public class TrialDescription implements I_TrialDescription {
 	 */
 	private I_AbstractTrial trial_;
 	private Class<? extends I_AbstractTrial> trialClass_;
+	private I_Tests4J_Constants constants_;
 	
 	private Method beforeTrialMethod_;
 	private Method afterTrialTestsMethod_;
@@ -87,6 +82,7 @@ public class TrialDescription implements I_TrialDescription {
 	public TrialDescription(Class<? extends I_AbstractTrial> pTrialClass,
 			I_Memory memory) {
 		log_ = memory.getLog();
+		constants_ = memory.getConstants();
 		trialClass_ = pTrialClass;
 		memory_ = memory;
 		if (log_.isLogEnabled(TrialDescription.class)) {
@@ -120,7 +116,7 @@ public class TrialDescription implements I_TrialDescription {
 	}
 	
 	private boolean checkTestClass() {
-		type_ = TrialTypeFinder.getTypeInternal(trialClass_, failures_);
+		type_ = TrialTypeFinder.getTypeInternal(constants_, trialClass_, failures_);
 		if (failures_.size() >= 1) {
 			return false;
 		}
@@ -167,8 +163,7 @@ public class TrialDescription implements I_TrialDescription {
 							NonTests4jMethodDiscovery.findNonTests4jMethod(trialClass_, 
 									"afterTrialTests", new Class[] {I_SourceFileTrialResult.class});
 					if (sourceFileScope_ == null) {
-						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-						I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
+						I_Tests4J_AnnotationMessages annonErrors = constants_.getAnnotationMessages();
 						
 						failures_.add(new TrialFailure(
 								annonErrors.getNoSourceFileScope(),
@@ -177,8 +172,7 @@ public class TrialDescription implements I_TrialDescription {
 					} else {
 						Class<?> clazz = sourceFileScope_.sourceClass();
 						if (clazz == null) {
-							I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-							I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
+							I_Tests4J_AnnotationMessages annonErrors = constants_.getAnnotationMessages();
 							
 							failures_.add(new TrialFailure(
 									annonErrors.getSourceFileScopeEmptyClass(),
@@ -187,8 +181,7 @@ public class TrialDescription implements I_TrialDescription {
 						}
 						minCoverage_ = sourceFileScope_.minCoverage();
 						if (minCoverage_ > 100.0 || minCoverage_ < 0.0) {
-							I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-							I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
+							I_Tests4J_AnnotationMessages annonErrors = constants_.getAnnotationMessages();
 							
 							failures_.add(new TrialFailure( 
 									annonErrors.getMinCoverageMustBeBetweenZeroAndOneHundred(),
@@ -205,8 +198,7 @@ public class TrialDescription implements I_TrialDescription {
 						NonTests4jMethodDiscovery.findNonTests4jMethod(trialClass_, 
 								"afterTrialTests", new Class[] {I_ApiTrialResult.class});
 				if (packageScope_ == null) {
-					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
+					I_Tests4J_AnnotationMessages annonErrors = constants_.getAnnotationMessages();
 					
 					failures_.add(new TrialFailure(
 							annonErrors.getNoPackageScope(),
@@ -215,8 +207,7 @@ public class TrialDescription implements I_TrialDescription {
 				}
 				String testedPackageName = packageScope_.packageName();
 				if (StringMethods.isEmpty(testedPackageName)) {
-					I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-					I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
+					I_Tests4J_AnnotationMessages annonErrors = constants_.getAnnotationMessages();
 					
 					failures_.add(new TrialFailure(
 							annonErrors.getPackageScopeEmptyName(),
@@ -251,7 +242,7 @@ public class TrialDescription implements I_TrialDescription {
 		
 		for (Method method: methods) {
 			
-			TestDescription testDesc = TestAuditor.audit(this, failures_, method);
+			TestDescription testDesc = TestAuditor.audit(constants_, this, failures_, method);
 			if (testDesc != null) {
 				testMethods_.add(testDesc);
 			}
@@ -266,12 +257,11 @@ public class TrialDescription implements I_TrialDescription {
 			Method []  methods = p.getDeclaredMethods();
 	
 			for (Method method: methods) {
-				if (BeforeTrialAuditor.audit(this, failures_, method)) {
+				if (BeforeTrialAuditor.audit(constants_, this, failures_, method)) {
 					if (beforeTrialMethod_ == null) {
 						beforeTrialMethod_ = method;
 					} else {
-						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-						I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
+						I_Tests4J_AnnotationMessages annonErrors = constants_.getAnnotationMessages();
 						
 						failures_.add(new TrialFailure(
 								annonErrors.getMultipleBeforeTrial(),
@@ -279,12 +269,11 @@ public class TrialDescription implements I_TrialDescription {
 					}
 				}
 				
-				if (AfterTrialAuditor.audit(this, failures_, method)) {
+				if (AfterTrialAuditor.audit(constants_, this, failures_, method)) {
 					if (afterTrialMethod_ == null) {
 						afterTrialMethod_ = method;
 					} else {
-						I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-						I_Tests4J_AnnotationMessages annonErrors = consts.getAnnotationMessages();
+						I_Tests4J_AnnotationMessages annonErrors = constants_.getAnnotationMessages();
 						
 						failures_.add(new TrialFailure(
 								annonErrors.getMultipleAfterTrial(),
@@ -318,7 +307,7 @@ public class TrialDescription implements I_TrialDescription {
 			return true;
 		} catch (Exception x) {
 			failures_.add(new TrialFailure(
-					Tests4J_Constants.CONSTANTS.getBadConstuctor(),
+			    constants_.getBadConstuctor(),
 					StackTraceBuilder.toString(x, true)));
 		}
 		return false;

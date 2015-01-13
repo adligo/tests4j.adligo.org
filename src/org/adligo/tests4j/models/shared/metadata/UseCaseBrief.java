@@ -1,10 +1,8 @@
 package org.adligo.tests4j.models.shared.metadata;
 
 import org.adligo.tests4j.shared.common.StringMethods;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
-import org.adligo.tests4j.shared.xml.I_XML_Builder;
-import org.adligo.tests4j.shared.xml.XML_Parser;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 
 
 /**
@@ -15,20 +13,20 @@ import org.adligo.tests4j.shared.xml.XML_Parser;
 public class UseCaseBrief implements I_UseCaseBrief {
 	private String name_;
 	
-	public UseCaseBrief(String name) {
-		setup(name);
+	public UseCaseBrief(I_Tests4J_Constants constants, String name) {
+		setup(constants, name);
 	}
 
-	protected void setup(String name) {
+	protected void setup(I_Tests4J_Constants constants,String name) {
 	  name_ = name;
 		if (StringMethods.isEmpty(name)) {
-			I_Tests4J_AnnotationMessages messages = Tests4J_Constants.CONSTANTS.getAnnotationMessages();
+			I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 			throw new IllegalArgumentException(messages.getUseCaseScopeEmptyName());
 		}
 	}
 
-	public UseCaseBrief(I_UseCaseBrief p) {
-		this(p.getName());
+	public UseCaseBrief(I_Tests4J_Constants constants, I_UseCaseBrief p) {
+		this(constants, p.getName());
 	}
 	
 	

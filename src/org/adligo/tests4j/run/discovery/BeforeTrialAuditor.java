@@ -2,7 +2,6 @@ package org.adligo.tests4j.run.discovery;
 
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.trials.BeforeTrial;
@@ -20,7 +19,7 @@ import java.util.Map;
 public class BeforeTrialAuditor {
 
 	
-	public static boolean audit(I_TrialDescription trialDesc,
+	public static boolean audit(I_Tests4J_Constants constants,  I_TrialDescription trialDesc,
 			List<I_TrialFailure> failures,
 			Method method) {
 		
@@ -30,8 +29,7 @@ public class BeforeTrialAuditor {
 		if (bt != null) {
 				
 			if (!Modifier.isStatic(method.getModifiers())) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 			
 				failures.add(new TrialFailure(
 						messages.getBeforeTrialNotStatic(),
@@ -39,8 +37,7 @@ public class BeforeTrialAuditor {
 
 			}
 			if (!Modifier.isPublic(method.getModifiers())) {
-				I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-				I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
+				I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 			
 				failures.add(new TrialFailure(
 						messages.getBeforeTrialNotPublic(),
@@ -49,11 +46,11 @@ public class BeforeTrialAuditor {
 			}
 			Class<?> [] params = method.getParameterTypes();
 			if (params.length != 1) {
-				addIncorrectAnnotationParams(failures, trialName);
+				addIncorrectAnnotationParams(constants, failures, trialName);
 			} else {
   			Class<?> param = params[0];
   			if ( !Map.class.isAssignableFrom(param)) {
-  			  addIncorrectAnnotationParams(failures, trialName);
+  			  addIncorrectAnnotationParams(constants, failures, trialName);
   			}
 			}
 		}
@@ -63,10 +60,9 @@ public class BeforeTrialAuditor {
 		return true;
 	}
 
-  public static void addIncorrectAnnotationParams(List<I_TrialFailure> failures, 
+  public static void addIncorrectAnnotationParams(I_Tests4J_Constants constants, List<I_TrialFailure> failures, 
       String trialName) {
-    I_Tests4J_Constants consts = Tests4J_Constants.CONSTANTS;
-    I_Tests4J_AnnotationMessages messages = consts.getAnnotationMessages();
+    I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 
     failures.add(new TrialFailure(
     		messages.getBeforeTrialHasWrongParams(),

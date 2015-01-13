@@ -1,11 +1,11 @@
 package org.adligo.tests4j.run.discovery;
 
 import org.adligo.tests4j.run.common.I_JseSystem;
-import org.adligo.tests4j.run.common.JseSystem;
 import org.adligo.tests4j.shared.asserts.uniform.EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformAssertionEvaluator;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.en.Tests4J_EnglishConstants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -29,6 +29,8 @@ import org.adligo.tests4j.system.shared.trials.I_TrialParamsFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +66,8 @@ public class Tests4J_ParamsReader {
 	 */
 	private boolean runnable = true;
 	private I_Tests4J_CoveragePlugin coveragePlugin;
+	private I_Tests4J_Constants constants_;
+	private I_EvaluatorLookup defaultLookup_;
 	private List<Class<? extends I_AbstractTrial>> trials = new ArrayList<Class<? extends I_AbstractTrial>>();
 	private Class<? extends I_MetaTrial> metaTrialClass;
 	private int trialThreadCount = 0;
@@ -94,6 +98,8 @@ public class Tests4J_ParamsReader {
 	public Tests4J_ParamsReader(I_JseSystem system, I_Tests4J_Params params) {
 	  system_ = system;
 	  params_ = params;
+	  constants_ = params_.getConstants();
+		defaultLookup_ = EvaluatorLookup.getDefault(constants_);
 		
 		logStates = new HashMap<Class<?>, Boolean>();
 		logStates.putAll(DefaultReporterStates.getDefalutLogStates());
@@ -105,7 +111,7 @@ public class Tests4J_ParamsReader {
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		}
-		logger = new DefaultLog(system_, logStates);
+		logger = new DefaultLog(system_, constants_, logStates);
 	}
 	
 	public void read(I_Tests4J_Log loggerIn) {
@@ -131,7 +137,7 @@ public class Tests4J_ParamsReader {
 		}
 		
 		if (trials.size() == 0 ) {
-			I_Tests4J_ParamsReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
+			I_Tests4J_ParamsReaderMessages constants =  constants_.getParamReaderMessages();
 			logger.log(constants.getNoTrialsOrRemotesToRun());
 			runnable = false;
 			runFalseReason = new IllegalArgumentException(constants.getNoTrialsOrRemotesToRun());
@@ -164,7 +170,7 @@ public class Tests4J_ParamsReader {
 				if (trials.contains(trial)) {
 					tests.add(new Tests4J_Selection(sel));
 				} else {
-					I_Tests4J_ParamsReaderMessages messages =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
+					I_Tests4J_ParamsReaderMessages messages =  constants_.getParamReaderMessages();
 					throw new IllegalArgumentException(
 							messages.getTestSelectionsMustHaveACorrespondingTrial() +
 							logger.getLineSeperator() + 
@@ -196,15 +202,15 @@ public class Tests4J_ParamsReader {
 			return;
 		}
 		Map<String, I_UniformAssertionEvaluator<?, ?>> evals = evaluatorLookup.getLookupData();
-		I_EvaluatorLookup defaultLookup =  EvaluatorLookup.DEFAULT_LOOKUP;
-		Map<String, I_UniformAssertionEvaluator<?, ?>>  defaultEvals = defaultLookup.getLookupData();
+		
+		Map<String, I_UniformAssertionEvaluator<?, ?>>  defaultEvals = defaultLookup_.getLookupData();
 		Set<String> actualKeys = evals.keySet();
 		Set<String> defaultKeys = defaultEvals.keySet();
 		
 		metaTrialParams_ =  params_.getMetaTrialParams();
 		trialParamsQueue_ = params_.getTrialParamsQueue();
 		if (!actualKeys.containsAll(defaultKeys)) {
-			I_Tests4J_ParamsReaderMessages constants =  Tests4J_Constants.CONSTANTS.getParamReaderMessages();
+			I_Tests4J_ParamsReaderMessages constants = constants_.getParamReaderMessages();
 			logger.log(constants.getTheEvaluatorsAreExpectedToContainTheDefaultKeys());
 			runnable = false;
 			return;
@@ -241,11 +247,17 @@ public class Tests4J_ParamsReader {
 			IllegalAccessException {
 		Class<?> elc = params_.getEvaluatorLookup();
 		if (elc == null) {
-			evaluatorLookup = EvaluatorLookup.DEFAULT_LOOKUP;
+			evaluatorLookup = defaultLookup_;
 		} else if (EvaluatorLookup.class.isAssignableFrom(elc)) {
-			evaluatorLookup = EvaluatorLookup.DEFAULT_LOOKUP;
+			evaluatorLookup = defaultLookup_;
 		} else {
-			evaluatorLookup = (I_EvaluatorLookup) elc.newInstance();
+      try {
+        Constructor<?> constructor = elc.getConstructor(I_Tests4J_Constants.class);
+        evaluatorLookup = (I_EvaluatorLookup) constructor.newInstance(constants_);
+      } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException e) {
+        throw new RuntimeException(e);
+      }
+			
 		}
 	}
 
@@ -299,6 +311,7 @@ public class Tests4J_ParamsReader {
 		}
 		I_Tests4J_CoveragePluginFactory factory = coveragePluginFactoryClass.newInstance();
 		Map<String,Object> runtimeParams = new HashMap<String, Object>();
+		runtimeParams.put(I_Tests4J_CoveragePluginFactory.CONSTANTS, constants_);
 		runtimeParams.put(I_Tests4J_CoveragePluginFactory.LOG, logger);
     runtimeParams.put(I_Tests4J_CoveragePluginFactory.SYSTEM, system_);
 		I_Tests4J_CoveragePlugin plugin = factory.create(params_, coverageParams, runtimeParams);

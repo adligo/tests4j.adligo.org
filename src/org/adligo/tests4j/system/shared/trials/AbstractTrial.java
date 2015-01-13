@@ -12,11 +12,6 @@ import static org.adligo.tests4j.shared.asserts.common.AssertType.AssertSame;
 import static org.adligo.tests4j.shared.asserts.common.AssertType.AssertTrue;
 import static org.adligo.tests4j.shared.asserts.common.AssertType.AssertUniform;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.adligo.tests4j.shared.asserts.AssertionProcessor;
 import org.adligo.tests4j.shared.asserts.BooleanAssertCommand;
 import org.adligo.tests4j.shared.asserts.ContainsAssertCommand;
@@ -27,8 +22,9 @@ import org.adligo.tests4j.shared.asserts.ThrownAssertCommand;
 import org.adligo.tests4j.shared.asserts.UniformAssertCommand;
 import org.adligo.tests4j.shared.asserts.UniformThrownAssertCommand;
 import org.adligo.tests4j.shared.asserts.common.CompareAssertionData;
+import org.adligo.tests4j.shared.asserts.common.ExpectedThrowableValidator;
 import org.adligo.tests4j.shared.asserts.common.I_AssertListener;
-import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrownData;
+import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrowable;
 import org.adligo.tests4j.shared.asserts.common.I_SimpleAssertCommand;
 import org.adligo.tests4j.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.shared.asserts.common.I_ThrownAssertCommand;
@@ -39,10 +35,15 @@ import org.adligo.tests4j.shared.asserts.uniform.I_UniformAssertionEvaluator;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformThrownAssertionEvaluator;
 import org.adligo.tests4j.shared.common.I_Platform;
 import org.adligo.tests4j.shared.common.I_PlatformContainer;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * TODO i18n the assert messages (currently constants).
@@ -50,8 +51,6 @@ import org.adligo.tests4j.shared.output.I_Tests4J_Log;
  *
  */
 public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
-	private static final I_Tests4J_ResultMessages MESSAGES = 
-			Tests4J_Constants.CONSTANTS.getResultMessages();
 	public static final Set<String> TESTS4J_TRIAL_CLASSES = getTests4J_TrialClasses();
 	
 	private static Set<String> getTests4J_TrialClasses() {
@@ -70,7 +69,9 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	private I_Tests4J_Log log_;
 	private I_PlatformContainer platform_;
 	private I_EvaluatorLookup evaluationLookup_;
-	private EvaluatorLookupMutant evaluationLookupOverrides_ = new EvaluatorLookupMutant();
+	private EvaluatorLookupMutant evaluationLookupOverrides_;
+	private I_Tests4J_Constants constants_;
+	private I_Tests4J_ResultMessages resultMessages_;
 	/**
 	 * Set the memory of the AbstractTrial
 	 * @param p
@@ -88,7 +89,10 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		log_ = bindings.getLog();
 		//throw npe for nulls
 		log_.hashCode();
+		constants_ = bindings.getConstants();
+		resultMessages_ = constants_.getResultMessages();
 		
+		evaluationLookupOverrides_ = new EvaluatorLookupMutant(constants_);
 		evaluationLookup_ = bindings.getDefalutEvaluatorLookup();
 		evaluationLookup_.hashCode();
 	}
@@ -118,46 +122,47 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	public void evaluateForNullExpected(Object expected) {
 		if (expected == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			
 			AssertionProcessor.onAssertionFailure(listener_, null, messages.getTheExpectedValueShouldNeverBeNull());
 		}
+		
 	}
 
 	public void evaluateForNullThrower(I_Thrower thrower) {
 		if (thrower == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			AssertionProcessor.onAssertionFailure(listener_, null, messages.getIThrowerIsRequired());
 		}
 	}
 	
 	@Override
 	public void assertEquals(Object p, Object a) {
-		assertEquals(MESSAGES.getTheObjectsShouldBeEqual(), p, a);
+		assertEquals(resultMessages_.getTheObjectsShouldBeEqual(), p, a);
 	}
 
 	@Override
 	public void assertEquals(String message, Object p, Object a) {
 		evaluateForNullExpected(p);
-		evaluate(new IdenticalAssertCommand( message, 
+		evaluate(new IdenticalAssertCommand(constants_,  message, 
 				new CompareAssertionData<Object>(p, a, AssertEquals)));
 	}
 	
 	@Override
 	public void assertEquals(String p, String a) {
-		assertEquals(MESSAGES.getTheObjectsShouldBeEqual(), p, a);
+		assertEquals(resultMessages_.getTheObjectsShouldBeEqual(), p, a);
 	}
 
 	@Override
 	public void assertEquals(String message, String p, String a) {
 		evaluateForNullExpected(p);
-		evaluate(new IdenticalStringAssertCommand(message, 
+		evaluate(new IdenticalStringAssertCommand(constants_, message, 
 				new CompareAssertionData<String>(p, a, AssertEquals)));
 	}
 	
 	@Override
 	public void assertTrue(boolean p) {
-		assertTrue(MESSAGES.getTheValueShouldBeTrue(), p);
+		assertTrue(resultMessages_.getTheValueShouldBeTrue(), p);
 	}
 
 	@Override
@@ -167,7 +172,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertFalse(boolean p) {
-		assertFalse(MESSAGES.getTheValueShouldBeFalse(), p);
+		assertFalse(resultMessages_.getTheValueShouldBeFalse(), p);
 	}
 
 	@Override
@@ -177,7 +182,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertNull(Object p) {
-		assertNull(MESSAGES.getTheValueShouldBeNull(), p);
+		assertNull(resultMessages_.getTheValueShouldBeNull(), p);
 	}
 
 	@Override
@@ -187,7 +192,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	@Override
 	public void assertNotNull(Object p) {
-		assertNotNull(MESSAGES.getTheValueShould_NOT_BeNull(), p);
+		assertNotNull(resultMessages_.getTheValueShould_NOT_BeNull(), p);
 	}
 
 	@Override
@@ -210,43 +215,43 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertNotEquals(Object p, Object a) {
-		assertNotEquals(MESSAGES.getTheObjectsShould_NOT_BeEqual(),p, a);
+		assertNotEquals(resultMessages_.getTheObjectsShould_NOT_BeEqual(),p, a);
 	}
 
 	@Override
 	public void assertNotEquals(String message, Object p, Object a) {
 		evaluateForNullExpected(p);
-		evaluate(new IdenticalAssertCommand(message, 
+		evaluate(new IdenticalAssertCommand(constants_, message, 
 				new CompareAssertionData<Object>(p, a, AssertNotEquals)));
 	}
 	
 	@Override
 	public void assertNotEquals(String p, String a) {
-		assertNotEquals(MESSAGES.getTheObjectsShould_NOT_BeEqual(),p, a);
+		assertNotEquals(resultMessages_.getTheObjectsShould_NOT_BeEqual(),p, a);
 	}
 
 	@Override
 	public void assertNotEquals(String message, String p, String a) {
 		evaluateForNullExpected(p);
-		evaluate(new IdenticalStringAssertCommand( message, 
+		evaluate(new IdenticalStringAssertCommand(constants_,  message, 
 				new CompareAssertionData<String>(p, a, AssertNotEquals)));
 	}
 	
 	@Override
 	public void assertSame(Object p, Object a) {
-		assertSame(MESSAGES.getTheObjectsShouldBeTheSame(), p,  a);
+		assertSame(resultMessages_.getTheObjectsShouldBeTheSame(), p,  a);
 	}
 
 	@Override
 	public void assertSame(String message, Object p, Object a) {
 		evaluateForNullExpected(p);
-		evaluate(new IdenticalAssertCommand(message, 
+		evaluate(new IdenticalAssertCommand(constants_, message, 
 				new CompareAssertionData<Object>(p, a, AssertSame)));
 	}
 
 	@Override
 	public void assertNotUniform(Object p, Object a) {
-		assertNotUniform(MESSAGES.getTheObjectsShould_NOT_BeUniform(), p, a);
+		assertNotUniform(resultMessages_.getTheObjectsShould_NOT_BeUniform(), p, a);
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -255,74 +260,77 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 		evaluateForNullExpected(expected);
 		I_UniformAssertionEvaluator<?, ?> eval = getEvaluator(expected);
 		if (eval != null) {
-			evaluate(new UniformAssertCommand(
-					message, 
+			evaluate(new UniformAssertCommand(constants_, message, 
 					new CompareAssertionData<Object>(expected, actual, AssertNotUniform), eval));
 		} else {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			AssertionProcessor.onAssertionFailure(listener_, null, messages.getNoEvaluatorFoundForClass());
 		}
 	}
 				
 	@Override
 	public void assertNotSame(Object p, Object a) {
-		assertNotSame(MESSAGES.getTheObjectsShould_NOT_BeTheSame(), p,  a);
+		assertNotSame(resultMessages_.getTheObjectsShould_NOT_BeTheSame(), p,  a);
 	}
 
 	@Override
 	public void assertNotSame(String message, Object p, Object a) {
 		evaluateForNullExpected(p);
-		evaluate(new IdenticalAssertCommand(message, 
+		evaluate(new IdenticalAssertCommand(constants_, message, 
 				new CompareAssertionData<Object>(p, a, AssertNotSame)));
 	}
 	
 	@Override
-	public void assertThrown(I_ExpectedThrownData pData, I_Thrower pThrower) {
-		evaluateForNullExpected(pData);
-		evaluateForNullThrower(pThrower);
-		assertThrown(MESSAGES.getTheExpectedThrowableDidNotMatch(), pData, pThrower);
+	public void assertThrown(I_ExpectedThrowable data, I_Thrower thrower) {
+		evaluateForNullExpected(data);
+		evaluateForNullThrower(thrower);
+		assertThrown(resultMessages_.getTheExpectedThrowableDidNotMatch(), 
+		    new ExpectedThrowableValidator(constants_, data), thrower);
 	}
 
 	@Override
-	public void assertThrown(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
-		evaluateForNullExpected(pData);
-		evaluateForNullThrower(pThrower);
-		evaluate(new ThrownAssertCommand(pMessage, pData), pThrower);
+	public void assertThrown(String message, I_ExpectedThrowable data, I_Thrower thrower) {
+		evaluateForNullExpected(data);
+		evaluateForNullThrower(thrower);
+		evaluate(new ThrownAssertCommand(constants_, message, 
+		    new ExpectedThrowableValidator(constants_, data)), thrower);
 	}
 	
 	@Override
-	public void assertThrownUniform(I_ExpectedThrownData pData, I_Thrower pThrower) {
-		evaluateForNullExpected(pData);
-		evaluateForNullThrower(pThrower);
-		assertThrownUniform(MESSAGES.getTheExpectedThrowableDataWasNotUniformTheActual(), pData, pThrower);
+	public void assertThrownUniform(I_ExpectedThrowable data, I_Thrower thrower) {
+		evaluateForNullExpected(data);
+		evaluateForNullThrower(thrower);
+		assertThrownUniform(resultMessages_.getTheExpectedThrowableDataWasNotUniformTheActual(), 
+		    new ExpectedThrowableValidator(constants_, data), thrower);
 	}
 
 	@SuppressWarnings({ "unchecked"})
 	@Override
-	public void assertThrownUniform(String pMessage, I_ExpectedThrownData pData, I_Thrower pThrower) {
-		evaluateForNullExpected(pData);
-		evaluateForNullThrower(pThrower);
+	public void assertThrownUniform(String message, I_ExpectedThrowable data, I_Thrower thrower) {
+		evaluateForNullExpected(data);
+		evaluateForNullThrower(thrower);
 		I_UniformThrownAssertionEvaluator<I_ThrownAssertionData> eval = evaluationLookup_.getThrownEvaulator();
 		if (eval == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			AssertionProcessor.onAssertionFailure(listener_, null, messages.getTheUniformThrownEvaluatorIsNull());
 		} else {
-			evaluate(new UniformThrownAssertCommand(pMessage, pData, eval), pThrower);
+			evaluate(new UniformThrownAssertCommand(constants_, message, 
+			    new ExpectedThrowableValidator(constants_, data), eval), thrower);
 		}
 	}
 	
 	public void assertUniform(Object expected, Object actual) {
-		assertUniform(MESSAGES.getTheObjectsShouldBeUniform(), expected, actual);
+		assertUniform(resultMessages_.getTheObjectsShouldBeUniform(), expected, actual);
 	}
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void assertUniform(String message, Object expected, Object actual) {
 		evaluateForNullExpected(expected);
 		I_UniformAssertionEvaluator<?, ?> evaluator = getEvaluator(expected);
 		if (evaluator != null) {
-			evaluate(new UniformAssertCommand(message, 
+			evaluate(new UniformAssertCommand(constants_, message, 
 					new CompareAssertionData<Object>(expected, actual,AssertUniform), evaluator));
 		} else {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			AssertionProcessor.onAssertionFailure(listener_, null, messages.getNoEvaluatorFoundForClass());
 		}
 	}
@@ -331,7 +339,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 
 	private <D> I_UniformAssertionEvaluator<?, D> getEvaluator(Object expectedInstance) {
 		if (expectedInstance == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			throw new IllegalStateException(messages.getNoEvaluatorFoundForClass() + expectedInstance);
 		}
 		
@@ -350,7 +358,7 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	
 	@Override
 	public void assertGreaterThanOrEquals(double expected, double actual) {
-		evaluate(new DoubleAssertCommand(MESSAGES.getTheActualShouldBeGreaterThanOrEqualToTheExpected(), 
+		evaluate(new DoubleAssertCommand(resultMessages_.getTheActualShouldBeGreaterThanOrEqualToTheExpected(), 
 				new CompareAssertionData<Double>(expected, actual, AssertGreaterThanOrEquals)));
 	}
 
@@ -363,14 +371,14 @@ public abstract class AbstractTrial implements I_AbstractTrial, I_Trial {
 	@Override
 	public void assertContains(Collection<?> p, Object a) {
 		evaluateForNullExpected(p);
-		evaluate(new ContainsAssertCommand(
-				MESSAGES.getTheCollectionShouldContainTheValue(), p, a));
+		evaluate(new ContainsAssertCommand(constants_, 
+				resultMessages_.getTheCollectionShouldContainTheValue(), p, a));
 	}
 
 	@Override
 	public void assertContains(String message, Collection<?> p, Object a) {
 		evaluateForNullExpected(p);
-		evaluate(new ContainsAssertCommand(
+		evaluate(new ContainsAssertCommand(constants_, 
 				message, p, a));
 	}
 	

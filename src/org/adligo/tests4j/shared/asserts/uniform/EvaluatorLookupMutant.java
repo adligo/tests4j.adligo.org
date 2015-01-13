@@ -1,10 +1,10 @@
 package org.adligo.tests4j.shared.asserts.uniform;
 
-import java.util.Collections;
+import org.adligo.tests4j.shared.common.ClassMethods;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.adligo.tests4j.shared.common.ClassMethods;
 
 /**
  * This is a mutable implementation of {@link I_EvaluatorLookup}
@@ -23,9 +23,10 @@ public class EvaluatorLookupMutant implements I_EvaluatorLookup {
 	 * to evaluators
 	 */
 	private Map<String, I_UniformAssertionEvaluator<?,?>> lookup;
-	private I_UniformThrownAssertionEvaluator thrownEvaulator = new UniformThrownAssertionEvaluator();
+	private I_UniformThrownAssertionEvaluator<?> thrownEvaulator;
 	
-	public EvaluatorLookupMutant() {
+	public EvaluatorLookupMutant(I_Tests4J_Constants constants) {
+	  thrownEvaulator = new UniformThrownAssertionEvaluator(constants);
 		lookup =
 				new HashMap<String,I_UniformAssertionEvaluator<?,?>>();
 	}
@@ -60,11 +61,11 @@ public class EvaluatorLookupMutant implements I_EvaluatorLookup {
 		lookup.remove(className);
 	}
 
-	public I_UniformThrownAssertionEvaluator getThrownEvaulator() {
+	public I_UniformThrownAssertionEvaluator<?> getThrownEvaulator() {
 		return thrownEvaulator;
 	}
 
-	public void setThrownEvaulator(I_UniformThrownAssertionEvaluator thrownEvaulator) {
+	public void setThrownEvaulator(I_UniformThrownAssertionEvaluator<?> thrownEvaulator) {
 		this.thrownEvaulator = thrownEvaulator;
 	}
 }

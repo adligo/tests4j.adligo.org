@@ -1,5 +1,7 @@
 package org.adligo.tests4j.system.shared.api;
 
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+
 /**
  * This class provides a way to swap 
  * out most of the Test4j run,

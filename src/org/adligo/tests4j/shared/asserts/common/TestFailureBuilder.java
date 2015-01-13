@@ -110,7 +110,7 @@ public class TestFailureBuilder {
     mut.setAssertType(type_);
     mut.setFailureMessage(failureMessage_);
     
-    I_ExpectedThrownData exp = tad.getExpected();
+    I_ExpectedThrowable exp = tad.getExpected();
     ThrowableInfo ei = new ThrowableInfo(exp);
     mut.setExpected(ei);
     

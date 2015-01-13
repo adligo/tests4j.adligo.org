@@ -1,7 +1,7 @@
 package org.adligo.tests4j.shared.asserts.uniform;
 
 import org.adligo.tests4j.shared.asserts.common.AssertType;
-import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrownData;
+import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrowable;
 import org.adligo.tests4j.shared.asserts.common.I_MatchType;
 import org.adligo.tests4j.shared.asserts.common.I_ThrownAssertionData;
 import org.adligo.tests4j.shared.asserts.common.MatchType;
@@ -9,7 +9,7 @@ import org.adligo.tests4j.shared.asserts.common.ThrownAssertionData;
 import org.adligo.tests4j.shared.asserts.common.ThrownAssertionDataMutant;
 import org.adligo.tests4j.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.shared.asserts.line_text.TextLinesCompare;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 
 /**
@@ -21,12 +21,15 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
  *
  */
 public class UniformThrownAssertionEvaluatorUse {
-  private I_Tests4J_ResultMessages messages_ =  Tests4J_Constants.CONSTANTS.getResultMessages();
+  private final I_Tests4J_Constants constants_;
+  private final I_Tests4J_ResultMessages messages_;
   private I_Evaluation<I_ThrownAssertionData> result_;
-  private I_ExpectedThrownData expected_;
+  private I_ExpectedThrowable expected_;
   private Throwable actual_;
   
-  public UniformThrownAssertionEvaluatorUse(I_ExpectedThrownData expected, Throwable actual) {
+  public UniformThrownAssertionEvaluatorUse(I_Tests4J_Constants constants, I_ExpectedThrowable expected, Throwable actual) {
+    constants_ = constants;
+    messages_ = constants.getResultMessages();
     expected_ = expected;
     actual_ = actual;
     check(1, actual, expected);
@@ -36,7 +39,7 @@ public class UniformThrownAssertionEvaluatorUse {
     return result_;
   }
   
-  public void check(int throwable, Throwable actual, I_ExpectedThrownData expected) {
+  public void check(int throwable, Throwable actual, I_ExpectedThrowable expected) {
     Class<? extends Throwable> expectedCauseClass = expected.getThrowableClass();
     if (throwable == 1) {
       if (actual == null) {
@@ -67,7 +70,7 @@ public class UniformThrownAssertionEvaluatorUse {
             return;
           }
           TextLinesCompare compare = new TextLinesCompare();
-          I_TextLinesCompareResult result = compare.compare(expectedMessage, actualMessage, true);
+          I_TextLinesCompareResult result = compare.compare(constants_, expectedMessage, actualMessage, true);
           if (!result.isMatched()) {
             createFailure(messages_.getThrowableMessageNotUniform(), throwable);
             return;
@@ -80,7 +83,7 @@ public class UniformThrownAssertionEvaluatorUse {
           return;
         }
     }
-    I_ExpectedThrownData expectedCause = expected.getExpectedCause();
+    I_ExpectedThrowable expectedCause = expected.getExpectedCause();
     if (expectedCause == null) {
       createSuccess();
       return;

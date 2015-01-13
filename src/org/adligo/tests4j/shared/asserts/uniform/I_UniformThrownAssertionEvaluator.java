@@ -1,6 +1,6 @@
 package org.adligo.tests4j.shared.asserts.uniform;
 
-import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrownData;
+import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrowable;
 
 
 /**
@@ -20,5 +20,5 @@ public interface I_UniformThrownAssertionEvaluator<I_AssertThrownFailure> {
 	 * 	returned with getType()
 	 * @return
 	 */
-	public I_Evaluation<I_AssertThrownFailure> isUniform(I_ExpectedThrownData expected, Throwable actual);
+	public I_Evaluation<I_AssertThrownFailure> isUniform(I_ExpectedThrowable expected, Throwable actual);
 }

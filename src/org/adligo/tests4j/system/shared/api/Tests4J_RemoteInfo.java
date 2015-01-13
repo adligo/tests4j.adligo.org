@@ -1,7 +1,7 @@
 package org.adligo.tests4j.system.shared.api;
 
 import org.adligo.tests4j.shared.common.StringMethods;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ParamsReaderMessages;
 import org.adligo.tests4j.shared.xml.I_XML_Builder;
 import org.adligo.tests4j.shared.xml.XML_Parser;
@@ -16,26 +16,18 @@ import org.adligo.tests4j.shared.xml.XML_Parser;
  */
 public class Tests4J_RemoteInfo implements I_Tests4J_RemoteInfo {
 
-	
+	private final I_Tests4J_ParamsReaderMessages messages_;
 	private String host;
 	private int port;
 	private String authCode;
 	
-	protected Tests4J_RemoteInfo() {}
-	
-	public Tests4J_RemoteInfo(String xml) {
-		int [] indexes = XML_Parser.getIndexes(xml, I_Tests4J_RemoteInfo.TAG_NAME);
-		if (indexes == null) {
-			throw XML_Parser.getReadError(I_Tests4J_RemoteInfo.TAG_NAME);
-		}
-		String thisTag = xml.substring(indexes[0], indexes[1]);
-		host = XML_Parser.getAttributeValue(thisTag, I_Tests4J_RemoteInfo.HOST_ATTRIBUTE);
-		port = XML_Parser.getAttributeIntegerValue(thisTag, I_Tests4J_RemoteInfo.PORT_ATTRIBUTE);
-		authCode = XML_Parser.getAttributeValue(thisTag, I_Tests4J_RemoteInfo.AUTH_ATTRIBUTE);
+	protected Tests4J_RemoteInfo(I_Tests4J_Constants constants) {
+	  messages_ = constants.getParamReaderMessages();
 	}
 	
-	public Tests4J_RemoteInfo(I_Tests4J_RemoteInfo other) {
-		this(other.getHost(), other.getPort(), other.getAuthCode());
+	
+	public Tests4J_RemoteInfo(I_Tests4J_Constants constants, I_Tests4J_RemoteInfo other) {
+		this(constants, other.getHost(), other.getPort(), other.getAuthCode());
 	}
 	
 	/**
@@ -46,21 +38,20 @@ public class Tests4J_RemoteInfo implements I_Tests4J_RemoteInfo {
 	 * @param other
 	 * @param defaultAuthCode
 	 */
-	public Tests4J_RemoteInfo(I_Tests4J_RemoteInfo other, String defaultAuthCode) {
-		this(other);
+	public Tests4J_RemoteInfo(I_Tests4J_Constants constants, I_Tests4J_RemoteInfo other, String defaultAuthCode) {
+		this(constants, other);
 		if (authCode == null) {
 			authCode = defaultAuthCode;
 		}
 		if (StringMethods.isEmpty(authCode)) {
-			I_Tests4J_ParamsReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
-			throw new IllegalArgumentException(constants.getAuthCodeOrAuthCodeDefaultRequired());
+			throw new IllegalArgumentException(messages_.getAuthCodeOrAuthCodeDefaultRequired());
 		}
 	}
 	
-	public Tests4J_RemoteInfo(String pHost, int pPort, String pAuthCode) {
+	public Tests4J_RemoteInfo(I_Tests4J_Constants constants, String pHost, int pPort, String pAuthCode) {
+	  messages_ = constants.getParamReaderMessages();
 		if (StringMethods.isEmpty(pHost)) {
-			I_Tests4J_ParamsReaderMessages constants = Tests4J_Constants.CONSTANTS.getParamReaderMessages();
-			throw new IllegalArgumentException(constants.getHostRequired());
+			throw new IllegalArgumentException(messages_.getHostRequired());
 		}
 		host = pHost;
 		port = pPort;

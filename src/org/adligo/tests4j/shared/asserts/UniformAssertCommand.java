@@ -1,16 +1,13 @@
 package org.adligo.tests4j.shared.asserts;
 
 import org.adligo.tests4j.shared.asserts.common.AssertType;
-import org.adligo.tests4j.shared.asserts.common.I_AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.shared.asserts.common.I_CompareAssertionData;
-import org.adligo.tests4j.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.shared.asserts.uniform.I_Evaluation;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformAssertionCommand;
 import org.adligo.tests4j.shared.asserts.uniform.I_UniformAssertionEvaluator;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 
 /**
  *  A class to represent a assertUniform or assertNotUniform
@@ -35,7 +32,7 @@ public class UniformAssertCommand<T,D> extends AbstractAssertCommand
   private I_UniformAssertionEvaluator<T, D> evaluator;
   
   
-  public UniformAssertCommand( String failureMessage, 
+  public UniformAssertCommand(I_Tests4J_Constants constants,  String failureMessage, 
       I_CompareAssertionData<T> pData, I_UniformAssertionEvaluator<T, D> pEvaluator) {
     super(pData.getType(), failureMessage);
     
@@ -50,7 +47,7 @@ public class UniformAssertCommand<T,D> extends AbstractAssertCommand
       throw new IllegalArgumentException(NULL_DATA);
     }
     if (data.getExpected() == null) {
-      I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+      I_Tests4J_AssertionInputMessages messages = constants.getAssertionInputMessages();
       throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
     }
     if (pEvaluator == null) {

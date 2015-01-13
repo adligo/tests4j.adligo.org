@@ -2,7 +2,6 @@ package org.adligo.tests4j.run.helpers;
 
 import org.adligo.tests4j.models.shared.association.I_ClassAssociationsLocal;
 import org.adligo.tests4j.models.shared.coverage.I_PackageCoverageBrief;
-import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverage;
 import org.adligo.tests4j.models.shared.coverage.I_SourceFileCoverageBrief;
 import org.adligo.tests4j.models.shared.coverage.SourceFileCoverageBriefMutant;
 import org.adligo.tests4j.models.shared.results.I_SourceFileTrialResult;
@@ -25,7 +24,7 @@ import org.adligo.tests4j.shared.asserts.reference.I_FieldSignature;
 import org.adligo.tests4j.shared.asserts.reference.I_MethodSignature;
 import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.common.ClassMethods;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_CoverageRecorder;
@@ -35,7 +34,6 @@ import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -51,12 +49,13 @@ import java.util.Set;
  *
  */
 public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsProcessor {
-
+  private I_Tests4J_Constants constants_;
 	private I_Tests4J_Log log;
 	
 	public AfterSourceFileTrialTestsProcessor(I_Memory memory) {
 		super(memory);
 		log = memory.getLog();
+		constants_ = memory.getConstants();
 	}
 
 	
@@ -175,7 +174,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 		} else {
 			double pct = sourceProbes.getPercentageCoveredDouble();
 			if (minCoverage > pct) {
-				I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
+				I_Tests4J_ResultMessages messages = constants_.getResultMessages();
 				
 				AssertCompareFailureMutant tfm = new AssertCompareFailureMutant();
 				tfm.setFailureMessage(messages.getCodeCoveragIsOff());
@@ -327,7 +326,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 						}
 						
 						if (!result) {
-							depNotAllowed = new AllowedReferencesFailureMutant();
+							depNotAllowed = new AllowedReferencesFailureMutant(constants_);
 							depNotAllowed.setSourceClass(trialDesc.getSourceFileClass());
 							depNotAllowed.setCalledClass(className);
 							depNotAllowed.setGroupNames(dg.getSubGroupNames());
@@ -338,7 +337,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 							Set<I_FieldSignature> flds = ref.getFields();
 							for (I_FieldSignature fld: flds) {
 								if ( !dg.isInGroup(className, fld)) {
-									depNotAllowed = new AllowedReferencesFailureMutant();
+									depNotAllowed = new AllowedReferencesFailureMutant(constants_);
 									depNotAllowed.setSourceClass(trialDesc.getSourceFileClass());
 									depNotAllowed.setField(fld);
 									depNotAllowed.setCalledClass(ref.getName());
@@ -353,7 +352,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 								Set<I_MethodSignature> mtds = ref.getMethods();
 								for (I_MethodSignature mtd: mtds) {
 									if ( !dg.isInGroup(className, mtd)) {
-										depNotAllowed = new AllowedReferencesFailureMutant();
+										depNotAllowed = new AllowedReferencesFailureMutant(constants_);
 										depNotAllowed.setSourceClass(trialDesc.getSourceFileClass());
 										depNotAllowed.setMethod(mtd);
 										depNotAllowed.setCalledClass(className);
@@ -388,7 +387,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 
 	public CircularDependencyFailureMutant failCircularDependencies(Collection<String> classesOutOfBounds,
 			Class<?> sourceClass) {
-		I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
+		I_Tests4J_ResultMessages messages = constants_.getResultMessages();
 		
 		CircularDependencyFailureMutant tfm = new CircularDependencyFailureMutant();
 		tfm.setFailureMessage(messages.getSourceClassHasCircularDependency());

@@ -1,18 +1,18 @@
 package org.adligo.tests4j.run.discovery;
 
-import java.util.List;
-
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.shared.common.I_TrialType;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.common.TrialType;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.trials.I_AbstractTrial;
 import org.adligo.tests4j.system.shared.trials.TrialTypeAnnotation;
 
+import java.util.List;
+
 public class TrialTypeFinder {
-	public static I_TrialType getTypeInternal(Class<? extends I_AbstractTrial> trialClass,
+	public static I_TrialType getTypeInternal(I_Tests4J_Constants constants, Class<? extends I_AbstractTrial> trialClass,
 			List<I_TrialFailure> failures) {
 		TrialTypeAnnotation type = trialClass.getAnnotation(TrialTypeAnnotation.class);
 		
@@ -28,7 +28,7 @@ public class TrialTypeFinder {
 		}
 		
 		if (type == null) {
-			I_Tests4J_AnnotationMessages messages = Tests4J_Constants.CONSTANTS.getAnnotationMessages();
+			I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 			failures.add(new TrialFailure(messages.getTrialTypeMissing(), trialClass.getName()));
 		}
 		I_TrialType typeEnum = TrialType.get(type.type());

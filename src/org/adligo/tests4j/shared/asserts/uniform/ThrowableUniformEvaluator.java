@@ -3,8 +3,8 @@ package org.adligo.tests4j.shared.asserts.uniform;
 import org.adligo.tests4j.shared.asserts.common.I_CompareAssertionData;
 import org.adligo.tests4j.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.shared.asserts.line_text.TextLinesCompare;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
 
 /**
@@ -13,6 +13,12 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
  *
  */
 public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Throwable, I_TextLinesCompareResult> {
+  private final I_Tests4J_Constants constants_;
+  
+  public ThrowableUniformEvaluator(I_Tests4J_Constants constants) {
+    constants_ = constants;
+  }
+  
 	@Override
 	public Class<Throwable> getType() {
 		return Throwable.class;
@@ -25,14 +31,14 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		Throwable expected = (Throwable) p.getExpected();
 		Throwable actual = (Throwable) p.getActual();
 		if (expected == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheExpectedValueShouldNeverBeNull());
 			return new Evaluation<I_TextLinesCompareResult>(result);
 		}
 		if (actual == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheActualValueIsNull());
 			return new Evaluation<I_TextLinesCompareResult>(result);
@@ -44,16 +50,16 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		String aClassName = aClazz.getName();
 		
 		if (!eClazzName.equals(aClassName)) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheActualClassIsNotAssignableFromTheExpectedClass());
 			return new Evaluation<I_TextLinesCompareResult>(result);
 		}
 		TextLinesCompare tlc = new TextLinesCompare();
 		I_TextLinesCompareResult lineTextResult = 
-				tlc.compare(expected.getMessage(), actual.getMessage(), true);
+				tlc.compare(constants_, expected.getMessage(), actual.getMessage(), true);
 		if (!lineTextResult.isMatched()) {
-			I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
+			I_Tests4J_ResultMessages messages = constants_.getResultMessages();
 			
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheTextWasNOT_Uniform());
@@ -71,14 +77,14 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		Throwable expected = (Throwable) p.getExpected();
 		Throwable actual = (Throwable) p.getActual();
 		if (expected == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheExpectedValueShouldNeverBeNull());
 			return new Evaluation<I_TextLinesCompareResult>(result);
 		}
 		if (actual == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheActualValueIsNull());
 			return new Evaluation<I_TextLinesCompareResult>(result);
@@ -95,9 +101,9 @@ public class ThrowableUniformEvaluator implements I_UniformAssertionEvaluator<Th
 		}
 		TextLinesCompare tlc = new TextLinesCompare();
 		I_TextLinesCompareResult lineTextResult = 
-				tlc.compare(expected.getMessage(), actual.getMessage(), true);
+				tlc.compare(constants_, expected.getMessage(), actual.getMessage(), true);
 		if (lineTextResult.isMatched()) {
-			I_Tests4J_ResultMessages messages = Tests4J_Constants.CONSTANTS.getResultMessages();
+			I_Tests4J_ResultMessages messages = constants_.getResultMessages();
 			
 			result.setSuccess(false);
 			result.setFailureReason(messages.getTheTextWasUniform());

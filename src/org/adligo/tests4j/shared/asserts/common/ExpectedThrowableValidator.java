@@ -1,7 +1,7 @@
 package org.adligo.tests4j.shared.asserts.common;
 
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 
 /**
  * a immutable class to represent
@@ -11,14 +11,19 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
  * @author scott
  *
  */
-public class ExpectedThrownData implements I_ExpectedThrownData {
+public class ExpectedThrowableValidator implements I_ExpectedThrowable {
+  private final I_Tests4J_Constants constants_;
 	private String message_;
 	private I_MatchType matchType_;
 	private Class<? extends Throwable> throwableClass_;
 	private Throwable instance_;
-	private ExpectedThrownData expectedCause_;
+	private ExpectedThrowableValidator expectedCause_;
 	
-	public ExpectedThrownData(I_ExpectedThrownData p) {
+	public ExpectedThrowableValidator(I_Tests4J_Constants constants, I_ExpectedThrowable p) {
+	  if (constants == null) {
+	    throw new NullPointerException();
+	  }
+	  constants_ = constants;
 		Throwable inst = p.getInstance();
 		matchType_ = p.getMatchType();
 		if (inst == null) {
@@ -33,8 +38,8 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 	 * Throwable's that have any message. 
 	 * @param clazz 
 	 */
-	public ExpectedThrownData(Class<? extends Throwable> clazz) {
-	  this(clazz, MatchType.ANY);
+	public ExpectedThrowableValidator(I_Tests4J_Constants constants, Class<? extends Throwable> clazz) {
+	  this(constants, clazz, MatchType.ANY);
 	}
 
 	/**
@@ -42,7 +47,11 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 	 * @param clazz the throwable class.
 	 * @param matchType the message matching type.
 	 */
-	public ExpectedThrownData(Class<? extends Throwable> clazz, MatchType matchType) {
+	public ExpectedThrowableValidator(I_Tests4J_Constants constants, Class<? extends Throwable> clazz, MatchType matchType) {
+	  if (constants == null) {
+      throw new NullPointerException();
+    }
+	  constants_ = constants;
 	  if (matchType == null) {
 	    matchType_ = MatchType.ANY;
 	  } else {
@@ -57,12 +66,16 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
    * @param clazz 
    * @param the 
    */
-	public ExpectedThrownData(Class<? extends Throwable> clazz, I_ExpectedThrownData expectedCause) {
-	  this(clazz, MatchType.ANY, expectedCause);
+	public ExpectedThrowableValidator(I_Tests4J_Constants constants, Class<? extends Throwable> clazz, I_ExpectedThrowable expectedCause) {
+	  this(constants, clazz, MatchType.ANY, expectedCause);
 	}
 	
-	public ExpectedThrownData(Class<? extends Throwable> clazz, MatchType matchType, I_ExpectedThrownData expectedCause) {
-    if (matchType == null) {
+	public ExpectedThrowableValidator(I_Tests4J_Constants constants, Class<? extends Throwable> clazz, MatchType matchType, I_ExpectedThrowable expectedCause) {
+	  if (constants == null) {
+      throw new NullPointerException();
+    }
+    constants_ = constants;
+	  if (matchType == null) {
       matchType_ = MatchType.ANY;
     } else {
       matchType_ = matchType;
@@ -78,8 +91,8 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
    * the Throwable class and message.
    * @param clazz
    */
-	public ExpectedThrownData(Throwable t) {
-	  this(t, MatchType.EQUALS);
+	public ExpectedThrowableValidator(I_Tests4J_Constants constants, Throwable t) {
+	  this(constants, t, MatchType.EQUALS);
 	}
 	
 	 /**
@@ -87,7 +100,11 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
    * the Throwable class and message.
    * @param clazz
    */
-  public ExpectedThrownData(Throwable t, MatchType matchType) {
+  public ExpectedThrowableValidator(I_Tests4J_Constants constants, Throwable t, MatchType matchType) {
+    if (constants == null) {
+      throw new NullPointerException();
+    }
+    constants_ = constants;
     if (matchType == null) {
       matchType_ = MatchType.EQUALS;
     } else {
@@ -101,8 +118,8 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
    * the Throwable class and message.
    * @param clazz
    */
-	public ExpectedThrownData(Throwable t, I_ExpectedThrownData p) {
-	  this(t, MatchType.EQUALS, p);
+	public ExpectedThrowableValidator(I_Tests4J_Constants constants, Throwable t, I_ExpectedThrowable p) {
+	  this(constants, t, MatchType.EQUALS, p);
 	}
 
 	 /**
@@ -110,7 +127,11 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
    * the Throwable class and message.
    * @param clazz
    */
-  public ExpectedThrownData(Throwable t, MatchType matchType, I_ExpectedThrownData p) {
+  public ExpectedThrowableValidator(I_Tests4J_Constants constants, Throwable t, MatchType matchType, I_ExpectedThrowable p) {
+    if (constants == null) {
+      throw new NullPointerException();
+    }
+    constants_ = constants;
     if (matchType == null) {
       matchType_ = MatchType.EQUALS;
     } else {
@@ -161,7 +182,7 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 		if (obj == null)
 			return false;
 		try {
-			I_ExpectedThrownData other = (I_ExpectedThrownData) obj;
+			I_ExpectedThrowable other = (I_ExpectedThrowable) obj;
 			if (message_ == null) {
 				if (other.getMessage() != null)
 					return false;
@@ -187,7 +208,7 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 	}
 
 	@Override
-	public I_ExpectedThrownData getExpectedCause() {
+	public I_ExpectedThrowable getExpectedCause() {
 		return expectedCause_;
 	}
 
@@ -196,19 +217,18 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
     return matchType_;
   }
 	
-	protected void setupCausationChain(I_ExpectedThrownData p) {
+	protected void setupCausationChain(I_ExpectedThrowable p) {
     //expect non null input
-    expectedCause_ = new ExpectedThrownData(p);
-    I_ExpectedThrownData dec = p.getExpectedCause();
+    expectedCause_ = new ExpectedThrowableValidator(constants_, p);
+    I_ExpectedThrowable dec = p.getExpectedCause();
     if (dec != null) {
-      expectedCause_.expectedCause_ = new ExpectedThrownData(dec);
+      expectedCause_.expectedCause_ = new ExpectedThrowableValidator(constants_, dec);
     }
 	}
 	  
 	private void setupInstance(Throwable t) {
     if (t == null) {
-      I_Tests4J_AssertionInputMessages messages = 
-          Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+      I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
       throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
     }
     instance_ = t;
@@ -219,8 +239,7 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
       switch (type) {
         case EQUALS:
         case CONTAINS:
-          I_Tests4J_AssertionInputMessages messages = 
-            Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+          I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
           throw new IllegalArgumentException(messages.getExpectedThrownDataWithEqualsOrContainMatchTypesRequireAMessage());
         default:
       }
@@ -229,8 +248,7 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
 	  
 	private void setupThrowableClass(Class<? extends Throwable> clazz) {
     if (clazz == null) {
-      I_Tests4J_AssertionInputMessages messages = 
-          Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+      I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
       throw new IllegalArgumentException(messages.getExpectedThrownDataRequiresThrowable());
     }
     throwableClass_ = clazz;
@@ -238,8 +256,7 @@ public class ExpectedThrownData implements I_ExpectedThrownData {
     switch (type) {
       case EQUALS:
       case CONTAINS:
-          I_Tests4J_AssertionInputMessages messages = 
-            Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+          I_Tests4J_AssertionInputMessages messages = constants_.getAssertionInputMessages();
           throw new IllegalArgumentException(messages.getExpectedThrownDataWithEqualsOrContainMatchTypesRequireAMessage());
       default:
     }

@@ -15,6 +15,7 @@ import org.adligo.tests4j.shared.asserts.reference.I_ReferenceGroup;
 import org.adligo.tests4j.shared.common.JavaAPIVersion;
 import org.adligo.tests4j.shared.common.LegacyAPI_Issues;
 import org.adligo.tests4j.shared.common.SystemWithPrintStreamDelegate;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.DelegatingLog;
 import org.adligo.tests4j.shared.output.I_ConcurrentOutputDelegator;
@@ -58,6 +59,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	public static final String REQUIRES_SETUP_IS_CALLED_BEFORE_RUN = " requires setup is called before run.";
 	private Tests4J_Memory memory_;
 	private I_Tests4J_Log log_;
+	private I_Tests4J_Constants constants_;
 	
 	private final I_JseSystem system_;
 	private Tests4J_ParamsReader reader_;
@@ -87,7 +89,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 	 */
 	public boolean setup(I_Tests4J_Listener listener, I_Tests4J_Params params) {
 		
-
+	  constants_ = params.getConstants();
 		//@diagram_sync on 1/8/2015 with Overview.seq
 		reader_ = new Tests4J_ParamsReader(system_,  params);
 		/**
@@ -107,6 +109,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		reader_.read(log_);
 		//@diagram_sync on 1/8/2014 with Overview.seq
 		memory_ = new Tests4J_Memory(log_);
+		
 		memory_.setSystem(system_);
 		
 		List<OutputStream> outs =  params.getAdditionalReportOutputStreams();
@@ -119,11 +122,11 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 			PrintStream out = new  JsePrintOutputStream(new ListDelegateOutputBuffer(outputBuffers));
 			
 			SystemWithPrintStreamDelegate sysPs = new SystemWithPrintStreamDelegate(system_, out);
-			log_ = new DefaultLog(sysPs, params.getLogStates());
+			log_ = new DefaultLog(sysPs, constants_, params.getLogStates());
 		}
 		
 		//use the dynamic log
-		memory_.setReporter(new SummaryReporter(log_));
+		memory_.setReporter(new SummaryReporter(constants_, log_));
 		
 		memory_.setListener(listener);
 		
@@ -247,7 +250,7 @@ public class Tests4J_Processor implements I_Tests4J_Delegate, Runnable {
 		JsePrintOutputStream jpos = new JsePrintOutputStream(cod);
 		System.setOut(jpos);
 		System.setErr(jpos);
-		log_ = new DelegatingLog(system_, logStates, cod);
+		log_ = new DelegatingLog(system_, constants_, logStates, cod);
 		return cod;
 	}
 	

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.adligo.tests4j.shared.common.MethodBlocker;
+import org.adligo.tests4j.shared.en.Tests4J_EnglishConstants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
@@ -29,7 +31,7 @@ public class Tests4J_UncaughtExceptionHandler implements UncaughtExceptionHandle
 		List<String> allowedCallers = new ArrayList<String>();
 		allowedCallers.add("org.adligo.tests4j_tests.run.api.mocks.MockTests4J_UncaughtExceptionHandler");
 		
-		return new MethodBlocker(Tests4J_UncaughtExceptionHandler.class, "setLogger", allowedCallers);
+		return new MethodBlocker(Tests4J_EnglishConstants.ENGLISH, Tests4J_UncaughtExceptionHandler.class, "setLogger", allowedCallers);
 	}
 	public Tests4J_UncaughtExceptionHandler() {}
 	

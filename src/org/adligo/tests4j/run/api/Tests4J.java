@@ -2,16 +2,18 @@ package org.adligo.tests4j.run.api;
 
 import org.adligo.tests4j.run.common.I_JseSystem;
 import org.adligo.tests4j.run.common.JseSystem;
+import org.adligo.tests4j.run.discovery.ConstantsDiscovery;
 import org.adligo.tests4j.run.helpers.DefaultDelegateFactory;
 import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.common.MethodBlocker;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.en.Tests4J_EnglishConstants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Controls;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Delegate;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_DelegateFactory;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
+import org.adligo.tests4j.system.shared.api.Tests4J_Params;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,27 +53,6 @@ public class Tests4J {
 	 */
 	private static ThreadLocal<I_Tests4J_DelegateFactory> FACTORY = getFactoryInternal();
 
-	 /**
-   * wrapper around some java.lang.System
-   * methods so that tests4j can make sure
-   * it makes some System calls.
-   */
-  private I_JseSystem system_ = new JseSystem();
-  
-	private static MethodBlocker getSetFactoryMethodBlocker() {
-		List<String> allowedCallers = new ArrayList<String>();
-		allowedCallers.add("org.adligo.tests4j_tests.run.api.mocks.MockTests4J");
-		allowedCallers.add("org.adligo.tests4j_tests.trials_api.common.Tests4JRunnerMock");
-		return new MethodBlocker(Tests4J.class,"setFactory", allowedCallers);
-	}
-	
-	private static ThreadLocal<I_Tests4J_DelegateFactory> getFactoryInternal() {
-		
-		ThreadLocal<I_Tests4J_DelegateFactory> toRet = new ThreadLocal<I_Tests4J_DelegateFactory>();
-		toRet.set(DEFAULT_FACTORY);
-		return toRet;
-	}
-	
 	/**
 	 * Run the trials/tests, using the public endorsed test4j api.
 	 * 
@@ -81,13 +62,11 @@ public class Tests4J {
 	 * @param pListener
 	 */
 	public static I_Tests4J_Controls run(I_Tests4J_Params params, I_Tests4J_Listener listener) {
-		if (listener == null) {
-			I_Tests4J_Constants messages = Tests4J_Constants.CONSTANTS;
-			throw new IllegalArgumentException(messages.getNullListenerExceptionMessage());
-		}
 		//sets up logging for the run, from the params
 		Tests4J instance = new Tests4J();
-		return instance.instanceRun(params, listener);
+		instance.setParams(params);
+		instance.setListener(listener);
+		return instance.instanceRun();
 	}
 	
 	/**
@@ -101,7 +80,8 @@ public class Tests4J {
 	 */
 	public static I_Tests4J_Controls run(I_Tests4J_Params params) {
 		Tests4J instance = new Tests4J();
-		return instance.instanceRun(params, null);
+		instance.setParams(params);
+    return instance.instanceRun();
 	}
 	
 	/**
@@ -117,7 +97,42 @@ public class Tests4J {
 		FACTORY.set(factory);
 	}
 
-	
+	private static MethodBlocker getSetFactoryMethodBlocker() {
+    List<String> allowedCallers = new ArrayList<String>();
+    allowedCallers.add("org.adligo.tests4j_tests.run.api.mocks.MockTests4J");
+    allowedCallers.add("org.adligo.tests4j_tests.trials_api.common.Tests4JRunnerMock");
+    return new MethodBlocker(Tests4J_EnglishConstants.ENGLISH,
+        Tests4J.class,"setFactory", allowedCallers);
+  }
+  
+  private static ThreadLocal<I_Tests4J_DelegateFactory> getFactoryInternal() {
+    
+    ThreadLocal<I_Tests4J_DelegateFactory> toRet = new ThreadLocal<I_Tests4J_DelegateFactory>();
+    toRet.set(DEFAULT_FACTORY);
+    return toRet;
+  }
+  
+  private static I_Tests4J_Constants getConstants(I_Tests4J_Params params, I_JseSystem system) {
+    String language = system.getLanguage();
+    try {
+      return new ConstantsDiscovery(language);
+    } catch (IOException x) {
+      return Tests4J_EnglishConstants.ENGLISH;
+    }
+  }
+
+  /**
+  * wrapper around some java.lang.System
+  * methods so that tests4j can make sure
+  * it makes some System calls.
+  */
+  private I_JseSystem system_ = new JseSystem();
+  private MethodBlocker setSystemBlock_ = new MethodBlocker(Tests4J_EnglishConstants.ENGLISH,
+      Tests4J.class, "setSystem", Collections.singleton("org.adligo.tests4j_tests.trials_api.common.Tests4JRunnerMock"));
+  private I_Tests4J_Constants constants_;
+  private I_Tests4J_Params params_;
+  private I_Tests4J_Listener listener_;
+  
 	/**
 	 * not part of the public api,
 	 * but used when tests4j tests itself
@@ -147,7 +162,7 @@ public class Tests4J {
 	}
 
   public void throwAlreadyRunningException(String dir, IOException x) {
-    String val = Tests4J_Constants.CONSTANTS.getAnotherTests4J_InstanceIsRunningHere() +
+    String val = constants_.getAnotherTests4J_InstanceIsRunningHere() +
         system_.lineSeperator() + dir;
     if (x != null) {
       throw new RuntimeException(val, x);
@@ -166,19 +181,14 @@ public class Tests4J {
 	 * @param system
 	 * @return
 	 */
-	protected I_Tests4J_Controls instanceRun(I_Tests4J_Params pParams, I_Tests4J_Listener pListener) {
-		
-		if (pParams == null) {
-			I_Tests4J_Constants messages = Tests4J_Constants.CONSTANTS;
-			throw new IllegalArgumentException(messages.getNullParamsExceptionMessage());
-		}
-		
+	protected I_Tests4J_Controls instanceRun() {
+
 		I_Tests4J_DelegateFactory factory = getFactory();
 		//@diagram_sync on 1/8/2015 with Overview.seq
 		I_Tests4J_Delegate delegate =  factory.create(system_);
 
 		//@diagram_sync on 1/8/2015 with Overview.seq
-		if (delegate.setup(pListener,pParams)) {
+		if (delegate.setup(listener_,params_)) {
 			//@diagram_sync on 1/8/2015 with Overview.seq
 			delegate.runOnAnotherThreadIfAble();
 		}
@@ -199,12 +209,30 @@ public class Tests4J {
 		return system_;
 	}
 
-	@SuppressWarnings("unused")
   protected void setSystem(I_JseSystem system) {
-	  new MethodBlocker(Tests4J.class, "setSystem", 
-	      Collections.singleton("org.adligo.tests4j_tests.trials_api.common.Tests4JRunnerMock"));
+	  setSystemBlock_.checkAllowed();
 	  system_ = system;
 	}
+
+  protected void setParams(I_Tests4J_Params params) {
+    constants_ = getConstants(params, system_);
+    if (params == null) {
+      throw new IllegalArgumentException(constants_.getNullParamsExceptionMessage());
+    }
+    Tests4J_Params copy = new Tests4J_Params(params);
+    if (params.getConstants() == null) {
+      copy.setConstants(constants_);
+    }
+    params_ = copy;
+  }
+
+  protected void setListener(I_Tests4J_Listener listener) {
+    if (listener == null) {
+      throw new IllegalArgumentException(constants_.getNullListenerExceptionMessage());
+    }
+    
+    listener_ = listener;
+  }
 	
 	
 }

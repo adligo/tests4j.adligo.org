@@ -3,6 +3,7 @@ package org.adligo.tests4j.system.shared.trials;
 import org.adligo.tests4j.shared.asserts.common.I_AssertListener;
 import org.adligo.tests4j.shared.asserts.uniform.I_EvaluatorLookup;
 import org.adligo.tests4j.shared.common.I_PlatformContainer;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 /**
@@ -17,4 +18,5 @@ public interface I_TrialBindings extends I_PlatformContainer {
 	public I_AssertListener getAssertListener();
 	public I_Tests4J_Log getLog();
 	public I_EvaluatorLookup getDefalutEvaluatorLookup();
+	public I_Tests4J_Constants getConstants();
 }

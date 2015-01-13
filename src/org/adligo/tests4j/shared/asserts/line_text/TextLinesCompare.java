@@ -1,13 +1,13 @@
 package org.adligo.tests4j.shared.asserts.line_text;
 
+import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
-
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
-import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
 
 /**
  * A NON Threadsafe model class to compare large multi line strings
@@ -29,13 +29,13 @@ public class TextLinesCompare  {
 	
 	
 	@SuppressWarnings("boxing")
-  public I_TextLinesCompareResult compare(String example, String actual, boolean normalizeLineFeeds) {
+  public I_TextLinesCompareResult compare(I_Tests4J_Constants constants, String example, String actual, boolean normalizeLineFeeds) {
 	  if (example == null) {
-      I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+      I_Tests4J_AssertionInputMessages messages = constants.getAssertionInputMessages();
       return new TextLinesCompareResult(messages.getTheExpectedValueShouldNeverBeNull());
     }
 		if (actual == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants.getAssertionInputMessages();
 			return new TextLinesCompareResult(messages.getTheActualValueIsNull());
 		}
 		exampleLT = new TextLines(example, normalizeLineFeeds);

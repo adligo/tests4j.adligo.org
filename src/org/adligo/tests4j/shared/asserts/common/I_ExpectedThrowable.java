@@ -3,11 +3,11 @@ package org.adligo.tests4j.shared.asserts.common;
 
 /**
  * This interface represents a expected Throwable. 
- * @see {@link ExpectedThrownData}
+ * @see {@link ExpectedThrowable}
  * @author scott
  *
  */
-public interface I_ExpectedThrownData {
+public interface I_ExpectedThrowable {
 
 	/**
 	 * 
@@ -39,7 +39,7 @@ public interface I_ExpectedThrownData {
 	 * Throwable to allow infinite recursive testing of Throwable
    * causation chain.
 	 */
-	public I_ExpectedThrownData getExpectedCause();
+	public I_ExpectedThrowable getExpectedCause();
 
 	/**
 	 * @return

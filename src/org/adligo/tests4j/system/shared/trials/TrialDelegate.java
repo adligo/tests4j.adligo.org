@@ -2,7 +2,7 @@ package org.adligo.tests4j.system.shared.trials;
 
 import java.util.Collection;
 
-import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrownData;
+import org.adligo.tests4j.shared.asserts.common.I_ExpectedThrowable;
 import org.adligo.tests4j.shared.asserts.common.I_Thrower;
 import org.adligo.tests4j.shared.common.I_Platform;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
@@ -186,20 +186,20 @@ public class TrialDelegate implements I_Trial {
 		delegate.assertTrue(message, p);
 	}
 
-	public void assertThrown(I_ExpectedThrownData p, I_Thrower thrower) {
+	public void assertThrown(I_ExpectedThrowable p, I_Thrower thrower) {
 		delegate.assertThrown(p, thrower);
 	}
 
-	public void assertThrown(String message, I_ExpectedThrownData p,
+	public void assertThrown(String message, I_ExpectedThrowable p,
 			I_Thrower thrower) {
 		delegate.assertThrown(message, p, thrower);
 	}
 
-	public void assertThrownUniform(I_ExpectedThrownData p, I_Thrower thrower) {
+	public void assertThrownUniform(I_ExpectedThrowable p, I_Thrower thrower) {
 		delegate.assertThrownUniform(p, thrower);
 	}
 
-	public void assertThrownUniform(String message, I_ExpectedThrownData p,
+	public void assertThrownUniform(String message, I_ExpectedThrowable p,
 			I_Thrower thrower) {
 		delegate.assertThrownUniform(message, p, thrower);
 	}

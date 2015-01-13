@@ -3,7 +3,6 @@ package org.adligo.tests4j.system.shared.report.summary;
 import org.adligo.tests4j.models.shared.results.I_TestResult;
 import org.adligo.tests4j.models.shared.results.I_TrialFailure;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
-import org.adligo.tests4j.shared.asserts.common.AssertThrownFailure;
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.AssertionFailedException;
 import org.adligo.tests4j.shared.asserts.common.I_AssertCompareFailure;
@@ -28,8 +27,9 @@ import org.adligo.tests4j.shared.asserts.reference.I_FieldSignature;
 import org.adligo.tests4j.shared.asserts.reference.I_MethodSignature;
 import org.adligo.tests4j.shared.common.ArrayUtils;
 import org.adligo.tests4j.shared.common.ClassMethods;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
+import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 
@@ -40,14 +40,19 @@ import java.util.Map;
 import java.util.Set;
 
 public class TrialFailedDetailDisplay {
-	private I_Tests4J_Log log_;
-	private I_Tests4J_ReportMessages messages_ =  Tests4J_Constants.CONSTANTS.getReportMessages();
+  private final I_Tests4J_Constants constants_;
+  private final I_Tests4J_ReportMessages messages_;
+  private final I_Tests4J_Log log_;
+	
 	private Map<I_AssertType,Runnable> switchReplacement_;
 	private StringBuilder sb_;
 	private I_TestFailure testFailure_;
 	private I_TrialResult trialResult_;
 	
-	public TrialFailedDetailDisplay(I_Tests4J_Log pLog) {
+	public TrialFailedDetailDisplay(I_Tests4J_Constants constants, I_Tests4J_Log pLog) {
+	  constants_ = constants;
+	  messages_ = constants_.getReportMessages();
+	  
 		log_ = pLog;
 		//this is a dumb way to obvoid using a switch
 		//statement because it puts a java.lang.NoSuchFieldError
@@ -115,7 +120,7 @@ public class TrialFailedDetailDisplay {
 			if (!tr.isPassed() && !tr.isIgnored()) {
 				String testName = tr.getName();
 				
-				sb_.append(messages_.getIndent() + trialName + "."  + testName + messages_.getFailedEOS() +
+				sb_.append(messages_.getIndent() + trialName + "."  + testName + "()" + messages_.getFailedEOS() +
 						log_.getLineSeperator());
 				testFailure_ = tr.getFailure();
 				if (testFailure_ != null) {
@@ -133,9 +138,6 @@ public class TrialFailedDetailDisplay {
 						    sb_.append(messages_.getIndent() + messages_.getIndent() + 
 						        atf.getFailureDetail());
 						  } else {
-  						  I_AssertType ast = testFailure_.getAssertType();
-  						  
-  						  
   							I_AssertCompareFailure acf = (I_AssertCompareFailure) testFailure_;
   							if (String.class.getName().equals(acf.getExpectedClass())) {
   								if (String.class.getName().equals(acf.getActualClass())) {
@@ -322,11 +324,12 @@ public class TrialFailedDetailDisplay {
 		stack[0] = top;
 		return stack;
 	}
-	private void addStringCompare(String expectedValue, String actualValue) {
+	@SuppressWarnings("boxing")
+  private void addStringCompare(String expectedValue, String actualValue) {
 		TextLinesCompare tlc = new TextLinesCompare();
 		
 		
-		I_TextLinesCompareResult result =  tlc.compare(expectedValue, actualValue, true);
+		I_TextLinesCompareResult result =  tlc.compare(constants_, expectedValue, actualValue, true);
 		
 		Set<Integer> missingActualLines = new HashSet<Integer>();
 		Set<Integer> missingExpectedLines = new HashSet<Integer>();
@@ -347,16 +350,20 @@ public class TrialFailedDetailDisplay {
 			}
 		}
 		if (missingExpectedLines.size() > 1) {
-			sb_.append(messages_.getTheFollowingExpectedLineNumbersWereMissing());
-			boolean first = true;
-			for (Integer lineNbr: missingExpectedLines) {
-				if (!first) {
-					sb_.append(",");
-				}
-				sb_.append(lineNbr);
-				first = false;
-			}
+		  String message = DefaultLog.orderLine(constants_.isLeftToRight(),
+		      messages_.getIndent(), messages_.getTheFollowingExpectedLineNumbersWereMissing());
+			sb_.append(message);
 			sb_.append(log_.getLineSeperator());
+      I_TextLines actualLines =  result.getExpectedLines();
+      for (Integer lineNbr: missingExpectedLines) {
+        String line = actualLines.getLine(lineNbr);
+        //line numbers are zero based in the data
+        message = DefaultLog.orderLine(constants_.isLeftToRight(),
+            messages_.getIndent(), "" + (lineNbr + 1) ,":"," ",line);
+        sb_.append(message);
+        sb_.append(log_.getLineSeperator());
+      }
+      
 		} else if (firstDiff != null) {
 			sb_.append(messages_.getIndent() + messages_.getExpected() +
 					log_.getLineSeperator());
@@ -384,16 +391,20 @@ public class TrialFailedDetailDisplay {
 		}
 		
 		if (missingActualLines.size() > 1) {
-			sb_.append(messages_.getTheFollowingActualLineNumberNotExpected());
-			boolean first = true;
-			for (Integer lineNbr: missingActualLines) {
-				if (!first) {
-					sb_.append(",");
-				}
-				sb_.append(lineNbr);
-				first = false;
-			}
+		  String message = DefaultLog.orderLine(constants_.isLeftToRight(),
+		      messages_.getIndent(), messages_.getTheFollowingActualLineNumberNotExpected());
+			sb_.append(message);
+
 			sb_.append(log_.getLineSeperator());
+			I_TextLines actualLines =  result.getActualLines();
+			for (Integer lineNbr: missingActualLines) {
+			  String line = actualLines.getLine(lineNbr);
+			  //line numbers are zero based in the data
+			  message = DefaultLog.orderLine(constants_.isLeftToRight(), 
+			      messages_.getIndent(), "" + (lineNbr + 1), ":", " ", line);
+			  sb_.append(message);
+			  sb_.append(log_.getLineSeperator());
+      }
 		} else if (firstDiff != null) {
 			sb_.append(messages_.getIndent() + messages_.getActual() +
 					log_.getLineSeperator());
@@ -401,8 +412,9 @@ public class TrialFailedDetailDisplay {
 			int nbr = firstDiff.getActualLineNbr();
 			I_TextLines actualLines = result.getActualLines();
 			String line = actualLines.getLine(nbr);
-			sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + line + "'" +
-					log_.getLineSeperator());
+			String message = DefaultLog.orderLine(constants_.isLeftToRight(), 
+			    messages_.getIndent(), messages_.getIndent(), "'" + line + "'");
+			sb_.append(message + log_.getLineSeperator());
 			I_DiffIndexesPair pair =  firstDiff.getIndexes();
 			
 			sb_.append(messages_.getIndent() + messages_.getDifferences() +

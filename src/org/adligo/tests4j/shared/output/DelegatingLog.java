@@ -1,7 +1,7 @@
 package org.adligo.tests4j.shared.output;
 
 import org.adligo.tests4j.shared.common.I_System;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 
 import java.util.Collections;
@@ -26,6 +26,7 @@ import java.util.Set;
 public class DelegatingLog implements I_Tests4J_Log {
 	public static final String DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM = "DefaultReporter requires a non null I_System.";
 	private Map<String, Boolean>  logs_ = new HashMap<String,Boolean>();
+	private I_Tests4J_Constants constants_;
 	private boolean mainLog_;
 	private I_OutputBuffer out_;
 	private I_System system_;
@@ -38,12 +39,16 @@ public class DelegatingLog implements I_Tests4J_Log {
 	 * @param pSystem
 	 * @param params
 	 */
-	public DelegatingLog(I_System pSystem, Map<Class<?>, Boolean> logsOn, I_OutputBuffer pOut) {
+	public DelegatingLog(I_System pSystem, I_Tests4J_Constants constants,  Map<Class<?>, Boolean> logsOn, I_OutputBuffer pOut) {
 		if (pSystem == null) {
 			throw new IllegalArgumentException(DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM);
 		}
 		system_ = pSystem;
-		log_ = new DefaultLog(pSystem, logsOn);
+		if (constants == null) {
+		  throw new NullPointerException();
+		}
+		constants_ = constants;
+		log_ = new DefaultLog(pSystem, constants, logsOn);
 		mainLog_ = pSystem.isMainSystem();
 		out_ = pOut;
 		if (logsOn != null) {
@@ -69,7 +74,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 
 	@Override
   public void logLine(String ... p) {
-    String message = DefaultLog.orderLine(p);
+    String message = DefaultLog.orderLine(constants_.isLeftToRight(),  p);
     out_.add(message);
   }
 	
@@ -121,8 +126,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 
 	@Override
 	public String getCurrentThreadName() {
-		I_Tests4J_ReportMessages reportMessages = 
-				Tests4J_Constants.CONSTANTS.getReportMessages();
+		I_Tests4J_ReportMessages reportMessages = constants_.getReportMessages();
 		
 		return reportMessages.getOnThreadZ().replaceAll("<Z/>", 
 				system_.getCurrentThreadName());

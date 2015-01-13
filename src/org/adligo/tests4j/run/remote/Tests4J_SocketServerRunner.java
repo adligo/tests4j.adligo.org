@@ -14,6 +14,7 @@ import org.adligo.tests4j.run.remote.socket_api.Tests4J_SocketMessage;
 import org.adligo.tests4j.shared.common.DefaultSystem;
 import org.adligo.tests4j.shared.common.I_System;
 import org.adligo.tests4j.shared.common.StringMethods;
+import org.adligo.tests4j.shared.en.Tests4J_EnglishConstants;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.shared.xml.XML_Builder;
@@ -68,7 +69,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 	public void main(String[] args, I_System pSystem) {
 		Integer port = null;
 		String authCode = "";
-		logger = new DefaultLog(pSystem, null);
+		logger = new DefaultLog( pSystem, Tests4J_EnglishConstants.ENGLISH, null);
 		
 		for (int i = 0; i < args.length; i++) {
 			if("-port".equalsIgnoreCase(args[i])) { //$NON-NLS-1$
@@ -99,7 +100,7 @@ public class Tests4J_SocketServerRunner implements I_Tests4J_Listener {
 		}
 		try {
 			InetAddress localhost = InetAddress.getLocalHost();
-			info = new Tests4J_RemoteInfo(localhost.getHostName(), port, authCode);
+			info = new Tests4J_RemoteInfo(Tests4J_EnglishConstants.ENGLISH, localhost.getHostName(), port, authCode);
 			startup(pSystem);
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block

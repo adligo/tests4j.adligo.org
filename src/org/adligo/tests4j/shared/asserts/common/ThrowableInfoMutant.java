@@ -17,7 +17,7 @@ public class ThrowableInfoMutant implements I_ThrowableInfo {
 		cause = info.getCause();
 	}
 	
-	public ThrowableInfoMutant(I_ExpectedThrownData p) {
+	public ThrowableInfoMutant(I_ExpectedThrowable p) {
 		className = p.getThrowableClass().getName();
 		Throwable instance = p.getInstance();
 		if (instance != null) {
@@ -26,7 +26,7 @@ public class ThrowableInfoMutant implements I_ThrowableInfo {
 		// for now ignore stacktrace, as it isn't really useful
 		// we may need it at some point if we start allowing full 
 		// stack trace comparisons
-		I_ExpectedThrownData pCause = p.getExpectedCause();
+		I_ExpectedThrowable pCause = p.getExpectedCause();
 		if (pCause != null) {
 			cause = new ThrowableInfoMutant(pCause);
 		}

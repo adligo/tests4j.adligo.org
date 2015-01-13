@@ -1,14 +1,14 @@
 package org.adligo.tests4j.shared.asserts;
 
-import java.util.Collection;
-import java.util.Iterator;
-
 import org.adligo.tests4j.shared.asserts.common.AssertType;
 import org.adligo.tests4j.shared.asserts.common.I_AssertionData;
 import org.adligo.tests4j.shared.asserts.common.I_CollectionContainsAssertionData;
 import org.adligo.tests4j.shared.asserts.common.I_SimpleAssertCommand;
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * a class 
@@ -19,16 +19,15 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
  */
 public class ContainsAssertCommand extends AbstractAssertCommand 
 implements I_SimpleAssertCommand, I_CollectionContainsAssertionData {
-		
 	private Object value;
 	private Collection<?> collection;
 	
 	
-	public ContainsAssertCommand(String pFailureMessage,Collection<?> pCollection, Object pValue) {
+	public ContainsAssertCommand(I_Tests4J_Constants constants, String pFailureMessage,Collection<?> pCollection, Object pValue) {
 		super(AssertType.AssertContains, pFailureMessage);
 		collection = pCollection;
 		if (collection == null) {
-			I_Tests4J_AssertionInputMessages messages = Tests4J_Constants.CONSTANTS.getAssertionInputMessages();
+			I_Tests4J_AssertionInputMessages messages = constants.getAssertionInputMessages();
 			
 			throw new IllegalArgumentException(messages.getTheExpectedValueShouldNeverBeNull());
 		}

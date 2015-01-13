@@ -17,7 +17,7 @@ public class ThrowableInfo  implements I_ThrowableInfo {
 		}
 	}
 
-	public ThrowableInfo(I_ExpectedThrownData p) {
+	public ThrowableInfo(I_ExpectedThrowable p) {
 		mutant = new ThrowableInfoMutant(p);
 	}
 	

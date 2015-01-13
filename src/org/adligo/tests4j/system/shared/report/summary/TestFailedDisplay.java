@@ -1,24 +1,25 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
-import org.adligo.tests4j.shared.common.Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class TestFailedDisplay {
-  private static final I_Tests4J_Constants CONSTANTS = Tests4J_Constants.CONSTANTS;
-	private I_Tests4J_Log logger;
+  private final I_Tests4J_Constants constants_;
+	private final I_Tests4J_Log log_;
 	
-	public TestFailedDisplay(I_Tests4J_Log pLogger) {
-		logger = pLogger;
+	public TestFailedDisplay(I_Tests4J_Constants constants, I_Tests4J_Log log) {
+	  constants_ = constants;
+		log_ = log;
 	}
 	
 	public void onTestFailed(String trialName, String testName,
 			boolean passed) {
-		if (logger.isLogEnabled(TestFailedDisplay.class)) {
-			I_Tests4J_ReportMessages messages = Tests4J_Constants.CONSTANTS.getReportMessages();
-			logger.log(DefaultLog.orderLine(CONSTANTS.getPrefix(), 
+		if (log_.isLogEnabled(TestFailedDisplay.class)) {
+			I_Tests4J_ReportMessages messages = constants_.getReportMessages();
+			log_.log(DefaultLog.orderLine(constants_.isLeftToRight(),
+			    constants_.getPrefix(), 
 					messages.getTestHeading(), trialName, ".", testName, messages.getFailedEOS()));
 		}
 	}

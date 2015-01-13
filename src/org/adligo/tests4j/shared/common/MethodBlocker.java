@@ -25,9 +25,8 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
  *
  */
 public class MethodBlocker {
-	private static final I_Tests4J_Constants MESSAGES = 
-			Tests4J_Constants.CONSTANTS;
 	//keep ordered for testing
+  private I_Tests4J_Constants constants_;
 	private Set<String> allowedCallerNames = new TreeSet<String>();
 	private Class<?> blockingClass;
 	private String blockedMethodName;
@@ -40,18 +39,19 @@ public class MethodBlocker {
 	 * keep Circular dependencies from getting created
 	 * @param allowedCallersClassNames
 	 */
-	public MethodBlocker(Class<?> pBlockingClass, String pMethodName, Collection<String> pAllowedCallersClassNames) {
-		if (pBlockingClass == null) {
-			throw new IllegalArgumentException(MESSAGES.getMethodBlockerRequiresABlockingClass());
+	public MethodBlocker(I_Tests4J_Constants constants, Class<?> pBlockingClass, String pMethodName, Collection<String> pAllowedCallersClassNames) {
+	  constants_ = constants;
+	  if (pBlockingClass == null) {
+			throw new IllegalArgumentException(constants.getMethodBlockerRequiresABlockingClass());
 		}
 		if (StringMethods.isEmpty(pMethodName)) {
-			throw new IllegalArgumentException(MESSAGES.getMethodBlockerRequiresABlockingMethod());
+			throw new IllegalArgumentException(constants.getMethodBlockerRequiresABlockingMethod());
 		}
 		if (pAllowedCallersClassNames == null) {
-			throw new IllegalArgumentException(MESSAGES.getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames());
+			throw new IllegalArgumentException(constants.getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames());
 		}
 		if (pAllowedCallersClassNames.isEmpty()) {
-			throw new IllegalArgumentException(MESSAGES.getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames());
+			throw new IllegalArgumentException(constants.getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames());
 		}
 		
 		
@@ -77,9 +77,9 @@ public class MethodBlocker {
 		StackTraceElement callingClassE = trace[2];
 		String callingClassName = callingClassE.getClassName();
 		if (!allowedCallerNames.contains(callingClassName)) {
-			throw new IllegalStateException(MESSAGES.getTheMethodCanOnlyBeCalledBy_PartOne() + 
+			throw new IllegalStateException(constants_.getTheMethodCanOnlyBeCalledBy_PartOne() + 
 					blockingClass + "." + blockedMethodName + 
-					MESSAGES.getTheMethodCanOnlyBeCalledBy_PartTwo() + 
+					constants_.getTheMethodCanOnlyBeCalledBy_PartTwo() + 
 					allowedCallerNames);
 		}
 	}
