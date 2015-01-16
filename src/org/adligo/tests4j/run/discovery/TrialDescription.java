@@ -58,7 +58,7 @@ public class TrialDescription implements I_TrialDescription {
 	 */
 	private I_AbstractTrial trial_;
 	private Class<? extends I_AbstractTrial> trialClass_;
-	private I_Tests4J_Constants constants_;
+	private final I_Tests4J_Constants constants_;
 	
 	private Method beforeTrialMethod_;
 	private Method afterTrialTestsMethod_;
@@ -95,6 +95,7 @@ public class TrialDescription implements I_TrialDescription {
 	public TrialDescription(I_Tests4J_CoverageTrialInstrumentation instrIn,
 			I_Memory memory) {
 		log_ = memory.getLog();
+		constants_ = memory.getConstants();
 		trialClass_ = instrIn.getInstrumentedClass();
 		memory_ = memory;
 		if (log_.isLogEnabled(TrialDescription.class)) {

@@ -70,5 +70,33 @@ public class DependencyMutant implements I_Dependency {
 		return c.getSimpleName() + " [alias=" + p.getAlias() + ", references="
 				+ p.getReferences() + "]";
 	}
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((alias == null) ? 0 : alias.hashCode());
+    result = prime * result + references;
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    DependencyMutant other = (DependencyMutant) obj;
+    if (alias == null) {
+      if (other.alias != null)
+        return false;
+    } else if (!alias.equals(other.alias))
+      return false;
+    if (references != other.references)
+      return false;
+    return true;
+  }
 	
 }

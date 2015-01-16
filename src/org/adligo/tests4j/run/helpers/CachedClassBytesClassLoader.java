@@ -167,7 +167,8 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 	 * so we can use it later on.
 	 * 
 	 */
-	@Override
+	@SuppressWarnings("boxing")
+  @Override
 	protected Class<?> loadClass(final String name, final boolean resolve)
 			throws ClassNotFoundException {
 		//quick return it is already loaded
@@ -199,7 +200,8 @@ public class CachedClassBytesClassLoader extends ClassLoader implements I_Cached
 			//fixed when it happens, and this gets your attention in the log
 			IllegalStateException x = new IllegalStateException(message);
 			x.fillInStackTrace();
-			log.onThrowable(x);
+			throw x;
+			//log.onThrowable(x);
 		}
 		return super.loadClass(name, resolve);
 	}
