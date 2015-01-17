@@ -173,7 +173,7 @@ public class Tests4J_ParamsReader {
 					I_Tests4J_ParamsReaderMessages messages =  constants_.getParamReaderMessages();
 					throw new IllegalArgumentException(
 							messages.getTestSelectionsMustHaveACorrespondingTrial() +
-							logger.getLineSeperator() + 
+							logger.lineSeparator() + 
 							trial);
 				}
 			}

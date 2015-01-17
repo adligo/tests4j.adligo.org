@@ -20,6 +20,7 @@ import org.adligo.tests4j.shared.asserts.line_text.I_LineDiffType;
 import org.adligo.tests4j.shared.asserts.line_text.I_TextLines;
 import org.adligo.tests4j.shared.asserts.line_text.I_TextLinesCompareResult;
 import org.adligo.tests4j.shared.asserts.line_text.LineDiffType;
+import org.adligo.tests4j.shared.asserts.line_text.TextLines;
 import org.adligo.tests4j.shared.asserts.line_text.TextLinesCompare;
 import org.adligo.tests4j.shared.asserts.reference.I_AllowedReferencesFailure;
 import org.adligo.tests4j.shared.asserts.reference.I_CircularDependencyFailure;
@@ -27,9 +28,10 @@ import org.adligo.tests4j.shared.asserts.reference.I_FieldSignature;
 import org.adligo.tests4j.shared.asserts.reference.I_MethodSignature;
 import org.adligo.tests4j.shared.common.ArrayUtils;
 import org.adligo.tests4j.shared.common.ClassMethods;
+import org.adligo.tests4j.shared.common.StackTraceBuilder;
+import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.trials.I_SourceFileTrial;
 
@@ -42,6 +44,8 @@ import java.util.Set;
 public class TrialFailedDetailDisplay {
   private final I_Tests4J_Constants constants_;
   private final I_Tests4J_ReportMessages messages_;
+  private String indent_;
+  private boolean leftToRight_;
   private final I_Tests4J_Log log_;
 	
 	private Map<I_AssertType,Runnable> switchReplacement_;
@@ -51,7 +55,9 @@ public class TrialFailedDetailDisplay {
 	
 	public TrialFailedDetailDisplay(I_Tests4J_Constants constants, I_Tests4J_Log pLog) {
 	  constants_ = constants;
+	  leftToRight_ = constants_.isLeftToRight();
 	  messages_ = constants_.getReportMessages();
+	  indent_ = messages_.getIndent();
 	  
 		log_ = pLog;
 		//this is a dumb way to obvoid using a switch
@@ -102,16 +108,16 @@ public class TrialFailedDetailDisplay {
 		sb_ = new StringBuilder();
 		
 		String trialName = trial.getName();
-		sb_.append(trialName + messages_.getFailedEOS() + log_.getLineSeperator());
+		sb_.append(trialName + messages_.getFailedEOS() + log_.lineSeparator());
 		
 		List<I_TrialFailure> failures =  trial.getFailures();
 		if (failures != null) {
 			for (I_TrialFailure failure: failures) {
-				sb_.append(messages_.getIndent() + failure.getMessage() + log_.getLineSeperator());
+				sb_.append(messages_.getIndent() + failure.getMessage() + log_.lineSeparator());
 				
 				String detail = failure.getFailureDetail();
 				if (detail != null) {
-					sb_.append(messages_.getIndent() +  messages_.getIndent() + detail + log_.getLineSeperator());
+					sb_.append(messages_.getIndent() +  messages_.getIndent() + detail + log_.lineSeparator());
 				}
 			}
 		}
@@ -121,14 +127,15 @@ public class TrialFailedDetailDisplay {
 				String testName = tr.getName();
 				
 				sb_.append(messages_.getIndent() + trialName + "."  + testName + "()" + messages_.getFailedEOS() +
-						log_.getLineSeperator());
+						log_.lineSeparator());
 				testFailure_ = tr.getFailure();
 				if (testFailure_ != null) {
-					sb_.append(messages_.getIndent() + testFailure_.getFailureMessage() + log_.getLineSeperator());
+					sb_.append(messages_.getIndent() + testFailure_.getFailureMessage() + log_.lineSeparator());
 					I_AssertType type =  testFailure_.getAssertType();
 					
 					if (type != null) {
-						Runnable run = switchReplacement_.get(type);
+					  AssertType at = AssertType.getType(type);
+					  Runnable run = switchReplacement_.get(at);
 						if (run != null) {
 							run.run();
 						} else {
@@ -164,22 +171,22 @@ public class TrialFailedDetailDisplay {
 	}
 
 	private void addExpected(String exp, String expClass) {
-		sb_.append(messages_.getIndent() + messages_.getExpected() + log_.getLineSeperator());
+		sb_.append(messages_.getIndent() + messages_.getExpected() + log_.lineSeparator());
 		sb_.append(messages_.getIndent() + messages_.getIndent()+ messages_.getClassHeadding() + 
-				expClass + log_.getLineSeperator());
+				expClass + log_.lineSeparator());
 		sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + exp + "'" +
-				log_.getLineSeperator());
+				log_.lineSeparator());
 	}
 	
 	private void addCompareFailure(I_AssertCompareFailure acf) {
 		addExpected(acf.getExpectedValue(), acf.getExpectedClass());
 	
-		sb_.append(messages_.getIndent() + messages_.getActual() + log_.getLineSeperator());
+		sb_.append(messages_.getIndent() + messages_.getActual() + log_.lineSeparator());
 		sb_.append(messages_.getIndent() + messages_.getIndent()+ messages_.getClassHeadding() + 
 					acf.getActualClass()
-					+ log_.getLineSeperator());
+					+ log_.lineSeparator());
 		sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + acf.getActualValue() + "'"
-				+ log_.getLineSeperator());
+				+ log_.lineSeparator());
 	}
 	
 	private void addCoverageFailure(I_TrialResult tr, I_AssertCompareFailure acf) {
@@ -212,31 +219,31 @@ public class TrialFailedDetailDisplay {
 		
 		List<String> groupNames = tf.getGroupNames();
 		message =  messages_.getIndent() +  messages_.getIndent() +
-				"@AllowedReferences: " + groupNames.toString() + log_.getLineSeperator();
+				"@AllowedReferences: " + groupNames.toString() + log_.lineSeparator();
 		I_FieldSignature field = tf.getField();
 		I_MethodSignature method = tf.getMethod();
 		if (field != null) {
 			message = message + messages_.getIndent() + messages_.getIndent()+
 					"SourceClass: " + tf.getSourceClass().getName() + 
-					".java" + log_.getLineSeperator() +
+					".java" + log_.lineSeparator() +
 					messages_.getIndent() + messages_.getIndent()+
 					" called field " + tf.getCalledClass() + ". " + field;
 		} else if (method != null){
 			message = message + messages_.getIndent() + messages_.getIndent()+
 					"SourceClass: " + tf.getSourceClass().getName() + ".java" + 
-					log_.getLineSeperator() +
+					log_.lineSeparator() +
 					messages_.getIndent() + messages_.getIndent()+
 					" called method " + tf.getCalledClass() + ". " + method;
 		} else {
 			message = message + messages_.getIndent() + messages_.getIndent()+
 					"SourceClass: " + tf.getSourceClass().getName() + ".java" + 
-					log_.getLineSeperator() +
+					log_.lineSeparator() +
 					messages_.getIndent() + messages_.getIndent()+
 					" called class " + tf.getCalledClass() + ". ";
 		}
 		
 		AllowedReferencesFailureException dfe = 
-				new AllowedReferencesFailureException(tf.getFailureMessage() + log_.getLineSeperator() +
+				new AllowedReferencesFailureException(tf.getFailureMessage() + log_.lineSeparator() +
 						message,
 						stack);
 		log_.onThrowable(dfe);
@@ -250,14 +257,14 @@ public class TrialFailedDetailDisplay {
 		
 		List<String> classNames = tf.getClassesOutOfBounds();
 		message =  messages_.getIndent() +  messages_.getIndent() +
-				"SourceClass: " + tf.getSourceClass().getName() + log_.getLineSeperator() +
+				"SourceClass: " + tf.getSourceClass().getName() + log_.lineSeparator() +
 				messages_.getIndent() +  messages_.getIndent() +
 				"CircularDependencies: " + tf.getAllowedType() + " " +
-					classNames.toString() + log_.getLineSeperator();
+					classNames.toString() + log_.lineSeparator();
 		
 		
 		AllowedReferencesFailureException dfe = 
-				new AllowedReferencesFailureException(tf.getFailureMessage() + log_.getLineSeperator() +
+				new AllowedReferencesFailureException(tf.getFailureMessage() + log_.lineSeparator() +
 						message,
 						stack);
 		log_.onThrowable(dfe);
@@ -350,87 +357,87 @@ public class TrialFailedDetailDisplay {
 			}
 		}
 		if (missingExpectedLines.size() > 1) {
-		  String message = DefaultLog.orderLine(constants_.isLeftToRight(),
+		  String message = StringMethods.orderLine(constants_.isLeftToRight(),
 		      messages_.getIndent(), messages_.getTheFollowingExpectedLineNumbersWereMissing());
 			sb_.append(message);
-			sb_.append(log_.getLineSeperator());
+			sb_.append(log_.lineSeparator());
       I_TextLines actualLines =  result.getExpectedLines();
       for (Integer lineNbr: missingExpectedLines) {
         String line = actualLines.getLine(lineNbr);
         //line numbers are zero based in the data
-        message = DefaultLog.orderLine(constants_.isLeftToRight(),
+        message = StringMethods.orderLine(constants_.isLeftToRight(),
             messages_.getIndent(), "" + (lineNbr + 1) ,":"," ",line);
         sb_.append(message);
-        sb_.append(log_.getLineSeperator());
+        sb_.append(log_.lineSeparator());
       }
       
 		} else if (firstDiff != null) {
 			sb_.append(messages_.getIndent() + messages_.getExpected() +
-					log_.getLineSeperator());
+					log_.lineSeparator());
 			int nbr = firstDiff.getExpectedLineNbr();
 			I_TextLines expectedLines = result.getExpectedLines();
 			String line = expectedLines.getLine(nbr);
 			sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + line + "'" +
-					log_.getLineSeperator());
+					log_.lineSeparator());
 			I_DiffIndexesPair pair =  firstDiff.getIndexes();
 			
 			sb_.append(messages_.getIndent() + messages_.getDifferences() +
-					log_.getLineSeperator());
+					log_.lineSeparator());
 			I_DiffIndexes expectedLineDiff =  pair.getExpected();
 			String [] diffs = expectedLineDiff.getDifferences(line);
 			for (String dif: diffs) {
 				sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + dif + "'" +
-						log_.getLineSeperator());
+						log_.lineSeparator());
 			}
 		} else {
 			sb_.append(messages_.getIndent() + messages_.getExpected() +
-					log_.getLineSeperator());
+					log_.lineSeparator());
 			
 			sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + expectedValue + "'"
-					+ log_.getLineSeperator());
+					+ log_.lineSeparator());
 		}
 		
 		if (missingActualLines.size() > 1) {
-		  String message = DefaultLog.orderLine(constants_.isLeftToRight(),
+		  String message = StringMethods.orderLine(constants_.isLeftToRight(),
 		      messages_.getIndent(), messages_.getTheFollowingActualLineNumberNotExpected());
 			sb_.append(message);
 
-			sb_.append(log_.getLineSeperator());
+			sb_.append(log_.lineSeparator());
 			I_TextLines actualLines =  result.getActualLines();
 			for (Integer lineNbr: missingActualLines) {
 			  String line = actualLines.getLine(lineNbr);
 			  //line numbers are zero based in the data
-			  message = DefaultLog.orderLine(constants_.isLeftToRight(), 
+			  message = StringMethods.orderLine(constants_.isLeftToRight(), 
 			      messages_.getIndent(), "" + (lineNbr + 1), ":", " ", line);
 			  sb_.append(message);
-			  sb_.append(log_.getLineSeperator());
+			  sb_.append(log_.lineSeparator());
       }
 		} else if (firstDiff != null) {
 			sb_.append(messages_.getIndent() + messages_.getActual() +
-					log_.getLineSeperator());
+					log_.lineSeparator());
 			
 			int nbr = firstDiff.getActualLineNbr();
 			I_TextLines actualLines = result.getActualLines();
 			String line = actualLines.getLine(nbr);
-			String message = DefaultLog.orderLine(constants_.isLeftToRight(), 
+			String message = StringMethods.orderLine(constants_.isLeftToRight(), 
 			    messages_.getIndent(), messages_.getIndent(), "'" + line + "'");
-			sb_.append(message + log_.getLineSeperator());
+			sb_.append(message + log_.lineSeparator());
 			I_DiffIndexesPair pair =  firstDiff.getIndexes();
 			
 			sb_.append(messages_.getIndent() + messages_.getDifferences() +
-					log_.getLineSeperator());
+					log_.lineSeparator());
 			I_DiffIndexes actualLineDiff =  pair.getActual();
 			String [] diffs = actualLineDiff.getDifferences(line);
 			for (String dif: diffs) {
 				sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + dif + "'" +
-						log_.getLineSeperator());
+						log_.lineSeparator());
 			}
 		} else {
 			sb_.append(messages_.getIndent() + messages_.getActual() +
-					log_.getLineSeperator());
+					log_.lineSeparator());
 			
 			sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + actualValue + "'"
-					+ log_.getLineSeperator());
+					+ log_.lineSeparator());
 		}
 	}
 	
@@ -439,17 +446,17 @@ public class TrialFailedDetailDisplay {
 	    return;
 	  }
 		sb_.append(messages_.getIndent() + atf.getFailureReason() +
-				log_.getLineSeperator());
+				log_.lineSeparator());
 		
 		I_ThrowableInfo exp = atf.getExpected();
 		I_ThrowableInfo act = atf.getActual();
 		
 		if (act == null) {
-			sb_.append(messages_.getIndent() + messages_.getExpected() + log_.getLineSeperator());
-			sb_.append(messages_.getIndent() + exp.getClassName() + log_.getLineSeperator());
+			sb_.append(messages_.getIndent() + messages_.getExpected() + log_.lineSeparator());
+			sb_.append(messages_.getIndent() + exp.getClassName() + log_.lineSeparator());
 			
-			sb_.append(messages_.getIndent() + messages_.getActual() + log_.getLineSeperator());
-			sb_.append(messages_.getIndent() + "null" +  log_.getLineSeperator());
+			sb_.append(messages_.getIndent() + messages_.getActual() + log_.lineSeparator());
+			sb_.append(messages_.getIndent() + "null" +  log_.lineSeparator());
 		} else {
 			int whichOne = atf.getThrowable();
 			StringBuilder indent = new StringBuilder();
@@ -462,7 +469,7 @@ public class TrialFailedDetailDisplay {
 				sb_.append(indent.toString());
 				indent.append(messages_.getIndent());
 				expectedClass = exp.getClassName();
-				sb_.append(exp.getClassName() + log_.getLineSeperator());
+				sb_.append(exp.getClassName() + log_.lineSeparator());
 				if (act == null) {
 					actualClass = "null";
 					classMismatch = true;
@@ -483,11 +490,30 @@ public class TrialFailedDetailDisplay {
 				act = act.getCause();
 			}
 			if (classMismatch) {
-				sb_.append(messages_.getIndent() + messages_.getExpected() + log_.getLineSeperator());
-				sb_.append(messages_.getIndent() + expectedClass +  log_.getLineSeperator());
+			  String message = StringMethods.orderLine(leftToRight_, indent_, messages_.getExpected()) +
+			        log_.lineSeparator();
+				sb_.append(message);
+				message = StringMethods.orderLine(leftToRight_, indent_, expectedClass) +
+            log_.lineSeparator();
+				sb_.append(message);
 				
-				sb_.append(messages_.getIndent() + messages_.getActual() + log_.getLineSeperator());
-				sb_.append(messages_.getIndent() + actualClass+  log_.getLineSeperator());
+				message = StringMethods.orderLine(leftToRight_, indent_,  messages_.getActual()) +
+            log_.lineSeparator();
+				sb_.append(message);
+				message = StringMethods.orderLine(leftToRight_, indent_,  actualClass) +
+            log_.lineSeparator();
+        sb_.append(message);
+        message = StringMethods.orderLine(leftToRight_, indent_,  messages_.getTheStackTraceFollows()) +
+            log_.lineSeparator();
+        sb_.append(message);
+				String stack = act.getStacktrace();
+				TextLines lines = new TextLines(stack);
+				for (int i = 0; i < lines.getLines(); i++) {
+          String line = lines.getLine(i);
+          message = StringMethods.orderLine(leftToRight_, indent_, indent_,line) +
+              log_.lineSeparator();
+          sb.append(message);
+        }
 			} else {
 				String expString = exp.getMessage();
 				String actString = act.getMessage();

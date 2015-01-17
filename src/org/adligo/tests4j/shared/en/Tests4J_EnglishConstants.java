@@ -3,6 +3,7 @@ package org.adligo.tests4j.shared.en;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_CoveragePluginMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_LogMessages;
@@ -19,6 +20,7 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_ResultMessages;
  *
  */
 public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
+  private static final String AT = "at";
   private static final String PREFIX = "Tests4J";
   private static final String HEADER = "Tests4J: ";
   private static final String ANOTHER_TESTS4J_IS_RUNNING = "Another instance of tests4j appears to be running in this directory;";
@@ -163,6 +165,16 @@ public class Tests4J_EnglishConstants implements I_Tests4J_Constants {
   @Override
   public String getHeader() {
     return HEADER;
+  }
+
+  @Override
+  public I_Tests4J_CoveragePluginMessages getCoveragePluginMessages() {
+    return Tests4J_CoveragePluginMessages.INSTANCE;
+  }
+
+  @Override
+  public String getAt() {
+    return AT;
   }
 
 	

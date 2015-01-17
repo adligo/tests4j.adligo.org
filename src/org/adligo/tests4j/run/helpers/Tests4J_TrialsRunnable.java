@@ -237,7 +237,7 @@ public class Tests4J_TrialsRunnable implements Runnable,
 
 	private void failTrialOnException(String message, Throwable p, TrialType type) {
 		trialResultMutant_.setPassed(false);
-		String stack = StackTraceBuilder.toString(p, true);
+		String stack = new StackTraceBuilder().toString(p);
 		TrialFailure failure = new TrialFailure(message, stack);
 		trialResultMutant_.addFailure(failure);
 		if (type != null) {

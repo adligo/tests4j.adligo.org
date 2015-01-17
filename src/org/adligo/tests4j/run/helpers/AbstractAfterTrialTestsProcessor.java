@@ -119,7 +119,7 @@ public abstract class AbstractAfterTrialTestsProcessor implements I_AssertListen
 		flushAssertionHashes(delegatedTestResultMutant, delegatedTestAssertionHashes);
 		delegatedTestResultMutant.setName(method);
 		TestFailureMutant tfm = new TestFailureMutant();
-		String stack = StackTraceBuilder.toString(x, true);
+		String stack = new StackTraceBuilder().toString(x);
 		tfm.setFailureDetail(stack);
 		String message = x.getMessage();
 		if (StringMethods.isEmpty(message)) {

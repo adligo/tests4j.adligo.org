@@ -386,8 +386,8 @@ public class Tests4J_NotificationManager implements I_Tests4J_NotificationManage
 		
 		if (log.isLogEnabled(Tests4J_NotificationManager.class)) {
 			log.log(this.toString() + " increment counts for;" +
-					log.getLineSeperator() + "" + result.getName() +
-					log.getLineSeperator() + "tests=" + tests + ", asserts=" + asserts +
+					log.lineSeparator() + "" + result.getName() +
+					log.lineSeparator() + "tests=" + tests + ", asserts=" + asserts +
 					", uniqueAsserts=" + uAsserts);
 		}
 		assertionCount.addAndGet(asserts);

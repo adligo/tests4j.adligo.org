@@ -1,8 +1,8 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
+import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 public class TestFailedDisplay {
@@ -18,7 +18,7 @@ public class TestFailedDisplay {
 			boolean passed) {
 		if (log_.isLogEnabled(TestFailedDisplay.class)) {
 			I_Tests4J_ReportMessages messages = constants_.getReportMessages();
-			log_.log(DefaultLog.orderLine(constants_.isLeftToRight(),
+			log_.log(StringMethods.orderLine(constants_.isLeftToRight(),
 			    constants_.getPrefix(), 
 					messages.getTestHeading(), trialName, ".", testName, messages.getFailedEOS()));
 		}

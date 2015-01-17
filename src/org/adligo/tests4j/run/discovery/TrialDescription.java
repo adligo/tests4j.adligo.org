@@ -309,7 +309,7 @@ public class TrialDescription implements I_TrialDescription {
 		} catch (Exception x) {
 			failures_.add(new TrialFailure(
 			    constants_.getBadConstuctor(),
-					StackTraceBuilder.toString(x, true)));
+			    new StackTraceBuilder().toString(x)));
 		}
 		return false;
 	}

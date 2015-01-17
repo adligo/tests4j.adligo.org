@@ -87,7 +87,7 @@ public class Tests4J_TestRunable implements Runnable, I_AssertListener {
 		flushAssertionHashes(testResultMutant);
 		if (unexpected != null) {
 			TestFailureMutant failure = new TestFailureMutant();
-			String trace = StackTraceBuilder.toString(unexpected, true);
+			String trace = new StackTraceBuilder().toString(unexpected);
 			
 			failure.setFailureDetail(trace);
 			I_Tests4J_ResultMessages messages = constants_.getResultMessages();

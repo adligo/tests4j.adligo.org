@@ -40,6 +40,8 @@ public interface I_Tests4J_ReportMessages {
 	
 	public String getTheFollowingExpectedLineNumbersWereMissing();
 	
+	public String getTheStackTraceFollows();
+	
 	public String getTheFollowingActualLineNumberNotExpected();
 	
 	public String getStartingProcessXWithYThreads();

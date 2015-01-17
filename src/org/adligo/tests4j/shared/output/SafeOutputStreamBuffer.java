@@ -12,7 +12,7 @@ public class SafeOutputStreamBuffer implements I_OutputBuffer {
 	public SafeOutputStreamBuffer(I_Tests4J_Log pLog,  OutputStream out) {
 		delegate = out;
 		log = pLog;
-		newLineBytes = log.getLineSeperator().getBytes();
+		newLineBytes = log.lineSeparator().getBytes();
 	}
 
 	@Override

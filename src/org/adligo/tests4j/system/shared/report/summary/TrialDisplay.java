@@ -1,9 +1,9 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
+import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
 import java.util.List;
@@ -24,10 +24,10 @@ public class TrialDisplay {
 	public void onStartingTrial(String trialName) {
 		if (logger_.isLogEnabled(TrialDisplay.class)) {
 			I_Tests4J_ReportMessages messages =  constants_.getReportMessages();
-			String message = DefaultLog.orderLine(constants_.isLeftToRight(),
+			String message = StringMethods.orderLine(constants_.isLeftToRight(),
 			    constants_.getPrefix(),  messages.getStartingTrial(), trialName); 
 			if (theadDisplay_.isOn()) {
-				message = DefaultLog.orderLine(constants_.isLeftToRight(),
+				message = StringMethods.orderLine(constants_.isLeftToRight(),
 				    message, " ", theadDisplay_.getThreadInfo());
 			}
 			logger_.log(message);
@@ -41,7 +41,7 @@ public class TrialDisplay {
 			if (logger_.isLogEnabled(TrialDisplay.class)) {
 				I_Tests4J_ReportMessages messages =  constants_.getReportMessages();
 				
-				String message = DefaultLog.orderLine(constants_.isLeftToRight(),
+				String message = StringMethods.orderLine(constants_.isLeftToRight(),
 				    constants_.getPrefix(),  messages.getTrialHeading(), result.getName(),
 						messages.getPassedEOS());
 				logger_.log(message);

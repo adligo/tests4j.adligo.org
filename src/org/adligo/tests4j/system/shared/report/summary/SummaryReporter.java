@@ -7,9 +7,9 @@ import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.models.shared.results.I_TrialResult;
 import org.adligo.tests4j.models.shared.results.I_TrialRunResult;
 import org.adligo.tests4j.shared.common.DefaultSystem;
+import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Listener;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_Params;
@@ -66,12 +66,12 @@ public class SummaryReporter implements I_Tests4J_Listener  {
 	public synchronized  void onMetadataCalculated(I_TrialRunMetadata p) {
 		I_Tests4J_ReportMessages messages =  constants_.getReportMessages();
 		
-		log_.log(DefaultLog.orderLine(constants_.isLeftToRight(),
-		      constants_.getPrefix(),  messages.getMetadataCalculatedHeading()) + log_.getLineSeperator() +
-		    DefaultLog.orderLine(constants_.isLeftToRight(),
-		        constants_.getPrefix(),  messages.getTrialsHeading(), "" + p.getAllTrialsCount()) + log_.getLineSeperator() +
-			 	DefaultLog.orderLine(constants_.isLeftToRight(),
-			 	    constants_.getPrefix(),   messages.getTestsHeading(), "" + p.getAllTestsCount()) + log_.getLineSeperator());
+		log_.log(StringMethods.orderLine(constants_.isLeftToRight(),
+		      constants_.getPrefix(),  messages.getMetadataCalculatedHeading()) + log_.lineSeparator() +
+		    StringMethods.orderLine(constants_.isLeftToRight(),
+		        constants_.getPrefix(),  messages.getTrialsHeading(), "" + p.getAllTrialsCount()) + log_.lineSeparator() +
+			 	StringMethods.orderLine(constants_.isLeftToRight(),
+			 	    constants_.getPrefix(),   messages.getTestsHeading(), "" + p.getAllTestsCount()) + log_.lineSeparator());
 			
 	}
 

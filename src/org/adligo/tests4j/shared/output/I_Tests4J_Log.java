@@ -88,7 +88,7 @@ public interface I_Tests4J_Log {
 	 * 
 	 * @return
 	 */
-	public String getLineSeperator();
+	public String lineSeparator();
 	
 	/**
 	 * 

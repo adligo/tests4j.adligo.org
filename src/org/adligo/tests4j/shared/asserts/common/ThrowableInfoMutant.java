@@ -36,7 +36,7 @@ public class ThrowableInfoMutant implements I_ThrowableInfo {
 	public ThrowableInfoMutant(Throwable p) {
 		className = p.getClass().getName();
 		message = p.getMessage();
-		stacktrace = StackTraceBuilder.toString(p, false);
+		stacktrace = new StackTraceBuilder().toString(p, false);
 		
 		Throwable pCause = p.getCause();
 		if (pCause != null) {

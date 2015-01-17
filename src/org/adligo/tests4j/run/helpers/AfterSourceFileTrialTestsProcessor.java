@@ -85,9 +85,9 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 
 		if (rec != null) {
 			if (log.isLogEnabled(AfterSourceFileTrialTestsProcessor.class)) {
-				log.log("calling rec.endRecording() " + rec + log.getLineSeperator() + 
+				log.log("calling rec.endRecording() " + rec + log.lineSeparator() + 
 						Thread.currentThread().getName() + 
-						log.getLineSeperator() +
+						log.lineSeparator() +
 						" for " + trialResultMutant.getSourceFileName());
 			}
 			Class<?> srcFile = trialDesc.getSourceFileClass();
@@ -101,9 +101,9 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 				log.onThrowable(new IllegalStateException("A internal error"
 						+ " has occured in tests4j, no coverage for class " + 
 						Thread.currentThread().getName() + 
-						log.getLineSeperator() +
+						log.lineSeparator() +
 						" for recorder " + rec + " " +
-						log.getLineSeperator() +
+						log.lineSeparator() +
 						trialResultMutant.getSourceFileName()));
 			}
 		}
@@ -322,7 +322,7 @@ public class AfterSourceFileTrialTestsProcessor extends AbstractAfterTrialTestsP
 							result = dg.isInGroup(className);
 						} catch (Exception x) {
 							log.onThrowable(new IllegalStateException("Problem with dependency group in trial " +
-									log.getLineSeperator() + trialDesc.getTrialName(), x));
+									log.lineSeparator() + trialDesc.getTrialName(), x));
 						}
 						
 						if (!result) {

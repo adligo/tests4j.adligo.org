@@ -52,7 +52,7 @@ public class AllowedDependenciesAuditor {
 								I_Tests4J_AnnotationMessages messages = constants.getAnnotationMessages();
 								log.onThrowable(new MemoryWarning(
 										messages.getAllowedDependenciesIsNotASingletonWarning() +
-										log.getLineSeperator() + 
+										log.lineSeparator() + 
 										cls.getName()));
 							} catch (SecurityException | IllegalArgumentException | 
 									IllegalAccessException e) {

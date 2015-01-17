@@ -3,6 +3,7 @@ package org.adligo.tests4j.run.discovery;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AnnotationMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_AssertionInputMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
+import org.adligo.tests4j.shared.i18n.I_Tests4J_CoveragePluginMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_EclipseErrors;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_LineDiffTextDisplayMessages;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_LogMessages;
@@ -155,6 +156,18 @@ public class ConstantsDiscovery implements I_Tests4J_Constants {
 
   @Override
   public String getAnotherTests4J_InstanceIsRunningHere() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public I_Tests4J_CoveragePluginMessages getCoveragePluginMessages() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getAt() {
     // TODO Auto-generated method stub
     return null;
   }

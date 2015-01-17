@@ -45,7 +45,13 @@ public interface I_Tests4J_Constants {
 	public I_Tests4J_LogMessages getLogMessages();
 	public I_Tests4J_ParamsReaderMessages getParamReaderMessages();
 	public I_Tests4J_ReportMessages getReportMessages();
+	public I_Tests4J_CoveragePluginMessages getCoveragePluginMessages();
 	
+	/**
+	 * The at part of the stack traces.
+	 * @return
+	 */
+	public String getAt();
 	public String getBadConstuctor();
 	public String getMethodBlockerRequiresAtLeastOneAllowedCallerClassNames();
 	public String getMethodBlockerRequiresABlockingClass();

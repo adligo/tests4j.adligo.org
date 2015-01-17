@@ -4,7 +4,6 @@ import org.adligo.tests4j.models.shared.results.I_PhaseState;
 import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
-import org.adligo.tests4j.shared.output.DefaultLog;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 import org.adligo.tests4j.system.shared.api.I_Tests4J_TrialProgress;
 import org.adligo.tests4j.system.shared.trials.I_Progress;
@@ -100,7 +99,7 @@ public abstract class AbstractProcessDisplay {
           line.add(messages.getPctComplete());
 				}
 				String [] lineParts = line.toArray(new String[line.size()]);
-				String lineMessage = DefaultLog.orderLine(constants_.isLeftToRight(), lineParts);
+				String lineMessage = StringMethods.orderLine(constants_.isLeftToRight(), lineParts);
 				sb.append(System.lineSeparator());
 				sb.append(lineMessage);
 			}
@@ -130,7 +129,7 @@ public abstract class AbstractProcessDisplay {
 					message =  messages.getDoneEOS();
 				}
 			} else {
-				message = DefaultLog.orderLine(constants_.isLeftToRight(),
+				message = StringMethods.orderLine(constants_.isLeftToRight(),
 				    PercentFormat.format(processInfo.getPercentDone(), 2), messages.getPctComplete());
 			}
 			String stalled = addCurrentRunningInfoToStalledProcess(log,processInfo, message);

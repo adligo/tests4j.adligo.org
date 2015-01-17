@@ -1,6 +1,7 @@
 package org.adligo.tests4j.shared.output;
 
 import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 
@@ -74,7 +75,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 
 	@Override
   public void logLine(String ... p) {
-    String message = DefaultLog.orderLine(constants_.isLeftToRight(),  p);
+    String message = StringMethods.orderLine(constants_.isLeftToRight(),  p);
     out_.add(message);
   }
 	
@@ -120,7 +121,7 @@ public class DelegatingLog implements I_Tests4J_Log {
 	}
 
 	@Override
-	public String getLineSeperator() {
+	public String lineSeparator() {
 		return system_.lineSeperator();
 	}
 

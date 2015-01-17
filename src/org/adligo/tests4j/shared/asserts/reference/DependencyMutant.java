@@ -86,16 +86,18 @@ public class DependencyMutant implements I_Dependency {
       return true;
     if (obj == null)
       return false;
-    if (getClass() != obj.getClass())
-      return false;
-    DependencyMutant other = (DependencyMutant) obj;
-    if (alias == null) {
-      if (other.alias != null)
+    try {
+      I_Dependency other = (I_Dependency) obj;
+      if (alias == null) {
+        if (other.getAlias() != null)
+          return false;
+      } else if (!alias.equals(other.getAlias()))
         return false;
-    } else if (!alias.equals(other.alias))
+      if (references != other.getReferences())
+        return false;
+    } catch (ClassCastException x) {
       return false;
-    if (references != other.references)
-      return false;
+    }
     return true;
   }
 	

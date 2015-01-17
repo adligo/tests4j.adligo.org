@@ -60,7 +60,7 @@ public class AssertionProcessor {
     TestFailureMutant tfm =  builder.build(data, failureMessage);
     
     AssertionFailureLocation afl = new AssertionFailureLocation(listener.getTrialInstance());
-    String locationFailedStackTrace = StackTraceBuilder.toString(afl, true);
+    String locationFailedStackTrace = new StackTraceBuilder().toString(afl);
     tfm.setFailureDetail(locationFailedStackTrace);
     
     I_TestFailureType tft = tfm.getType();

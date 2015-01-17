@@ -2,6 +2,8 @@ package org.adligo.tests4j.shared.output;
 
 import org.adligo.tests4j.shared.common.DefaultSystem;
 import org.adligo.tests4j.shared.common.I_System;
+import org.adligo.tests4j.shared.common.StackTraceBuilder;
+import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.en.Tests4J_EnglishConstants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_LogMessages;
@@ -30,48 +32,6 @@ public class DefaultLog implements I_Tests4J_Log {
 	
   public static final String DEFAULT_REPORTER_REQUIRES_A_NON_NULL_I_SYSTEM = "DefaultReporter requires a non null I_System.";
  
-  /**
-   * This method orders lines for left to right (English) <br/>
-   * and right to left (Arabic) languages, when a <br/>
-   * line header or tab is required (i.e); <br/>
-   *  <br/>
-   * Left to right (spaces simulate tabs) <br/>
-   * Tests4j: setup <br/>
-   *    org.adligo.tests4j.Foo 12.0% <br/>
-   *    org.adligo.tests4j.Boo 13.0% <br/>
-   *     <br/>
-   * Right to left (spaces simulate tabs at right only)<br/>
-   *                   setup :Tests4j<br/>
-   *  12.0% org.adligo.tests4j.Foo   <br/>
-   *  13.0% org.adligo.tests4j.Boo   <br/>
-   * Also note I don't speak any or know much about any
-   * right to left languages so this will take some time to get right.
-   *  I assumed that java class names would stay left to right,
-   *  and that the percent sign would still be to the right of the 
-   *  number (after all it is the Arabic numeral system).
-   *  The name of the Tests4J product would not change, as 
-   *    translating it into other languages would be confusing.
-   *    
-   * @param p
-   * @return
-   */
-  public static String orderLine(boolean leftToRight, String ... p) {
-    if (p.length == 1) {
-      return p[0];
-    }
-    StringBuilder sb = new StringBuilder();
-    if (leftToRight) {
-      for (int i = 0; i < p.length; i++) {
-        sb.append(p[i]);
-      }
-    } else {
-      for (int i = p.length - 1; i >= 0; i--) {
-        sb.append(p[i]);
-      }
-    }
-    return sb.toString();
-  }
-  
   private Map<String, Boolean>  logs = new HashMap<String,Boolean>();
 	private final I_Tests4J_Constants constants_;
 	protected I_System system;
@@ -121,32 +81,17 @@ public class DefaultLog implements I_Tests4J_Log {
 
 	@Override
   public void logLine(String ... p) {
-    String message = orderLine(constants_.isLeftToRight(), p);
+    String message = StringMethods.orderLine(constants_.isLeftToRight(), p);
     log(message + system.lineSeperator());
   }
 	
 	@Override
 	public synchronized void onThrowable(Throwable p) {
-		String message = logThrowable("\t", p);
+		String message = new StackTraceBuilder().toString(p);
 		log(message);
 	}
 
-	private String logThrowable(String indentString, Throwable t) {
-		return logThrowable(indentString, indentString, t, new StringBuilder());
-	}
 	
-	private String logThrowable(String currentIndent, String indentString, Throwable t, StringBuilder sb) {
-		StackTraceElement [] stack = t.getStackTrace();
-		log(currentIndent + t.toString());
-		for (int i = 0; i < stack.length; i++) {
-			sb.append(currentIndent +"at " + stack[i]);
-		}
-		Throwable cause = t.getCause();
-		if (cause != null) {
-			logThrowable(currentIndent + indentString, indentString,  cause,sb);
-		}
-		return sb.toString();
-	}
 	
 	@Override
 	public boolean isLogEnabled(Class<?> clazz) {
@@ -167,7 +112,7 @@ public class DefaultLog implements I_Tests4J_Log {
 	}
 
 	@Override
-	public String getLineSeperator() {
+	public String lineSeparator() {
 		return system.lineSeperator();
 	}
 
@@ -182,20 +127,20 @@ public class DefaultLog implements I_Tests4J_Log {
   @Override
   public String getThreadWithGroupNameMessage() {
     I_Tests4J_LogMessages logMessages = constants_.getLogMessages();
-    return orderLine(constants_.isLeftToRight(), logMessages.getThreadSlashThreadGroup(), system.getCurrentThreadName(), 
+    return StringMethods.orderLine(constants_.isLeftToRight(), logMessages.getThreadSlashThreadGroup(), system.getCurrentThreadName(), 
           "~~~", system.getCurrentThreadGroupName());
   }
 
   @Override
   public String getThreadMessage() {
     I_Tests4J_LogMessages logMessages = constants_.getLogMessages();
-    return orderLine(constants_.isLeftToRight(), logMessages.getThread(), system.getCurrentThreadName());
+    return StringMethods.orderLine(constants_.isLeftToRight(), logMessages.getThread(), system.getCurrentThreadName());
     
   }
 
   @Override
   public void appendLine(StringBuilder sb, String line, String indent) {
-    String message = orderLine(constants_.isLeftToRight(), indent, line);
+    String message = StringMethods.orderLine(constants_.isLeftToRight(), indent, line);
     sb.append(message);
   }
 

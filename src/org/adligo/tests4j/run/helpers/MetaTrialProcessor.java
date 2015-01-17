@@ -137,7 +137,7 @@ public class MetaTrialProcessor implements I_AssertListener {
 		flushAssertionHashes(metaTrialTestResultMutant, metaTrialAssertionHashes);
 		metaTrialTestResultMutant.setName(method);
 		TestFailureMutant tfm = new TestFailureMutant();
-		String stack = StackTraceBuilder.toString(x, true);
+		String stack = new StackTraceBuilder().toString(x);
 		tfm.setFailureDetail(stack);
 		String message = x.getMessage();
 		if (StringMethods.isEmpty(message)) {

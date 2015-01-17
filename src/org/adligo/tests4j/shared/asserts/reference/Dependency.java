@@ -31,26 +31,11 @@ public class Dependency implements I_Dependency {
 
   @Override
   public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((dm == null) ? 0 : dm.hashCode());
-    return result;
+    return dm.hashCode();
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    Dependency other = (Dependency) obj;
-    if (dm == null) {
-      if (other.dm != null)
-        return false;
-    } else if (!dm.equals(other.dm))
-      return false;
-    return true;
+    return dm.equals(obj);
   }
 }
