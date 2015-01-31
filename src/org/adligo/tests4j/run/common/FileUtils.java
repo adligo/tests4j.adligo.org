@@ -24,7 +24,7 @@ public class FileUtils {
    * for testing passing of parameters to tests from a external xml file
    * so the data is placed here;<br/>
    * tests4j_tests.adligo.org/test_data/test_parameters_trial/parameters.xml<br/>
-   * @return The absolute path.
+   * @return The absolute path which includes a File.separator at the end.
    */
   public static String getRunDir() {
     File file = new File(".");
