@@ -31,6 +31,10 @@ public class ExpectedThrowableValidator implements I_ExpectedThrowable {
 		} else {
 			setupInstance(inst);
 		}
+		I_ExpectedThrowable cause = p.getExpectedCause();
+    if (cause != null) {
+      setupCausationChain(cause);
+    }
 	}
 	
 	/**
@@ -59,16 +63,6 @@ public class ExpectedThrowableValidator implements I_ExpectedThrowable {
 	  }
     setupThrowableClass(clazz);
   }
-	
-	/**
-   * This constructor should be used for matching with 
-   * Throwable's that have any message. 
-   * @param clazz 
-   * @param the 
-   */
-	public ExpectedThrowableValidator(I_Tests4J_Constants constants, Class<? extends Throwable> clazz, I_ExpectedThrowable expectedCause) {
-	  this(constants, clazz, MatchType.ANY, expectedCause);
-	}
 	
 	public ExpectedThrowableValidator(I_Tests4J_Constants constants, Class<? extends Throwable> clazz, MatchType matchType, I_ExpectedThrowable expectedCause) {
 	  if (constants == null) {
