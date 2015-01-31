@@ -516,7 +516,11 @@ public class TrialFailedDetailDisplay {
         }
 			} else {
 				String expString = exp.getMessage();
-				String actString = act.getMessage();
+				String actString = null;
+				if (act != null) {
+				  actString = act.getMessage();
+				}
+				
 				addStringCompare(expString, actString);
 			}
 			//compare class
