@@ -97,7 +97,7 @@ public class JSE_IO extends ReferenceGroupBaseDelegate implements I_JSE_1_8_IO, 
 		toRet.put("java.io.CharConversionException","CHAR_CONVERSION_EXCEPTION");
 		toRet.put("java.io.EOFException","EOFEXCEPTION");
 		toRet.put("java.io.FileNotFoundException","FILE_NOT_FOUND_EXCEPTION");
-		toRet.put("java.io.InterruptedIOException","INTERRUPTED_IOEXCEPTION");
+		toRet.put("java.io.InterruptedIOException","INTERRUPTED_IO_EXCEPTION");
 		toRet.put("java.io.InvalidClassException","INVALID_CLASS_EXCEPTION");
 		toRet.put("java.io.InvalidObjectException","INVALID_OBJECT_EXCEPTION");
 		toRet.put("java.io.IOException","IOEXCEPTION");

@@ -56,7 +56,7 @@ public class JSE_Sql extends ReferenceGroupBaseDelegate implements I_JSE_1_8_Sql
 		toRet.put("java.sql.Statement","STATEMENT");
 		toRet.put("java.sql.Struct","STRUCT");
 		toRet.put("java.sql.Wrapper","WRAPPER");
-		toRet.put("java.util.Date","DATE");
+		toRet.put("java.sql.Date","DATE");
 		toRet.put("java.sql.DriverManager","DRIVER_MANAGER");
 		toRet.put("java.sql.DriverPropertyInfo","DRIVER_PROPERTY_INFO");
 		toRet.put("java.sql.SQLPermission","SQLPERMISSION");

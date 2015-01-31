@@ -12,6 +12,29 @@ import java.util.List;
 
 public class FileUtils {
 
+  /**
+   * This is a method to return the current running
+   * directory of the trial run, which can be used to discover
+   * test data for the test, if it has to deal with actual 
+   * file system IO for some reason.  This also establishes
+   * the convention of having trial runs running in the project
+   * directory;<br/>
+   * In Example;<br/>
+   * The tests4j_tests.adligo.org project needs some external xml files
+   * for testing passing of parameters to tests from a external xml file
+   * so the data is placed here;<br/>
+   * tests4j_tests.adligo.org/test_data/test_parameters_trial/parameters.xml<br/>
+   * @return The absolute path.
+   */
+  public static String getRunDir() {
+    File file = new File(".");
+    String path = file.getAbsolutePath();
+    if (path.lastIndexOf(".") == path.length() - 1) {
+      path = path.substring(0, path.length() - 1);
+    }
+    return path;
+  }
+  
   public static void removeRecursive(Path path) throws IOException
   {
 
