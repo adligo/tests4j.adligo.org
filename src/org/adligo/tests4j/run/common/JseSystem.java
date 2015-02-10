@@ -124,4 +124,9 @@ public class JseSystem implements I_JseSystem {
     return locale.getLanguage();
   }
 
+  @Override
+  public void interruptCurrentThread() {
+    Thread.currentThread().interrupt();
+  }
+
 }

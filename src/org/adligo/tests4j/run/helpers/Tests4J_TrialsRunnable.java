@@ -13,6 +13,7 @@ import org.adligo.tests4j.models.shared.results.TestResultMutant;
 import org.adligo.tests4j.models.shared.results.TrialFailure;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResult;
 import org.adligo.tests4j.models.shared.results.UseCaseTrialResultMutant;
+import org.adligo.tests4j.run.common.I_JseSystem;
 import org.adligo.tests4j.run.common.I_ThreadManager;
 import org.adligo.tests4j.run.common.I_Threads;
 import org.adligo.tests4j.run.common.ThreadsDelegate;
@@ -386,7 +387,8 @@ public class Tests4J_TrialsRunnable implements Runnable,
 		}
 	}
 
-	private void runTest(TestDescription tm) throws RejectedExecutionException {
+	@SuppressWarnings("boxing")
+  private void runTest(TestDescription tm) throws RejectedExecutionException {
 		Method method = tm.getMethod();
 		blocking.clear();
 		
@@ -436,11 +438,13 @@ public class Tests4J_TrialsRunnable implements Runnable,
 						trm.setFailure(new TestFailure(tfm));
 					
 						trialResultMutant_.addResult(new TestResult(trm));
-						notifier_.onTestCompleted(trialName, method.getName(), trm.isPassed());
 					}
+					//TODO write more tests for timeout, there was a bug 2/10/2015
+					notifier_.onTestCompleted(trialName, method.getName(), false);
 				}
 			} catch (InterruptedException x) {
-				//do nothing
+			  I_JseSystem sys = (I_JseSystem)  memory_.getSystem();
+			  sys.interruptCurrentThread();
 			}
 			//trial.afterTests();
 		}

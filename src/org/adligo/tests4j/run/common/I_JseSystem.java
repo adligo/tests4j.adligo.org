@@ -21,4 +21,12 @@ public interface I_JseSystem extends I_System, I_Files {
    * @return
    */
   public String getLanguage();
+  
+  /**
+   * a wrapper around  Thread.currentThread().interrupt();
+   * so interrupts can be stubbed for mock instanct
+   * testing.
+   * @return
+   */
+  public void interruptCurrentThread();
 }
