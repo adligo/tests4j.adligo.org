@@ -17,6 +17,12 @@ public interface I_ThrowableInfo {
 	public String getMessage();
 	
 	/**
+	 * The match type for this throwable,
+	 * will be null for actual caught Throwables.
+	 * @return
+	 */
+	public I_MatchType getMatchType();
+	/**
 	 * The the stack trace represented as a multiple line string, note the stack 
 	 * trace should already have some indentation and should have paid attention 
 	 * to the I_Tests4J_Constants.isLeftToRight() setting so it may have indentation 

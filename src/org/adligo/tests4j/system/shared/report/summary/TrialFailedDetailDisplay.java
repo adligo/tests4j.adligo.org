@@ -8,10 +8,12 @@ import org.adligo.tests4j.shared.asserts.common.AssertionFailedException;
 import org.adligo.tests4j.shared.asserts.common.I_AssertCompareFailure;
 import org.adligo.tests4j.shared.asserts.common.I_AssertThrownFailure;
 import org.adligo.tests4j.shared.asserts.common.I_AssertType;
+import org.adligo.tests4j.shared.asserts.common.I_MatchType;
 import org.adligo.tests4j.shared.asserts.common.I_SourceTestFailure;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailure;
 import org.adligo.tests4j.shared.asserts.common.I_TestFailureType;
 import org.adligo.tests4j.shared.asserts.common.I_ThrowableInfo;
+import org.adligo.tests4j.shared.asserts.common.MatchType;
 import org.adligo.tests4j.shared.asserts.common.TestFailureType;
 import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexes;
 import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexesPair;
@@ -44,22 +46,20 @@ import java.util.Set;
 public class TrialFailedDetailDisplay {
   private final I_Tests4J_Constants constants_;
   private final I_Tests4J_ReportMessages messages_;
-  private String indent_;
-  private boolean leftToRight_;
   private final I_Tests4J_Log log_;
 	
 	private Map<I_AssertType,Runnable> switchReplacement_;
 	private StringBuilder sb_;
 	private I_TestFailure testFailure_;
 	private I_TrialResult trialResult_;
+	private ThrownFailureComparisonDisplay thrownFailureComparisonDisplay_;
 	
-	public TrialFailedDetailDisplay(I_Tests4J_Constants constants, I_Tests4J_Log pLog) {
+	public TrialFailedDetailDisplay(I_Tests4J_Constants constants, I_Tests4J_Log log) {
 	  constants_ = constants;
-	  leftToRight_ = constants_.isLeftToRight();
 	  messages_ = constants_.getReportMessages();
-	  indent_ = messages_.getIndent();
 	  
-		log_ = pLog;
+		log_ = log;
+		thrownFailureComparisonDisplay_ = new ThrownFailureComparisonDisplay(constants, log);
 		//this is a dumb way to obvoid using a switch
 		//statement because it puts a java.lang.NoSuchFieldError
 		// in the class, which isn't implemented by GWT
@@ -68,7 +68,7 @@ public class TrialFailedDetailDisplay {
 			@Override
 			public void run() {
 				I_AssertThrownFailure atf = (I_AssertThrownFailure) testFailure_;
-				addThrownMessages(atf,sb_);
+				thrownFailureComparisonDisplay_.addThrownMessages(atf, sb_);
 			}
 		};
 		switchReplacement_.put(AssertType.AssertThrown, thownRun);
@@ -148,7 +148,9 @@ public class TrialFailedDetailDisplay {
   							I_AssertCompareFailure acf = (I_AssertCompareFailure) testFailure_;
   							if (String.class.getName().equals(acf.getExpectedClass())) {
   								if (String.class.getName().equals(acf.getActualClass())) {
-  									addStringCompare(acf.getExpectedValue(), acf.getActualValue());
+  									TextLineCompareDisplay display = new TextLineCompareDisplay(constants_, log_);
+  							    display.addStringCompare(acf.getExpectedValue(), acf.getActualValue());
+  							    sb_.append(display.getDefaultResult());
   								} else  {
   									addCompareFailure(acf);
   								}
@@ -167,7 +169,8 @@ public class TrialFailedDetailDisplay {
 				}
 			}
 		}
-		log_.log(sb_.toString());
+		String string = sb_.toString();
+		log_.log(string);
 	}
 
 	private void addExpected(String exp, String expClass) {
@@ -331,199 +334,6 @@ public class TrialFailedDetailDisplay {
 		stack[0] = top;
 		return stack;
 	}
-	@SuppressWarnings("boxing")
-  private void addStringCompare(String expectedValue, String actualValue) {
-		TextLinesCompare tlc = new TextLinesCompare();
-		
-		
-		I_TextLinesCompareResult result =  tlc.compare(constants_, expectedValue, actualValue, true);
-		
-		Set<Integer> missingActualLines = new HashSet<Integer>();
-		Set<Integer> missingExpectedLines = new HashSet<Integer>();
-		
-		I_LineDiff firstDiff = null;
-		List<I_LineDiff> lineDiffs = result.getLineDiffs();
-		for (I_LineDiff diff: lineDiffs) {
-			I_LineDiffType diffType = diff.getType();
-			LineDiffType ldt = LineDiffType.get(diffType);
-			if (LineDiffType.PartialMatch == ldt) {
-				if( firstDiff == null) {
-					firstDiff = diff;
-				}
-			} else if (LineDiffType.MissingActualLine == ldt) {
-				missingActualLines.add(diff.getActualLineNbr());
-			} else if (LineDiffType.MissingExpectedLine == ldt) {
-				missingExpectedLines.add(diff.getExpectedLineNbr());
-			}
-		}
-		if (missingExpectedLines.size() > 1) {
-		  String message = StringMethods.orderLine(constants_.isLeftToRight(),
-		      messages_.getIndent(), messages_.getTheFollowingExpectedLineNumbersWereMissing());
-			sb_.append(message);
-			sb_.append(log_.lineSeparator());
-      I_TextLines actualLines =  result.getExpectedLines();
-      for (Integer lineNbr: missingExpectedLines) {
-        String line = actualLines.getLine(lineNbr);
-        //line numbers are zero based in the data
-        message = StringMethods.orderLine(constants_.isLeftToRight(),
-            messages_.getIndent(), "" + (lineNbr + 1) ,":"," ",line);
-        sb_.append(message);
-        sb_.append(log_.lineSeparator());
-      }
-      
-		} else if (firstDiff != null) {
-			sb_.append(messages_.getIndent() + messages_.getExpected() +
-					log_.lineSeparator());
-			int nbr = firstDiff.getExpectedLineNbr();
-			I_TextLines expectedLines = result.getExpectedLines();
-			String line = expectedLines.getLine(nbr);
-			sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + line + "'" +
-					log_.lineSeparator());
-			I_DiffIndexesPair pair =  firstDiff.getIndexes();
-			
-			sb_.append(messages_.getIndent() + messages_.getDifferences() +
-					log_.lineSeparator());
-			I_DiffIndexes expectedLineDiff =  pair.getExpected();
-			String [] diffs = expectedLineDiff.getDifferences(line);
-			for (String dif: diffs) {
-				sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + dif + "'" +
-						log_.lineSeparator());
-			}
-		} else {
-			sb_.append(messages_.getIndent() + messages_.getExpected() +
-					log_.lineSeparator());
-			
-			sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + expectedValue + "'"
-					+ log_.lineSeparator());
-		}
-		
-		if (missingActualLines.size() > 1) {
-		  String message = StringMethods.orderLine(constants_.isLeftToRight(),
-		      messages_.getIndent(), messages_.getTheFollowingActualLineNumberNotExpected());
-			sb_.append(message);
-
-			sb_.append(log_.lineSeparator());
-			I_TextLines actualLines =  result.getActualLines();
-			for (Integer lineNbr: missingActualLines) {
-			  String line = actualLines.getLine(lineNbr);
-			  //line numbers are zero based in the data
-			  message = StringMethods.orderLine(constants_.isLeftToRight(), 
-			      messages_.getIndent(), "" + (lineNbr + 1), ":", " ", line);
-			  sb_.append(message);
-			  sb_.append(log_.lineSeparator());
-      }
-		} else if (firstDiff != null) {
-			sb_.append(messages_.getIndent() + messages_.getActual() +
-					log_.lineSeparator());
-			
-			int nbr = firstDiff.getActualLineNbr();
-			I_TextLines actualLines = result.getActualLines();
-			String line = actualLines.getLine(nbr);
-			String message = StringMethods.orderLine(constants_.isLeftToRight(), 
-			    messages_.getIndent(), messages_.getIndent(), "'" + line + "'");
-			sb_.append(message + log_.lineSeparator());
-			I_DiffIndexesPair pair =  firstDiff.getIndexes();
-			
-			sb_.append(messages_.getIndent() + messages_.getDifferences() +
-					log_.lineSeparator());
-			I_DiffIndexes actualLineDiff =  pair.getActual();
-			String [] diffs = actualLineDiff.getDifferences(line);
-			for (String dif: diffs) {
-				sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + dif + "'" +
-						log_.lineSeparator());
-			}
-		} else {
-			sb_.append(messages_.getIndent() + messages_.getActual() +
-					log_.lineSeparator());
-			
-			sb_.append(messages_.getIndent() + messages_.getIndent() + "'" + actualValue + "'"
-					+ log_.lineSeparator());
-		}
-	}
 	
-	public void addThrownMessages(I_AssertThrownFailure atf, StringBuilder sb) {
-	  if (atf == null) {
-	    return;
-	  }
-		sb_.append(messages_.getIndent() + atf.getFailureReason() +
-				log_.lineSeparator());
-		
-		I_ThrowableInfo exp = atf.getExpected();
-		I_ThrowableInfo act = atf.getActual();
-		
-		if (act == null) {
-			sb_.append(messages_.getIndent() + messages_.getExpected() + log_.lineSeparator());
-			sb_.append(messages_.getIndent() + exp.getClassName() + log_.lineSeparator());
-			
-			sb_.append(messages_.getIndent() + messages_.getActual() + log_.lineSeparator());
-			sb_.append(messages_.getIndent() + "null" +  log_.lineSeparator());
-		} else {
-			int whichOne = atf.getThrowable();
-			StringBuilder indent = new StringBuilder();
-			indent.append(messages_.getIndent());
-			
-			String actualClass = null;
-			String expectedClass = exp.getClassName();
-			boolean classMismatch = false;
-			for (int i = 0; i < whichOne; i++) {
-				sb_.append(indent.toString());
-				indent.append(messages_.getIndent());
-				expectedClass = exp.getClassName();
-				sb_.append(exp.getClassName() + log_.lineSeparator());
-				if (act == null) {
-					actualClass = "null";
-					classMismatch = true;
-					break;
-				} else {
-					actualClass = act.getClassName();
-					if (!expectedClass.equals(actualClass)) {
-						classMismatch = true;
-						break;
-					} 
-				}
-				I_ThrowableInfo nextExp = exp.getCause();
-				if (nextExp == null) {
-					break;
-				} else {
-					exp = nextExp;
-				}
-				act = act.getCause();
-			}
-			if (classMismatch) {
-			  String message = StringMethods.orderLine(leftToRight_, indent_, messages_.getExpected()) +
-			        log_.lineSeparator();
-				sb_.append(message);
-				message = StringMethods.orderLine(leftToRight_, indent_, expectedClass) +
-            log_.lineSeparator();
-				sb_.append(message);
-				
-				message = StringMethods.orderLine(leftToRight_, indent_,  messages_.getActual()) +
-            log_.lineSeparator();
-				sb_.append(message);
-				message = StringMethods.orderLine(leftToRight_, indent_,  actualClass) +
-            log_.lineSeparator();
-        sb_.append(message);
-        message = StringMethods.orderLine(leftToRight_, indent_,  messages_.getTheStackTraceFollows()) +
-            log_.lineSeparator();
-        sb_.append(message);
-				String stack = act.getStacktrace();
-				TextLines lines = new TextLines(stack);
-				for (int i = 0; i < lines.getLines(); i++) {
-          String line = lines.getLine(i);
-          message = StringMethods.orderLine(leftToRight_, indent_, indent_,line) +
-              log_.lineSeparator();
-          sb.append(message);
-        }
-			} else {
-				String expString = exp.getMessage();
-				String actString = null;
-				if (act != null) {
-				  actString = act.getMessage();
-				}
-				
-				addStringCompare(expString, actString);
-			}
-			//compare class
-		}
-	}
+	
 }

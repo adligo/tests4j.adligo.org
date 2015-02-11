@@ -2,42 +2,47 @@ package org.adligo.tests4j.shared.asserts.common;
 
 
 public class ThrowableInfo  implements I_ThrowableInfo {
-	private ThrowableInfoMutant mutant;
+	private ThrowableInfoMutant mutant_;
 	
 	public ThrowableInfo() {
-		mutant = new ThrowableInfoMutant();
+		mutant_ = new ThrowableInfoMutant();
 	}
 	
 	public ThrowableInfo(I_ThrowableInfo p) {
-		mutant = new ThrowableInfoMutant(p);
+		mutant_ = new ThrowableInfoMutant(p);
 		I_ThrowableInfo cause = p.getCause();
 		if (cause != null) {
 			ThrowableInfo immutable = new ThrowableInfo(cause);
-			mutant.setCause(immutable);
+			mutant_.setCause(immutable);
 		}
 	}
 
 	public ThrowableInfo(I_ExpectedThrowable p) {
-		mutant = new ThrowableInfoMutant(p);
+		mutant_ = new ThrowableInfoMutant(p);
 	}
 	
 	public ThrowableInfo(Throwable p) {
-		mutant = new ThrowableInfoMutant(p);
+		mutant_ = new ThrowableInfoMutant(p);
 	}
 	
 	public String getClassName() {
-		return mutant.getClassName();
+		return mutant_.getClassName();
 	}
 
 	public String getMessage() {
-		return mutant.getMessage();
+		return mutant_.getMessage();
 	}
 
 	public String getStacktrace() {
-		return mutant.getStacktrace();
+		return mutant_.getStacktrace();
 	}
 
 	public I_ThrowableInfo getCause() {
-		return mutant.getCause();
+		return mutant_.getCause();
 	}
+
+  @Override
+  public I_MatchType getMatchType() {
+    return mutant_.getMatchType();
+  }
 }

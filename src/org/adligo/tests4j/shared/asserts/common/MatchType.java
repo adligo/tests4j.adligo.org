@@ -16,7 +16,7 @@ public enum MatchType implements I_MatchType {
    */
   NULL(0), 
   /**
-   * The actual Throwable may have any message.
+   * The actual Throwable may have any message, including null.
    */
   ANY(1), 
   /**
