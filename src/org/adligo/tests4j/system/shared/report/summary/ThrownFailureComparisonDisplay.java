@@ -1,5 +1,7 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
+import com.sun.xml.internal.ws.util.StringUtils;
+
 import org.adligo.tests4j.shared.asserts.common.I_AssertThrownFailure;
 import org.adligo.tests4j.shared.asserts.common.I_MatchType;
 import org.adligo.tests4j.shared.asserts.common.I_ThrowableInfo;
@@ -66,38 +68,49 @@ public class ThrownFailureComparisonDisplay {
       I_MatchType matchType = null;
       
       boolean classMatch = true;
+      String currentIndent = indent.toString();
       for (int i = 0; i < whichOne; i++) {
-        String currentIndent = indent.toString();
+        
+        String expClass = exp.getClassName();
         expectedBuilder.append(StringMethods.orderLine(ltr_, currentIndent,
-            exp.getClassName()));
+            expClass));
         expectedBuilder.append(log_.lineSeparator());
         expString = exp.getMessage();
         matchType = exp.getMatchType();
-        String expClass = exp.getClassName();
+        
         exp = exp.getCause();
         
-        actualBuilder.append(StringMethods.orderLine(ltr_, currentIndent,
-            act.getClassName()));
-        actualBuilder.append(log_.lineSeparator());
-        actString = act.getMessage();
-        String actClass = act.getClassName();
-        act = act.getCause();
-        
-        if ( !expClass.equals(actClass)) {
+        String actClass = null;
+        if (act == null) {
+          actualBuilder.append(StringMethods.orderLine(ltr_, currentIndent,
+              "null"));
+          actualBuilder.append(log_.lineSeparator());
+        } else {
+          actClass = act.getClassName();
+          actualBuilder.append(StringMethods.orderLine(ltr_, currentIndent,
+              actClass));
+          actualBuilder.append(log_.lineSeparator());
+          actString = act.getMessage();
+          act = act.getCause();
+        }
+        if (expClass == null || actClass == null || !expClass.equals(actClass)) {
           classMatch = false;
+          break;
         }
         indent.append(messages_.getIndent());
+        currentIndent = indent.toString();
       }
       
       if (classMatch) {
-        String currentIndent = indent.toString();
         if (matchType != null) {
           MatchType matchTypeEnum = MatchType.get(matchType);
           switch (matchTypeEnum) {
-            case ANY:
-              //do nothing
-            break;
             case CONTAINS:
+              I_Tests4J_ReportMessages messages = constants_.getReportMessages();
+              expBuilder_.append(StringMethods.orderLine(ltr_, currentIndent,
+                  messages.getTheFollowingTextWasNotFoundInTheActualText()));
+              expBuilder_.append(log_.lineSeparator());
+              
               textDataDisplay_.display(expBuilder_, expString, currentIndent);
               textDataDisplay_.display(actBuilder_, actString, currentIndent);
               break;
@@ -108,6 +121,9 @@ public class ThrownFailureComparisonDisplay {
               textDataDisplay_.display(actBuilder_, actString, currentIndent);
               
               break;  
+            case ANY:
+              //any should never occur here, if it occurs do the default;
+            case EQUALS:
             default:
               displayDefault(expString, actString, currentIndent);
           }
@@ -128,8 +144,8 @@ public class ThrownFailureComparisonDisplay {
 
   public void displayDefault(String expString, String actString, String currentIndent) {
     if (actString == null || expString == null) {
-        textDataDisplay_.display(expBuilder_, expString);
-        textDataDisplay_.display(actBuilder_, actString);
+        textDataDisplay_.display(expBuilder_, expString, currentIndent);
+        textDataDisplay_.display(actBuilder_, actString, currentIndent);
     } else {
       TextLineCompareDisplay display = new TextLineCompareDisplay(constants_, log_);
       display.setActualBuilder(actBuilder_);

@@ -35,7 +35,7 @@ public class TextDataDisplay {
       sb.append(log_.lineSeparator());
       return;
     }
-    if (StringMethods.isEmpty(text)) {
+    if (text.length() == 0) {
       String message = StringMethods.orderLine(constants_.isLeftToRight(), indent,
           "''");
       sb.append(message);

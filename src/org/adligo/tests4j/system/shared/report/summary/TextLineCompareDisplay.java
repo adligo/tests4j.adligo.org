@@ -59,7 +59,6 @@ public class TextLineCompareDisplay {
     expectedBuilder_.append(log_.lineSeparator());
     textDisplay_.display(expectedBuilder_, expectedValue, indent_);
     
-    
     actualBuilder_.append(StringMethods.orderLine(ltr_, indent_, messages_.getActual()));
     actualBuilder_.append(log_.lineSeparator());
     textDisplay_.display(actualBuilder_, actualValue, indent_);
@@ -81,9 +80,17 @@ public class TextLineCompareDisplay {
         }
       } else if (LineDiffType.MissingActualLine == ldt) {
         missingActualLines.add(diff.getActualLineNbr());
+        if (missingActualLines.size() >= 3) {
+          //only log the first 3
+          break;
+        }
       } else if (LineDiffType.MissingExpectedLine == ldt) {
         missingExpectedLines.add(diff.getExpectedLineNbr());
-      }
+        if (missingExpectedLines.size() >= 3) {
+          //only log the first 3
+          break;
+        }
+       }
     }
     
     if (missingExpectedLines.size() > 1) {
@@ -112,7 +119,7 @@ public class TextLineCompareDisplay {
       I_DiffIndexesPair pair =  firstDiff.getIndexes();
       
       String diffs = getDifferences(nbr  + 1, line, pair.getExpected());
-      if (!StringMethods.isEmpty(diffs)) {
+      if (diffs != null && diffs.length() >= 1) {
         expectedBuilder_.append(StringMethods.orderLine(ltr_,
             indent_ + messages_.getIndent(), 
             messages_.getDifferences()));
@@ -146,7 +153,7 @@ public class TextLineCompareDisplay {
       
       I_DiffIndexesPair pair =  firstDiff.getIndexes();
       String diffs = getDifferences(nbr + 1, line, pair.getActual());
-      if (!StringMethods.isEmpty(diffs)) {
+      if (diffs != null && diffs.length() >= 1) {
         actualBuilder_.append(StringMethods.orderLine(ltr_,
             indent_ + messages_.getIndent(), 
             messages_.getDifferences()));
@@ -161,15 +168,18 @@ public class TextLineCompareDisplay {
     StringBuilder sb = new StringBuilder();
     
     String [] diffs = lineDiff.getDifferences(line);
-    String content = "";
+    String content = null;
+    
     if (diffs.length == 2) {
-      String [] newDiffs = new String[3];
-      content = "'" + diffs[0] + "'*'" + diffs[1] + "'";
-      diffs = newDiffs;
+      if (!StringMethods.isEmpty(diffs[0]) || !StringMethods.isEmpty(diffs[0])) {
+        content = "'" + diffs[0] + "'*'" + diffs[1] + "'";
+      }
     } else if (diffs.length >= 1) {
-      content = "'" + diffs[0] + "'";
+      if (!StringMethods.isEmpty(diffs[0])) {
+        content = "'" + diffs[0] + "'";
+      }
     }
-    if (diffs.length >= 1) {
+    if (content != null) {
       sb.append(StringMethods.orderLine(ltr_,indent_ + messages_.getIndent(),
           "" + lineNbr,":"," ", content));
     }

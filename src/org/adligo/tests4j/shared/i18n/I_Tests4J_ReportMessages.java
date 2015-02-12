@@ -38,11 +38,13 @@ public interface I_Tests4J_ReportMessages {
 	
 	public String getDifferences();
 	
+  public String getTheFollowingActualLineNumberNotExpected();
+  
 	public String getTheFollowingExpectedLineNumbersWereMissing();
 	
-	public String getTheStackTraceFollows();
+	public String getTheFollowingTextWasNotFoundInTheActualText();
 	
-	public String getTheFollowingActualLineNumberNotExpected();
+	public String getTheStackTraceFollows();
 	
 	public String getStartingProcessXWithYThreads();
 	
