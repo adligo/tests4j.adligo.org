@@ -13,7 +13,6 @@ public class DefaultSystem implements I_System {
 	 */
 	private static final PrintStream OUT = System.out;
 	private static final String LINE_SEPERATOR = System.getProperty("line.seperator", "\n");
-	private static final String VERSION = System.getProperty("java.version","");
 	
 	@Override
 	public void println(String p) {

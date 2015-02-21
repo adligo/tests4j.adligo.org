@@ -18,7 +18,8 @@ public enum Platform implements I_Platform {
 	JSE(0), GWTC(1), MOBILE(2);
 	private static final Map<Integer, Platform> MAP = getMap();
 	
-	private static Map<Integer, Platform> getMap() {
+	@SuppressWarnings("boxing")
+  private static Map<Integer, Platform> getMap() {
 		Map<Integer, Platform> toRet = new HashMap<Integer, Platform>();
 		
 		toRet.put(0, JSE);
@@ -27,7 +28,8 @@ public enum Platform implements I_Platform {
 		return Collections.unmodifiableMap(toRet);
 	}
 	
-	public static Platform get(I_Platform p) {
+	@SuppressWarnings("boxing")
+  public static Platform get(I_Platform p) {
 		return MAP.get(p.getId());
 	}
 	

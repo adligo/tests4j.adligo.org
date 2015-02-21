@@ -5,7 +5,6 @@ import java.util.List;
 
 public class ArrayUtils {
 
-  @SuppressWarnings("unchecked")
   public static <T> T[] copyOf(T[] src, T[] dest) {
     List<T> l = new ArrayList<T>();
     for (int i = 0; i < src.length; i++) {

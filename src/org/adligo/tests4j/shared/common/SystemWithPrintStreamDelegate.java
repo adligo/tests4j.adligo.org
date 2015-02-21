@@ -1,8 +1,6 @@
 package org.adligo.tests4j.shared.common;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * a tricky way to have a constant,

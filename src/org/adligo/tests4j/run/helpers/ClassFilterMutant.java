@@ -46,27 +46,6 @@ public class ClassFilterMutant implements I_ClassFilterModel {
 		}
 	}
 
-	private boolean isFilteredIn(String className) {
-		int di = className.indexOf("$");
-		if (di != -1) {
-			//normalize to outer class from inner class
-			className = className.substring(0, di);
-		}
-		if (ignoredClassNames.contains(className)) {
-			learnedFilteredClasses.add(className);
-			return true;
-		}
-		if (ignoredPackageNames != null) {
-			for (String pkg: ignoredPackageNames) {
-				if (className.indexOf(pkg) == 0) {
-					learnedFilteredClasses.add(className);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * {@link I_ClassFilter#isFiltered(Class<?>)}
 	 */
@@ -124,4 +103,28 @@ public class ClassFilterMutant implements I_ClassFilterModel {
 		}
 	}
 	
+	 private boolean isFilteredIn(String className) {
+	    int di = className.indexOf("$");
+	    if (di != -1) {
+	      //normalize to outer class from inner class
+	      className = className.substring(0, di);
+	    }
+	    if (ignoredClassNames.contains(className)) {
+	      learnedFilteredClasses.add(className);
+	      return true;
+	    }
+	    if (ClassMethods.isPrimitiveOrArrayOfPrimitives(className)) {
+	      learnedFilteredClasses.add(className);
+        return true;
+	    }
+	    if (ignoredPackageNames != null) {
+	      for (String pkg: ignoredPackageNames) {
+	        if (className.indexOf(pkg) == 0) {
+	          learnedFilteredClasses.add(className);
+	          return true;
+	        }
+	      }
+	    }
+	    return false;
+	  }
 }

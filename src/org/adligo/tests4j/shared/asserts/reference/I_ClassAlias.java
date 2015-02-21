@@ -5,6 +5,8 @@ package org.adligo.tests4j.shared.asserts.reference;
 /**
  * A wrapper around a class
  * which implements Comparable .
+ * Note implementations should not represent 
+ * primitives or arrays of primitives!
  * 
  * Note the comparable implementation
  * should handle I_ClassAlias, String (class Name), Class (class Name)

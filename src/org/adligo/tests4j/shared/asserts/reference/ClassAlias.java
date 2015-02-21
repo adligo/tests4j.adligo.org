@@ -1,5 +1,6 @@
 package org.adligo.tests4j.shared.asserts.reference;
 
+import org.adligo.tests4j.shared.common.ClassMethods;
 import org.adligo.tests4j.shared.common.StringMethods;
 import org.adligo.tests4j.shared.xml.I_XML_Builder;
 
@@ -10,18 +11,23 @@ import org.adligo.tests4j.shared.xml.I_XML_Builder;
  *
  */
 public class ClassAlias implements I_ClassAlias {
-	public static final String NO_NAME = "ClassAlias requires a name";
+	public static void checkName(String name) {
+	  if (StringMethods.isEmpty(name)) {
+      throw new IllegalArgumentException();
+    }
+    if (ClassMethods.isPrimitiveOrArrayOfPrimitives(name)) {
+      throw new IllegalArgumentException(name);
+    }
+	}
 	private String name;
 	
 	public ClassAlias(Class<?> p) {
-		name = p.getName();
+		this(p.getName());
 	}
 	
 	public ClassAlias(String p) {
+	  checkName(p);
 		name = p;
-		if (StringMethods.isEmpty(name)) {
-			throw new IllegalArgumentException(NO_NAME);
-		}
 	}
 	
 	@Override

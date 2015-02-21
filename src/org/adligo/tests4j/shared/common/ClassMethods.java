@@ -32,7 +32,8 @@ public class ClassMethods {
 	private static final Set<String> PRIMITIVE_CLASSES = getPrimitiveClasses();
 	private static final Map<String,String> PRIMITIVES_CONSTANT_MAP = getPrimitivesConstantMap();
 	
-	private static Map<Character,String> getPrimitives() {
+	@SuppressWarnings("boxing")
+  private static Map<Character,String> getPrimitives() {
 		Map<Character,String> toRet = new HashMap<Character,String>();
 		toRet.put('Z', BOOLEAN);
 		toRet.put('B', BYTE);
@@ -99,6 +100,30 @@ public class ClassMethods {
 		return PRIMITIVE_CLASSES.contains(p);
 	}
 	
+	 /**
+   * This method uses the set of 
+   * primitives and the class name to discover
+   * if the class is a primitive class wrapper, rather
+   * than reflection which isn't available in GWT.
+   * @param c
+   * @return
+   */
+  public static boolean isPrimitiveOrArrayOfPrimitives(String name) {
+    char [] chars = name.toCharArray();
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < chars.length; i++) {
+      char c = chars[i];
+      if (c != ARRAY_CHAR) {
+        sb.append(c);
+      }
+    }
+    String noArrays = sb.toString();
+    if (noArrays.length() == 1) {
+      return isPrimitiveClassChar(noArrays.charAt(0));
+    }
+    return isPrimitive(noArrays);
+  }
+  
 	/**
 	 * returns true if the class names match
 	 * @param example
@@ -186,7 +211,6 @@ public class ClassMethods {
 	 * @return
 	 */
 	public static String toResource(String clazzName) {
-		StringBuilder sb = new StringBuilder();
 		return '/' + clazzName.replace('.', '/') + ".class";
 	}
 	
@@ -241,7 +265,8 @@ public class ClassMethods {
 	 * @param c
 	 * @return
 	 */
-	public static boolean isPrimitiveClassChar(char c) {
+	@SuppressWarnings("boxing")
+  public static boolean isPrimitiveClassChar(char c) {
 		return PRIMITIVES.containsKey(c);
 	}
 	
@@ -251,7 +276,8 @@ public class ClassMethods {
 	 * @param p
 	 * @return
 	 */
-	public static String getPrimitive(char p) {
+	@SuppressWarnings("boxing")
+  public static String getPrimitive(char p) {
 		return PRIMITIVES.get(p);
 	}
 	

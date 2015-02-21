@@ -17,7 +17,8 @@ public enum TrialType implements I_TrialType {
 	
 	private static final Map<Integer, TrialType> typeMap = getTypeMap();
 	
-	private static Map<Integer, TrialType> getTypeMap() {
+	@SuppressWarnings("boxing")
+  private static Map<Integer, TrialType> getTypeMap() {
 		Map<Integer, TrialType> toRet = new HashMap<Integer, TrialType>();
 		toRet.put(0, UnknownTrialType);
 		toRet.put(1, SourceFileTrial);
@@ -41,7 +42,8 @@ public enum TrialType implements I_TrialType {
 		return get(p.getId());
 	}
 	
-	public static TrialType get(int p) {
+	@SuppressWarnings("boxing")
+  public static TrialType get(int p) {
 		return typeMap.get(p);
 	}
 }
