@@ -61,14 +61,19 @@ must be unique.</documentation>
     				</documentation>
     			</annotation>
     		</element>
-    		<element name="use_case_path"
-    			type="string" minOccurs="1"
+    		<element name="use_case_path" type="string" minOccurs="1"
     			maxOccurs="unbounded">
-                <annotation>
-                	<documentation>This is the name of one of the use_case_path's in the parent requirements_type.</documentation>
-                </annotation>
+    			<annotation>
+    				<documentation>
+    					This is the name of one of the use_case_path's
+    					in the parent requirements_type.
+    				</documentation>
+    			</annotation>
     		</element>
-    		<element name="partition" type="rns:partition_type" minOccurs="0" maxOccurs="unbounded"></element>
+            <element name="use_case_priority" type="rns:prioritized_use_cases" minOccurs="0" maxOccurs="1"></element>
+            <element name="partition" type="rns:partition_type"
+    			minOccurs="0" maxOccurs="unbounded">
+    		</element>
     	</sequence>
     	<attribute name="name" type="string" use="required">
     		<annotation>
@@ -150,11 +155,16 @@ system project (project node under a system_type).</documentation>
         			</documentation>
         		</annotation>
         	</element>
-        	<element name="use_case_path" type="string" minOccurs="1" maxOccurs="unbounded">
+        	<element name="use_case_path" type="string" minOccurs="1"
+        		maxOccurs="unbounded">
         		<annotation>
-        			<documentation>This is the name of one of the use_case_path's in the parent requirements_type.
-</documentation>
-        		</annotation></element>
+        			<documentation>
+        				This is the name of one of the use_case_path's
+        				in the parent requirements_type.
+        			</documentation>
+        		</annotation>
+        	</element>
+        	<element name="use_case_priority" type="rns:prioritized_use_cases" minOccurs="0" maxOccurs="1"></element>
         </sequence>
         <attribute name="name" type="string">
     		<annotation>
@@ -252,5 +262,19 @@ shared versioning system (i.e. tests4j.adligo.org in git).</documentation>
     			<documentation>This is the name of a generalized actor
 which this actor specializes.</documentation>
     		</annotation></attribute>
+    </complexType>
+
+    <complexType name="prioritized_use_cases">
+    	<sequence>
+    		<element name="use_case" type="string" minOccurs="1" maxOccurs="unbounded">
+    			<annotation>
+    				<documentation>A list of use cases (by name) in a prioritized order
+from most important to least important.  This
+is simmilar to the Scrum concept of a work
+queue, however it specific to software development work.
+Use cases may NOT be prioritized multiple times
+in the same priortized_use_cases list.</documentation>
+    			</annotation></element>
+    	</sequence>
     </complexType>
 </schema>

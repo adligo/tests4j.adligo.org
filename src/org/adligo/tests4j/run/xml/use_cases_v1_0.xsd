@@ -39,7 +39,12 @@
     		<element name="step" type="uns:step_type" minOccurs="0" maxOccurs="unbounded"></element>
     	</sequence>
 
-    	<attribute name="name" type="string"></attribute>
+    	<attribute name="name" type="string" use="required">
+    		<annotation>
+    			<documentation>This is the name of the use case,
+and also acts as it's unique identifier.
+</documentation>
+    		</annotation></attribute>
     	<attribute name="abstract" type="boolean" use="optional">
     		<annotation>
     			<documentation>Abstract means that the use case is vague
