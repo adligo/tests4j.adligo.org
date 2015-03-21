@@ -189,7 +189,6 @@ public class Tests4J_TrialsRunnable implements Runnable,
 						log_.onThrowable(x);
 					} 
 					
-					
 					if (trialDescription_.isRunnable()) {
 						if (trialDescription_.getType() != TrialType.MetaTrial) {
 							boolean printing = trialDescription_.isPrintToStdOut(); 

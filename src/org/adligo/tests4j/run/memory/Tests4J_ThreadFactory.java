@@ -95,12 +95,15 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	public Tests4J_ThreadFactory(I_Tests4J_Log log) {
     this(MAIN_THREAD_NAME, log);
   }
+	
 	public Tests4J_ThreadFactory(String name, I_Tests4J_Log log) {
     this(name, log, null);
   }
+	
 	public Tests4J_ThreadFactory(I_Tests4J_Log log, I_Threads threads) {
     this(MAIN_THREAD_NAME, log, threads);
   }
+	
 	public Tests4J_ThreadFactory(Tests4J_ThreadFactory parent, String name) {
 	  setParent(parent);
 	  setThreads(null);
@@ -128,8 +131,6 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
     }
     log_ = parent.log_;
   }
-	
-	
 	
   private void setLog(I_Tests4J_Log log) {
     if (log == null) {
@@ -169,13 +170,11 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
       }
 		  
 		  if (TEST_THREAD_NAME.equals(name) || CUSTOM_THREAD_NAME.equals(name)) {
-		     
 	      if (parentName.indexOf(TRIAL_THREAD_NAME) != BASE_THREAD_NAME.length()) {
           throw new IllegalArgumentException(NAME_NOT_ALLOWED);
         }
 	      group_ = parent_.group_;
-	      //the parent gets added later on based on execution,
-	      //in order to pair the trial and sub threads.
+	      //  The parent gets added later on based on execution, in order to pair the trial and sub threads.
 	      name_ = name;
 		  } else if (TRIAL_THREAD_NAME.equals(name)){
 		    if (trialThreadGroups_ == null) {
@@ -186,7 +185,6 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 		    group_ = new ThreadGroup(parent_.group_, BASE_THREAD_NAME + name + "-group");
 		    name_ = BASE_THREAD_NAME + name;
 		  }
-		  
 		}
   }
 	
@@ -219,6 +217,7 @@ public final class Tests4J_ThreadFactory implements ThreadFactory {
 	public List<Thread> getThreads() {
 		return Collections.unmodifiableList(threads);
 	}
+	
   public ThreadGroup getInstanceCreationThreadGroup() {
     return instanceCreationThreadGroup_;
   }
