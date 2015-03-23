@@ -1,7 +1,5 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
-import com.sun.xml.internal.ws.util.StringUtils;
-
 import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexes;
 import org.adligo.tests4j.shared.asserts.line_text.I_DiffIndexesPair;
 import org.adligo.tests4j.shared.asserts.line_text.I_LineDiff;
@@ -15,7 +13,6 @@ import org.adligo.tests4j.shared.i18n.I_Tests4J_Constants;
 import org.adligo.tests4j.shared.i18n.I_Tests4J_ReportMessages;
 import org.adligo.tests4j.shared.output.I_Tests4J_Log;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

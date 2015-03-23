@@ -1,7 +1,5 @@
 package org.adligo.tests4j.system.shared.report.summary;
 
-import com.sun.xml.internal.ws.util.StringUtils;
-
 import org.adligo.tests4j.shared.asserts.common.I_AssertThrownFailure;
 import org.adligo.tests4j.shared.asserts.common.I_MatchType;
 import org.adligo.tests4j.shared.asserts.common.I_ThrowableInfo;

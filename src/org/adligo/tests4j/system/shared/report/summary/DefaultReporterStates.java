@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultReporterStates {
-	public static Map<Class<?>, Boolean> getDefalutLogStates() {
+	@SuppressWarnings("boxing")
+  public static Map<Class<?>, Boolean> getDefalutLogStates() {
 		Map<Class<?>, Boolean> logStates = new HashMap<Class<?>, Boolean>();
 		//set defaults;
 		logStates.put(RemoteProgressDisplay.class, true);

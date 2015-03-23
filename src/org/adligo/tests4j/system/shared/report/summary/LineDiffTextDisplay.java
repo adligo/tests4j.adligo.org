@@ -26,7 +26,7 @@ public class LineDiffTextDisplay {
     messages_ = constants.getLineDiffTextDisplayMessages();
   }
   
-  @SuppressWarnings("incomplete-switch")
+  @SuppressWarnings({"incomplete-switch", "boxing"})
   public void display(I_Tests4J_Log out, I_TextLinesCompareResult result, int diffLimit) {
     actualLines = result.getActualLines();
     exampleLines = result.getExpectedLines();
@@ -124,6 +124,7 @@ public class LineDiffTextDisplay {
     }
   }
 
+  @SuppressWarnings("boxing")
   public String getActualLine(I_TextLines actualLines, Integer actual) {
     String actualLine = null;
     if (actual != null ) {

@@ -1,11 +1,8 @@
 package org.adligo.tests4j.run.common;
 
-import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicReference;
-
-import sun.misc.Unsafe;
 
 public final class AtomicBigInteger {
   private final AtomicReference<BigInteger> valueHolder = new AtomicReference<>();
