@@ -4,6 +4,9 @@
 	xmlns:pns="http://www.adligo.org/fabricate/xml/io_v1/project_v1_0.xsd" 
     xmlns:lns="http://www.adligo.org/fabricate/xml/io_v1/library_v1_0.xsd" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+    <pns:attributes>
+    	<cns:param key="platforms" value="jse,gwt"/>
+   	</pns:attributes>
     <pns:stages>
         <pns:stage name="jar" />
     </pns:stages>
