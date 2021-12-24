@@ -39,6 +39,9 @@ fun getTag(): String {
   return getProp("tag", snapshot)
 }
 
+// gradle publishToMavenLocal 
+// or with the git tag
+//  gradle publishToMavenLocal -Ptag=vg0_1 
 publishing {
   publications {
     create<MavenPublication>("maven") {
