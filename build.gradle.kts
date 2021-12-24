@@ -1,3 +1,6 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 plugins {
   `maven-publish`
   eclipse
@@ -41,7 +44,7 @@ publishing {
     create<MavenPublication>("maven") {
       groupId = "org.adligo"
       artifactId = "tests4j"
-      version = getTat()
+      version = getTag()
       from(components["java"])
     }
   }
