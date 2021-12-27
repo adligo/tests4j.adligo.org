@@ -26,3 +26,9 @@ diagram when you synchronize it, so you can search for the comment later.
 Also the bottom right hand of each diagram 
 should contain info about when it was last 
 synchronized with the java code.
+
+# Branches of Note
+- b0 This branch will build on JDK 1.8 classes (class version 52),
+    Also I believe it will compile back to JDK 1.6 class format (class version 50), 
+    by simply editing the main build.gradle.kts file, using JDK 1.8 to complie and 
+    switching the target to JDK 1.6.
