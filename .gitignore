@@ -3,6 +3,9 @@
 /build/
 /classes/
 /classes_e/
+.gradle
+gradle
+.settings
 tests4j*.jar
 
 

@@ -12,6 +12,12 @@ dependencies {
   implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
 }
 
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(8))
+  }
+}
+
 
 sourceSets {
   main {
