@@ -65,6 +65,15 @@ repositories {
   mavenCentral()
 }
 
+/**
+I have found that the JAVA_HOME environment variable that is set when your run this task ;
+    gradle cleanEclipse eclipse
+is the one that is included in the Eclipse BuildPath
+*/
+tasks.register<GradleBuild>("ecp") {
+    tasks = listOf("cleanEclipseClasspath", "eclipseClasspath")
+}
+
 
 
 
