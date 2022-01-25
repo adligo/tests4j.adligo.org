@@ -1,4 +1,5 @@
 .classpath
+bin
 /bin/
 /build/
 /classes/
@@ -9,3 +10,4 @@ gradle
 tests4j*.jar
 
 
+/bin/
