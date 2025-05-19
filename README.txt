@@ -8,7 +8,8 @@ Requirements of this project
 
 
 Check-in procedure;
-1) Run org.adligo.test4J_tests.RunAllTrials in the tests4j_tests project at least 3x
+1) Run org.adligo.test4J_test
+s.RunAllTrials in the tests4j_tests project at least 3x
 2) Run tests4j_4gwt (Compile it into javascript) and run it on a few browsers (Firefox, Chrome, and Safari or IE) at least 3x
 
 
@@ -32,3 +33,11 @@ synchronized with the java code.
     Also I believe it will compile back to JDK 1.6 class format (class version 50), 
     by simply editing the main build.gradle.kts file, using JDK 1.8 to complie and 
     switching the target to JDK 1.6.
+    
+# XML
+https://javaee.github.io/jaxb-v2/
+Note after you download this do NOT open it in Eclipse. Eclipse will screw up the /bin directory and cause the following error;
+Exception in thread "main" java.lang.NoClassDefFoundError: javax/activation/DataSource
+
+We use the xjc tool to manually create Java from the .xsd files under the org.adligo.tests4j.run.xml package folder.
+@see the runXjc.sh script in this folder

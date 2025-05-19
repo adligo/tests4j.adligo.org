@@ -108,7 +108,7 @@ public class ConvertRunResults {
     try {
       df = DatatypeFactory.newInstance();
       Duration duration = df.newDuration(result.getRunTime());
-      ret.setRunTime(duration);
+      ret.setTime(duration);
       
     } catch (DatatypeConfigurationException e) {
       // TODO Auto-generated catch block

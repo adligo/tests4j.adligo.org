@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--  
+  This file contains a schema to include code coverage in a xml file so it can be shown in a Jenkins plug-in similar to JUnit.
+  
+  
+  Copyright 2014 Adligo Inc / Scott Morgan
+  *
+  * Licensed under the Apache License, Version 2.0 (the "License");
+  * you may not use this file except in compliance with the License.
+  * You may obtain a copy of the License at
+  *
+  *     http://www.apache.org/licenses/LICENSE-2.0
+  *
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
+  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+-->
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
 	targetNamespace="http://www.adligo.org/tests4j/run/xml/io/test_result/v1_0" 
 	xmlns:tns="http://www.adligo.org/tests4j/run/xml/io/test_result/v1_0"
@@ -32,24 +50,30 @@
 	<complexType name="test_result_type">
 		<annotation>
 			<documentation>
-				Note passed and ignored are indicated by the position
-				of a test_result_type node with in the trial_result_type.
+				Note passed and ignored are indicated by the position of
+				a test_result_type node with in the trial_result_type.
 			</documentation>
 		</annotation>
 		<sequence>
 			<element name="failure" type="tns:test_failure_type"
 				minOccurs="0" maxOccurs="1">
 			</element>
-			<element name="beforeTestOutput" type="string"
-				minOccurs="0" maxOccurs="1">
+			<element name="beforeTestOutput" type="string" minOccurs="0"
+				maxOccurs="1">
 			</element>
 			<element name="output" type="string" minOccurs="0"
 				maxOccurs="1">
 			</element>
-			<element name="afterTestOutput" type="string" minOccurs="0" maxOccurs="1"></element>
+			<element name="afterTestOutput" type="string" minOccurs="0"
+				maxOccurs="1">
+			</element>
 		</sequence>
 		<attribute name="name" type="string" use="required"></attribute>
-        <attribute name="asserts" type="int" use="required"></attribute>
+		<attribute name="asserts" type="int" use="required"></attribute>
 		<attribute name="uniqueAsserts" type="int" use="optional"></attribute>
+		<attribute name="time" type="duration">
+			<annotation>
+				<documentation></documentation>
+			</annotation></attribute>
 	</complexType>
 </schema>
